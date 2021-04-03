@@ -74,7 +74,7 @@ public class BoardGenerator : MonoBehaviour
                 
                 // change hexagon numbers
                 if (currentConfig == 2) {
-                    GameObject t ext = newHexagon.transform.GetChild(1).GetChild(0).gameObject;
+                    GameObject text = newHexagon.transform.GetChild(1).GetChild(0).gameObject;
 
                     text.GetComponent<TextMesh>().text = getNextRandomNumber().ToString();
                 }
