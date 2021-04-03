@@ -1,9 +1,23 @@
 fileFormatVersion: 2
-guid: 2d99f789e68efb943875c884ed79bffc
+guid: b898441e8df14e35844215ebc6c9e89a
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
-  defaultReferences: []
+  defaultReferences:
+  - robber: {fileID: 3788127331573154054, guid: 2e1533a3b472ba44ca1de86e28cd87b1, type: 3}
+  - hexagonPrefabDesert: {fileID: 8472554331270197990, guid: bd936c91cafb06b4cb968f4ef38c5e9f, type: 3}
+  - hexagonPrefabBrick: {fileID: 6211165981206033278, guid: fca051b7163a2da4d98310fefad7ae70, type: 3}
+  - hexagonPrefabOre: {fileID: 8746353831194564319, guid: c5a894389c1fc484298c9b93986e4b41, type: 3}
+  - hexagonPrefabSheep: {fileID: 7809589964667226856, guid: fcd928a48952afa44b3b3d0c675c1f4a, type: 3}
+  - hexagonPrefabWheat: {fileID: 2019539557075879886, guid: eb7812d98cdcda84cac833633573279c, type: 3}
+  - hexagonPrefabWood: {fileID: 6013316601682439211, guid: e3ca379657946fe49ade4d8d89527716, type: 3}
+  - hexagonPrefabWater: {fileID: 4018798767855067141, guid: d60fc047b1ad17c4e8e9934211b98799, type: 3}
+  - hexagonPrefabRandomPort: {fileID: 5478014225434598740, guid: 36dab3f20d5d44349b60911c4fe51346, type: 3}
+  - hexagonPrefabBrickPort: {fileID: 3195112816243981295, guid: 2950ab60343e8a940970d60b3cfeadcc, type: 3}
+  - hexagonPrefabOrePort: {fileID: 2234845437722222054, guid: 56370aab777a1564f9a15f1af85a3320, type: 3}
+  - hexagonPrefabSheepPort: {fileID: 6576646755619773130, guid: fdcbc63530786254db500ae8843251f4, type: 3}
+  - hexagonPrefabWheatPort: {fileID: 731007106421076287, guid: d2b83b1f8e3dedb4598ad7e3e0393a07, type: 3}
+  - hexagonPrefabWoodPort: {fileID: 1476441484969098016, guid: 29b82ad3469d0234b8f2d6cf186bd634, type: 3}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 
