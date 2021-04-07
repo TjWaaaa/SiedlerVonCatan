@@ -1,9 +1,7 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 public class BoardGenerator : MonoBehaviour
 {
@@ -40,9 +38,15 @@ public class BoardGenerator : MonoBehaviour
     public GameObject hexagonPrefabWheatPort;
     public GameObject hexagonPrefabWoodPort;
 
+    public GameObject buildingSlotVillage;
+    public GameObject buildingSlotRoad;
+
     private Stack<GameObject> randomHexStack;
     private Stack<int> randomNumStack;
     private Stack<GameObject> randomPortHexStack;
+
+    private GameObject[] buildingSlotArrayVillage;
+    private GameObject[] buildingSlotArrayRoad;
 
     private const float r = 0.866f;
     private const float a = 1f;
@@ -54,9 +58,11 @@ public class BoardGenerator : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        initalizeRandomHexagons();
-        initalizeRandomPortHexagons();
+        initializeRandomHexagons();
+        initializeRandomPortHexagons();
         initializeRandomNumbers();
+
+        instantiateBuildingSlots();
         
 
         for (int z = 0; z < gameboardConfig.GetLength(0); z++)
@@ -135,7 +141,7 @@ public class BoardGenerator : MonoBehaviour
         return Quaternion.identity;
     }
 
-    void initalizeRandomHexagons()
+    void initializeRandomHexagons()
     {
         GameObject[] randomHexArray = new[]
         {
@@ -149,7 +155,7 @@ public class BoardGenerator : MonoBehaviour
         randomHexStack = new Stack<GameObject>(randomHexArray.OrderBy(n => Guid.NewGuid()).ToArray());
     }
     
-    void initalizeRandomPortHexagons()
+    void initializeRandomPortHexagons()
     {
         GameObject[] randomHexArray = new[]
         {
@@ -186,8 +192,55 @@ public class BoardGenerator : MonoBehaviour
         return randomNumStack.Pop();
     }
 
-    // Update is called once per frame
-    void Update()
-    {
+    private void instantiateBuildingSlots() {
+
+        buildingSlotArrayVillage = new GameObject[54];
+
+        int[] config = {3, 4, 4, 5, 5, 6, 6, 5, 5, 4, 4, 3};
+        float offsetX = 4.3301f;
+        float offsetY = 0.5f;
+        int objCount = 0;
+
+        for (int i = 0; i < config.Length; i++) {
+
+            for (int j = 0; j < config[i]; j++) {
+
+                buildingSlotArrayVillage[objCount] = Instantiate(buildingSlotVillage, new Vector3(j * s + offsetX, 0, offsetY), Quaternion.identity);
+                objCount++;
+            }
+
+            if (i % 2 == 0) {
+                offsetY += 0.5f;
+
+                if (i < config.Length / 2) {
+                    offsetX -= 0.86605f;
+                }
+                else {
+                    offsetX += 0.86605f;
+                }
+            }
+            else {
+                offsetY += 1;
+            }
+        }
+
+        foreach (GameObject go in buildingSlotArrayVillage) {
+
+            GameObject[] neighbors = new GameObject[3];
+            int arrayPos = 0;
+
+            Vector3 currentPos = go.transform.position;
+            Debug.Log(currentPos);
+            foreach (GameObject possibleNeighbor in buildingSlotArrayVillage) {
+
+                float dist = Vector3.Distance(possibleNeighbor.transform.position, currentPos);
+                if (dist < 1.2f && go != possibleNeighbor) {
+                    neighbors[arrayPos] = possibleNeighbor;
+                    arrayPos++;
+                }
+            }
+
+            go.GetComponent<ObjectNeighbors>().SetNeighborVillageSlots(neighbors);
+        }
     }
 }
