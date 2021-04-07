@@ -8,6 +8,8 @@ using UnityEngine.Serialization;
 public class BoardGenerator : MonoBehaviour
 {
 
+    public GameObject Board;
+    
     public GameObject robber;
     
     public GameObject[] hexagons;
@@ -22,7 +24,7 @@ public class BoardGenerator : MonoBehaviour
         { 0, 1, 2, 2, 2, 4, 0},
         {0, 0, 4, 1, 4, 1, 0},
     };
-    
+
     public GameObject hexagonPrefabDesert;
     public GameObject hexagonPrefabBrick;
     public GameObject hexagonPrefabOre;
@@ -87,7 +89,9 @@ public class BoardGenerator : MonoBehaviour
                 {
                     newHexagon = Instantiate(whatHexagon, new Vector3(x * s + r, 0, (z - 1) / 2f * (d + a) + offset), Rotation(currentConfig, z, x));
                 }
-                
+
+
+                newHexagon.transform.parent = Board.transform;
                 
                 // change hexagon numbers
                 if (currentConfig == 2) {

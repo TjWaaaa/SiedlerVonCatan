@@ -1,0 +1,23 @@
+fileFormatVersion: 2
+guid: 418f6239312a7644cada2d34faf873d3
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - villageBlue: {instanceID: 0}
+  - villageRed: {instanceID: 0}
+  - villageWhite: {instanceID: 0}
+  - villageYellow: {instanceID: 0}
+  - cityBlue: {instanceID: 0}
+  - cityRed: {instanceID: 0}
+  - cityWhite: {instanceID: 0}
+  - cityYellow: {instanceID: 0}
+  - roadBlue: {instanceID: 0}
+  - roadRed: {instanceID: 0}
+  - roadWhite: {instanceID: 0}
+  - roadYellow: {instanceID: 0}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

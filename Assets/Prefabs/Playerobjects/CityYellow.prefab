@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4388352158306977766}
   m_Layer: 0
-  m_Name: city (3)
+  m_Name: CityYellow
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -25,7 +25,7 @@ Transform:
   m_GameObject: {fileID: 4011968005390245212}
   m_LocalRotation: {x: 0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: -4.388053, y: -0.63593197, z: -4.474574}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 1.25, y: 1.25, z: 1.25}
   m_Children:
   - {fileID: 3789421999357032126}
   m_Father: {fileID: 0}
