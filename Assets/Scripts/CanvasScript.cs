@@ -10,9 +10,7 @@ public class CanvasScript : MonoBehaviour
 
     public void Text_Changed(string newText)
     {
-        Debug.Log(inputFieldName.text);
+        nameDisplay.text = "Name: " + newText;
         Debug.Log(nameDisplay.text);
-        nameDisplay.text = 
-        "Name: " + newText;
     }
 }
