@@ -328,6 +328,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b898441e8df14e35844215ebc6c9e89a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Board: {fileID: 2012811097}
   robber: {fileID: 3788127331573154054, guid: 2e1533a3b472ba44ca1de86e28cd87b1, type: 3}
   hexagons: []
   hexagonPrefabDesert: {fileID: 8472554331270197990, guid: bd936c91cafb06b4cb968f4ef38c5e9f, type: 3}
