@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
+using UnityEngine;
 using UnityEngine.UI;
 
 namespace Networking
@@ -24,13 +25,17 @@ namespace Networking
             Console.Title = "Game Server";
             Console.WriteLine("Setting up Server...");
             serverSocket.Bind(new IPEndPoint(IPAddress.Any, PORT)); //Bind endpoint with ip address and port to socket
-            serverSocket.Listen(4); //maximum pending connections at one time
+            serverSocket.Listen(4); //maximum pending connection attempts at one time
             serverSocket.BeginAccept(AcceptCallback, null); //begins waiting for client connection attempts
             
             Console.WriteLine("Server setup complete, let's go!");
             //todo: Close server after the end of the game.
             Console.WriteLine("Press any key to quit.");
             Console.ReadLine(); // to keep console open
+            while (true)
+            {
+                
+            }
             closeAllSockets();
         }
         
@@ -75,6 +80,7 @@ namespace Networking
                 Console.WriteLine("Client forcefully disconnected");
                 currentClientSocket.Close();
                 clientSockets.Remove(currentClientSocket);
+                //todo: reestablish connection
                 return;
             }
 
@@ -82,6 +88,7 @@ namespace Networking
             Array.Copy(buffer, currentBuffer, recievedByteLengh); //to remove the protruding zeros from buffer
             string incomingDataString = Encoding.ASCII.GetString(currentBuffer);
             Console.WriteLine("Received Text: " + incomingDataString);
+            Debug.Log("Server: Received Text: " + incomingDataString);
             //todo: handle incomingDataString
             
             if (incomingDataString.ToLower().Equals("get status"))
@@ -120,6 +127,7 @@ namespace Networking
                 socket.Shutdown(SocketShutdown.Both);
                 socket.Close();
             }
+            //todo: maybe serversocket.BeginDisconnect() ?
             serverSocket.Close();
         }
     }
