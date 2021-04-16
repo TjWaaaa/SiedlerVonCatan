@@ -2,6 +2,7 @@ using System;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
+using UnityEngine;
 
 namespace Networking
 {
@@ -15,15 +16,25 @@ namespace Networking
             new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
 
 
-        public static void initClient(string ipAddress)
+        public static bool initClient(string ipAddress)
         {
-            Console.Title = "Client 1";
-            connectToServer(ipAddress);
-            clientSocket.BeginReceive(buffer, 0, BUFFER_SIZE, SocketFlags.None, receiveCallback, clientSocket);
-            //while (true)
-            //{
+            try
+            {
+                //Console.Title = "Client 1";
+                connectToServer(ipAddress);
+                clientSocket.BeginReceive(buffer, 0, BUFFER_SIZE, SocketFlags.None, receiveCallback, clientSocket);
+                //while (true)
+                //{
                 sendRequest();
-            //}
+                //}
+            } 
+            catch (Exception e)
+            {
+                Debug.Log("Client could not start");
+                throw e;
+            }
+            
+            return true;
         }
         
 
@@ -35,7 +46,7 @@ namespace Networking
         {
             int attempts = 0;
             
-            Console.WriteLine("Please enter ip address of host: ");
+            //Console.WriteLine("Please enter ip address of host: ");
             //string ipAddress = Console.ReadLine();
             //string ipAddress = "127.0.0.1";
             
@@ -43,7 +54,7 @@ namespace Networking
                 try
                 {
                     attempts++;
-                    Console.WriteLine("Connection attempts: " + attempts);
+                    Debug.Log("Client: Connection attempts: " + attempts);
                     clientSocket.Connect(IPAddress.Parse(ipAddress), PORT);
                 }
                 catch (SocketException)
@@ -52,8 +63,8 @@ namespace Networking
                 }
             } 
             
-            Console.Clear();
-            Console.WriteLine("Connected");
+            //Console.Clear();
+            Debug.Log("Client: Connected");
             return true;
         }
         
@@ -63,9 +74,9 @@ namespace Networking
         /// </summary>
         private static void sendRequest()
         {
-            Console.Write("Send a request: (get status)");
+            Debug.Log("Client: Send a request: (Hallo Welt)");
             //string request = Console.ReadLine();
-            string request = "Hallo Welt";
+            string request = "Hallo Welt!";
             
             byte[] buffer = Encoding.ASCII.GetBytes(request);
             clientSocket.Send(buffer, 0, buffer.Length, SocketFlags.None);
@@ -83,7 +94,7 @@ namespace Networking
             }
             catch (SocketException)
             {
-                Console.WriteLine("Server forcefully disconnected");
+                Debug.Log("Client: Server forcefully disconnected");
                 //todo handle connection loss
                 return;
             }
@@ -92,7 +103,7 @@ namespace Networking
             Array.Copy(buffer, receievedBuffer, receivedBufferSize);
             //may recieve JSON
             string receievedText = Encoding.ASCII.GetString(receievedBuffer);
-            Console.WriteLine("Incoming Data: " + receievedText);
+            Debug.Log("Client: Incoming Data: " + receievedText);
             
             clientSocket.BeginReceive(buffer, 0, BUFFER_SIZE, SocketFlags.None, receiveCallback, clientSocket); // start listening again
         }

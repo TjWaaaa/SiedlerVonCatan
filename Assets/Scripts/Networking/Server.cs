@@ -20,23 +20,35 @@ namespace Networking
         /// <summary>
         /// Starts the server to host a game.
         /// </summary>
-        public static void setupServer()
+        public static bool setupServer()
         {
-            Console.Title = "Game Server";
-            Console.WriteLine("Setting up Server...");
-            serverSocket.Bind(new IPEndPoint(IPAddress.Any, PORT)); //Bind endpoint with ip address and port to socket
-            serverSocket.Listen(4); //maximum pending connection attempts at one time
-            serverSocket.BeginAccept(AcceptCallback, null); //begins waiting for client connection attempts
-            
-            Console.WriteLine("Server setup complete, let's go!");
-            //todo: Close server after the end of the game.
-            Console.WriteLine("Press any key to quit.");
-            Console.ReadLine(); // to keep console open
-            while (true)
+            Boolean isRunning = false;
+            //Console.Title = "Game Server";
+            Debug.Log("Server: Setting up Server...");
+            try
             {
-                
+                serverSocket.Bind(new IPEndPoint(IPAddress.Any, PORT)); //Bind endpoint with ip address and port to socket
+                serverSocket.Listen(4); //maximum pending connection attempts at one time
+                serverSocket.BeginAccept(AcceptCallback, null); //begins waiting for client connection attempts
+                Debug.Log("Server: Server setup complete, let's go!");
+                isRunning = true;
             }
-            closeAllSockets();
+            catch (Exception e)
+            {
+                Debug.Log("failed to start server!!!");
+                Debug.Log(e);
+                throw;
+            }
+            
+            //todo: Close server after the end of the game.
+            //Debug.Log("Press any key to quit.");
+            //Console.ReadLine(); // to keep console open
+            //while (true)
+            //{
+                
+            //}
+            //closeAllSockets();
+            return isRunning;
         }
         
         
@@ -51,13 +63,13 @@ namespace Networking
                 clientSocket = serverSocket.EndAccept(AR); //accepts clients connection attempt, returns client socket
             } catch (ObjectDisposedException) 
             {
-                Console.WriteLine("ObjectDisposedException. Client disconnected?");
+                Debug.Log("Server: ObjectDisposedException. Client disconnected?");
                 return;
             }
             
             clientSockets.Add(clientSocket); //save client to socket list
             clientSocket.BeginReceive(buffer, 0, BUFFER_SIZE, SocketFlags.None, ReceiveCallback, clientSocket); // open "chanel" to recieve data from the connected socket
-            Console.WriteLine($"Client {clientSocket.RemoteEndPoint} connected, waiting for request...");
+            Debug.Log($"Server: Client {clientSocket.RemoteEndPoint} connected, waiting for request...");
             serverSocket.BeginAccept(AcceptCallback, null); //begins waiting for client connection attempts
         }
 
@@ -77,7 +89,7 @@ namespace Networking
             }
             catch (SocketException)
             {
-                Console.WriteLine("Client forcefully disconnected");
+                Debug.Log("Server: Client forcefully disconnected");
                 currentClientSocket.Close();
                 clientSockets.Remove(currentClientSocket);
                 //todo: reestablish connection
@@ -87,7 +99,6 @@ namespace Networking
             byte[] currentBuffer = new byte[recievedByteLengh];
             Array.Copy(buffer, currentBuffer, recievedByteLengh); //to remove the protruding zeros from buffer
             string incomingDataString = Encoding.ASCII.GetString(currentBuffer);
-            Console.WriteLine("Received Text: " + incomingDataString);
             Debug.Log("Server: Received Text: " + incomingDataString);
             //todo: handle incomingDataString
             
@@ -96,29 +107,39 @@ namespace Networking
                 string dataString = $"Current status: \n connected clients: {clientSockets.Count} \n current buffer size: {BUFFER_SIZE}";
                 byte[] dataToSend = Encoding.ASCII.GetBytes(dataString);
                 currentClientSocket.Send(dataToSend);
-                Console.WriteLine("Current status was requested and sent.");
+                Debug.Log("Server: Current status was requested and sent.");
             } else if (incomingDataString.ToLower().Equals("exit")) // Client wants to exit gracefully
             {
                 // Always Shutdown before closing
                 currentClientSocket.Shutdown(SocketShutdown.Both);
                 currentClientSocket.Close();
                 clientSockets.Remove(currentClientSocket);
-                Console.WriteLine("Client disconnected");
+                Debug.Log("Server: Client disconnected");
                 return;
             }
             else
             {
-                Console.WriteLine("Text is an invalid request");
-                byte[] dataToSend = Encoding.ASCII.GetBytes("Invalid request");
-                currentClientSocket.Send(dataToSend);
-                Console.WriteLine("Warning Sent");
+                Debug.Log($"Server: Echoing text: {incomingDataString}");
+                byte[] dataToSend = Encoding.ASCII.GetBytes(incomingDataString);
+                
+                foreach (Socket s in clientSockets)
+                {
+                    s.Send(dataToSend);
+                }
             }
 
             currentClientSocket.BeginReceive(buffer, 0, BUFFER_SIZE, SocketFlags.None, ReceiveCallback,
                 currentClientSocket); // Begins waiting for incoming traffic again. Overwrites buffer.
         }
-        
-        
+
+
+        public static IPEndPoint getServerEndpoint()
+        {
+            return (IPEndPoint)serverSocket.LocalEndPoint;
+        }
+
+
+
         /// <summary>
         /// needs to be called at the end of the session to close all connected Sockets and the serverSocket
         /// </summary>
