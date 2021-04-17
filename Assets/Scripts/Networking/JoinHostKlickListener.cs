@@ -12,6 +12,9 @@ public class JoinHostKlickListener : MonoBehaviour
     
     //TODO: mover methods private and in the start method use gameObject.transform / gameobject.name .... to get the current button and add the listener
 
+    /// <summary>
+    /// Method is called from a onClick event. Join the game with the IP address entered by the user.
+    /// </summary>
     public void joinListener()
     {
         string playerName = GameObject.Find("Canvas/InputField_playerName").GetComponent<InputField>().text;
@@ -24,21 +27,30 @@ public class JoinHostKlickListener : MonoBehaviour
         
         Client.initClient(hostIp);
     }
-    
-    
+
+
+    /// <summary>
+    /// Method is called from a onClick event. Starts the game server as well as a client.
+    /// </summary>
+    /// <exception cref="Exception">
+    /// If the servers IPEndpoint is null the client fails to connect.
+    /// To prevent this an Exception is thrown.</exception>
     public void hostListener()
     {
-        //TODO: something causes unity to break after server is setup!!!
-        // bool isRunning = 
-        Server.setupServer();
+        bool isRunning = Server.setupServer(); //host server
         Debug.Log("hosting game...");
-        
-        //TODO: pass serverIP to joinListener
-        // if (isRunning)
-        // {
-        IPEndPoint serverIPEndpoint = Server.getServerEndpoint();
-        // Client.initClient(serverIPEndpoint.Address.ToString()); something causes unity to break after server is setup!!!
-        Debug.Log("Host: hostIp: " + serverIPEndpoint.Address);
-        // }
+
+        if (isRunning)
+        {
+            IPEndPoint serverIPEndpoint = Server.getServerEndpoint();
+
+            if (serverIPEndpoint == null)
+            {
+                throw new Exception("serverIPEndpoint is null!");
+            }
+
+            Client.initClient(serverIPEndpoint.Address.ToString()); //join hosted game as client
+            Debug.Log("Host: hostIp: " + serverIPEndpoint.Address);
+        }
     }
 }

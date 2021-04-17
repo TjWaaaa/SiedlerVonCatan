@@ -50,6 +50,7 @@ namespace Networking
             //string ipAddress = Console.ReadLine();
             //string ipAddress = "127.0.0.1";
             
+            //TODO: dont let the client end up in an endless connection loop trying to connect to the wrong address (attempts limit? + exception)
             while(!clientSocket.Connected) {
                 try
                 {

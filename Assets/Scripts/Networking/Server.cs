@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
@@ -133,9 +134,24 @@ namespace Networking
         }
 
 
+        /// <summary>
+        /// Gets the current IPEndpoint of the machine.
+        /// <returns>IPEndpoint with a IPv4 Address and Port.</returns>
+        /// </summary>
         public static IPEndPoint getServerEndpoint()
         {
-            return (IPEndPoint)serverSocket.LocalEndPoint;
+            string hostName = Dns.GetHostName(); // Retrive the Name of HOST  
+            IPAddress[] hostIPs = Dns.GetHostAddresses(hostName);
+            IPEndPoint endpoint = null;
+
+            // get ipv4 address of host computer. hostIPs contains the IPv4 and IPv6 therefore it needs to be filtered.
+            foreach (IPAddress address in hostIPs.Where(ip => ip.AddressFamily == AddressFamily.InterNetwork))
+            {
+                Debug.Log(address);
+                endpoint = new IPEndPoint(address, PORT);
+            }
+            
+            return endpoint;
         }
 
 
