@@ -24,15 +24,18 @@ namespace Networking
                 //Console.Title = "Client 1";
                 connectToServer(ipAddress);
                 clientSocket.BeginReceive(buffer, 0, BUFFER_SIZE, SocketFlags.None, receiveCallback, clientSocket);
-                
-                
-                for (int i = 0; i<5; i++)
+
+                Thread sendThread = new Thread(() =>
                 {
-                    sendRequest();
-                    Thread.Sleep(1000);
-                }
-                sendRequest();
-                
+                    for (int i = 0; i < 5; i++)
+                    {
+                        sendRequest();
+                        Thread.Sleep(1000);
+                    }
+                    
+                });
+                sendThread.Start();
+
             } 
             catch (Exception e)
             {
@@ -86,11 +89,26 @@ namespace Networking
             string request = "Hallo Welt!";
             
             byte[] buffer = Encoding.ASCII.GetBytes(request);
-            clientSocket.Send(buffer, 0, buffer.Length, SocketFlags.None);
+            clientSocket.BeginSend(buffer, 0, buffer.Length, SocketFlags.None, sendCallback, clientSocket);
             
             //TODO: send game data and messages -> may send JSON
         }
+
         
+        /// <summary>
+        /// Callback method is called when the client has finished sending data.
+        /// </summary>
+        /// <param name="AR">IAsyncResult</param>
+        private static void sendCallback(IAsyncResult AR)
+        {
+            clientSocket.EndSend(AR);
+        }
+        
+        
+        /// <summary>
+        /// Callback method is called in case of data being sent to the client.
+        /// </summary>
+        /// <param name="AR">IAsyncResult</param>
         private static void receiveCallback(IAsyncResult AR) {
             Socket currentServerSocket = (Socket) AR.AsyncState;
             int receivedBufferSize;

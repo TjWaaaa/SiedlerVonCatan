@@ -85,6 +85,15 @@ namespace Networking
             serverSocket.BeginAccept(AcceptCallback, null); //begins waiting for client connection attempts
         }
 
+        /// <summary>
+        /// Callback method is called when the server has finished sending data.
+        /// </summary>
+        /// <param name="AR">IAsyncResult</param>
+        private static void sendCallback(IAsyncResult AR)
+        {
+            serverSocket.EndSend(AR);
+        }
+
         
         /// <summary>
         /// Callback method is called in case of data being sent to the server.
@@ -119,7 +128,7 @@ namespace Networking
             {
                 string dataString = $"Current status: \n connected clients: {socketPlayerData.Count} \n current buffer size: {BUFFER_SIZE}";
                 byte[] dataToSend = Encoding.ASCII.GetBytes(dataString);
-                currentClientSocket.Send(dataToSend);
+                currentClientSocket.BeginSend(dataToSend, 0, dataToSend.Length, SocketFlags.None, sendCallback, serverSocket);
                 Debug.Log("Server: Current status was requested and sent.");
             } else if (incomingDataString.ToLower().Equals("exit")) // Client wants to exit gracefully
             {
@@ -137,7 +146,7 @@ namespace Networking
                 
                 foreach (Socket s in socketPlayerData.Keys)
                 {
-                    s.Send(dataToSend);
+                    s.BeginSend(dataToSend, 0, dataToSend.Length, SocketFlags.None, sendCallback, serverSocket);
                 }
             }
 
