@@ -2,6 +2,7 @@ using System;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
+using System.Threading;
 using UnityEngine;
 
 namespace Networking
@@ -23,10 +24,15 @@ namespace Networking
                 //Console.Title = "Client 1";
                 connectToServer(ipAddress);
                 clientSocket.BeginReceive(buffer, 0, BUFFER_SIZE, SocketFlags.None, receiveCallback, clientSocket);
-                //while (true)
-                //{
+                
+                
+                for (int i = 0; i<5; i++)
+                {
+                    sendRequest();
+                    Thread.Sleep(1000);
+                }
                 sendRequest();
-                //}
+                
             } 
             catch (Exception e)
             {

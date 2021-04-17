@@ -12,10 +12,13 @@ namespace Networking
     public class Server
     {
         private static readonly Socket serverSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-        private static readonly List<Socket> clientSockets = new List<Socket>(); //serves to store all sockets
+        private static Dictionary<Socket, PlayerData> socketPlayerData = new Dictionary<Socket, PlayerData>();  //serves to store all sockets
+        // private static readonly List<Socket> clientSockets = new List<Socket>(); //serves to store all sockets
         private const int BUFFER_SIZE = 2048;
         private const int PORT = 50042; //freely selectable
         private static readonly byte[] buffer = new byte[BUFFER_SIZE];
+        
+        private static Stack<Color> playerColors = new Stack<Color>();
         
         
         /// <summary>
@@ -24,6 +27,11 @@ namespace Networking
         public static bool setupServer()
         {
             Boolean isRunning = false;
+            playerColors.Push(Color.red);
+            playerColors.Push(Color.green);
+            playerColors.Push(Color.blue);
+            playerColors.Push(Color.yellow);
+            
             //Console.Title = "Game Server";
             Debug.Log("Server: Setting up Server...");
             try
@@ -68,9 +76,12 @@ namespace Networking
                 return;
             }
             
-            clientSockets.Add(clientSocket); //save client to socket list
+            socketPlayerData.Add(clientSocket, null); //save client to socket list
+            // clientSockets.Add(clientSocket); 
             clientSocket.BeginReceive(buffer, 0, BUFFER_SIZE, SocketFlags.None, ReceiveCallback, clientSocket); // open "chanel" to recieve data from the connected socket
             Debug.Log($"Server: Client {clientSocket.RemoteEndPoint} connected, waiting for request...");
+            RepresentJoinigClients.representNewPlayer();
+            
             serverSocket.BeginAccept(AcceptCallback, null); //begins waiting for client connection attempts
         }
 
@@ -92,7 +103,7 @@ namespace Networking
             {
                 Debug.Log("Server: Client forcefully disconnected");
                 currentClientSocket.Close();
-                clientSockets.Remove(currentClientSocket);
+                socketPlayerData.Remove(currentClientSocket);
                 //todo: reestablish connection
                 return;
             }
@@ -102,10 +113,11 @@ namespace Networking
             string incomingDataString = Encoding.ASCII.GetString(currentBuffer);
             Debug.Log("Server: Received Text: " + incomingDataString);
             //todo: handle incomingDataString
+            //TODO: trigger gui to display new player and add PlayerData to Dictionary
             
             if (incomingDataString.ToLower().Equals("get status"))
             {
-                string dataString = $"Current status: \n connected clients: {clientSockets.Count} \n current buffer size: {BUFFER_SIZE}";
+                string dataString = $"Current status: \n connected clients: {socketPlayerData.Count} \n current buffer size: {BUFFER_SIZE}";
                 byte[] dataToSend = Encoding.ASCII.GetBytes(dataString);
                 currentClientSocket.Send(dataToSend);
                 Debug.Log("Server: Current status was requested and sent.");
@@ -114,7 +126,7 @@ namespace Networking
                 // Always Shutdown before closing
                 currentClientSocket.Shutdown(SocketShutdown.Both);
                 currentClientSocket.Close();
-                clientSockets.Remove(currentClientSocket);
+                socketPlayerData.Remove(currentClientSocket);
                 Debug.Log("Server: Client disconnected");
                 return;
             }
@@ -123,7 +135,7 @@ namespace Networking
                 Debug.Log($"Server: Echoing text: {incomingDataString}");
                 byte[] dataToSend = Encoding.ASCII.GetBytes(incomingDataString);
                 
-                foreach (Socket s in clientSockets)
+                foreach (Socket s in socketPlayerData.Keys)
                 {
                     s.Send(dataToSend);
                 }
@@ -155,17 +167,33 @@ namespace Networking
         }
 
 
-
         /// <summary>
         /// needs to be called at the end of the session to close all connected Sockets and the serverSocket
         /// </summary>
         private static void closeAllSockets() {
-            foreach (Socket socket in clientSockets) {
+            foreach (Socket socket in socketPlayerData.Keys) {
                 socket.Shutdown(SocketShutdown.Both);
                 socket.Close();
             }
             //todo: maybe serversocket.BeginDisconnect() ?
             serverSocket.Close();
+        }
+        
+        
+        private class PlayerData
+        {
+            private Socket playerSocket {get;}
+            private string playerName {get;}
+            private Color color {get;}
+            private int id {get;}
+
+            public PlayerData(Socket playerSocket, string playerName, int id)
+            {
+                this.playerSocket = playerSocket;
+                this.playerName = playerName;
+                this.color = playerColors.Pop();
+                this.id = id;
+            }
         }
     }
 }

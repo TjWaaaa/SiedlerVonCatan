@@ -5,6 +5,7 @@ using System.Net;
 using System.Threading;
 using Networking;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class JoinHostKlickListener : MonoBehaviour
@@ -24,8 +25,12 @@ public class JoinHostKlickListener : MonoBehaviour
         Debug.Log("playerName: " + playerName);
         Debug.Log("hostIp: " + hostIp);
 
-        
-        Client.initClient(hostIp);
+        Thread clientThread = new Thread(() =>
+        {
+            Client.initClient(hostIp);
+        });
+        clientThread.Start();
+        SceneManager.LoadScene("Scenes/Lobby");
     }
 
 
@@ -38,6 +43,7 @@ public class JoinHostKlickListener : MonoBehaviour
     public void hostListener()
     {
         bool isRunning = Server.setupServer(); //host server
+        string playerName = GameObject.Find("Canvas/InputField_playerName").GetComponent<InputField>().text;
         Debug.Log("hosting game...");
 
         if (isRunning)
@@ -51,6 +57,7 @@ public class JoinHostKlickListener : MonoBehaviour
 
             Client.initClient(serverIPEndpoint.Address.ToString()); //join hosted game as client
             Debug.Log("Host: hostIp: " + serverIPEndpoint.Address);
+            SceneManager.LoadScene("Scenes/Lobby");
         }
     }
 }
