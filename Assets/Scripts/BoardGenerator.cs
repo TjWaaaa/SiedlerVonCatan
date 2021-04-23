@@ -6,11 +6,9 @@ using UnityEngine;
 public class BoardGenerator : MonoBehaviour
 {
 
-    public GameObject Board;
+    public GameObject board;
     
     public GameObject robber;
-    
-    public GameObject[] hexagons;
 
     public int[,] gameboardConfig =
     {
@@ -45,8 +43,7 @@ public class BoardGenerator : MonoBehaviour
     private Stack<int> randomNumStack;
     private Stack<GameObject> randomPortHexStack;
 
-    private GameObject[] buildingSlotArrayVillage;
-    private GameObject[] buildingSlotArrayRoad;
+    GameObject buildingSlotsVillage;
 
     private const float r = 0.866f;
     private const float a = 1f;
@@ -58,13 +55,19 @@ public class BoardGenerator : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        initializeRandomHexagons();
-        initializeRandomPortHexagons();
-        initializeRandomNumbers();
+        buildingSlotsVillage = GameObject.Find("BuildingSlotsVillage");
 
-        instantiateBuildingSlots();
+        randomHexStack = initializeRandomHexagons();
+        randomPortHexStack = initializeRandomPortHexagons();
+        randomNumStack = initializeRandomNumbers();
+
+        placeHexagons();
         
+        //place robber
+        Instantiate(robber, hexagonPrefabDesert.transform.position, Quaternion.identity);
+    }
 
+    private void placeHexagons() {
         for (int z = 0; z < gameboardConfig.GetLength(0); z++)
         {
             for (int x = 0; x < gameboardConfig.GetLength(1); x++)
@@ -90,14 +93,13 @@ public class BoardGenerator : MonoBehaviour
                 if (z % 2 == 0)
                 {
                     newHexagon = Instantiate(whatHexagon, new Vector3(x * s, 0, z / 2f * (d + a)), Rotation(currentConfig, z, x));
+                    newHexagon.transform.parent = board.transform;
                 }
                 else
                 {
                     newHexagon = Instantiate(whatHexagon, new Vector3(x * s + r, 0, (z - 1) / 2f * (d + a) + offset), Rotation(currentConfig, z, x));
+                    newHexagon.transform.parent = board.transform;
                 }
-
-
-                newHexagon.transform.parent = Board.transform;
                 
                 // change hexagon numbers
                 if (currentConfig == 2) {
@@ -111,15 +113,30 @@ public class BoardGenerator : MonoBehaviour
                 {
                     whatHexagon.transform.position = newHexagon.transform.position;
                 }
-                
+
+                List<GameObject> neighboringVillages = findNeighboringVillageSlots(newHexagon);
+                newHexagon.GetComponent<Hexagon>().setNeighboringVillageSlots(neighboringVillages);
             }
         }
-        
-        //robber
-        Instantiate(robber, hexagonPrefabDesert.transform.position, Quaternion.identity);
     }
 
-    Quaternion Rotation(int currentConfig, int z, int x)
+    private List<GameObject> findNeighboringVillageSlots(GameObject hexagon) {
+
+        Vector3 currentPos = hexagon.transform.position;
+        List<GameObject> neighbors = new List<GameObject>();
+
+        foreach (Transform village in buildingSlotsVillage.transform) {
+            
+            float dist = Vector3.Distance(village.transform.position, currentPos);
+            if (dist < 1.2f) {
+                neighbors.Add(village.gameObject);
+                village.GetComponent<Village>().addNeighboringHexagon(hexagon);
+            }
+        }
+        return neighbors;
+    }
+
+    private Quaternion Rotation(int currentConfig, int z, int x)
     {
         //Ports need to be rotated
         if (currentConfig == 4)
@@ -141,7 +158,7 @@ public class BoardGenerator : MonoBehaviour
         return Quaternion.identity;
     }
 
-    void initializeRandomHexagons()
+    private Stack<GameObject> initializeRandomHexagons()
     {
         GameObject[] randomHexArray = new[]
         {
@@ -152,10 +169,10 @@ public class BoardGenerator : MonoBehaviour
             hexagonPrefabWood, hexagonPrefabWood, hexagonPrefabWood, hexagonPrefabWood,
         };
 
-        randomHexStack = new Stack<GameObject>(randomHexArray.OrderBy(n => Guid.NewGuid()).ToArray());
+        return new Stack<GameObject>(randomHexArray.OrderBy(n => Guid.NewGuid()).ToArray());
     }
-    
-    void initializeRandomPortHexagons()
+
+    private Stack<GameObject> initializeRandomPortHexagons()
     {
         GameObject[] randomHexArray = new[]
         {
@@ -167,14 +184,14 @@ public class BoardGenerator : MonoBehaviour
             hexagonPrefabWoodPort
         };
 
-        randomPortHexStack = new Stack<GameObject>(randomHexArray.OrderBy(n => Guid.NewGuid()).ToArray());
+        return new Stack<GameObject>(randomHexArray.OrderBy(n => Guid.NewGuid()).ToArray());
     }
 
-    void initializeRandomNumbers()
+    private Stack<int> initializeRandomNumbers()
     {
         int[] randomNumArray = new[] {2, 3, 3, 4, 4, 5, 5, 6, 6, 8, 8, 9, 9, 10, 10, 11, 11, 12};
 
-        randomNumStack = new Stack<int>(randomNumArray.OrderBy(n => Guid.NewGuid()).ToArray());
+        return new Stack<int>(randomNumArray.OrderBy(n => Guid.NewGuid()).ToArray());
     }
     
     private GameObject getNextRandomHexagon()
@@ -190,57 +207,5 @@ public class BoardGenerator : MonoBehaviour
     private int getNextRandomNumber()
     {
         return randomNumStack.Pop();
-    }
-
-    private void instantiateBuildingSlots() {
-
-        buildingSlotArrayVillage = new GameObject[54];
-
-        int[] config = {3, 4, 4, 5, 5, 6, 6, 5, 5, 4, 4, 3};
-        float offsetX = 4.3301f;
-        float offsetY = 0.5f;
-        int objCount = 0;
-
-        for (int i = 0; i < config.Length; i++) {
-
-            for (int j = 0; j < config[i]; j++) {
-
-                buildingSlotArrayVillage[objCount] = Instantiate(buildingSlotVillage, new Vector3(j * s + offsetX, 0, offsetY), Quaternion.identity);
-                objCount++;
-            }
-
-            if (i % 2 == 0) {
-                offsetY += 0.5f;
-
-                if (i < config.Length / 2) {
-                    offsetX -= 0.86605f;
-                }
-                else {
-                    offsetX += 0.86605f;
-                }
-            }
-            else {
-                offsetY += 1;
-            }
-        }
-
-        foreach (GameObject go in buildingSlotArrayVillage) {
-
-            GameObject[] neighbors = new GameObject[3];
-            int arrayPos = 0;
-
-            Vector3 currentPos = go.transform.position;
-            Debug.Log(currentPos);
-            foreach (GameObject possibleNeighbor in buildingSlotArrayVillage) {
-
-                float dist = Vector3.Distance(possibleNeighbor.transform.position, currentPos);
-                if (dist < 1.2f && go != possibleNeighbor) {
-                    neighbors[arrayPos] = possibleNeighbor;
-                    arrayPos++;
-                }
-            }
-
-            go.GetComponent<ObjectNeighbors>().SetNeighborVillageSlots(neighbors);
-        }
     }
 }

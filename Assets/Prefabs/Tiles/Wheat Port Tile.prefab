@@ -90,6 +90,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 103265837878864773}
+  - component: {fileID: -1154192631164530066}
   m_Layer: 0
   m_Name: Wheat Port Tile
   m_TagString: Untagged
@@ -114,6 +115,19 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &-1154192631164530066
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 731007106421076287}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c5af3f9c1e4ea3f4dae4f45ee3234232, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  neighboringVillageSlots: []
 --- !u!1 &8431018874094560020
 GameObject:
   m_ObjectHideFlags: 0

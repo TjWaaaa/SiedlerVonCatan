@@ -11,8 +11,6 @@ public class GameController : MonoBehaviour
 
     private int currentPlayer;
 
-    private Builder builder;
-
     public GameObject bricksText;
     public GameObject oreText;
     public GameObject sheepText;
