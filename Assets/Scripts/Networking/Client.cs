@@ -25,16 +25,16 @@ namespace Networking
                 connectToServer(ipAddress);
                 clientSocket.BeginReceive(buffer, 0, BUFFER_SIZE, SocketFlags.None, receiveCallback, clientSocket);
 
-                Thread sendThread = new Thread(() =>
-                {
-                    for (int i = 0; i < 5; i++)
-                    {
-                        sendRequest();
-                        Thread.Sleep(1000);
-                    }
-                    
-                });
-                sendThread.Start();
+                // Thread sendThread = new Thread(() =>
+                // {
+                //     for (int i = 0; i < 5; i++)
+                //     {
+                //         sendRequest();
+                //         Thread.Sleep(1000);
+                //     }
+                //     
+                // });
+                // sendThread.Start();
 
             } 
             catch (Exception e)
@@ -59,8 +59,7 @@ namespace Networking
             //string ipAddress = Console.ReadLine();
             //string ipAddress = "127.0.0.1";
             
-            //TODO: dont let the client end up in an endless connection loop trying to connect to the wrong address (attempts limit? + exception)
-            while(!clientSocket.Connected) {
+            while(!clientSocket.Connected && attempts < 5) {
                 try
                 {
                     attempts++;
@@ -69,11 +68,16 @@ namespace Networking
                 }
                 catch (SocketException)
                 {
-                    Console.Clear();
+                    Debug.Log("Client: Connection Error");
                 }
-            } 
+            }
+
+            if (attempts >= 5)
+            {
+                Debug.Log("Client: Failed connecting to Server!");
+                return false;
+            }
             
-            //Console.Clear();
             Debug.Log("Client: Connected");
             return true;
         }
@@ -82,16 +86,14 @@ namespace Networking
         /// <summary>
         /// Sends a request to the server
         /// </summary>
-        private static void sendRequest()
+        public static void sendRequest(string request)
         {
-            Debug.Log("Client: Send a request: (Hallo Welt)");
-            //string request = Console.ReadLine();
-            string request = "Hallo Welt!";
-            
+            Debug.Log("Client: Sending a request");
+
             byte[] buffer = Encoding.ASCII.GetBytes(request);
             clientSocket.BeginSend(buffer, 0, buffer.Length, SocketFlags.None, sendCallback, clientSocket);
             
-            //TODO: send game data and messages -> may send JSON
+            //TODO: send game data and messages
         }
 
         

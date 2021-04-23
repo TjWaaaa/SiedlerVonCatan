@@ -80,11 +80,13 @@ namespace Networking
             // clientSockets.Add(clientSocket); 
             clientSocket.BeginReceive(buffer, 0, BUFFER_SIZE, SocketFlags.None, ReceiveCallback, clientSocket); // open "chanel" to recieve data from the connected socket
             Debug.Log($"Server: Client {clientSocket.RemoteEndPoint} connected, waiting for request...");
+            
             RepresentJoinigClients.representNewPlayer();
             
             serverSocket.BeginAccept(AcceptCallback, null); //begins waiting for client connection attempts
         }
 
+        
         /// <summary>
         /// Callback method is called when the server has finished sending data.
         /// </summary>
@@ -120,7 +122,8 @@ namespace Networking
             byte[] currentBuffer = new byte[recievedByteLengh];
             Array.Copy(buffer, currentBuffer, recievedByteLengh); //to remove the protruding zeros from buffer
             string incomingDataString = Encoding.ASCII.GetString(currentBuffer);
-            Debug.Log("Server: Received Text: " + incomingDataString);
+            Debug.Log($"Server: Received Text (from {currentClientSocket.LocalEndPoint}): " + incomingDataString);
+            
             //todo: handle incomingDataString
             //TODO: trigger gui to display new player and add PlayerData to Dictionary
             

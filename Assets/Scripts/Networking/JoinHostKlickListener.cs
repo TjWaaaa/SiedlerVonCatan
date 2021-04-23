@@ -10,7 +10,6 @@ using UnityEngine.UI;
 
 public class JoinHostKlickListener : MonoBehaviour
 {
-    
     //TODO: mover methods private and in the start method use gameObject.transform / gameobject.name .... to get the current button and add the listener
 
     /// <summary>
@@ -19,18 +18,28 @@ public class JoinHostKlickListener : MonoBehaviour
     public void joinListener()
     {
         string playerName = GameObject.Find("Canvas/InputField_playerName").GetComponent<InputField>().text;
-        string hostIp = GameObject.Find("Canvas/InputField_hostIP").GetComponent<InputField>().text == "" ? "127.0.0.1" : GameObject.Find("Canvas/InputField_hostIP").GetComponent<InputField>().text;
+        string hostIp = GameObject.Find("Canvas/InputField_hostIP").GetComponent<InputField>().text == ""
+            ? "127.0.0.1"
+            : GameObject.Find("Canvas/InputField_hostIP").GetComponent<InputField>().text;
+        SendableGameInformation gameInformation = new SendableGameInformation(playerName);
 
         Debug.Log("joining game...");
         Debug.Log("playerName: " + playerName);
         Debug.Log("hostIp: " + hostIp);
 
-        Thread clientThread = new Thread(() =>
+        bool initComplete = Client.initClient(hostIp);
+
+        if (initComplete)
         {
-            Client.initClient(hostIp);
-        });
-        clientThread.Start();
-        SceneManager.LoadScene("Scenes/Lobby");
+            Client.sendRequest(gameInformation.objectToJsonString());
+            Debug.Log(gameInformation.objectToJsonString()); //send playerName to host
+
+            SceneManager.LoadScene("Scenes/Lobby");
+        }
+        else
+        {
+            Debug.Log("Client init failed!");
+        }
     }
 
 
@@ -44,6 +53,8 @@ public class JoinHostKlickListener : MonoBehaviour
     {
         bool isRunning = Server.setupServer(); //host server
         string playerName = GameObject.Find("Canvas/InputField_playerName").GetComponent<InputField>().text;
+        SendableGameInformation gameInformation = new SendableGameInformation(playerName);
+
         Debug.Log("hosting game...");
 
         if (isRunning)
@@ -55,7 +66,14 @@ public class JoinHostKlickListener : MonoBehaviour
                 throw new Exception("serverIPEndpoint is null!");
             }
 
-            Client.initClient(serverIPEndpoint.Address.ToString()); //join hosted game as client
+
+            bool initComplete = Client.initClient(serverIPEndpoint.Address.ToString()); //join hosted game as client
+
+            if (initComplete)
+            {
+                Client.sendRequest(gameInformation.objectToJsonString()); //send playerName to host
+            }
+
             Debug.Log("Host: hostIp: " + serverIPEndpoint.Address);
             SceneManager.LoadScene("Scenes/Lobby");
         }
