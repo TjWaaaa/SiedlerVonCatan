@@ -7,9 +7,9 @@ public class GameController : MonoBehaviour
 {
     public GameObject showCurrentPlayer;
 
-    private Player[] players;
+    private static Player[] players;
 
-    private int currentPlayer;
+    private static int currentPlayer;
 
     private Builder builder;
 
@@ -206,5 +206,15 @@ public class GameController : MonoBehaviour
         sheepText.GetComponent<Text>().text = player.GetSheep().ToString();
         wheatText.GetComponent<Text>().text = player.GetWheat().ToString();
         woodText.GetComponent<Text>().text = player.GetWood().ToString();
+    }
+
+    public static int getCurrentPlayer()
+    {
+        return currentPlayer;
+    }
+
+    public static Player[] getPlayers()
+    {
+        return players;
     }
 }

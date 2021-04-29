@@ -1,5 +1,7 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using Resource;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -64,5 +66,11 @@ public class Player
     }
     public int GetWood() {
         return wood;
+    }
+
+    public Boolean canTrade(Resource.RESOURCE resource)
+    {
+        return true;
+        //should only return true if there are at least 4
     }
 }
