@@ -151,7 +151,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 3
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1008377852
 GameObject:
@@ -270,15 +270,15 @@ MonoBehaviour:
   hexagons: []
   hexagonPrefabDesert: {fileID: 6508597519919048975, guid: 05ec836d732799548acc318d77e77a74, type: 3}
   hexagonPrefabBrick: {fileID: 6211165981206033278, guid: fca051b7163a2da4d98310fefad7ae70, type: 3}
-  hexagonPrefabOre: {fileID: 8746353831194564319, guid: c5a894389c1fc484298c9b93986e4b41, type: 3}
+  hexagonPrefabOre: {fileID: 8794657715075769465, guid: f857c2a2927ebdc47b7af61ab70e2d7b, type: 3}
   hexagonPrefabSheep: {fileID: 8268024257040498276, guid: a3f418763b143de4fbcc1f9bfae855e8, type: 3}
   hexagonPrefabWheat: {fileID: 2019539557075879886, guid: eb7812d98cdcda84cac833633573279c, type: 3}
   hexagonPrefabWood: {fileID: 1127359280143836278, guid: 665eb9dc4e71eba49853945154743a65, type: 3}
-  hexagonPrefabWater: {fileID: 4018798767855067141, guid: d60fc047b1ad17c4e8e9934211b98799, type: 3}
+  hexagonPrefabWater: {fileID: 919132149155446097, guid: c6520c6831d55eb4d95ea3db31392b0b, type: 3}
   hexagonPrefabRandomPort: {fileID: 5478014225434598740, guid: 36dab3f20d5d44349b60911c4fe51346, type: 3}
   hexagonPrefabBrickPort: {fileID: 3195112816243981295, guid: 2950ab60343e8a940970d60b3cfeadcc, type: 3}
   hexagonPrefabOrePort: {fileID: 2234845437722222054, guid: 56370aab777a1564f9a15f1af85a3320, type: 3}
-  hexagonPrefabSheepPort: {fileID: 6576646755619773130, guid: fdcbc63530786254db500ae8843251f4, type: 3}
+  hexagonPrefabSheepPort: {fileID: 6697110557705396690, guid: 7b85e179321198b4d848f2014052b4f2, type: 3}
   hexagonPrefabWheatPort: {fileID: 731007106421076287, guid: d2b83b1f8e3dedb4598ad7e3e0393a07, type: 3}
   hexagonPrefabWoodPort: {fileID: 1476441484969098016, guid: 29b82ad3469d0234b8f2d6cf186bd634, type: 3}
 --- !u!4 &1028286620
@@ -293,7 +293,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 2
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1798783446
 GameObject:
@@ -386,5 +386,62 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 1
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 50, y: -30, z: 0}
+--- !u!1001 &5338038335895730323
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 6321710537209822056, guid: 7b85e179321198b4d848f2014052b4f2, type: 3}
+      propertyPath: m_RootOrder
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6321710537209822056, guid: 7b85e179321198b4d848f2014052b4f2, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6321710537209822056, guid: 7b85e179321198b4d848f2014052b4f2, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6321710537209822056, guid: 7b85e179321198b4d848f2014052b4f2, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6321710537209822056, guid: 7b85e179321198b4d848f2014052b4f2, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: -0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 6321710537209822056, guid: 7b85e179321198b4d848f2014052b4f2, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6321710537209822056, guid: 7b85e179321198b4d848f2014052b4f2, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0.8660254
+      objectReference: {fileID: 0}
+    - target: {fileID: 6321710537209822056, guid: 7b85e179321198b4d848f2014052b4f2, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6321710537209822056, guid: 7b85e179321198b4d848f2014052b4f2, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6321710537209822056, guid: 7b85e179321198b4d848f2014052b4f2, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 240
+      objectReference: {fileID: 0}
+    - target: {fileID: 6321710537209822056, guid: 7b85e179321198b4d848f2014052b4f2, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6697110557705396690, guid: 7b85e179321198b4d848f2014052b4f2, type: 3}
+      propertyPath: m_Name
+      value: sheepPort
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 7b85e179321198b4d848f2014052b4f2, type: 3}
