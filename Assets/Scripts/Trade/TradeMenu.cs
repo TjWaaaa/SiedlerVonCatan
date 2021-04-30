@@ -25,7 +25,7 @@ namespace Trade
         void Start()
         {
             
-            //Find all buttons and add EventListener
+            // Find all buttons and add EventListener
             startTradeButton = GameObject.Find("startTrade");
             closeTradeButton = GameObject.Find("closeTrade");
             trade = GameObject.Find("trade");
@@ -38,7 +38,7 @@ namespace Trade
             foreach (GameObject button in giveResources) { button.GetComponent<Button>().onClick.AddListener(delegate { giveResource(button); }); }
             foreach (GameObject button in getResources) { button.GetComponent<Button>().onClick.AddListener(delegate { getResource(button); }); }
 
-            //Inactive by default
+            // Inactive by default
             gameObject.SetActive(false);
             active = false;
 
@@ -46,11 +46,11 @@ namespace Trade
 
         private void Update()
         {
-            //only for now. Later there should be a better way to get the currentPlayer
+            // Only for now. Later there should be a better way to get the currentPlayer
             currentPlayer = GameController.getPlayers()[GameController.getCurrentPlayer()];
         }
 
-        //When the buttons on the left side are clicked -> the resource the player wants to give away
+        // When the buttons on the left side are clicked -> the resource the player wants to give away
         void giveResource(GameObject button)
         {
             
@@ -61,7 +61,7 @@ namespace Trade
             
         }
         
-        //When the buttons on the right side are clicked -> th resource the player wants to get
+        // When the buttons on the right side are clicked -> th resource the player wants to get
         void getResource(GameObject button)
         {
             button.GetComponent<TradeButton>().clickButton();
@@ -78,7 +78,7 @@ namespace Trade
             setInactive();
         }
 
-        //this method works, but it isn't instantly visible in the UI
+        // This method works, but it isn't instantly visible in the UI
         void tryTrade()
         {
             if (TradeButton.isValidTradeRequest())
@@ -103,7 +103,7 @@ namespace Trade
 
         }
         
-        //Todo: sending this request to server
+        // Todo: sending this request to server
         Boolean requestTradeBank(RESOURCE giveResource, RESOURCE getResource)
         {
             Debug.Log(currentPlayer+" wants to trade 4 " + giveResource + " against 1 " + getResource);
