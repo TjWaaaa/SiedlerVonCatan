@@ -1,5 +1,8 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Data;
+using Resource;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -10,14 +13,19 @@ public class Player
 
     private int points;
 
-    private int bricks;
-    private int ore;
-    private int sheep;
-    private int wheat;
-    private int wood;
+    private Dictionary<RESOURCE, int> resources = new Dictionary<RESOURCE, int>
+    {
+        {RESOURCE.SHEEP, 0},
+        {RESOURCE.ORE, 0},
+        {RESOURCE.BRICK, 0},
+        {RESOURCE.WOOD, 0},
+        {RESOURCE.WHEAT,0}
 
-    public Player(string name, Color color) {
-        this.playerName = name;
+    }; 
+    
+    
+    public Player(string playerName, Color color) {
+        this.playerName = playerName;
         this.color = color;
     }
 
@@ -29,40 +37,80 @@ public class Player
         return playerName;
     }
 
-    public void SetBricks(int amount) {
-        bricks = amount;
-        //bricksText.GetComponent<Text>().text = amount.ToString();
-    }
-    public void SetOre(int amount) {
-        ore = amount;
-        //oreText.GetComponent<Text>().text = amount.ToString();
-    }
-    public void SetSheep(int amount) {
-        sheep = amount;
-        //sheepText.GetComponent<Text>().text = amount.ToString();
-    }
-    public void SetWheat(int amount) {
-        wheat = amount;
-        //wheatText.GetComponent<Text>().text = amount.ToString();
-    }
-    public void SetWood(int amount) {
-        wood = amount;
-        //woodText.GetComponent<Text>().text = amount.ToString();
+    public void setResourceAmount(RESOURCE resource, int amount)
+    {
+        resources[resource] += amount;
     }
 
-    public int GetBricks() {
-        return bricks;
+    public int getResourceAmount(RESOURCE resource)
+    {
+        return resources[resource];
     }
-    public int GetOre() {
-        return ore;
+    
+    
+
+    public Boolean canTrade(RESOURCE resource)
+    {
+        if (resources[resource] >= 4)
+        {
+            return true;
+        }
+        else
+        {
+            Debug.Log("only " + resources[resource] + " of " + resource);
+            return false;
+        }
+
+        //should only return true if there are at least 4
     }
-    public int GetSheep() {
-        return sheep;
+
+    public void trade(RESOURCE giveResource, RESOURCE getResource)
+    {
+        resources[giveResource] -= 4;
+        resources[getResource] += 1;
     }
-    public int GetWheat() {
-        return wheat;
+
+    public Boolean canBuildStreet()
+    {
+        if (resources[RESOURCE.BRICK] >= 1 && resources[RESOURCE.WOOD] >= 1) return true;
+        else return false;
     }
-    public int GetWood() {
-        return wood;
+
+    public Boolean canBuildVillage()
+    {
+        if (resources[RESOURCE.BRICK] >= 1
+            && resources[RESOURCE.WOOD] >= 1
+            && resources[RESOURCE.SHEEP] >= 1
+            && resources[RESOURCE.WHEAT] >= 1)
+        {return true;}
+        else return false;
+    }
+
+    public Boolean canBuildCity()
+    {
+        if (resources[RESOURCE.ORE] >= 3
+            && resources[RESOURCE.WHEAT] >= 2)
+            return true;
+        else return false;
+    }
+
+    public void buyStreet()
+    {
+        resources[RESOURCE.BRICK] -= 1;
+        resources[RESOURCE.WOOD] -= 1;
+    }
+    
+    public void buyVillage()
+    {
+        resources[RESOURCE.BRICK] -= 1;
+        resources[RESOURCE.WOOD] -= 1;
+        resources[RESOURCE.SHEEP] -= 1;
+        resources[RESOURCE.WHEAT] -= 1;
+    }
+    
+    public void buyCity()
+    {
+        resources[RESOURCE.ORE] -= 3;
+        resources[RESOURCE.WHEAT] -= 2;
     }
 }
