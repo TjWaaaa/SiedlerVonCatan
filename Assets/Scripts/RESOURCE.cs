@@ -2,6 +2,6 @@
 {
     public enum RESOURCE
     {
-        SHEEP, WOOD, BRICK, ORE, WHEAT
+        SHEEP, WOOD, BRICK, ORE, WHEAT, NONE
     }
 }
