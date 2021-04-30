@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Networking
 {
-    public class NetworkableClientExample // : NetworkableClient
+    public class NetworkableClientExample// : INetworkableClient
     {
         public static void Main()
         {
@@ -12,7 +12,7 @@ namespace Networking
             net.requestRollDice(test, test);
         }
 
-        public void requestRollDice(NetworkableClient.acceptCallback acceptCallback, NetworkableClient.rejectCallback rejectCallback)
+        public void requestRollDice(INetworkableClient.acceptCallback acceptCallback, INetworkableClient.rejectCallback rejectCallback)
         {
             //Client.sendRequest("gib mir Würfel");
 
@@ -33,7 +33,7 @@ namespace Networking
         //     }
         // }
 
-        public static void test(IAsyncResult ar)
+        public static void test(object ar)
         {
             Debug.Log("Würfeln erfolgreich");
             

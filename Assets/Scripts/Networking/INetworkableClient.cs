@@ -2,15 +2,15 @@ using System;
 
 namespace Networking
 {
-    public interface NetworkableClient
+    public interface INetworkableClient
     {
-        public delegate void acceptCallback(IAsyncResult acceptPromise);
+        public delegate void acceptCallback(object acceptResult);
 
-        public delegate void rejectCallback(IAsyncResult rejectPromise);
+        public delegate void rejectCallback(object acceptResult);
 
 
-        // Phase: 1 (Raw material yields)
-        public void requestRollDice(acceptCallback acceptCallback, rejectCallback rejectCallback);
+        // Phase: 1 (roll dice + Raw material yields + what ever happens here ...)
+        public void requestBeginRound(acceptCallback acceptCallback, rejectCallback rejectCallback);
         
         // Phase: 2 (trade)
         public void requestTradeBank(acceptCallback acceptCallback, rejectCallback rejectCallback);
