@@ -42,7 +42,11 @@ public class GameLoop : MonoBehaviour
             }
 
         // PlayerLoop down placing village + road
+<<<<<<< Updated upstream
         for (int i=players.Length ; i< players.Length ; i++)
+=======
+        for (int i=players.Length ; i >= 0; i--)
+>>>>>>> Stashed changes
             {
                 placeFirstPieces(players[i]);
             }
