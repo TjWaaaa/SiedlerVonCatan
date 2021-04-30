@@ -2,7 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Data;
-using Resource;
+using ResourceType;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -13,43 +13,46 @@ public class Player
 
     private int points;
 
-    private Dictionary<RESOURCE, int> resources = new Dictionary<RESOURCE, int>
+    private Dictionary<RESOURCETYPE, int> resources = new Dictionary<RESOURCETYPE, int>
     {
-        {RESOURCE.SHEEP, 0},
-        {RESOURCE.ORE, 0},
-        {RESOURCE.BRICK, 0},
-        {RESOURCE.WOOD, 0},
-        {RESOURCE.WHEAT,0}
+        {RESOURCETYPE.SHEEP, 0},
+        {RESOURCETYPE.ORE, 0},
+        {RESOURCETYPE.BRICK, 0},
+        {RESOURCETYPE.WOOD, 0},
+        {RESOURCETYPE.WHEAT,0}
 
-    }; 
-    
-    
-    public Player(string playerName, Color color) {
+    };
+
+
+    public Player(string playerName, Color color)
+    {
         this.playerName = playerName;
         this.color = color;
     }
 
-    public Color GetColor() {
+    public Color GetColor()
+    {
         return color;
     }
 
-    public string GetName() {
+    public string GetName()
+    {
         return playerName;
     }
 
-    public void setResourceAmount(RESOURCE resource, int amount)
+    public void setResourceAmount(RESOURCETYPE resource, int amount)
     {
         resources[resource] += amount;
     }
 
-    public int getResourceAmount(RESOURCE resource)
+    public int getResourceAmount(RESOURCETYPE resource)
     {
         return resources[resource];
     }
-    
-    
 
-    public Boolean canTrade(RESOURCE resource)
+
+
+    public Boolean canTrade(RESOURCETYPE resource)
     {
         if (resources[resource] >= 4)
         {
@@ -64,7 +67,7 @@ public class Player
         //should only return true if there are at least 4
     }
 
-    public void trade(RESOURCE giveResource, RESOURCE getResource)
+    public void trade(RESOURCETYPE giveResource, RESOURCETYPE getResource)
     {
         resources[giveResource] -= 4;
         resources[getResource] += 1;
@@ -72,45 +75,45 @@ public class Player
 
     public Boolean canBuildStreet()
     {
-        if (resources[RESOURCE.BRICK] >= 1 && resources[RESOURCE.WOOD] >= 1) return true;
+        if (resources[RESOURCETYPE.BRICK] >= 1 && resources[RESOURCETYPE.WOOD] >= 1) return true;
         else return false;
     }
 
     public Boolean canBuildVillage()
     {
-        if (resources[RESOURCE.BRICK] >= 1
-            && resources[RESOURCE.WOOD] >= 1
-            && resources[RESOURCE.SHEEP] >= 1
-            && resources[RESOURCE.WHEAT] >= 1)
-        {return true;}
+        if (resources[RESOURCETYPE.BRICK] >= 1
+            && resources[RESOURCETYPE.WOOD] >= 1
+            && resources[RESOURCETYPE.SHEEP] >= 1
+            && resources[RESOURCETYPE.WHEAT] >= 1)
+        { return true; }
         else return false;
     }
 
     public Boolean canBuildCity()
     {
-        if (resources[RESOURCE.ORE] >= 3
-            && resources[RESOURCE.WHEAT] >= 2)
+        if (resources[RESOURCETYPE.ORE] >= 3
+            && resources[RESOURCETYPE.WHEAT] >= 2)
             return true;
         else return false;
     }
 
     public void buyStreet()
     {
-        resources[RESOURCE.BRICK] -= 1;
-        resources[RESOURCE.WOOD] -= 1;
+        resources[RESOURCETYPE.BRICK] -= 1;
+        resources[RESOURCETYPE.WOOD] -= 1;
     }
-    
+
     public void buyVillage()
     {
-        resources[RESOURCE.BRICK] -= 1;
-        resources[RESOURCE.WOOD] -= 1;
-        resources[RESOURCE.SHEEP] -= 1;
-        resources[RESOURCE.WHEAT] -= 1;
+        resources[RESOURCETYPE.BRICK] -= 1;
+        resources[RESOURCETYPE.WOOD] -= 1;
+        resources[RESOURCETYPE.SHEEP] -= 1;
+        resources[RESOURCETYPE.WHEAT] -= 1;
     }
-    
+
     public void buyCity()
     {
-        resources[RESOURCE.ORE] -= 3;
-        resources[RESOURCE.WHEAT] -= 2;
+        resources[RESOURCETYPE.ORE] -= 3;
+        resources[RESOURCETYPE.WHEAT] -= 2;
     }
 }

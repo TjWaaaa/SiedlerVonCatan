@@ -2,9 +2,8 @@
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
-using UnityEngine;
 using UnityEngine.UI;
-using Resource;
+using ResourceType;
 
 namespace Trade
 {
@@ -12,7 +11,7 @@ namespace Trade
     {
         //is needed right now, there should be a better solution later
         private Player currentPlayer;
-        
+
         private GameObject startTradeButton;
         private GameObject closeTradeButton;
         private GameObject trade;
@@ -21,10 +20,10 @@ namespace Trade
         private GameObject[] getResources = new GameObject[5];
 
         private static Boolean active;
-        
+
         void Start()
         {
-            
+
             //Find all buttons and add EventListener
             startTradeButton = GameObject.Find("startTrade");
             closeTradeButton = GameObject.Find("closeTrade");
@@ -32,7 +31,7 @@ namespace Trade
             startTradeButton.GetComponent<Button>().onClick.AddListener(startTrade);
             closeTradeButton.GetComponent<Button>().onClick.AddListener(closeTrade);
             trade.GetComponent<Button>().onClick.AddListener(tryTrade);
-            
+
             giveResources = GameObject.FindGameObjectsWithTag("giveResource");
             getResources = GameObject.FindGameObjectsWithTag("getResource");
             foreach (GameObject button in giveResources) { button.GetComponent<Button>().onClick.AddListener(delegate { giveResource(button); }); }
@@ -53,14 +52,14 @@ namespace Trade
         //When the buttons on the left side are clicked -> the resource the player wants to give away
         void giveResource(GameObject button)
         {
-            
+
             if (currentPlayer.canTrade(button.GetComponent<TradeButton>().resource))
             {
                 button.GetComponent<TradeButton>().clickButton();
             }
-            
+
         }
-        
+
         //When the buttons on the right side are clicked -> th resource the player wants to get
         void getResource(GameObject button)
         {
@@ -86,14 +85,14 @@ namespace Trade
                 if (requestTradeBank(TradeButton.getGiveResource(), TradeButton.getGetResource()))
                 {
                     currentPlayer.trade(TradeButton.getGiveResource(), TradeButton.getGetResource());
-                    Debug.Log(currentPlayer+" traded 4 " + TradeButton.getGiveResource() + " against 1 " +TradeButton.getGetResource() );
+                    Debug.Log(currentPlayer + " traded 4 " + TradeButton.getGiveResource() + " against 1 " + TradeButton.getGetResource());
                 }
                 else Debug.Log("For any reason, you can't trade.");
             }
             else Debug.Log("You have to chose a resource on each side.");
             setInactive();
         }
-        
+
         void setInactive()
         {
             foreach (GameObject button in giveResources) { button.GetComponent<TradeButton>().reset(); }
@@ -102,11 +101,11 @@ namespace Trade
             active = false;
 
         }
-        
+
         //Todo: sending this request to server
-        Boolean requestTradeBank(RESOURCE giveResource, RESOURCE getResource)
+        Boolean requestTradeBank(RESOURCETYPE giveResource, RESOURCETYPE getResource)
         {
-            Debug.Log(currentPlayer+" wants to trade 4 " + giveResource + " against 1 " + getResource);
+            Debug.Log(currentPlayer + " wants to trade 4 " + giveResource + " against 1 " + getResource);
             return true;
         }
 
