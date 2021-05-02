@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.44657898, g: 0.4964133, b: 0.5748178, a: 1}
+  m_IndirectSpecularColor: {r: 0.44657844, g: 0.49641222, b: 0.57481694, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -1204,7 +1204,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 153015442}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 9c21e1123e19d0e4099b026245d07282, type: 3}
   m_Name: 
@@ -1249,7 +1249,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 153015442}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b898441e8df14e35844215ebc6c9e89a, type: 3}
   m_Name: 
@@ -12203,6 +12203,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1538431471}
+  - component: {fileID: 1538431472}
   m_Layer: 0
   m_Name: Board
   m_TagString: Untagged
@@ -12224,6 +12225,20 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1538431472
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1538431470}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fa176a6385f51ef4fa0d80d2844a18ea, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  landHexagons: 08000000080000000800000008000000090000000900000009000000090000000c0000000c0000000c0000000c0000000a0000000a0000000a0000000b0000000b0000000b000000
+  portHexagons: 020000000200000002000000020000000300000004000000050000000600000007000000
 --- !u!1 &1548962543
 GameObject:
   m_ObjectHideFlags: 0

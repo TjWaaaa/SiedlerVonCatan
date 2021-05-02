@@ -1,14 +1,13 @@
 using System;
 using System.Collections.Generic;
 using HexagonType;
-
 public class Board
 {
-    Hexagon[,] hexagons;
-    Node[] nodes = new Node[54];
-    Edge[] edges = new Edge[72];
+    private Hexagon[,] hexagons;
+    private Node[] nodes = new Node[54];
+    private Edge[] edges = new Edge[72];
 
-    int[][] gameboardConfig = new int[][] {
+    private int[][] gameboardConfig = new int[][] {
         new int[] {4, 1, 4, 1},
         new int[] {1, 2, 2, 2, 4},
         new int[] {4, 2, 2, 2, 2, 1},
@@ -18,7 +17,7 @@ public class Board
         new int[] {4, 1, 4, 1},
     };
 
-    HEXAGONTYPE[] landHexagons = new[] {
+    private HEXAGONTYPE[] landHexagons = new[] {
         HEXAGONTYPE.SHEEP, HEXAGONTYPE.SHEEP, HEXAGONTYPE.SHEEP, HEXAGONTYPE.SHEEP,
         HEXAGONTYPE.WOOD, HEXAGONTYPE.WOOD, HEXAGONTYPE.WOOD, HEXAGONTYPE.WOOD,
         HEXAGONTYPE.WHEAT, HEXAGONTYPE.WHEAT, HEXAGONTYPE.WHEAT, HEXAGONTYPE.WHEAT,
@@ -26,7 +25,7 @@ public class Board
         HEXAGONTYPE.ORE, HEXAGONTYPE.ORE, HEXAGONTYPE.ORE
     };
 
-    HEXAGONTYPE[] portHexagons = new[] {
+    private HEXAGONTYPE[] portHexagons = new[] {
         HEXAGONTYPE.PORTNORMAL, HEXAGONTYPE.PORTNORMAL, HEXAGONTYPE.PORTNORMAL, HEXAGONTYPE.PORTNORMAL,
         HEXAGONTYPE.PORTSHEEP,
         HEXAGONTYPE.PORTWOOD,
@@ -35,20 +34,17 @@ public class Board
         HEXAGONTYPE.PORTWHEAT
     };
 
-    public void Start()
+    public Board()
     {
         hexagons = initializeHexagons();
         //nodes = initializeNodes();
         //edges = initializeEdges();
-
-
-
     }
 
     private Hexagon[,] initializeHexagons()
     {
-        Stack<HEXAGONTYPE> landStack = randomizeHexagonTypeArray(landHexagons);
-        Stack<HEXAGONTYPE> portStack = randomizeHexagonTypeArray(portHexagons);
+        Stack<HEXAGONTYPE> landStack = createRandomHexagonStackFromArray(landHexagons);
+        Stack<HEXAGONTYPE> portStack = createRandomHexagonStackFromArray(portHexagons);
 
         Hexagon[,] hexagons = new Hexagon[7, 7];
         int pos = 0;
@@ -75,14 +71,14 @@ public class Board
         return hexagons;
     }
 
-    private Stack<HEXAGONTYPE> randomizeHexagonTypeArray(HEXAGONTYPE[] array)
+    private Stack<HEXAGONTYPE> createRandomHexagonStackFromArray(HEXAGONTYPE[] array)
     {
         Random random = new Random();
 
         int n = array.Length;
         while (n > 1)
         {
-            int k = random.Next(n--);   //Random.Range(0, n--); //      random.Next(n--);
+            int k = random.Next(n--);   //Random.Range(0, n--);
             HEXAGONTYPE temp = array[n];
             array[n] = array[k];
             array[k] = temp;
@@ -90,4 +86,11 @@ public class Board
 
         return new Stack<HEXAGONTYPE>(array);
     }
+
+    /*
+    private Node[] initializeNodes()
+    {
+        return new Node[54];
+    }
+    */
 }
