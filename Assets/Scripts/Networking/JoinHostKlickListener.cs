@@ -21,7 +21,9 @@ public class JoinHostKlickListener : MonoBehaviour
         string hostIp = GameObject.Find("Canvas/InputField_hostIP").GetComponent<InputField>().text == ""
             ? "127.0.0.1"
             : GameObject.Find("Canvas/InputField_hostIP").GetComponent<InputField>().text;
-        SendableGameInformation gameInformation = new SendableGameInformation(playerName);
+
+        Packet gameInformation = new Packet();
+        gameInformation.myPlayerName = "Simon";
 
         Debug.Log("joining game...");
         Debug.Log("playerName: " + playerName);
@@ -31,8 +33,8 @@ public class JoinHostKlickListener : MonoBehaviour
 
         if (initComplete)
         {
-            Client.sendRequest(gameInformation.objectToJsonString());
-            Debug.Log(gameInformation.objectToJsonString()); //send playerName to host
+            Client.sendRequest(PacketSerializer.objectToJsonString(gameInformation));
+            Debug.Log(PacketSerializer.objectToJsonString(gameInformation)); //send playerName to host
 
             SceneManager.LoadScene("Scenes/Lobby");
         }
@@ -53,8 +55,10 @@ public class JoinHostKlickListener : MonoBehaviour
     {
         bool isRunning = Server.setupServer(); //host server
         string playerName = GameObject.Find("Canvas/InputField_playerName").GetComponent<InputField>().text;
-        SendableGameInformation gameInformation = new SendableGameInformation(playerName);
-
+        
+        Packet gameInformation = new Packet();
+        gameInformation.myPlayerName = "Simon";
+        
         Debug.Log("hosting game...");
 
         if (isRunning)
@@ -71,7 +75,7 @@ public class JoinHostKlickListener : MonoBehaviour
 
             if (initComplete)
             {
-                Client.sendRequest(gameInformation.objectToJsonString()); //send playerName to host
+                Client.sendRequest(PacketSerializer.objectToJsonString(gameInformation)); //send playerName to host
             }
 
             Debug.Log("Host: hostIp: " + serverIPEndpoint.Address);
