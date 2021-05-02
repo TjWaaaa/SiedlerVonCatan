@@ -33,7 +33,10 @@ public class Board
         HEXAGONTYPE.PORTORE,
         HEXAGONTYPE.PORTWHEAT
     };
-
+    public static void Main(String[] args)
+    {
+        Board board = new Board();
+    }
     public Board()
     {
         hexagons = initializeHexagons();

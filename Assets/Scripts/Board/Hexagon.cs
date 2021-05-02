@@ -14,15 +14,20 @@ namespace HexagonType
 public class Hexagon
 {
 
-    int fieldNumber;
+    int fieldNumber; //
     public HEXAGONTYPE type;
     int[] position;
-    Node[] nodes;
-    Edge[] edges;
+    Node[6] nodes;
+    Edge[6] edges;
 
     public Hexagon(int fieldNumber, HEXAGONTYPE type)
     {
         this.fieldNumber = fieldNumber;
+        this.type = type;
+    }
+    public Hexagon(HEXAGONTYPE type)
+    {
+        this.fieldNumber = 0;
         this.type = type;
     }
 }
