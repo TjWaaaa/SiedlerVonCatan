@@ -1,12 +1,10 @@
-using System;
-
-namespace Networking
+﻿namespace Networking
 {
-    public interface INetworkableClient
+    public interface ClientToServerCommunication
     {
         public delegate void acceptCallback(Packet acceptResult);
 
-        public delegate void rejectCallback(Packet acceptResult);
+        public delegate void rejectCallback(Packet acceptResult, string errorMessage);
 
 
         // Phase: 1 (roll dice + Raw material yields + what ever happens here ...)
@@ -15,11 +13,11 @@ namespace Networking
         // Phase: 2 (trade)
         public void requestTradeBank(acceptCallback acceptCallback, rejectCallback rejectCallback);
         
-        public void requestTradePort(acceptCallback acceptCallback, rejectCallback rejectCallback);
+        //public void requestTradePort(acceptCallback acceptCallback, rejectCallback rejectCallback);
 
         
         // Phase: 3 (build)
-        public void requestBuild(EnumBuyables type, int x, int y, acceptCallback acceptCallback, rejectCallback rejectCallback);
+        public void requestBuild(BUYABLES type, int x, int y, acceptCallback acceptCallback, rejectCallback rejectCallback);
         
         public void requestBuyDevelopement(acceptCallback acceptCallback, rejectCallback rejectCallback);
 
@@ -28,7 +26,5 @@ namespace Networking
         
         // End phase
         public void requestEndTurn(acceptCallback acceptCallback, rejectCallback rejectCallback);
-
-
     }
 }

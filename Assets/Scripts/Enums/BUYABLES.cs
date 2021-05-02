@@ -1,6 +1,6 @@
 namespace Networking
 {
-    public enum EnumBuyables
+    public enum BUYABLES
     {
         // [Wheat, Sheep, Ore, Brick, Wood] -> TODO: store values to buy buyables   
         Road,
