@@ -2,8 +2,16 @@
 {
     public interface ServerToClientCommunication
     {
+        /// <summary>
+        /// Function Pointer: Request was accepted. Handle new information 
+        /// -> this is only a placeholder, there will be more methods needed
+        /// </summary>
         public delegate void acceptCallback(Packet acceptResult);
 
+        /// <summary>
+        /// Function Pointer: Request was not accepted. Return error message.
+        /// -> this is only a placeholder, there will be more methods needed (maybe not)
+        /// </summary>
         public delegate void rejectCallback(Packet acceptResult, string errorMessage);
         
         /// <summary>
@@ -60,5 +68,13 @@
         /// Regular Ping that is sent to all clients to find out if all clients are still connected.
         /// </summary>
         public void keepAlivePing(acceptCallback acceptCallback, rejectCallback rejectCallback);
+
+        
+        /// <summary>
+        /// notify all clients that a nother client has disconnected
+        /// </summary>
+        /// <param name="playerName">disconnected player name</param>
+        /// <param name="color">disconnected player color</param>
+        public void notifyClientDisconnect(string playerName, string color);
     }
 }
