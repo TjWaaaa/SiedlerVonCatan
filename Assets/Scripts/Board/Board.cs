@@ -8,13 +8,13 @@ public class Board
     private Edge[] edges = new Edge[72];
 
     private int[][] gameboardConfig = new int[][] {
-        new int[] {4, 1, 4, 1},
-        new int[] {1, 2, 2, 2, 4},
-        new int[] {4, 2, 2, 2, 2, 1},
+        new int[]    {4, 1, 4, 1},
+        new int[]   {1, 2, 2, 2, 4},
+        new int[]  {4, 2, 2, 2, 2, 1},
         new int[] {1, 2, 2, 3, 2, 2, 4},
-        new int[] {4, 2, 2, 2, 2, 1},
-        new int[] {1, 2, 2, 2, 4},
-        new int[] {4, 1, 4, 1},
+        new int[]  {4, 2, 2, 2, 2, 1},
+        new int[]   {1, 2, 2, 2, 4},
+        new int[]    {4, 1, 4, 1},
     };
 
     private HEXAGONTYPE[] landHexagons = new[] {
@@ -39,9 +39,9 @@ public class Board
     }
     public Board()
     {
+        nodes = initializeNodes();
+        edges = initializeEdges();
         hexagons = initializeHexagons();
-        //nodes = initializeNodes();
-        //edges = initializeEdges();
     }
 
     private Hexagon[,] initializeHexagons()
@@ -89,11 +89,26 @@ public class Board
 
         return new Stack<HEXAGONTYPE>(array);
     }
-
-    /*
+    
     private Node[] initializeNodes()
     {
-        return new Node[54];
+        Node[] nodes = new Node[54];
+        
+        for (int i = 0; i < 54; i++)
+        {
+            nodes[i] = new Node();
+        }
+        return nodes;
     }
-    */
+    
+    private Edge[] initializeEdges()
+    {
+        Edge[] edges = new Edge[72];
+        
+        for (int i = 0; i < 72; i++)
+        {
+            edges[i] = new Edge();
+        }
+        return edges;
+    }
 }

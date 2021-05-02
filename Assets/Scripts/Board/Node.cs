@@ -1,35 +1,38 @@
+using System;
+using System.Collections.Generic;
+
 public class Node
 {
     private String nodeID;
-    private Hexagon[3] adjacentHexagons;
-    private Edge[3] adjacentEdges;
+    private List<Hexagon> adjacentHexagons;
+    private List<Edge> adjacentEdges;
     private Player occupiedBy;
-    private Building placedBuilding;
+    private String placedBuilding;
 
     public Node()
     {
         //TODO: implement ID:   this.nodeID = this.GetHashCode;
-        this.adjacentHexagons = new Hexagon[3] { };
-        this.adjacentEdges = new Edge[3] { };
+        this.adjacentHexagons = new List<Hexagon>();
+        this.adjacentEdges = new List<Edge>();
         this.occupiedBy = null;
         this.placedBuilding = null;
     }
-    protected setPlayer(Player player)
+    protected void setPlayer(Player player)
     {
         this.occupiedBy = player;
     }
-    protected setBuilding(Building building)
+    protected void setBuilding(String building)
     {
         this.placedBuilding = building;
     }
 
-    protected setEdge(Edge edge)
+    protected void setEdge(Edge edge)
     {
-        this.adjacentEdges.add(edge);
+        this.adjacentEdges.Add(edge);
     }
 
-    protected setAdjacentHexagon(Hexagon hexagon)
+    protected void setAdjacentHexagon(Hexagon hexagon)
     {
-        this.adjacentHexagons.add(hexagon);
+        this.adjacentHexagons.Add(hexagon);
     }
 }
