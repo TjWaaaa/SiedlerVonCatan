@@ -4,9 +4,9 @@ namespace Networking
 {
     public interface INetworkableClient
     {
-        public delegate void acceptCallback(object acceptResult);
+        public delegate void acceptCallback(Packet acceptResult);
 
-        public delegate void rejectCallback(object acceptResult);
+        public delegate void rejectCallback(Packet acceptResult);
 
 
         // Phase: 1 (roll dice + Raw material yields + what ever happens here ...)

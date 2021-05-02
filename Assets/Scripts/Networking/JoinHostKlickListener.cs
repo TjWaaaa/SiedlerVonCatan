@@ -22,7 +22,7 @@ public class JoinHostKlickListener : MonoBehaviour
             ? "127.0.0.1"
             : GameObject.Find("Canvas/InputField_hostIP").GetComponent<InputField>().text;
 
-        ClientPacket gameInformation = new ClientPacket();
+        Packet gameInformation = new Packet();
         gameInformation.myPlayerName = "Simon";
 
         Debug.Log("joining game...");
@@ -56,7 +56,7 @@ public class JoinHostKlickListener : MonoBehaviour
         bool isRunning = Server.setupServer(); //host server
         string playerName = GameObject.Find("Canvas/InputField_playerName").GetComponent<InputField>().text;
         
-        ClientPacket gameInformation = new ClientPacket();
+        Packet gameInformation = new Packet();
         gameInformation.myPlayerName = "Simon";
         
         Debug.Log("hosting game...");
