@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using HexagonType;
+
+
 public class Board
 {
     private Hexagon[,] hexagons;
@@ -18,8 +20,8 @@ public class Board
         new int[]    {4, 1, 4, 1},
     };
 
-    private int[] neighborOffSetX = new int[] { 0, -1, -1 };
-    private int[] neighborOffSetY = new int[] { -1, -1, 0 };
+    private int[] neighborOffSetX = new int[] { 0, -1 };
+    private int[] neighborOffSetY = new int[] { -1, 0 };
     private HEXAGONTYPE[] landHexagons = new[] {
         HEXAGONTYPE.SHEEP, HEXAGONTYPE.SHEEP, HEXAGONTYPE.SHEEP, HEXAGONTYPE.SHEEP,
         HEXAGONTYPE.WOOD, HEXAGONTYPE.WOOD, HEXAGONTYPE.WOOD, HEXAGONTYPE.WOOD,
@@ -119,8 +121,13 @@ public class Board
     {
         for (int row = 1; row < hexagons.Length - 1; row++)
         {
-            for (int col = 1; col < gameboardConfig[row].Length - 1; row++) //TODO: delete this hardcode
+            for (int col = 1; col < gameboardConfig[row].Length - 1; row++)
             {
+                if (hexagons[row, col] == null)
+                {
+                    continue;
+                }
+
                 Hexagon currentHex = hexagons[row, col];
                 //only Port- and Landhexagons need to know their neighbors
                 if (currentHex.isLand())
@@ -141,34 +148,24 @@ public class Board
                 Hexagon neighbor = hexagons[neighborOffSetY[i], neighborOffSetX[i]];
                 if (neighbor.isLand())
                 {
-                    if (i == 0)
+                    switch (i)
                     {
-                        Node node1 = neighbor.getNode(3);
-                        Node node2 = neighbor.getNode(4);
-
-                        currentHex.addNode(node1, 1);
-                        currentHex.addNode(node2, 0);
-                    }
-                    else if (i == 1)
-                    {
-                        Node node1 = neighbor.getNode(1);
-                        Node node2 = neighbor.getNode(2);
-
-                        currentHex.addNode(node1, 5);
-                        currentHex.addNode(node2, 4);
+                        case 0: appendNodes(currentHex, neighbor, i); break;
+                        case 1: appendNodes(currentHex, neighbor, i); break;
                     }
                 }
                 else
                 {
-                    if (i == 0)
+                    switch (i)
                     {
-                        currentHex.addNode(nodes[nextNodePosition()], 0);
-                        currentHex.addNode(nodes[nextNodePosition()], 0);
-                    }
-                    else if (i == 1)
-                    {
-                        currentHex.addNode(nodes[nextNodePosition()], 5);
-                        currentHex.addNode(nodes[nextNodePosition()], 4);
+                        case 0:
+                            currentHex.addNode(nodes[nextNodePosition()], 0);
+                            currentHex.addNode(nodes[nextNodePosition()], 0);
+                            break;
+                        case 1:
+                            currentHex.addNode(nodes[nextNodePosition()], 5);
+                            currentHex.addNode(nodes[nextNodePosition()], 4);
+                            break;
                     }
                 }
             }
@@ -184,5 +181,25 @@ public class Board
     private int nextNodePosition()
     {
         return posNodeArray++;
+    }
+
+    private void appendNodes(Hexagon currentHex, Hexagon neighbor, int pos)
+    {
+        if (pos == 0)
+        {
+            Node node1 = neighbor.getNode(3);
+            Node node2 = neighbor.getNode(4);
+
+            currentHex.addNode(node1, 1);
+            currentHex.addNode(node2, 0);
+        }
+        else if (pos == 1)
+        {
+            Node node1 = neighbor.getNode(1);
+            Node node2 = neighbor.getNode(2);
+
+            currentHex.addNode(node1, 5);
+            currentHex.addNode(node2, 4);
+        }
     }
 }
