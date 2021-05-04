@@ -159,7 +159,7 @@ public class Board
                     switch (i)
                     {
                         case 0:
-                            currentHex.addNode(nodes[nextNodePosition()], 0);
+                            currentHex.addNode(nodes[nextNodePosition()], 1);
                             currentHex.addNode(nodes[nextNodePosition()], 0);
                             break;
                         case 1:
