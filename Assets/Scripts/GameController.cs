@@ -1,6 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
-using ResourceType;
+using Resource;
 using Trade;
 using UnityEngine;
 using UnityEngine.UI;
@@ -51,13 +51,13 @@ public class GameController : MonoBehaviour
                 new Player("Player4", Color.yellow)
             };
 
-        players[0].setResourceAmount(RESOURCETYPE.ORE, 5);
-        players[0].setResourceAmount(RESOURCETYPE.WOOD, 5);
+        players[0].setResourceAmount(RESOURCE.ORE, 5);
+        players[0].setResourceAmount(RESOURCE.WOOD, 5);
 
-        players[1].setResourceAmount(RESOURCETYPE.ORE, 5);
-        players[1].setResourceAmount(RESOURCETYPE.WOOD, 5);
-        players[1].setResourceAmount(RESOURCETYPE.SHEEP, 1);
-        players[1].setResourceAmount(RESOURCETYPE.BRICK, 2);
+        players[1].setResourceAmount(RESOURCE.ORE, 5);
+        players[1].setResourceAmount(RESOURCE.WOOD, 5);
+        players[1].setResourceAmount(RESOURCE.SHEEP, 1);
+        players[1].setResourceAmount(RESOURCE.BRICK, 2);
 
         currentPlayer = 0;
 
@@ -220,11 +220,11 @@ public class GameController : MonoBehaviour
 
     private void ChangeRessourcesOutput(Player player)
     {
-        bricksText.GetComponent<Text>().text = player.getResourceAmount(RESOURCETYPE.BRICK).ToString();
-        oreText.GetComponent<Text>().text = player.getResourceAmount(RESOURCETYPE.ORE).ToString();
-        sheepText.GetComponent<Text>().text = player.getResourceAmount(RESOURCETYPE.SHEEP).ToString();
-        wheatText.GetComponent<Text>().text = player.getResourceAmount(RESOURCETYPE.WHEAT).ToString();
-        woodText.GetComponent<Text>().text = player.getResourceAmount(RESOURCETYPE.WOOD).ToString();
+        bricksText.GetComponent<Text>().text = player.getResourceAmount(RESOURCE.BRICK).ToString();
+        oreText.GetComponent<Text>().text = player.getResourceAmount(RESOURCE.ORE).ToString();
+        sheepText.GetComponent<Text>().text = player.getResourceAmount(RESOURCE.SHEEP).ToString();
+        wheatText.GetComponent<Text>().text = player.getResourceAmount(RESOURCE.WHEAT).ToString();
+        woodText.GetComponent<Text>().text = player.getResourceAmount(RESOURCE.WOOD).ToString();
     }
 
     public static int getCurrentPlayer()

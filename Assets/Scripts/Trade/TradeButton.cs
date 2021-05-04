@@ -2,38 +2,38 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System;
-using ResourceType;
+using Resource;
 
 using UnityEngine.UI;
 
 public class TradeButton : MonoBehaviour
 {
 
-    public RESOURCETYPE resource;
+    public RESOURCE resource;
     private Boolean isClicked = false;
 
     //which resources are selected -> only one on each side!
-    private static RESOURCETYPE giveResource = RESOURCETYPE.NONE;
-    private static RESOURCETYPE getResource = RESOURCETYPE.NONE;
+    private static RESOURCE giveResource = RESOURCE.NONE;
+    private static RESOURCE getResource = RESOURCE.NONE;
 
     void Start()
     {
         //get the resource of each button individually
-        resource = (RESOURCETYPE)Enum.Parse(typeof(ResourceType.RESOURCETYPE), gameObject.name, true);
+        resource = (RESOURCE)Enum.Parse(typeof(Resource.RESOURCE), gameObject.name, true);
     }
 
     public void clickButton()
     {
         if (!isClicked)
         {
-            if (gameObject.CompareTag("giveResource") && giveResource == RESOURCETYPE.NONE)
+            if (gameObject.CompareTag("giveResource") && giveResource == RESOURCE.NONE)
             {
                 giveResource = resource;
                 gameObject.GetComponent<Image>().color = Color.red;
                 isClicked = true;
 
             }
-            else if (gameObject.CompareTag("getResource") && getResource == RESOURCETYPE.NONE)
+            else if (gameObject.CompareTag("getResource") && getResource == RESOURCE.NONE)
             {
                 getResource = resource;
                 gameObject.GetComponent<Image>().color = Color.green;
@@ -45,8 +45,8 @@ public class TradeButton : MonoBehaviour
         {
             gameObject.GetComponent<Image>().color = Color.white;
             isClicked = false;
-            if (gameObject.CompareTag("giveResource")) giveResource = RESOURCETYPE.NONE;
-            else getResource = RESOURCETYPE.NONE;
+            if (gameObject.CompareTag("giveResource")) giveResource = RESOURCE.NONE;
+            else getResource = RESOURCE.NONE;
         }
     }
 
@@ -54,22 +54,22 @@ public class TradeButton : MonoBehaviour
     {
         gameObject.GetComponent<Image>().color = Color.white;
         isClicked = false;
-        giveResource = RESOURCETYPE.NONE;
-        getResource = RESOURCETYPE.NONE;
+        giveResource = RESOURCE.NONE;
+        getResource = RESOURCE.NONE;
     }
 
-    public static RESOURCETYPE getGetResource()
+    public static RESOURCE getGetResource()
     {
         return getResource;
     }
-    public static RESOURCETYPE getGiveResource()
+    public static RESOURCE getGiveResource()
     {
         return giveResource;
     }
 
     public static Boolean isValidTradeRequest()
     {
-        if (getResource != RESOURCETYPE.NONE && giveResource != RESOURCETYPE.NONE) return true;
+        if (getResource != RESOURCE.NONE && giveResource != RESOURCE.NONE) return true;
         else return false;
     }
 

@@ -1,6 +1,6 @@
-﻿namespace ResourceType
+﻿namespace Resource
 {
-    public enum RESOURCETYPE
+    public enum RESOURCE
     {
         SHEEP, WOOD, BRICK, ORE, WHEAT, NONE
     }

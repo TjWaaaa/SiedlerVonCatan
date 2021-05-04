@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
 using UnityEngine.UI;
-using ResourceType;
+using Resource;
 
 namespace Trade
 {
@@ -103,7 +103,7 @@ namespace Trade
         }
 
         //Todo: sending this request to server
-        Boolean requestTradeBank(RESOURCETYPE giveResource, RESOURCETYPE getResource)
+        Boolean requestTradeBank(RESOURCE giveResource, RESOURCE getResource)
         {
             Debug.Log(currentPlayer + " wants to trade 4 " + giveResource + " against 1 " + getResource);
             return true;
