@@ -6,6 +6,7 @@ public class Board
     private Hexagon[,] hexagons;
     private Node[] nodes = new Node[54];
     private Edge[] edges = new Edge[72];
+    int posNodeArray = 0;
 
     private int[][] gameboardConfig = new int[][] {
         new int[]    {4, 1, 4, 1},
@@ -17,6 +18,8 @@ public class Board
         new int[]    {4, 1, 4, 1},
     };
 
+    private int[] neighborOffSetX = new int[] { 0, -1, -1 };
+    private int[] neighborOffSetY = new int[] { -1, -1, 0 };
     private HEXAGONTYPE[] landHexagons = new[] {
         HEXAGONTYPE.SHEEP, HEXAGONTYPE.SHEEP, HEXAGONTYPE.SHEEP, HEXAGONTYPE.SHEEP,
         HEXAGONTYPE.WOOD, HEXAGONTYPE.WOOD, HEXAGONTYPE.WOOD, HEXAGONTYPE.WOOD,
@@ -42,6 +45,7 @@ public class Board
         nodes = initializeNodes();
         edges = initializeEdges();
         hexagons = initializeHexagons();
+        assignNeighbors();
     }
 
     private Hexagon[,] initializeHexagons()
@@ -81,7 +85,7 @@ public class Board
         int n = array.Length;
         while (n > 1)
         {
-            int k = random.Next(n--);   //Random.Range(0, n--);
+            int k = random.Next(n--);
             HEXAGONTYPE temp = array[n];
             array[n] = array[k];
             array[k] = temp;
@@ -89,26 +93,96 @@ public class Board
 
         return new Stack<HEXAGONTYPE>(array);
     }
-    
+
     private Node[] initializeNodes()
     {
         Node[] nodes = new Node[54];
-        
+
         for (int i = 0; i < 54; i++)
         {
             nodes[i] = new Node();
         }
         return nodes;
     }
-    
+
     private Edge[] initializeEdges()
     {
         Edge[] edges = new Edge[72];
-        
+
         for (int i = 0; i < 72; i++)
         {
             edges[i] = new Edge();
         }
         return edges;
+    }
+    private void assignNeighbors()
+    {
+        for (int row = 1; row < hexagons.Length - 1; row++)
+        {
+            for (int col = 1; col < gameboardConfig[row].Length - 1; row++) //TODO: delete this hardcode
+            {
+                Hexagon currentHex = hexagons[row, col];
+                //only Port- and Landhexagons need to know their neighbors
+                if (currentHex.isLand())
+                {
+                    assignNodes(row, col);
+                }
+            }
+        }
+    }
+
+    private void assignNodes(int row, int col)
+    {
+        Hexagon currentHex = hexagons[row, col];
+        for (int i = 0; i < 2; i++)
+        {
+            try
+            {
+                Hexagon neighbor = hexagons[neighborOffSetY[i], neighborOffSetX[i]];
+                if (neighbor.isLand())
+                {
+                    if (i == 0)
+                    {
+                        Node node1 = neighbor.getNode(3);
+                        Node node2 = neighbor.getNode(4);
+
+                        currentHex.addNode(node1, 1);
+                        currentHex.addNode(node2, 0);
+                    }
+                    else if (i == 1)
+                    {
+                        Node node1 = neighbor.getNode(1);
+                        Node node2 = neighbor.getNode(2);
+
+                        currentHex.addNode(node1, 5);
+                        currentHex.addNode(node2, 4);
+                    }
+                }
+                else
+                {
+                    if (i == 0)
+                    {
+                        currentHex.addNode(nodes[nextNodePosition()], 0);
+                        currentHex.addNode(nodes[nextNodePosition()], 0);
+                    }
+                    else if (i == 1)
+                    {
+                        currentHex.addNode(nodes[nextNodePosition()], 5);
+                        currentHex.addNode(nodes[nextNodePosition()], 4);
+                    }
+                }
+            }
+            catch (System.IndexOutOfRangeException)
+            {
+                break;
+            }
+        }
+        currentHex.addNode(nodes[nextNodePosition()], 2);
+        currentHex.addNode(nodes[nextNodePosition()], 3);
+    }
+
+    private int nextNodePosition()
+    {
+        return posNodeArray++;
     }
 }

@@ -8,9 +8,7 @@ public class Edge
 
     public Edge()
     {
-
         this.neighborEdges = new Edge[4];
         this.neighborNodes = new Node[2];
     }
-
 }
