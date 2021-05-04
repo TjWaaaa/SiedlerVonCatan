@@ -2,17 +2,6 @@
 {
     public interface INetworkableServer
     {
-        /// <summary>
-        /// Function Pointer: Request was accepted. Handle new information 
-        /// -> this is only a placeholder, there will be more methods needed
-        /// </summary>
-        public delegate void acceptCallback(Packet acceptResult);
-
-        /// <summary>
-        /// Function Pointer: Request was not accepted. Return error message.
-        /// -> this is only a placeholder, there will be more methods needed (maybe not)
-        /// </summary>
-        public delegate void rejectCallback(Packet acceptResult, string errorMessage);
 
 
         // Phase: 1 (roll dice + Raw material yields + what ever happens here ...)
@@ -81,5 +70,10 @@
         /// <param name="rejectCallback">Method called if request was rejected. Send error message</param>
         public void handleEndTurn(Packet clientPacket, acceptCallback acceptCallback, rejectCallback rejectCallback);
 
+        
+        /// <summary>
+        /// If server noticed a client disconnect this method is called.
+        /// </summary>
+        public void handleClientDisconnect();
     }
 }

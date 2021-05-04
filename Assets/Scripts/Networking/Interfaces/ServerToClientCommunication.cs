@@ -3,18 +3,6 @@
     public interface ServerToClientCommunication
     {
         /// <summary>
-        /// Function Pointer: Request was accepted. Handle new information 
-        /// -> this is only a placeholder, there will be more methods needed
-        /// </summary>
-        public delegate void acceptCallback(Packet acceptResult);
-
-        /// <summary>
-        /// Function Pointer: Request was not accepted. Return error message.
-        /// -> this is only a placeholder, there will be more methods needed (maybe not)
-        /// </summary>
-        public delegate void rejectCallback(Packet acceptResult, string errorMessage);
-        
-        /// <summary>
         /// Pre game: send a notification to all clients that a new client has joined the game.
         /// </summary>
         /// <param name="playerID">id of new player</param>
@@ -63,13 +51,7 @@
         /// <param name="playerName">requesting player name</param>
         // public void playerToPlayerTradeRequest(int[] offer, int[] expectation, string playerColor, string playerName);
 
-        
-        /// <summary>
-        /// Regular Ping that is sent to all clients to find out if all clients are still connected.
-        /// </summary>
-        public void keepAlivePing(acceptCallback acceptCallback, rejectCallback rejectCallback);
 
-        
         /// <summary>
         /// notify all clients that a nother client has disconnected
         /// </summary>
