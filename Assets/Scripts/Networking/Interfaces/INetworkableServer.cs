@@ -11,7 +11,7 @@
         /// <param name="clientPacket">information of requesting client</param>
         /// <param name="acceptCallback">method called if request was accepted. Send diece result and resource cards. Update all other client resources</param>
         /// <param name="rejectCallback">client is not allowed to begin the round. Send error message</param>
-        public void handleBeginRound(Packet clientPacket, acceptCallback acceptCallback, rejectCallback rejectCallback);
+        public void handleBeginRound(Packet clientPacket);
         
         
         // Phase: 2 (trade)
@@ -21,7 +21,7 @@
         /// <param name="clientPacket">information of requesting client</param>
         /// <param name="acceptCallback">method called if request was accepted. Updated client resources</param>
         /// <param name="rejectCallback">client is not allowed to trade or the resources ar wrong. Send error message</param>
-        public void handleTradeBank(Packet clientPacket, acceptCallback acceptCallback, rejectCallback rejectCallback);
+        public void handleTradeBank(Packet clientPacket);
         
         
         /// <summary>
@@ -30,7 +30,7 @@
         /// <param name="clientPacket">information of requesting client</param>
         /// <param name="acceptCallback">>method called if request was accepted.</param>
         /// <param name="rejectCallback"></param>
-        //public void handleTradePort(Packet clientPacket, acceptCallback acceptCallback, rejectCallback rejectCallback);
+        //public void handleTradePort(Packet clientPacket);
 
         
         // Phase: 3 (build)
@@ -40,7 +40,7 @@
         /// <param name="clientPacket">Information of requesting client</param>
         /// <param name="acceptCallback">Method called if request was accepted. Send build information</param>
         /// <param name="rejectCallback">Method called if request was rejected.</param>
-        public void handleBuild(Packet clientPacket, acceptCallback acceptCallback, rejectCallback rejectCallback);
+        public void handleBuild(Packet clientPacket);
         
         
         /// <summary>
@@ -49,7 +49,7 @@
         /// <param name="clientPacket">information of requesting client</param>
         /// <param name="acceptCallback">method called if request was accepted. Send development card</param>
         /// <param name="rejectCallback">Method called if request was rejected. Send error message</param>
-        public void handleBuyDevelopement(Packet clientPacket, acceptCallback acceptCallback, rejectCallback rejectCallback);
+        public void handleBuyDevelopement(Packet clientPacket);
 
         
         /// <summary>
@@ -58,7 +58,7 @@
         /// <param name="clientPacket">information of requesting client</param>
         /// <param name="acceptCallback">method called if request was accepted. Notify all other players</param>
         /// <param name="rejectCallback">Method called if request was rejected. Send error message</param>
-        public void handlePlayDevelopement(Packet clientPacket, acceptCallback acceptCallback, rejectCallback rejectCallback);
+        public void handlePlayDevelopement(Packet clientPacket);
         
         
         // End phase
@@ -68,7 +68,7 @@
         /// <param name="clientPacket">information of requesting client</param>
         /// <param name="acceptCallback">method called if request was accepted. </param>
         /// <param name="rejectCallback">Method called if request was rejected. Send error message</param>
-        public void handleEndTurn(Packet clientPacket, acceptCallback acceptCallback, rejectCallback rejectCallback);
+        public void handleEndTurn(Packet clientPacket);
 
         
         /// <summary>
