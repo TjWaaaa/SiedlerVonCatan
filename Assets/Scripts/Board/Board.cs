@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using HexagonType;
+using UnityEngine;
+using System.IO;
 
 
 public class Board
@@ -20,9 +22,9 @@ public class Board
         new int[]    {4, 1, 4, 1},
     };
 
-    private int[] neighborOffsetX = new int[] { 0, -1, -1, 0, 1, 1};
-    private int[] neighborOffsetY = new int[] { -1, -1, 0, 1, 1, 0};
-    
+    private int[] neighborOffsetX = new int[] { 0, -1, -1, 0, 1, 1 };
+    private int[] neighborOffsetY = new int[] { -1, -1, 0, 1, 1, 0 };
+
     private HEXAGONTYPE[] landHexagons = {
         HEXAGONTYPE.SHEEP, HEXAGONTYPE.SHEEP, HEXAGONTYPE.SHEEP, HEXAGONTYPE.SHEEP,
         HEXAGONTYPE.WOOD, HEXAGONTYPE.WOOD, HEXAGONTYPE.WOOD, HEXAGONTYPE.WOOD,
@@ -39,7 +41,7 @@ public class Board
         HEXAGONTYPE.PORTORE,
         HEXAGONTYPE.PORTWHEAT
     };
-    public static void Main(String[] args)
+    public static void main(String[] args)
     {
         Board board = new Board();
     }
@@ -48,7 +50,7 @@ public class Board
         nodes = initializeNodes();
         edges = initializeEdges();
         hexagons = initializeHexagons();
-        assignNeighbors();
+        assignNeighborsToHexagons();
     }
 
     private Hexagon[,] initializeHexagons()
@@ -83,7 +85,7 @@ public class Board
 
     private Stack<HEXAGONTYPE> createRandomHexagonStackFromArray(HEXAGONTYPE[] array)
     {
-        Random random = new Random();
+        System.Random random = new System.Random();
 
         int n = array.Length;
         while (n > 1)
@@ -118,156 +120,65 @@ public class Board
         }
         return edges;
     }
-    private void assignNeighbors()
+    private void assignNeighborsToHexagons()
     {
-        for (int row = 1; row < hexagons.Length - 1; row++)
+        StreamReader file = new StreamReader("Assets/Scripts/Board/AdjacentNodesToHexagons.txt");
+
+        for (int row = 0; row < gameboardConfig.Length; row++)
         {
-            for (int col = 1; col < gameboardConfig[row].Length - 1; row++)
+            for (int col = 0; col < gameboardConfig[row].Length; col++)
             {
                 if (hexagons[row, col] == null)
                 {
                     continue;
                 }
 
-                Hexagon currentHex = hexagons[row, col];
-                //only Port- and Landhexagons need to know their neighbors
-                if (currentHex.isLand())
+                Hexagon currentHexagon = hexagons[row, col];
+                Console.WriteLine(currentHexagon.GetType());
+                string line = file.ReadLine();
+
+                if (line != null && line != "")
                 {
-                    assignNodesToLand(row, col);
+                    string[] subStrings = line.Split(',');
+                    for (int i = 0; i < 6; i++)
+                    {
+                        if (subStrings[i] != "-")
+                        {
+                            int neighborPos = Int32.Parse(subStrings[i]);
+                            currentHexagon.addNode(nodes[neighborPos], i);
+                        }
+                    }
                 }
-                else if (currentHex.isPort())
+            }
+        }
+        file.Close();
+    }
+
+    private void assignNeighborsToNodes()
+    {
+
+        System.IO.StreamReader file = new System.IO.StreamReader("Assets/Scripts/Board/AdjacentNodesToNodes.txt");
+        foreach (Node currentNode in nodes)
+        {
+            string line = file.ReadLine();
+            if (line != "")
+            {
+                string[] indexes = line.Split(',');
+                foreach (string index in indexes)
                 {
-                    assignNodesToPort(row, col);
+                    if (index != "-")
+                    {
+                        int neighborPos = Int32.Parse(index);
+                    }
                 }
             }
+
         }
     }
 
-    private void assignNodesToLand(int row, int col)
+    private void assignNeighborEdgesToNodes()
     {
-        Hexagon currentHex = hexagons[row, col];
+        //System.IO.StreamReader file = new System.IO.StreamReader("Assets/Scripts/Board/")
 
-        Hexagon neighbor = hexagons[row - 1, col];
-        if (neighbor.isLand() || neighbor.isPort())
-        {
-            Node node1 = neighbor.getNode(3);
-            Node node2 = neighbor.getNode(4);
-
-            currentHex.addNode(node1, 1);
-            currentHex.addNode(node2, 0);
-        }
-
-        neighbor = hexagons[row - 1, col - 1];
-        if (neighbor.isLand() || neighbor.isPort())
-        {
-            Node node1 = neighbor.getNode(2);
-            Node node2 = neighbor.getNode(3);
-
-            currentHex.addNode(node1, 0);
-            currentHex.addNode(node2, 5);
-        }
-
-        neighbor = hexagons[row - 1, col];
-        if (neighbor.isLand() || neighbor.isPort())
-        {
-            Node node1 = neighbor.getNode(1);
-            Node node2 = neighbor.getNode(2);
-
-            currentHex.addNode(node1, 5);
-            currentHex.addNode(node2, 4);
-        }
-
-        for (int i = 0; i < 6; i++)
-        {
-            if (currentHex.getNode(i) == null)
-            {
-                currentHex.addNode(nodes[nextNodePosition()], i);
-            }
-        }
-    }
-    
-    private void assignNodesToPort(int row, int col)
-    {
-        Hexagon currentHex = hexagons[row, col];
-        
-        if (hexagons[neighborOffsetX[0], neighborOffsetY[0]] != null &&
-            hexagons[neighborOffsetX[0], neighborOffsetY[0]].isLand())
-        {
-            Hexagon neighbor = hexagons[neighborOffsetX[0], neighborOffsetY[0]];
-            
-            Node node1 = neighbor.getNode(3);
-            Node node2 = neighbor.getNode(4);
-            currentHex.addNode(node1, 1);
-            currentHex.addNode(node2, 0);
-        }
-
-        if (hexagons[neighborOffsetX[1], neighborOffsetY[1]] != null &&
-            hexagons[neighborOffsetX[1], neighborOffsetY[1]].isLand())
-        {
-            Hexagon neighbor = hexagons[neighborOffsetX[1], neighborOffsetY[1]];
-            
-            Node node1 = neighbor.getNode(2);
-            Node node2 = neighbor.getNode(3);
-            currentHex.addNode(node1, 0);
-            currentHex.addNode(node2, 5);
-        }
-
-        if (hexagons[neighborOffsetX[2], neighborOffsetY[2]] != null &&
-            hexagons[neighborOffsetX[2], neighborOffsetY[2]].isLand())
-        {
-            Hexagon neighbor = hexagons[neighborOffsetX[2], neighborOffsetY[2]];
-            
-            Node node1 = neighbor.getNode(1);
-            Node node2 = neighbor.getNode(2);
-            currentHex.addNode(node1, 5);
-            currentHex.addNode(node2, 4);
-        }
-
-        if (hexagons[neighborOffsetX[3], neighborOffsetY[3]] != null &&
-            hexagons[neighborOffsetX[3], neighborOffsetY[3]].isLand())
-        {
-            if (currentHex.getNode(3) == null)
-            {
-                currentHex.addNode(nodes[nextNodePosition()], 3);   
-            }
-
-            if (currentHex.getNode(4) == null)
-            {
-                currentHex.addNode(nodes[nextNodePosition()], 4);   
-            }
-        }
-        
-        if (hexagons[neighborOffsetX[4], neighborOffsetY[4]] != null &&
-            hexagons[neighborOffsetX[4], neighborOffsetY[4]].isLand())
-        {
-            if (currentHex.getNode(2) == null)
-            {
-                currentHex.addNode(nodes[nextNodePosition()], 2);   
-            }
-
-            if (currentHex.getNode(2) == null)
-            {
-                currentHex.addNode(nodes[nextNodePosition()], 2);   
-            }
-        }
-        
-        if (hexagons[neighborOffsetX[5], neighborOffsetY[5]] != null &&
-            hexagons[neighborOffsetX[5], neighborOffsetY[5]].isLand())
-        {
-            if (currentHex.getNode(1) == null)
-            {
-                currentHex.addNode(nodes[nextNodePosition()], 1);
-            }
-
-            if (currentHex.getNode(2) == null)
-            {
-                currentHex.addNode(nodes[nextNodePosition()], 2);   
-            }
-        }
-    }
-
-    private int nextNodePosition()
-    {
-        return posNodeArray++;
     }
 }

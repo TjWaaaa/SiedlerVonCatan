@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
 using UnityEngine.UI;
-using Resource;
+using ResourceType;
 
 namespace Trade
 {
@@ -53,7 +53,7 @@ namespace Trade
         void giveResource(GameObject button)
         {
 
-            if (currentPlayer.canTrade(button.GetComponent<TradeButton>().resource))
+            if (currentPlayer.canTrade(button.GetComponent<TradeButton>().resourcetype))
             {
                 button.GetComponent<TradeButton>().clickButton();
             }
@@ -103,9 +103,9 @@ namespace Trade
         }
 
         //Todo: sending this request to server
-        Boolean requestTradeBank(RESOURCE giveResource, RESOURCE getResource)
+        Boolean requestTradeBank(RESOURCETYPE giveResourcetype, RESOURCETYPE getResourcetype)
         {
-            Debug.Log(currentPlayer + " wants to trade 4 " + giveResource + " against 1 " + getResource);
+            Debug.Log(currentPlayer + " wants to trade 4 " + giveResourcetype + " against 1 " + getResourcetype);
             return true;
         }
 

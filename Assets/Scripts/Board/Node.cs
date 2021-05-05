@@ -4,16 +4,18 @@ using System.Collections.Generic;
 public class Node
 {
     private String nodeID;
-    private List<Hexagon> adjacentHexagons;
-    private List<Edge> adjacentEdges;
+    private Hexagon[] adjacentHexagons;
+    private Node[] adjacentNodes;
+    private Edge[] adjacentEdges;
     private Player occupiedBy;
     private String placedBuilding;
 
     public Node()
     {
         //TODO: implement ID:   this.nodeID = this.GetHashCode;
-        this.adjacentHexagons = new List<Hexagon>();
-        this.adjacentEdges = new List<Edge>();
+        this.adjacentHexagons = new Hexagon[3];
+        this.adjacentNodes = new Node[3];
+        this.adjacentEdges = new Edge[3];
         this.occupiedBy = null;
         this.placedBuilding = null;
     }
@@ -26,13 +28,18 @@ public class Node
         this.placedBuilding = building;
     }
 
-    protected void setEdge(Edge edge)
+    protected void addAdjacentEdge(Edge edge, int index)
     {
-        this.adjacentEdges.Add(edge);
+        this.adjacentEdges[index] = edge;
     }
 
-    protected void setAdjacentHexagon(Hexagon hexagon)
+    protected void addAdjacentHexagon(Hexagon hexagon, int index)
     {
-        this.adjacentHexagons.Add(hexagon);
+        this.adjacentHexagons[index] = hexagon;
+    }
+
+    protected void addAdjacentNode(Node node, int index)
+    {
+        this.adjacentNodes[index] = node;
     }
 }

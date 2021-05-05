@@ -4,7 +4,7 @@ public class Hexagon
 {
 
     private int fieldNumber; //
-    public HEXAGONTYPE type;
+    private HEXAGONTYPE type;
     private int[] position;
     private Node[] nodes = new Node[6];
 
@@ -68,5 +68,10 @@ public class Hexagon
         {
             nodes[index] = node;
         }
+    }
+
+    public HEXAGONTYPE getType()
+    {
+        return type;
     }
 }
