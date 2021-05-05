@@ -1,4 +1,5 @@
-﻿using Resource;
+﻿using Enums;
+using Resource;
 
 namespace Networking
 {
@@ -14,13 +15,13 @@ namespace Networking
         /// <summary>
         /// Requests if a player is allowed to trade a certain resource with the bank.
         /// </summary>
-        public void requestTradeBank();
+        public void requestTradeBank(int[] offer, int[] expect);
         
         
         /// <summary>
         /// Requests if a player is allowed to trade a certain resource with a port.
         /// </summary>
-        // public void requestTradePort(acceptCallback acceptCallback, rejectCallback rejectCallback);
+        // public void requestTradePort();
 
         
         // Phase: 3 (build)
@@ -42,7 +43,7 @@ namespace Networking
         /// <summary>
         /// Request to play a development card
         /// </summary>
-        public void requestPlayDevelopement();
+        public void requestPlayDevelopement(DEVELOPMENT_TYPE developmentType);
         
         
         // End phase

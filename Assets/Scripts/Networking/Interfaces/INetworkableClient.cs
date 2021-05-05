@@ -5,15 +5,6 @@ namespace Networking
     public interface INetworkableClient
     {
         /// <summary>
-        /// Function Pointer: Request was accepted. Handle new information 
-        /// -> this is only a placeholder, there will be more methods needed
-        /// </summary>
-        public delegate void acceptCallback(Packet acceptResult);
-
-        // public delegate void rejectCallback(Packet acceptResult, string errorMessage);
-        
-        
-        /// <summary>
         /// A new client joined -> update the UI
         /// </summary>
         /// <param name="serverPacket">New client information</param>
