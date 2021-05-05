@@ -231,6 +231,40 @@ public class Board
         file.Close();
     }
 
+    private int[][] readConfigFromFile(string path)
+    {
+        //System.IO.StreamReader file = new System.IO.StreamReader(path);
+        if (File.Exists(path))
+        {
+            string[] fileContent = File.ReadAllLines(path);
+            int[][] indexes = new int[fileContent.Length][];
+
+            for (int i = 0; i < fileContent.Length; i++)
+            {
+                if (fileContent[i] != "")
+                {
+                    string[] line = fileContent[i].Split(',');
+                    int[] lineIndexes = new int[line.Length];
+
+                    for (int j = 0; j < line.Length; j++)
+                    {
+                        if (line[j] != "-" && line[j] != null)
+                        {
+                            lineIndexes[j] = Int32.Parse(line[j]);
+                        }
+                    }
+                    indexes[i] = lineIndexes;
+                }
+
+            }
+            return indexes;
+        }
+        else
+        {
+            throw new System.ArgumentException("File not found at directory: " + path);
+        }
+    }
+
     public void placeBuilding(int nodeID, Player player)
     {
         if (allowedToBuild(nodeID, player))
