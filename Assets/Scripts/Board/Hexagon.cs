@@ -3,15 +3,16 @@ using HexagonType;
 public class Hexagon
 {
 
-    private int fieldNumber; //
+    private int fieldNumber;
     private HEXAGONTYPE type;
     private int[] position;
     private Node[] nodes = new Node[6];
+    private bool blockedByRobber = false;
 
-    public Hexagon(int fieldNumber, HEXAGONTYPE type)
+    public Hexagon(HEXAGONTYPE type, int fieldNumber)
     {
-        this.fieldNumber = fieldNumber;
         this.type = type;
+        this.fieldNumber = fieldNumber;
     }
     public Hexagon(HEXAGONTYPE type)
     {

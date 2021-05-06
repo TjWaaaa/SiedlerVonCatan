@@ -1,14 +1,47 @@
 using System;
+using PlayerColor;
 
 public class Edge
 {
-    private String edgeId;
-    private Edge[] neighborEdges;
-    private Node[] neighborNodes;
+    private int edgeId;
+    private Node[] adjacentNodes;
+    private Edge[] adjacentEdges;
+    private PLAYERCOLOR occupant = PLAYERCOLOR.NONE;
 
-    public Edge()
+    public Edge(int id)
     {
-        this.neighborEdges = new Edge[4];
-        this.neighborNodes = new Node[2];
+        edgeId = id;
+        adjacentEdges = new Edge[4];
+        adjacentNodes = new Node[2];
+    }
+    
+    public void setOccupant(PLAYERCOLOR occupant)
+    {
+        this.occupant = occupant;
+    }
+
+    public PLAYERCOLOR getOccupant()
+    {
+        return occupant;
+    }
+
+    public void setAdjacentNode(Node node, int index)
+    {
+        adjacentNodes[index] = node;
+    }
+
+    public Node[] getAdjacentNodes()
+    {
+        return adjacentNodes;
+    }
+
+    public void setAdjacentEdge(Edge edge, int index)
+    {
+        adjacentEdges[index] = edge;
+    }
+
+    public Edge[] getAdjacentEdges()
+    {
+        return adjacentEdges;
     }
 }

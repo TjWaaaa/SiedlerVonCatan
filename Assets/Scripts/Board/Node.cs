@@ -1,65 +1,69 @@
 using System;
 using System.Collections.Generic;
+using BuildingType;
+using PlayerColor;
 
 public class Node
 {
-    private int nodeID;
-    private Hexagon[] adjacentHexagons;
-    private Node[] adjacentNodes;
-    private Edge[] adjacentEdges;
-    private Player occupiedBy;
-    private String placedBuilding;
+    private int nodeId;
+    private Hexagon[] adjacentHexagons = new Hexagon[3];
+    private Node[] adjacentNodes = new Node[3];
+    private Edge[] adjacentEdges = new Edge[3];
+    private PLAYERCOLOR occupant = PLAYERCOLOR.NONE;
+    private BUILDINGTYPE buildingType = BUILDINGTYPE.NONE;
 
-    public Node(int id)
+    public Node(int nodeId)
     {
-        this.nodeID = id;
-        this.adjacentHexagons = new Hexagon[3];
-        this.adjacentNodes = new Node[3];
-        this.adjacentEdges = new Edge[3];
-        this.occupiedBy = null;
-        this.placedBuilding = null;
+        this.nodeId = nodeId;
     }
-    protected void setPlayer(Player player)
+    
+    protected void setOccupant(PLAYERCOLOR occupant)
     {
-        this.occupiedBy = player;
+        this.occupant = occupant;
     }
-    protected void setBuilding(String building)
+    
+    public PLAYERCOLOR getOccupant()
     {
-        this.placedBuilding = building;
+        return occupant;
     }
 
-    public void addAdjacentEdge(Edge edge, int index)
+    public void setAdjacentHexagon(Hexagon hexagon, int index)
     {
-        this.adjacentEdges[index] = edge;
+        adjacentHexagons[index] = hexagon;
     }
-
-    public void addAdjacentHexagon(Hexagon hexagon, int index)
-    {
-        this.adjacentHexagons[index] = hexagon;
-    }
-
-    public void addAdjacentNode(Node node, int index)
-    {
-        this.adjacentNodes[index] = node;
-    }
-
-    public Node[] getAdjacentNodes()
-    {
-        return this.adjacentNodes;
-    }
-
+    
     public Hexagon[] getAdjacentHexagons()
     {
-        return this.adjacentHexagons;
+        return adjacentHexagons;
+    }
+
+    public void setAdjacentNode(Node node, int index)
+    {
+        adjacentNodes[index] = node;
+    }
+    
+    public Node[] getAdjacentNodes()
+    {
+        return adjacentNodes;
+    }
+
+    public void setAdjacentEdge(Edge edge, int index)
+    {
+        adjacentEdges[index] = edge;
     }
 
     public Edge[] getAdjacentEdges()
     {
-        return this.adjacentEdges;
+        return adjacentEdges;
     }
 
-    public Player isOccupiedBy()
+    public void setBuildingType(BUILDINGTYPE buildingType)
     {
-        return this.occupiedBy;
+        this.buildingType = buildingType;
+    }
+
+    public BUILDINGTYPE getBuildingType()
+    {
+        return buildingType;
     }
 }
