@@ -31,7 +31,7 @@ namespace Networking
         /// <param name="type">type of building</param>
         /// <param name="x">x position on board</param>
         /// <param name="y">y position on board</param>
-        public void requestBuild(BUYABLES type, int x, int y);
+        public void requestBuild(BUYABLES type, int buildID);
         
         
         /// <summary>

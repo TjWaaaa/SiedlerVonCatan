@@ -17,6 +17,13 @@
         /// <param name="gameBoard"></param>
         public void gamestartInitialize(int[][] gameBoard);
 
+
+        /// <summary>
+        /// Send new resources to player
+        /// </summary>
+        /// <param name="resources">[+ gain resources, - spent resources]</param>
+        public void distributeResources(int playerID, int[] resources); 
+
         
         /// <summary>
         /// In game: when other player built something, send this information to clients.
@@ -25,13 +32,13 @@
         /// <param name="x">x coordinate on board</param>
         /// <param name="y">y coordinate on board</param>
         /// <param name="color">color of building owner</param>
-        public void notifyObjectPlacement(BUYABLES type, int x, int y, string color);
+        public void notifyObjectPlacement(BUYABLES buildType, int buildID, string color);
 
         
         /// <summary>
         /// Move control to the next player.
         /// </summary>
-        public void notifyNextPlayer();
+        public void notifyNextPlayer(string name);
 
         
         /// <summary>
@@ -58,5 +65,28 @@
         /// <param name="playerName">disconnected player name</param>
         /// <param name="color">disconnected player color</param>
         public void notifyClientDisconnect(string playerName, string color);
+        
+
+        // return requested information/resources -------------
+        
+        public void notifyRejection(string errorMessage);
+
+
+        public void notifyAccpetBeginRound(int[] diceResult);
+
+
+        public void notifyAcceptTradeBank();
+
+
+        public void notifyAcceptBuild();
+
+        
+        public void notifyAcceptGetResources();
+
+
+        public void notifyAcceptPlayDevelopement();
+
+        
+        public void notifyAcceptEndTurn();
     }
 }

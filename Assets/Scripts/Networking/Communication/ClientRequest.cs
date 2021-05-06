@@ -1,6 +1,4 @@
-﻿using System.Xml.Serialization;
-using Enums;
-using Resource;
+﻿using Enums;
 
 namespace Networking
 {
@@ -24,12 +22,12 @@ namespace Networking
             Client.sendRequest(PacketSerializer.objectToJsonString(packet));
         }
 
-        public void requestBuild(BUYABLES type, int x, int y)
+        public void requestBuild(BUYABLES type, int buildID)
         {
             Packet packet = new Packet();
             packet.type = (int) COMMUNICATION_METHODS.handleBuild;
-            packet.buildPosition = new[] {x, y};
-            packet.buildType = (int)type;
+            packet.buildID = buildID;
+            packet.buildType = (int) type;
             
             Client.sendRequest(PacketSerializer.objectToJsonString(packet));
         }
