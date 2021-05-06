@@ -51,6 +51,8 @@ public class Board
         edges = initializeEdges();
         hexagons = initializeHexagons();
         assignNeighborsToHexagons();
+        assignAdjecentHexagonsToNodes();
+        assignNeighborsNodesToNodes();
     }
 
     private Hexagon[,] initializeHexagons()
@@ -105,7 +107,7 @@ public class Board
 
         for (int i = 0; i < 54; i++)
         {
-            nodes[i] = new Node();
+            nodes[i] = new Node(i);
         }
         return nodes;
     }
@@ -154,9 +156,8 @@ public class Board
         file.Close();
     }
 
-    private void assignNeighborsToNodes()
+    private void assignNeighborsNodesToNodes()
     {
-
         System.IO.StreamReader file = new System.IO.StreamReader("Assets/Scripts/Board/AdjacentNodesToNodes.txt");
         foreach (Node currentNode in nodes)
         {
@@ -164,21 +165,129 @@ public class Board
             if (line != "")
             {
                 string[] indexes = line.Split(',');
-                foreach (string index in indexes)
+                for (int i = 0; i < 3; i++)
                 {
-                    if (index != "-")
+                    if (indexes[i] != "-")
                     {
-                        int neighborPos = Int32.Parse(index);
+                        int neighborPos = Int32.Parse(indexes[i]);
+                        currentNode.addAdjacentNode(nodes[neighborPos], i);
                     }
                 }
             }
 
         }
+        file.Close();
+    }
+
+    private void assignAdjecentHexagonsToNodes()
+    {
+        System.IO.StreamReader file = new System.IO.StreamReader("Assets/Scripts/Board/AdjacentHexagonsToNodes.txt");
+        foreach (Node currentNode in nodes)
+        {
+            string line = file.ReadLine();
+            if (line != "" && line != null)
+            {
+                string[] subString = line.Split(',');
+                string[][] coordinates = new string[3][];
+                for (int i = 0; i < subString.Length; i++)
+                {
+                    coordinates[i] = subString[i].Split('.');
+                }
+                for (int i = 0; i < 3; i++)
+                {
+                    if (coordinates[i][0] != "-")
+                    {
+                        int neighborYCoordinate = Int32.Parse(coordinates[i][0]);
+                        int neighborXCoordinate = Int32.Parse(coordinates[i][1]);
+                        currentNode.addAdjacentHexagon(hexagons[neighborYCoordinate, neighborXCoordinate], i);
+                    }
+                }
+            }
+        }
+        file.Close();
     }
 
     private void assignNeighborEdgesToNodes()
     {
-        //System.IO.StreamReader file = new System.IO.StreamReader("Assets/Scripts/Board/")
+        System.IO.StreamReader file = new System.IO.StreamReader("Assets/Scripts/Board/AdjacentEdgesToNodes.txt");
+        foreach (Node currentNode in nodes)
+        {
+            string line = file.ReadLine();
+            if (line != "")
+            {
 
+                string[] indexes = line.Split(',');
+                for (int i = 0; i < indexes.Length; i++)
+                {
+                    if (indexes[i] != "-")
+                    {
+
+                        int neighborPos = Int32.Parse(indexes[i]);
+                        currentNode.addAdjacentEdge(edges[neighborPos], i);
+                    }
+                }
+            }
+        }
+        file.Close();
     }
+
+    private int[][] readConfigFromFile(string path)
+    {
+        //System.IO.StreamReader file = new System.IO.StreamReader(path);
+        if (File.Exists(path))
+        {
+            string[] fileContent = File.ReadAllLines(path);
+            int[][] indexes = new int[fileContent.Length][];
+
+            for (int i = 0; i < fileContent.Length; i++)
+            {
+                if (fileContent[i] != "")
+                {
+                    string[] line = fileContent[i].Split(',');
+                    int[] lineIndexes = new int[line.Length];
+
+                    for (int j = 0; j < line.Length; j++)
+                    {
+                        if (line[j] != "-" && line[j] != null)
+                        {
+                            lineIndexes[j] = Int32.Parse(line[j]);
+                        }
+                    }
+                    indexes[i] = lineIndexes;
+                }
+
+            }
+            return indexes;
+        }
+        else
+        {
+            throw new System.ArgumentException("File not found at directory: " + path);
+        }
+    }
+
+    public void placeBuilding(int nodeID, Player player)
+    {
+        if (allowedToBuild(nodeID, player))
+        {
+            //implement me
+        }
+    }
+
+    private bool allowedToBuild(int nodeID, Player player)
+    {
+        bool hasNeighborRoad = false;
+        bool hasNoNeighborBuilding = false;
+        Node[] neighborNodes = nodes[nodeID].getAdjacentNodes();
+        Edge[] neighborEdges = nodes[nodeID].getAdjacentEdges();
+
+        foreach (Node neighbor in neighborNodes)
+        {
+            if (neighbor.isOccupiedBy() != null)
+            {
+                hasNoNeighborBuilding = true;
+            }
+        }
+        return hasNeighborRoad && hasNoNeighborBuilding;
+    }
+
 }
