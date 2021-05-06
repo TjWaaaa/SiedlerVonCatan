@@ -4,18 +4,18 @@ MonoImporter:
   externalObjects: {}
   serializedVersion: 2
   defaultReferences:
-  - villageBlue: {instanceID: 0}
-  - villageRed: {instanceID: 0}
-  - villageWhite: {instanceID: 0}
-  - villageYellow: {instanceID: 0}
-  - cityBlue: {instanceID: 0}
-  - cityRed: {instanceID: 0}
-  - cityWhite: {instanceID: 0}
-  - cityYellow: {instanceID: 0}
-  - roadBlue: {instanceID: 0}
-  - roadRed: {instanceID: 0}
-  - roadWhite: {instanceID: 0}
-  - roadYellow: {instanceID: 0}
+  - villageBlue: {fileID: 1009464644019191013, guid: f9774eeb7f1a57243b993833781eb544, type: 3}
+  - villageRed: {fileID: 8150000847907407449, guid: d8d7922bbf38a344e9196c352ddf1c19, type: 3}
+  - villageWhite: {fileID: 2459850171696622717, guid: cd17a04434055ef4f9781025926321cb, type: 3}
+  - villageYellow: {fileID: 2487137840268248899, guid: 4f2f12236d14adf41ae222eff45fca9a, type: 3}
+  - cityBlue: {fileID: 2085340451013825630, guid: 2e3b3e3b65f1bc346812c1448bae4344, type: 3}
+  - cityRed: {fileID: 6674784385774095563, guid: 3c678b46cdefa2643a8d25f623b22c4b, type: 3}
+  - cityWhite: {fileID: 1551848884130930154, guid: ac56f5851f6d11f448dc0b06ccafd6d6, type: 3}
+  - cityYellow: {fileID: 4011968005390245212, guid: 467085614d8575948b8ca19e41d6cf93, type: 3}
+  - roadBlue: {fileID: 9134993854126434323, guid: fc03856c0fc486b499996e9f467af359, type: 3}
+  - roadRed: {fileID: 4508603341180778877, guid: 0ee8e54a732690447982b3adeb5fb36d, type: 3}
+  - roadWhite: {fileID: 3952344525440638330, guid: 67a671258efbd0d458f90a545fbc98af, type: 3}
+  - roadYellow: {fileID: 1665038452485560679, guid: a303df84369114f4f92c5c52524587d2, type: 3}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 

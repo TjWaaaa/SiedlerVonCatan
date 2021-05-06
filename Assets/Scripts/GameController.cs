@@ -1,5 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
+using Resource;
+using Trade;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -7,11 +9,13 @@ public class GameController : MonoBehaviour
 {
     public GameObject showCurrentPlayer;
 
-    private Player[] players;
+    private static Player[] players;
 
-    private int currentPlayer;
+    private static int currentPlayer;
 
     private Builder builder;
+
+    public GameObject tradeMenu;
 
     public GameObject bricksText;
     public GameObject oreText;
@@ -47,14 +51,13 @@ public class GameController : MonoBehaviour
                 new Player("Player4", Color.yellow)
             };
 
-        players[0].SetBricks(5);
-        players[0].SetWood(5);
+        players[0].setResourceAmount(RESOURCE.ORE,5);
+        players[0].setResourceAmount(RESOURCE.WOOD,5);
 
-        players[1].SetBricks(2);
-        players[1].SetOre(3);
-        players[1].SetSheep(2);
-        players[1].SetWheat(4);
-        players[1].SetWood(2);
+        players[1].setResourceAmount(RESOURCE.ORE,5);
+        players[1].setResourceAmount(RESOURCE.WOOD,5);
+        players[1].setResourceAmount(RESOURCE.SHEEP,1);
+        players[1].setResourceAmount(RESOURCE.BRICK,2);
 
         currentPlayer = 0;
 
@@ -69,49 +72,64 @@ public class GameController : MonoBehaviour
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         RaycastHit hit;
 
-        if (Physics.Raycast(ray, out hit, 100f)) {
-            if (Input.GetMouseButtonDown(0)) {
+        if (!TradeMenu.isActive()) //that nobody can build cities by accident (while trading)
+        {
+            if (Physics.Raycast(ray, out hit, 100f))
+            {
+                if (Input.GetMouseButtonDown(0))
+                {
 
-                if (hit.collider.tag == "VillageSlot") {
+                    if (hit.collider.tag == "VillageSlot")
+                    {
 
-                    Debug.Log("Village: " + hit.transform.position);
-                    if (PayRessources(players[currentPlayer], 1, 0, 1, 1, 1)) {
+                        Debug.Log("Village: " + hit.transform.position);
+                        if (players[currentPlayer].canBuildVillage())
+                        {
 
-                        //Color color = players[currentPlayer].GetColor();
-                        BuildVillage(hit.transform.position + new Vector3(0, 0.065f, 0));
-                        Destroy(hit.transform.gameObject);
-                        ChangeRessourcesOutput(players[currentPlayer]);
+                            //Color color = players[currentPlayer].GetColor();
+                            BuildVillage(hit.transform.position + new Vector3(0, 0.065f, 0));
+                            Destroy(hit.transform.gameObject);
+                            players[currentPlayer].buyVillage();
+                            ChangeRessourcesOutput(players[currentPlayer]);
+                        }
+                        else Debug.Log("Not enough ressources");
                     }
-                    else Debug.Log("Not enough ressources");
-                }
 
-                else if (hit.collider.tag == "Village") {
+                    else if (hit.collider.tag == "Village")
+                    {
 
-                    Debug.Log("City: " + hit.transform.position);
-                    if (PayRessources(players[currentPlayer], 0, 3, 0, 2, 0)) {
+                        Debug.Log("City: " + hit.transform.position);
+                        if (players[currentPlayer].canBuildCity())
+                        {
 
-                        //Color color = players[currentPlayer].GetColor();
-                        BuildCity(hit.transform.position);
-                        Destroy(hit.transform.gameObject);
-                        ChangeRessourcesOutput(players[currentPlayer]);
+                            //Color color = players[currentPlayer].GetColor();
+                            BuildCity(hit.transform.position);
+                            Destroy(hit.transform.gameObject);
+                            players[currentPlayer].buyCity();
+                            ChangeRessourcesOutput(players[currentPlayer]);
+                        }
+                        else Debug.Log("Not enough ressources");
                     }
-                    else Debug.Log("Not enough ressources");
-                }
-                
-                else if (hit.collider.tag == "RoadSlot") {
 
-                    Debug.Log("Road: " + hit.transform.position);
-                    if (PayRessources(players[currentPlayer], 1, 0, 0, 0, 1)) {
+                    else if (hit.collider.tag == "RoadSlot")
+                    {
 
-                        //Color color = players[currentPlayer].GetColor();
-                        BuildRoad(hit.transform.position + new Vector3(0, 0.065f, 0), hit.transform.rotation);
-                        Destroy(hit.transform.gameObject);
-                        ChangeRessourcesOutput(players[currentPlayer]);
+                        Debug.Log("Road: " + hit.transform.position);
+                        if (players[currentPlayer].canBuildStreet())
+                        {
+
+                            //Color color = players[currentPlayer].GetColor();
+                            BuildRoad(hit.transform.position + new Vector3(0, 0.065f, 0), hit.transform.rotation);
+                            Destroy(hit.transform.gameObject);
+                            players[currentPlayer].buyStreet();
+                            ChangeRessourcesOutput(players[currentPlayer]);
+                        }
+                        else Debug.Log("Not enough resources");
                     }
-                    else Debug.Log("Not enough ressources");
                 }
             }
         }
+        else ChangeRessourcesOutput(players[currentPlayer]);
     }
 
     public void BuildVillage(Vector3 position) {
@@ -167,25 +185,7 @@ public class GameController : MonoBehaviour
             Instantiate(roadYellow, position, rotation);
         }
     }
-
-    private bool PayRessources(Player player, int bricks, int ore, int sheep, int wheat, int wood) {
-
-        if (player.GetBricks() >= bricks
-            && player.GetOre() >= ore
-            && player.GetSheep() >= sheep
-            && player.GetWheat() >= wheat
-            && player.GetWood() >= wood) {
-
-            player.SetBricks(player.GetBricks() - bricks);
-            player.SetOre(player.GetOre() - ore);
-            player.SetSheep(player.GetSheep() - sheep);
-            player.SetWheat(player.GetWheat() - wheat);
-            player.SetWood(player.GetWood() - wood);
-            ChangeRessourcesOutput(player);
-            return true;
-        }
-        else return false;
-    }
+    
 
     public void NextPlayer() {
         if (currentPlayer == players.Length - 1) {
@@ -201,10 +201,20 @@ public class GameController : MonoBehaviour
     }
 
     private void ChangeRessourcesOutput(Player player) {
-        bricksText.GetComponent<Text>().text = player.GetBricks().ToString();
-        oreText.GetComponent<Text>().text = player.GetOre().ToString();
-        sheepText.GetComponent<Text>().text = player.GetSheep().ToString();
-        wheatText.GetComponent<Text>().text = player.GetWheat().ToString();
-        woodText.GetComponent<Text>().text = player.GetWood().ToString();
+        bricksText.GetComponent<Text>().text = player.getResourceAmount(RESOURCE.BRICK).ToString();
+        oreText.GetComponent<Text>().text = player.getResourceAmount(RESOURCE.ORE).ToString();
+        sheepText.GetComponent<Text>().text = player.getResourceAmount(RESOURCE.SHEEP).ToString();
+        wheatText.GetComponent<Text>().text = player.getResourceAmount(RESOURCE.WHEAT).ToString();
+        woodText.GetComponent<Text>().text = player.getResourceAmount(RESOURCE.WOOD).ToString();
+    }
+
+    public static int getCurrentPlayer()
+    {
+        return currentPlayer;
+    }
+
+    public static Player[] getPlayers()
+    {
+        return players;
     }
 }
