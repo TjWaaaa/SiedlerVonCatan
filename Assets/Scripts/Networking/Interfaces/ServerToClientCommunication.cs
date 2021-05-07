@@ -1,4 +1,5 @@
-﻿using Enums;
+﻿using System.Collections;
+using Enums;
 
 namespace Networking
 {
@@ -7,10 +8,8 @@ namespace Networking
         /// <summary>
         /// Pre game: send a notification to all clients that a new client has joined the game.
         /// </summary>
-        /// <param name="playerID">id of new player</param>
-        /// <param name="playerName">name of new player</param>
-        /// <param name="color">color of new player</param>
-        public void notifyClientJoined(int playerID, string playerName, string color);
+        /// <param name="playerInformation">contains {{playerName, playerColor, isReady}, {...}, ...}</param>
+        public void notifyClientJoined(ArrayList playerInformation);
 
         
         /// <summary>

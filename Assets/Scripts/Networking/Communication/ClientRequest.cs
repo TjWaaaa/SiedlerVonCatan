@@ -4,6 +4,15 @@ namespace Networking
 {
     public class ClientRequest : ClientToServerCommunication
     {
+        public void requestJoinLobby(string playerName)
+        {
+            Packet packet = new Packet();
+            packet.type = (int) COMMUNICATION_METHODS.handleRequestJoinLobby;
+            packet.playerName = playerName;
+            
+            Client.sendRequest(PacketSerializer.objectToJsonString(packet));
+        }
+
         public void requestRollDice()
         {
             Packet packet = new Packet();

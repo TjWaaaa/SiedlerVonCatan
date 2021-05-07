@@ -4,6 +4,12 @@ namespace Networking
 {
     public interface ClientToServerCommunication
     {
+        /// <summary>
+        /// client requests to join lobby with his selected name.
+        /// </summary>
+        /// <param name="playerName">Name of the player</param>
+        public void requestJoinLobby(string playerName);
+        
         // Phase: 1 (roll dice + Raw material yields + what ever happens here ...)
         /// <summary>
         /// Request if a player is allowed to begin a round and able to toll the dice.

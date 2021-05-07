@@ -5,6 +5,7 @@
         // it's going to be GRAAAAAAAAND:D
         
         //Client tell Server what to call:
+        handleRequestJoinLobby,
         handleBeginRound,
         handleTradeBank,
         handleBuild,

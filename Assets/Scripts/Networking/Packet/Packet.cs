@@ -1,3 +1,8 @@
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using JetBrains.Annotations;
+
 namespace Networking
 {
     public class Packet
@@ -6,6 +11,8 @@ namespace Networking
         public string playerName { get; set; }
         public string playerColor { get; set; }
         public int playerNumber { get; set; }
+        
+        public ArrayList lobbyContent { get; set; } // {{PlayerName, PlayerColor, isReady}}
         
         public string currentPlayerName { get; set; } //target of actions or current player
         public int[][] gameBoard { get; set; }

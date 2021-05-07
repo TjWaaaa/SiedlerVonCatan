@@ -1,21 +1,19 @@
-﻿using Enums;
+﻿using System.Collections;
+using Enums;
 
 namespace Networking.Communication
 {
     public class ServerRequest : ServerToClientCommunication
     {
-        public void notifyClientJoined(int playerID, string playerName, string color)
+        public void notifyClientJoined(ArrayList playerInformation)
         {
             Packet packet = new Packet();
             packet.type = (int) COMMUNICATION_METHODS.handleClientJoined;
-            packet.playerNumber = playerID;
-            packet.playerName = playerName;
-            packet.playerColor = color;
+            packet.lobbyContent = playerInformation;
             
             // send to all
             Server.sendDataToAll(PacketSerializer.objectToJsonString(packet));
         }
-
 
         public void gamestartInitialize(int[][] gameBoard)
         {

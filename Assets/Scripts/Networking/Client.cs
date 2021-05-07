@@ -85,7 +85,7 @@ namespace Networking
         /// <param name="request">Data to send</param>
         public static void sendRequest(string request)
         {
-            Debug.Log("Client: Sending a request");
+            Debug.Log("Client: Sending a request" + request);
 
             byte[] buffer = Encoding.ASCII.GetBytes(request);
             clientSocket.BeginSend(buffer, 0, buffer.Length, SocketFlags.None, sendCallback, clientSocket);

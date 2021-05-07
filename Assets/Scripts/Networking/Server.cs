@@ -234,6 +234,10 @@ namespace Networking
         {
             switch (incomingData.type)
             {
+                case (int) COMMUNICATION_METHODS.handleRequestJoinLobby:
+                    //handleRequestJoinLobby(incomingData);
+                    break;
+                
                 case (int) COMMUNICATION_METHODS.handleBeginRound:
                     //handleBeginRound(incomingData);
                     break;
