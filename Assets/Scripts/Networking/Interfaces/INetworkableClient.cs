@@ -76,7 +76,7 @@ namespace Networking
         
         
         // /// <summary>
-        // /// Server returns result of trde
+        // /// Server returns result of trade
         // /// </summary>
         // /// <param name="serverPacket">Packet from server</param>
         //public void handleAcceptTradePort(Packet serverPacket);
@@ -108,12 +108,5 @@ namespace Networking
         /// </summary>
         /// <param name="serverPacket">Packet from server</param>
         public void handleAcceptPlayDevelopement(Packet serverPacket);
-        
-        
-        /// <summary>
-        /// Client is told that his tourn has ended
-        /// </summary>
-        /// <param name="serverPacket">Packet from server</param>
-        public void handleAcceptEndTurn(Packet serverPacket);
     }
 }

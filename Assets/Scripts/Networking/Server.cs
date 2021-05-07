@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
+using Enums;
 using UnityEngine;
 using Random = System.Random;
 
@@ -134,43 +135,17 @@ namespace Networking
             byte[] currentBuffer = new byte[recievedByteLengh];
             Array.Copy(buffer, currentBuffer, recievedByteLengh); //to remove the protruding zeros from buffer
             string incomingDataString = Encoding.ASCII.GetString(currentBuffer);
+            Packet incomingPacket = PacketSerializer.jsonToObject(incomingDataString);
             Debug.Log($"Server: Received Text (from {currentClientSocket.LocalEndPoint}): " + incomingDataString);
             
-            //todo: handle incomingDataString
+            delegateIncomingDataToMethods(incomingPacket);
             //TODO: trigger gui to display new player and add PlayerData to Dictionary
-            
-            if (incomingDataString.ToLower().Equals("get status"))
-            {
-                string dataString = $"Current status: \n connected clients: {socketPlayerData.Count} \n current buffer size: {BUFFER_SIZE}";
-                byte[] dataToSend = Encoding.ASCII.GetBytes(dataString);
-                currentClientSocket.BeginSend(dataToSend, 0, dataToSend.Length, SocketFlags.None, sendCallback, serverSocket);
-                Debug.Log("Server: Current status was requested and sent.");
-            } else if (incomingDataString.ToLower().Equals("exit")) // Client wants to exit gracefully
-            {
-                // Always Shutdown before closing
-                currentClientSocket.Shutdown(SocketShutdown.Both);
-                currentClientSocket.Close();
-                socketPlayerData.Remove(socketPlayerData.FirstOrDefault(x => x.Value == currentClientSocket).Key);
-                Debug.Log("Server: Client disconnected");
-                return;
-            }
-            else
-            {
-                Debug.Log($"Server: Echoing text: {incomingDataString}");
-                byte[] dataToSend = Encoding.ASCII.GetBytes(incomingDataString);
-                
-                foreach (Socket socket in socketPlayerData.Values)
-                {
-                    socket.BeginSend(dataToSend, 0, dataToSend.Length, SocketFlags.None, sendCallback, serverSocket);
-                }
-            }
 
             currentClientSocket.BeginReceive(buffer, 0, BUFFER_SIZE, SocketFlags.None, ReceiveCallback,
                 currentClientSocket); // Begins waiting for incoming traffic again. Overwrites buffer.
         }
 
 
-        
         /// <summary>
         /// Send data to one player with the specified ID.
         /// </summary>
@@ -248,6 +223,60 @@ namespace Networking
             }
             //todo: maybe serversocket.BeginDisconnect() ?
             serverSocket.Close();
+        }
+
+        
+        /// <summary>
+        /// map the incoming data by its type to a handle method
+        /// </summary>
+        /// <param name="incomingData">received data from client</param>
+        private static void delegateIncomingDataToMethods(Packet incomingData)
+        {
+            switch (incomingData.type)
+            {
+                case (int) COMMUNICATION_METHODS.handleBeginRound:
+                    //handleBeginRound(incomingData);
+                    break;
+                
+                case (int) COMMUNICATION_METHODS.handleTradeBank:
+                    //handleTradeBank(incomingData);
+                    break;
+                
+                case (int) COMMUNICATION_METHODS.handleBuild:
+                    //handleBuild(incomingData);
+                    break;
+                
+                case (int) COMMUNICATION_METHODS.handleBuyDevelopement:
+                    //handleBuyDevelopement(incomingData);
+                    break;
+                
+                case (int) COMMUNICATION_METHODS.handlePlayDevelopement:
+                    //handlePlayDevelopement(incomingData);
+                    break;
+                
+                case (int) COMMUNICATION_METHODS.handleEndTurn:
+                    //handleEndTurn(incomingData);
+                    break;
+                
+                case (int) COMMUNICATION_METHODS.handleClientDisconnectServerCall:
+                    //handleClientDisconnectServerCall(incomingData);
+                    break;
+                
+                default:
+                    Debug.LogWarning("there was no target method send, invalid data packet");
+                    // TODO: trow exception!!!
+                    break;
+            }
+            
+            //todo: remove this when communication works!!!
+            string data = PacketSerializer.objectToJsonString(incomingData);
+            Debug.Log($"Server: Echoing text: {data}");
+            byte[] dataToSend = Encoding.ASCII.GetBytes(data);
+                
+            foreach (Socket socket in socketPlayerData.Values)
+            {
+                socket.BeginSend(dataToSend, 0, dataToSend.Length, SocketFlags.None, sendCallback, serverSocket);
+            }
         }
     }
 }

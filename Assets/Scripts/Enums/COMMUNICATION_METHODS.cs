@@ -30,7 +30,6 @@
         handleAcceptBuild,
         handleGetResources,
         handleAcceptBuyDevelopement,
-        handleAcceptPlayDevelopement,
-        handleAcceptEndTurn
+        handleAcceptPlayDevelopement
     }
 }
