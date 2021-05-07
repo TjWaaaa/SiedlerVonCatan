@@ -11,9 +11,9 @@ namespace Networking
         }
 
 
-        public static object jsonToObject(string jsonString)
+        public static Packet jsonToObject(string jsonString)
         {
-            return JsonConvert.DeserializeObject<object>(jsonString);
+            return JsonConvert.DeserializeObject<Packet>(jsonString);
         }
     }
 }

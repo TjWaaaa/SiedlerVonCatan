@@ -1,18 +1,7 @@
-using System;
-
 namespace Networking
 {
     public interface INetworkableClient
     {
-        /// <summary>
-        /// Function Pointer: Request was accepted. Handle new information 
-        /// -> this is only a placeholder, there will be more methods needed
-        /// </summary>
-        public delegate void acceptCallback(Packet acceptResult);
-
-        // public delegate void rejectCallback(Packet acceptResult, string errorMessage);
-        
-        
         /// <summary>
         /// A new client joined -> update the UI
         /// </summary>
@@ -35,7 +24,7 @@ namespace Networking
 
         
         /// <summary>
-        /// Clinet is informed that he is the current player.
+        /// Client is informed who the next player is.
         /// </summary>
         public void handleNextPlayer();
 
@@ -44,21 +33,16 @@ namespace Networking
         /// The winner of the game is announced -> display winner in UI
         /// </summary>
         /// <param name="playerID">ID of winning player</param>
-        /// <param name="PlayerName">Name of winning player</param>
+        /// <param name="playerName">Name of winning player</param>
         /// <param name="color">Color of winning player</param>
-        public void handleVictory(int playerID, string PlayerName, string color);
-
-        /// <summary>
-        /// Handle incoming trade request from other player
-        /// </summary>
-        /// <param name="serverPacket">Packet from server</param>
-        // public void hanldePlayerToPlayerTradeRequest(Packet serverPacket);
+        public void handleVictory(int playerID, string playerName, string color);
 
         
-        /// <summary>
-        /// Answer to the regular keep alive ping from server.
-        /// </summary>
-        public void handleKeepAlivePing(acceptCallback acceptCallback);
+        // /// <summary>
+        // /// Handle incoming trade request from other player
+        // /// </summary>
+        // /// <param name="serverPacket">Packet from server</param>
+        // public void hanldePlayerToPlayerTradeRequest(Packet serverPacket);
 
 
         /// <summary>
@@ -66,5 +50,63 @@ namespace Networking
         /// </summary>
         /// <param name="serverPacket">Packet from server</param>
         public void handleClientDisconnect(Packet serverPacket);
+        
+        
+        // Answers from previous Requests -------------------------------------------
+        
+        /// <summary>
+        /// Universal method for a rejection of any client request.
+        /// </summary>
+        /// <param name="serverPacket">Incoming Packet from server</param>
+        public void handleRejection(Packet serverPacket);
+        
+        
+        /// <summary>
+        /// Server accepts begin round request and sends the dice result.
+        /// </summary>
+        /// <param name="serverPacket">Packet from server</param>
+        public void handleAccpetBeginRound(Packet serverPacket);
+
+        
+        /// <summary>
+        /// The trade request was approved.
+        /// </summary>
+        /// <param name="serverPacket">Packet from server</param>
+        public void handleAcceptTradeBank(Packet serverPacket);
+        
+        
+        // /// <summary>
+        // /// Server returns result of trade
+        // /// </summary>
+        // /// <param name="serverPacket">Packet from server</param>
+        //public void handleAcceptTradePort(Packet serverPacket);
+
+        
+        /// <summary>
+        /// Server returns the new building with the position
+        /// </summary>
+        /// <param name="serverPacket">Packet from server</param>
+        public void handleAcceptBuild(Packet serverPacket);
+        
+        
+        /// <summary>
+        /// Server returns the new resources. Updates clients resources
+        /// </summary>
+        /// <param name="serverPacket">Packet from server</param>
+        public void handleGetResources(Packet serverPacket);
+        
+        
+        /// <summary>
+        /// Server returns type of Development card
+        /// </summary>
+        /// <param name="serverPacket">Packet from server</param>
+        public void handleAcceptBuyDevelopement(Packet serverPacket);
+        
+        
+        /// <summary>
+        /// Server returns result of Development card
+        /// </summary>
+        /// <param name="serverPacket">Packet from server</param>
+        public void handleAcceptPlayDevelopement(Packet serverPacket);
     }
 }

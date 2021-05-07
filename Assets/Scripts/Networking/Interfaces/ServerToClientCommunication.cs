@@ -1,19 +1,9 @@
-﻿namespace Networking
+﻿using Enums;
+
+namespace Networking
 {
     public interface ServerToClientCommunication
     {
-        /// <summary>
-        /// Function Pointer: Request was accepted. Handle new information 
-        /// -> this is only a placeholder, there will be more methods needed
-        /// </summary>
-        public delegate void acceptCallback(Packet acceptResult);
-
-        /// <summary>
-        /// Function Pointer: Request was not accepted. Return error message.
-        /// -> this is only a placeholder, there will be more methods needed (maybe not)
-        /// </summary>
-        public delegate void rejectCallback(Packet acceptResult, string errorMessage);
-        
         /// <summary>
         /// Pre game: send a notification to all clients that a new client has joined the game.
         /// </summary>
@@ -26,55 +16,99 @@
         /// <summary>
         /// Game start: when the game starts send the board to all clients.
         /// </summary>
-        /// <param name="gameBoard"></param>
+        /// <param name="gameBoard">Game board</param>
         public void gamestartInitialize(int[][] gameBoard);
+        
+        
+        /// <summary>
+        /// Send new resources to player 
+        /// </summary>
+        /// <param name="playerID">ID of active player</param>
+        /// <param name="resources">[+ gain resources, - spent resources]</param>
+        /// <param name="victoryPoints">a players new victory points</param>
+        public void distributeResources(int playerID, int[] resources, int victoryPoints); 
 
         
         /// <summary>
         /// In game: when other player built something, send this information to clients.
         /// </summary>
-        /// <param name="type">type of building</param>
-        /// <param name="x">x coordinate on board</param>
-        /// <param name="y">y coordinate on board</param>
+        /// <param name="buildType">type of building</param>
+        /// <param name="buildID">ID of position on the board</param>
         /// <param name="color">color of building owner</param>
-        public void notifyObjectPlacement(BUYABLES type, int x, int y, string color);
+        public void notifyObjectPlacement(BUYABLES buildType, int buildID, string color);
 
         
         /// <summary>
-        /// Move control to the next player.
+        /// Notify all players who the next player is.
         /// </summary>
-        public void notifyNextPlayer();
+        public void notifyNextPlayer(string name);
 
         
         /// <summary>
         /// Tell all clients the winner of the game.
         /// </summary>
-        /// <param name="playerID">winner id</param>
-        /// <param name="PlayerName">winner name</param>
+        /// <param name="playerName">winner name</param>
         /// <param name="color">winner color</param>
-        public void notifyVictory(int playerID, string PlayerName, string color);
+        public void notifyVictory(string playerName, string color);
 
-        /// <summary>
-        /// Pass trade request to all players.
-        /// </summary>
-        /// <param name="offer">offer of requesting player</param>
-        /// <param name="expectation">expectation of resources</param>
-        /// <param name="playerColor">requesting player color</param>
-        /// <param name="playerName">requesting player name</param>
+        
+        // /// <summary>
+        // /// Pass trade request to all players.
+        // /// </summary>
+        // /// <param name="offer">offer of requesting player</param>
+        // /// <param name="expectation">expectation of resources</param>
+        // /// <param name="playerColor">requesting player color</param>
+        // /// <param name="playerName">requesting player name</param>
         // public void playerToPlayerTradeRequest(int[] offer, int[] expectation, string playerColor, string playerName);
 
-        
-        /// <summary>
-        /// Regular Ping that is sent to all clients to find out if all clients are still connected.
-        /// </summary>
-        public void keepAlivePing(acceptCallback acceptCallback, rejectCallback rejectCallback);
 
-        
         /// <summary>
         /// notify all clients that a nother client has disconnected
         /// </summary>
         /// <param name="playerName">disconnected player name</param>
         /// <param name="color">disconnected player color</param>
         public void notifyClientDisconnect(string playerName, string color);
+        
+
+        // return requested information/resources ------------------------
+        
+        /// <summary>
+        /// Return error message to client
+        /// </summary>
+        /// <param name="errorMessage">Message(String) describing the problem/error</param>
+        public void notifyRejection(int playerID, string errorMessage);
+
+
+        /// <summary>
+        /// Returns the dice result to all clients.
+        /// distributeResources() needs to be called in addition to distribute the resources.
+        /// </summary>
+        /// <param name="diceResult">two integer numbers as dice1 and dice2</param>
+        public void notifyRollDice(int[] diceResult);
+
+        // use method distributeResources
+        // public void notifyAcceptTradeBank();
+
+        // use notifyObjectPlacement
+        // public void notifyAcceptBuild();
+
+        // use method distributeResources
+        // public void notifyAcceptGetResources();
+
+
+        /// <summary>
+        /// Player is allowed to buy a development card and is notified of the type.
+        /// </summary>
+        /// <param name="playerID">Target player</param>
+        /// <param name="developmentCard">Type of development card</param>
+        public void acceptBuyDevelopement(int playerID, DEVELOPMENT_TYPE developmentCard);
+
+
+        /// <summary>
+        /// Notify all players that a player played a developement card
+        /// </summary>
+        /// <param name="developmentCard">played development card type</param>
+        /// <param name="playerName">Player who played the developement card</param>
+        public void notifyAcceptPlayDevelopement(DEVELOPMENT_TYPE developmentCard, string playerName);
     }
 }
