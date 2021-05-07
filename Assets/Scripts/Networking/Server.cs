@@ -5,21 +5,21 @@ using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using UnityEngine;
-using UnityEngine.UI;
+using Random = System.Random;
 
 namespace Networking
 {
     public class Server
     {
         private static readonly Socket serverSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-        private static Dictionary<Socket, PlayerData> socketPlayerData = new Dictionary<Socket, PlayerData>();  //serves to store all sockets
+        private static Dictionary<int, Socket> socketPlayerData = new Dictionary<int, Socket>();  //serves to store all sockets with playerID
         // private static readonly List<Socket> clientSockets = new List<Socket>(); //serves to store all sockets
         private const int BUFFER_SIZE = 2048;
         private const int PORT = 50042; //freely selectable
         private static readonly byte[] buffer = new byte[BUFFER_SIZE];
         
         private static Stack<Color> playerColors = new Stack<Color>();
-        
+                
         
         /// <summary>
         /// Starts the server to host a game.
@@ -75,9 +75,19 @@ namespace Networking
                 Debug.Log("Server: ObjectDisposedException. Client disconnected?");
                 return;
             }
-            
-            socketPlayerData.Add(clientSocket, null); //save client to socket list
-            // clientSockets.Add(clientSocket); 
+
+            // generate a new random client ID
+            int newClientID;
+            Random random = new Random();
+            bool validClientID = false;
+            do
+            {
+                newClientID = random.Next(100);
+                validClientID = socketPlayerData.ContainsKey(newClientID);  
+            } while (!validClientID);
+
+            //todo: tell server logic the clients ID
+            socketPlayerData.Add(newClientID, clientSocket); //save client to socket list
             clientSocket.BeginReceive(buffer, 0, BUFFER_SIZE, SocketFlags.None, ReceiveCallback, clientSocket); // open "chanel" to recieve data from the connected socket
             Debug.Log($"Server: Client {clientSocket.RemoteEndPoint} connected, waiting for request...");
             
@@ -114,7 +124,9 @@ namespace Networking
             {
                 Debug.Log("Server: Client forcefully disconnected");
                 currentClientSocket.Close();
-                socketPlayerData.Remove(currentClientSocket);
+                
+                // ominous solution to get to the key via the value
+                socketPlayerData.Remove(socketPlayerData.FirstOrDefault(x => x.Value == currentClientSocket).Key);
                 //todo: reestablish connection
                 return;
             }
@@ -138,7 +150,7 @@ namespace Networking
                 // Always Shutdown before closing
                 currentClientSocket.Shutdown(SocketShutdown.Both);
                 currentClientSocket.Close();
-                socketPlayerData.Remove(currentClientSocket);
+                socketPlayerData.Remove(socketPlayerData.FirstOrDefault(x => x.Value == currentClientSocket).Key);
                 Debug.Log("Server: Client disconnected");
                 return;
             }
@@ -147,14 +159,61 @@ namespace Networking
                 Debug.Log($"Server: Echoing text: {incomingDataString}");
                 byte[] dataToSend = Encoding.ASCII.GetBytes(incomingDataString);
                 
-                foreach (Socket s in socketPlayerData.Keys)
+                foreach (Socket socket in socketPlayerData.Values)
                 {
-                    s.BeginSend(dataToSend, 0, dataToSend.Length, SocketFlags.None, sendCallback, serverSocket);
+                    socket.BeginSend(dataToSend, 0, dataToSend.Length, SocketFlags.None, sendCallback, serverSocket);
                 }
             }
 
             currentClientSocket.BeginReceive(buffer, 0, BUFFER_SIZE, SocketFlags.None, ReceiveCallback,
                 currentClientSocket); // Begins waiting for incoming traffic again. Overwrites buffer.
+        }
+
+
+        
+        /// <summary>
+        /// Send data to one player with the specified ID.
+        /// </summary>
+        /// <param name="playerID">Player to send data to</param>
+        /// <param name="dataString">Data to send</param>
+        public static void sendDataToOne(int playerID, string dataString)
+        {
+            byte[] dataToSend = Encoding.ASCII.GetBytes(dataString);
+            socketPlayerData[playerID].BeginSend(dataToSend, 0, dataToSend.Length, SocketFlags.None, sendCallback, serverSocket);
+            
+        }
+        
+        
+        /// <summary>
+        /// Send data to all players but the one with the specified ID.
+        /// </summary>
+        /// <param name="playerID">Player who is excluded from sending data</param>
+        /// <param name="dataString">Data to send</param>
+        public static void sendDataToAllButOne(int playerID, string dataString)
+        {
+            byte[] dataToSend = Encoding.ASCII.GetBytes(dataString);
+            
+            foreach (int id in socketPlayerData.Keys)
+            {
+                if(id != playerID)
+                {
+                    socketPlayerData[id].BeginSend(dataToSend, 0, dataToSend.Length, SocketFlags.None, sendCallback, serverSocket);
+                }
+            }
+        }
+        
+        
+        /// <summary>
+        /// Send data to all players.
+        /// </summary>
+        /// <param name="dataString">Data to send</param>
+        public static void sendDataToAll(string dataString)
+        {
+            byte[] dataToSend = Encoding.ASCII.GetBytes(dataString);
+            foreach (int id in socketPlayerData.Keys)
+            {
+                socketPlayerData[id].BeginSend(dataToSend, 0, dataToSend.Length, SocketFlags.None, sendCallback, serverSocket);
+            }
         }
 
 
@@ -183,29 +242,12 @@ namespace Networking
         /// needs to be called at the end of the session to close all connected Sockets and the serverSocket
         /// </summary>
         private static void closeAllSockets() {
-            foreach (Socket socket in socketPlayerData.Keys) {
+            foreach (Socket socket in socketPlayerData.Values) {
                 socket.Shutdown(SocketShutdown.Both);
                 socket.Close();
             }
             //todo: maybe serversocket.BeginDisconnect() ?
             serverSocket.Close();
-        }
-        
-        
-        private class PlayerData
-        {
-            private Socket playerSocket {get;}
-            private string playerName {get;}
-            private Color color {get;}
-            private int id {get;}
-
-            public PlayerData(Socket playerSocket, string playerName, int id)
-            {
-                this.playerSocket = playerSocket;
-                this.playerName = playerName;
-                this.color = playerColors.Pop();
-                this.id = id;
-            }
         }
     }
 }

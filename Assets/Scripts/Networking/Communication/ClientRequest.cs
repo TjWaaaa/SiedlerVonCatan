@@ -4,7 +4,7 @@ namespace Networking
 {
     public class ClientRequest : ClientToServerCommunication
     {
-        public void requestBeginRound()
+        public void requestRollDice()
         {
             Packet packet = new Packet();
             packet.type = (int) COMMUNICATION_METHODS.handleBeginRound;

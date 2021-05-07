@@ -6,9 +6,9 @@ namespace Networking
     {
         // Phase: 1 (roll dice + Raw material yields + what ever happens here ...)
         /// <summary>
-        /// Request if a player is allowed to begin a round.
+        /// Request if a player is allowed to begin a round and able to toll the dice.
         /// </summary>
-        public void requestBeginRound();
+        public void requestRollDice();
         
         // Phase: 2 (trade)
         /// <summary>

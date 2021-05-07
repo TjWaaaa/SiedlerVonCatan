@@ -39,7 +39,7 @@ namespace Networking
 
         
         /// <summary>
-        /// Move control to the next player.
+        /// Notify all players who the next player is.
         /// </summary>
         public void notifyNextPlayer(string name);
 
@@ -47,10 +47,9 @@ namespace Networking
         /// <summary>
         /// Tell all clients the winner of the game.
         /// </summary>
-        /// <param name="playerID">winner id</param>
         /// <param name="playerName">winner name</param>
         /// <param name="color">winner color</param>
-        public void notifyVictory(int playerID, string playerName, string color);
+        public void notifyVictory(string playerName, string color);
 
         
         // /// <summary>
@@ -77,14 +76,15 @@ namespace Networking
         /// Return error message to client
         /// </summary>
         /// <param name="errorMessage">Message(String) describing the problem/error</param>
-        public void notifyRejection(string errorMessage);
+        public void notifyRejection(int playerID, string errorMessage);
 
 
         /// <summary>
-        /// returns the dice result to all clients, needs to call distributeResources to also return the new resources
+        /// Returns the dice result to all clients.
+        /// distributeResources() needs to be called in addition to distribute the resources.
         /// </summary>
         /// <param name="diceResult">two integer numbers as dice1 and dice2</param>
-        public void notifyAccpetBeginRound(int[] diceResult);
+        public void notifyRollDice(int[] diceResult);
 
         // use method distributeResources
         // public void notifyAcceptTradeBank();

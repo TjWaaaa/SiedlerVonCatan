@@ -12,8 +12,8 @@ namespace Networking.Communication
             packet.playerName = playerName;
             packet.playerColor = color;
             
-            // send to activ
-            Client.sendRequest(PacketSerializer.objectToJsonString(packet));
+            // send to all
+            Server.sendDataToAll(PacketSerializer.objectToJsonString(packet));
         }
 
 
@@ -24,7 +24,7 @@ namespace Networking.Communication
             packet.gameBoard = gameBoard;
             
             // send to all
-            Client.sendRequest(PacketSerializer.objectToJsonString(packet));
+            Server.sendDataToAll(PacketSerializer.objectToJsonString(packet));
         }
 
         public void distributeResources(int playerID, int[] resources, int victoryPoints)
@@ -35,8 +35,8 @@ namespace Networking.Communication
             packet.resourcesObtained = resources;
             packet.victoryPoint = victoryPoints;
             
-            // send to active|send to inactive
-            Client.sendRequest(PacketSerializer.objectToJsonString(packet));
+            // send to one
+            Server.sendDataToOne(playerID, PacketSerializer.objectToJsonString(packet));
         }
 
 
@@ -48,8 +48,8 @@ namespace Networking.Communication
             packet.buildType = (int) buildType;
             packet.buildColor = color;
             
-            // send to active|send to inactive
-            Client.sendRequest(PacketSerializer.objectToJsonString(packet));
+            // send to all
+            Server.sendDataToAll(PacketSerializer.objectToJsonString(packet));
         }
 
 
@@ -59,21 +59,20 @@ namespace Networking.Communication
             packet.type = (int) COMMUNICATION_METHODS.handleNextPlayer;
             packet.playerName = playerName;
             
-            // send to active|send to inactive
-            Client.sendRequest(PacketSerializer.objectToJsonString(packet));
+            // send to all
+            Server.sendDataToAll(PacketSerializer.objectToJsonString(packet));
         }
 
 
-        public void notifyVictory(int playerID, string playerName, string color)
+        public void notifyVictory(string playerName, string color)
         {
             Packet packet = new Packet();
             packet.type = (int) COMMUNICATION_METHODS.handleVictory;
-            packet.playerNumber = playerID;
             packet.playerName = playerName;
             packet.playerColor = color;
             
             // send to all
-            Client.sendRequest(PacketSerializer.objectToJsonString(packet));
+            Server.sendDataToAll(PacketSerializer.objectToJsonString(packet));
         }
 
 
@@ -85,31 +84,31 @@ namespace Networking.Communication
             packet.playerColor = color;
             
             // send to all
-            Client.sendRequest(PacketSerializer.objectToJsonString(packet));
+            Server.sendDataToAll(PacketSerializer.objectToJsonString(packet));
         }
 
 
         // return requested information/resources ------------------------
 
-        public void notifyRejection(string errorMessage)
+        public void notifyRejection(int playerID, string errorMessage)
         {
             Packet packet = new Packet();
             packet.type = (int) COMMUNICATION_METHODS.handleRejection;
             packet.errorMessage = errorMessage;
             
             // send to active
-            Client.sendRequest(PacketSerializer.objectToJsonString(packet));
+            Server.sendDataToOne(playerID, PacketSerializer.objectToJsonString(packet));
         }
 
 
-        public void notifyAccpetBeginRound(int[] diceResult)
+        public void notifyRollDice(int[] diceResult)
         {
             Packet packet = new Packet();
             packet.type = (int) COMMUNICATION_METHODS.handleAccpetBeginRound;
             packet.diceResult = diceResult;
             
-            // send to active
-            Client.sendRequest(PacketSerializer.objectToJsonString(packet));
+            // send to all
+            Server.sendDataToAll(PacketSerializer.objectToJsonString(packet));
         }
 
         public void acceptBuyDevelopement(int playerID, DEVELOPMENT_TYPE developmentCard)
@@ -120,7 +119,7 @@ namespace Networking.Communication
             packet.developmentCard = (int) developmentCard;
             
             // send to active
-            Client.sendRequest(PacketSerializer.objectToJsonString(packet));
+            Server.sendDataToOne(playerID, PacketSerializer.objectToJsonString(packet));
         }
 
 
@@ -131,8 +130,8 @@ namespace Networking.Communication
             packet.developmentCard = (int) developmentCard;
             packet.playerName = playerName;
             
-            // send to active|send to inactive
-            Client.sendRequest(PacketSerializer.objectToJsonString(packet));
+            // send to all
+            Server.sendDataToAll(PacketSerializer.objectToJsonString(packet));
         }
     }
 }
