@@ -84,7 +84,7 @@ namespace Networking
             do
             {
                 newClientID = random.Next(100);
-                validClientID = socketPlayerData.ContainsKey(newClientID);  
+                validClientID = !socketPlayerData.ContainsKey(newClientID);  
             } while (!validClientID);
 
             //todo: tell server logic the clients ID
