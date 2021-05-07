@@ -1,6 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
-using Resource;
+using ResourceType;
 using Trade;
 using UnityEngine;
 using UnityEngine.UI;
@@ -51,13 +51,13 @@ public class GameController : MonoBehaviour
                 new Player("Player4", Color.yellow)
             };
 
-        players[0].setResourceAmount(RESOURCE.ORE,5);
-        players[0].setResourceAmount(RESOURCE.WOOD,5);
+        players[0].setResourceAmount(RESOURCETYPE.ORE, 5);
+        players[0].setResourceAmount(RESOURCETYPE.WOOD, 5);
 
-        players[1].setResourceAmount(RESOURCE.ORE,5);
-        players[1].setResourceAmount(RESOURCE.WOOD,5);
-        players[1].setResourceAmount(RESOURCE.SHEEP,1);
-        players[1].setResourceAmount(RESOURCE.BRICK,2);
+        players[1].setResourceAmount(RESOURCETYPE.ORE, 5);
+        players[1].setResourceAmount(RESOURCETYPE.WOOD, 5);
+        players[1].setResourceAmount(RESOURCETYPE.SHEEP, 1);
+        players[1].setResourceAmount(RESOURCETYPE.BRICK, 2);
 
         currentPlayer = 0;
 
@@ -132,66 +132,84 @@ public class GameController : MonoBehaviour
         else ChangeRessourcesOutput(players[currentPlayer]);
     }
 
-    public void BuildVillage(Vector3 position) {
+    public void BuildVillage(Vector3 position)
+    {
 
         Color c = players[currentPlayer].GetColor();
-        
-        if (c.Equals(Color.blue)) {
+
+        if (c.Equals(Color.blue))
+        {
             Instantiate(villageBlue, position, Quaternion.identity);
         }
-        else if (c.Equals(Color.red)) {
+        else if (c.Equals(Color.red))
+        {
             Instantiate(villageRed, position, Quaternion.identity);
         }
-        else if (c.Equals(Color.white)) {
+        else if (c.Equals(Color.white))
+        {
             Instantiate(villageWhite, position, Quaternion.identity);
         }
-        else if (c.Equals(Color.yellow)) {
+        else if (c.Equals(Color.yellow))
+        {
             Instantiate(villageYellow, position, Quaternion.identity);
         }
     }
 
-    public void BuildCity(Vector3 position) {
+    public void BuildCity(Vector3 position)
+    {
 
         Color c = players[currentPlayer].GetColor();
-        
-        if (c.Equals(Color.blue)) {
+
+        if (c.Equals(Color.blue))
+        {
             Instantiate(cityBlue, position, Quaternion.identity);
         }
-        else if (c.Equals(Color.red)) {
+        else if (c.Equals(Color.red))
+        {
             Instantiate(cityRed, position, Quaternion.identity);
         }
-        else if (c.Equals(Color.white)) {
+        else if (c.Equals(Color.white))
+        {
             Instantiate(cityWhite, position, Quaternion.identity);
         }
-        else if (c.Equals(Color.yellow)) {
+        else if (c.Equals(Color.yellow))
+        {
             Instantiate(cityYellow, position, Quaternion.identity);
         }
     }
 
-    public void BuildRoad(Vector3 position, Quaternion rotation) {
+    public void BuildRoad(Vector3 position, Quaternion rotation)
+    {
 
         Color c = players[currentPlayer].GetColor();
-        
-        if (c.Equals(Color.blue)) {
+
+        if (c.Equals(Color.blue))
+        {
             Instantiate(roadBlue, position, rotation);
         }
-        else if (c.Equals(Color.red)) {
+        else if (c.Equals(Color.red))
+        {
             Instantiate(roadRed, position, rotation);
         }
-        else if (c.Equals(Color.white)) {
+        else if (c.Equals(Color.white))
+        {
             Instantiate(roadWhite, position, rotation);
         }
-        else if (c.Equals(Color.yellow)) {
+        else if (c.Equals(Color.yellow))
+        {
             Instantiate(roadYellow, position, rotation);
         }
     }
-    
 
-    public void NextPlayer() {
-        if (currentPlayer == players.Length - 1) {
+
+    public void NextPlayer()
+    {
+        if (currentPlayer == players.Length - 1)
+        {
             currentPlayer = 0;
         }
-        else {
+        else
+        {
             currentPlayer++;
         }
 
@@ -200,12 +218,13 @@ public class GameController : MonoBehaviour
         ChangeRessourcesOutput(players[currentPlayer]);
     }
 
-    private void ChangeRessourcesOutput(Player player) {
-        bricksText.GetComponent<Text>().text = player.getResourceAmount(RESOURCE.BRICK).ToString();
-        oreText.GetComponent<Text>().text = player.getResourceAmount(RESOURCE.ORE).ToString();
-        sheepText.GetComponent<Text>().text = player.getResourceAmount(RESOURCE.SHEEP).ToString();
-        wheatText.GetComponent<Text>().text = player.getResourceAmount(RESOURCE.WHEAT).ToString();
-        woodText.GetComponent<Text>().text = player.getResourceAmount(RESOURCE.WOOD).ToString();
+    private void ChangeRessourcesOutput(Player player)
+    {
+        bricksText.GetComponent<Text>().text = player.getResourceAmount(RESOURCETYPE.BRICK).ToString();
+        oreText.GetComponent<Text>().text = player.getResourceAmount(RESOURCETYPE.ORE).ToString();
+        sheepText.GetComponent<Text>().text = player.getResourceAmount(RESOURCETYPE.SHEEP).ToString();
+        wheatText.GetComponent<Text>().text = player.getResourceAmount(RESOURCETYPE.WHEAT).ToString();
+        woodText.GetComponent<Text>().text = player.getResourceAmount(RESOURCETYPE.WOOD).ToString();
     }
 
     public static int getCurrentPlayer()
