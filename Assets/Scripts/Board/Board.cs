@@ -13,19 +13,8 @@ public class Board
     private Hexagon[,] hexagons;
     private Node[] nodes = new Node[54];
     private Edge[] edges = new Edge[72];
-    int posNodeArray = 0;
-
-    private readonly int[][] boardConfig = {
-        new[]    {4, 1, 4, 1},
-        new[]   {1, 2, 2, 2, 4},
-        new[]  {4, 2, 2, 2, 2, 1},
-        new[] {1, 2, 2, 3, 2, 2, 4},
-        new[]  {4, 2, 2, 2, 2, 1},
-        new[]   {1, 2, 2, 2, 4},
-        new[]    {4, 1, 4, 1}
-    };
-
-    private Hexagon[][] hexagonNumbers =
+    
+    private Hexagon[][] hexagonDiceNumbers =
     {
         new Hexagon[1], // 2
         new Hexagon[2], // 3
@@ -39,7 +28,15 @@ public class Board
         new Hexagon[1], // 12
     };
 
-    private const string path = "Assets/Scripts/Board/";
+    private readonly int[][] boardConfig = {
+        new[]    {4, 1, 4, 1},
+        new[]   {1, 2, 2, 2, 4},
+        new[]  {4, 2, 2, 2, 2, 1},
+        new[] {1, 2, 2, 3, 2, 2, 4},
+        new[]  {4, 2, 2, 2, 2, 1},
+        new[]   {1, 2, 2, 2, 4},
+        new[]    {4, 1, 4, 1}
+    };
 
     private int[] neighborOffsetX = new int[] { 0, -1, -1, 0, 1, 1 };
     private int[] neighborOffsetY = new int[] { -1, -1, 0, 1, 1, 0 };
@@ -62,6 +59,8 @@ public class Board
     };
     
     private readonly int[] randomNumArray = {0, 1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6, 7, 7, 8, 8, 9};
+    
+    private const string path = "Assets/Scripts/Board/";
 
     public Board()
     {
@@ -113,10 +112,10 @@ public class Board
                         hexagons[row, col] = newHexagon;
                         
                         // adds Hexagon to empty slot in array
-                        Debug.Log(fieldNumber + " - " + hexagonNumbers[fieldNumber].Length);
-                        for (int i = 0; i < hexagonNumbers[fieldNumber].Length; i++)
+                        Debug.Log(fieldNumber + " - " + hexagonDiceNumbers[fieldNumber].Length);
+                        for (int i = 0; i < hexagonDiceNumbers[fieldNumber].Length; i++)
                         {
-                            hexagonNumbers[fieldNumber][i] ??= newHexagon;  // only adds Hexagon to slot if slot empty
+                            hexagonDiceNumbers[fieldNumber][i] ??= newHexagon;  // only adds Hexagon to slot if slot empty
                         }
                         break;
                     case 3:
