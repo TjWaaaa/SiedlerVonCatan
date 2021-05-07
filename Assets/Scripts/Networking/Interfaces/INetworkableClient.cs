@@ -1,5 +1,3 @@
-using System;
-
 namespace Networking
 {
     public interface INetworkableClient
@@ -35,15 +33,15 @@ namespace Networking
         /// The winner of the game is announced -> display winner in UI
         /// </summary>
         /// <param name="playerID">ID of winning player</param>
-        /// <param name="PlayerName">Name of winning player</param>
+        /// <param name="playerName">Name of winning player</param>
         /// <param name="color">Color of winning player</param>
-        public void handleVictory(int playerID, string PlayerName, string color);
+        public void handleVictory(int playerID, string playerName, string color);
 
         
-        /// <summary>
-        /// Handle incoming trade request from other player
-        /// </summary>
-        /// <param name="serverPacket">Packet from server</param>
+        // /// <summary>
+        // /// Handle incoming trade request from other player
+        // /// </summary>
+        // /// <param name="serverPacket">Packet from server</param>
         // public void hanldePlayerToPlayerTradeRequest(Packet serverPacket);
 
 
@@ -77,10 +75,10 @@ namespace Networking
         public void handleAcceptTradeBank(Packet serverPacket);
         
         
-        /// <summary>
-        /// Server returns result of trde
-        /// </summary>
-        /// <param name="serverPacket">Packet from server</param>
+        // /// <summary>
+        // /// Server returns result of trde
+        // /// </summary>
+        // /// <param name="serverPacket">Packet from server</param>
         //public void handleAcceptTradePort(Packet serverPacket);
 
         
@@ -96,6 +94,13 @@ namespace Networking
         /// </summary>
         /// <param name="serverPacket">Packet from server</param>
         public void handleGetResources(Packet serverPacket);
+        
+        
+        /// <summary>
+        /// Server returns type of Development card
+        /// </summary>
+        /// <param name="serverPacket">Packet from server</param>
+        public void handleAcceptBuyDevelopement(Packet serverPacket);
         
         
         /// <summary>

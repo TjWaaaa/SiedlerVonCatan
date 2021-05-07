@@ -1,5 +1,4 @@
 ﻿using Enums;
-using Resource;
 
 namespace Networking
 {
@@ -18,9 +17,9 @@ namespace Networking
         public void requestTradeBank(int[] offer, int[] expect);
         
         
-        /// <summary>
-        /// Requests if a player is allowed to trade a certain resource with a port.
-        /// </summary>
+        // /// <summary>
+        // /// Requests if a player is allowed to trade a certain resource with a port.
+        // /// </summary>
         // public void requestTradePort();
 
         
@@ -28,10 +27,9 @@ namespace Networking
         /// <summary>
         /// Request to build a building on the board
         /// </summary>
-        /// <param name="type">type of building</param>
-        /// <param name="x">x position on board</param>
-        /// <param name="y">y position on board</param>
-        public void requestBuild(BUYABLES type, int buildID);
+        /// <param name="buildType">type of building</param>
+        /// <param name="buildID">ID of building</param>
+        public void requestBuild(BUYABLES buildType, int buildID);
         
         
         /// <summary>
@@ -50,8 +48,6 @@ namespace Networking
         /// <summary>
         /// Client wants to end his turn
         /// </summary>
-        /// <param name="acceptCallback">Player is allowed to end turn. Method is called with answer from server as parameter.</param>
-        /// <param name="rejectCallback">Player is not allowed end turn now. Method is called with error message as parameter/param>
         public void requestEndTurn();
     }
 }

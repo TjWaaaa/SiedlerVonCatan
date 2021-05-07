@@ -24,12 +24,12 @@
         public void handleTradeBank(Packet clientPacket);
         
         
-        /// <summary>
-        /// React to client call requestTradePort(). If client funds are sufficient allow trade.
-        /// </summary>
-        /// <param name="clientPacket">information of requesting client</param>
-        /// <param name="acceptCallback">>method called if request was accepted.</param>
-        /// <param name="rejectCallback"></param>
+        // /// <summary>
+        // /// React to client call requestTradePort(). If client funds are sufficient allow trade.
+        // /// </summary>
+        // /// <param name="clientPacket">information of requesting client</param>
+        // /// <param name="acceptCallback">>method called if request was accepted.</param>
+        // /// <param name="rejectCallback"></param>
         //public void handleTradePort(Packet clientPacket);
 
         

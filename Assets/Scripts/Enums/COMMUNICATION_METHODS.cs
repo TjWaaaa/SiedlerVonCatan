@@ -16,6 +16,7 @@
         // Server tell Client what to call:
         handleClientJoined,
         handleGameStartInitialize,
+        distributeResources,
         handleObjectPlacement,
         handleNextPlayer,
         handleVictory,
@@ -28,6 +29,7 @@
         handleAcceptTradePort,
         handleAcceptBuild,
         handleGetResources,
+        handleAcceptBuyDevelopement,
         handleAcceptPlayDevelopement,
         handleAcceptEndTurn
     }

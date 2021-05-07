@@ -44,7 +44,7 @@ namespace Networking
         {
             Packet packet = new Packet();
             packet.type = (int) COMMUNICATION_METHODS.handlePlayDevelopement;
-            packet.developementCard = (int) developmentType;
+            packet.developmentCard = (int) developmentType;
             
             Client.sendRequest(PacketSerializer.objectToJsonString(packet));
         }
