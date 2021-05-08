@@ -7,7 +7,6 @@ using System.Linq;
 using BuildingType;
 using PlayerColor;
 
-
 public class Board
 {
     private Hexagon[,] hexagons;
@@ -89,41 +88,31 @@ public class Board
             for (int col = 0; col < boardConfig[row].Length; col++)
             {
                 int currentConfig = boardConfig[row][col];
-                /*
-                hexagons[row, col] = currentConfig switch
-                {
-                    0 => null,
-                    1 => new Hexagon(HEXAGONTYPE.WATER),
-                    2 => new Hexagon(landStack.Pop(), numberStack.Pop()),
-                    3 => new Hexagon(HEXAGONTYPE.DESERT),
-                    4 => new Hexagon(portStack.Pop()),
-                    _ => null,
-                };
-                */
 
-                switch (currentConfig)
+                HEXAGONTYPE type = currentConfig switch
                 {
-                    case 1:
-                        hexagons[row, col] = new Hexagon(HEXAGONTYPE.WATER);
-                        break;
-                    case 2:
-                        int fieldNumber = numberStack.Pop();
-                        Hexagon newHexagon = new Hexagon(landStack.Pop(), fieldNumber);
-                        hexagons[row, col] = newHexagon;
-                        
-                        // adds Hexagon to empty slot in array
-                        Debug.Log(fieldNumber + " - " + hexagonDiceNumbers[fieldNumber].Length);
-                        for (int i = 0; i < hexagonDiceNumbers[fieldNumber].Length; i++)
-                        {
-                            hexagonDiceNumbers[fieldNumber][i] ??= newHexagon;  // only adds Hexagon to slot if slot empty
-                        }
-                        break;
-                    case 3:
-                        hexagons[row, col] = new Hexagon(HEXAGONTYPE.DESERT);
-                        break;
-                    case 4:
-                        hexagons[row, col] = new Hexagon(portStack.Pop());
-                        break;
+                    1 => HEXAGONTYPE.WATER,
+                    2 => landStack.Pop(),
+                    3 => HEXAGONTYPE.DESERT,
+                    4 => portStack.Pop(),
+                    _ => HEXAGONTYPE.NONE
+                };
+
+                if (currentConfig == 2)
+                {
+                    int fieldNumber = numberStack.Pop();
+                    Hexagon newHexagon = new Hexagon(type, fieldNumber);
+                    
+                    hexagons[row, col] = newHexagon;
+                    
+                    for (int i = 0; i < hexagonDiceNumbers[fieldNumber].Length; i++)
+                    {
+                        hexagonDiceNumbers[fieldNumber][i] ??= newHexagon;  // only adds Hexagon to slot if slot empty
+                    }
+                }
+                else
+                {
+                    hexagons[row, col] = new Hexagon(type);
                 }
             }
         }
@@ -137,6 +126,8 @@ public class Board
     /// <returns>random HEXAGONTYPE stack</returns>
     private Stack<HEXAGONTYPE> createRandomHexagonStackFromArray(HEXAGONTYPE[] array)
     {
+        
+        
         return new Stack<HEXAGONTYPE>(array.OrderBy(n => Guid.NewGuid()).ToArray());
     }
 

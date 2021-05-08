@@ -2,7 +2,6 @@ using HexagonType;
 
 public class Hexagon
 {
-
     private int fieldNumber;
     private HEXAGONTYPE type;
     private int[] position;
@@ -16,8 +15,8 @@ public class Hexagon
     }
     public Hexagon(HEXAGONTYPE type)
     {
-        this.fieldNumber = 0;
         this.type = type;
+        this.fieldNumber = 0;
     }
 
     public bool isPort()
