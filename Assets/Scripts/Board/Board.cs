@@ -58,11 +58,14 @@ public class Board
     };
     
     private readonly int[] randomNumArray = {0, 1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6, 7, 7, 8, 8, 9};
+    private readonly Stack<int> numberStack;
     
     private const string path = "Assets/Scripts/Board/";
 
     public Board()
     {
+        numberStack = createRandomHexagonNumberStack(randomNumArray);
+        
         nodes = initializeNodes();
         edges = initializeEdges();
         hexagons = initializeHexagons();
@@ -79,7 +82,6 @@ public class Board
     {
         Stack<HEXAGONTYPE> landStack = createRandomHexagonStackFromArray(landHexagons);
         Stack<HEXAGONTYPE> portStack = createRandomHexagonStackFromArray(portHexagons);
-        Stack<int> numberStack = createRandomHexagonNumberStack(randomNumArray);
 
         Hexagon[,] hexagons = new Hexagon[7, 7];
 
@@ -100,15 +102,7 @@ public class Board
 
                 if (currentConfig == 2)
                 {
-                    int fieldNumber = numberStack.Pop();
-                    Hexagon newHexagon = new Hexagon(type, fieldNumber);
-                    
-                    hexagons[row, col] = newHexagon;
-                    
-                    for (int i = 0; i < hexagonDiceNumbers[fieldNumber].Length; i++)
-                    {
-                        hexagonDiceNumbers[fieldNumber][i] ??= newHexagon;  // only adds Hexagon to slot if slot empty
-                    }
+                    Hexagon newHexagon = new Hexagon(type);
                 }
                 else
                 {
@@ -176,9 +170,11 @@ public class Board
             {
                 // continue if there is no hexagon at given index
                 if (hexagons[row, col] == null) continue;
-
+                
                 Hexagon currentHexagon = hexagons[row, col];
                 Console.WriteLine(currentHexagon.GetType());
+                
+                // give all neighbors a hexagon needs to know
                 string line = file.ReadLine();
                 string[] subStrings = line.Split(',');
                 
@@ -188,6 +184,14 @@ public class Board
                     
                     int neighborPos = int.Parse(subStrings[i]);
                     currentHexagon.addNode(nodes[neighborPos], i);
+                }
+                
+                // set field number
+                int fieldNumber = numberStack.Pop();
+                currentHexagon.setFieldNumber(fieldNumber);
+                for (int i = 0; i < hexagonDiceNumbers[fieldNumber].Length; i++)
+                {
+                    hexagonDiceNumbers[fieldNumber][i] ??= currentHexagon;  // only adds Hexagon to slot if slot empty
                 }
             }
         }
