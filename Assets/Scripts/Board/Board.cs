@@ -1,18 +1,18 @@
 using System;
 using System.Collections.Generic;
-using HexagonType;
-using UnityEngine;
 using System.IO;
 using System.Linq;
 using BuildingType;
+using HexagonType;
 using PlayerColor;
+using UnityEngine;
 
 public class Board
 {
     private Hexagon[,] hexagons;
     private Node[] nodes = new Node[54];
     private Edge[] edges = new Edge[72];
-    
+
     private Hexagon[][] hexagonDiceNumbers =
     {
         new Hexagon[1], // 2
@@ -56,16 +56,16 @@ public class Board
         HEXAGONTYPE.PORTORE,
         HEXAGONTYPE.PORTWHEAT
     };
-    
-    private readonly int[] randomNumArray = {0, 1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6, 7, 7, 8, 8, 9};
+
+    private readonly int[] randomNumArray = { 0, 1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6, 7, 7, 8, 8, 9 };
     private readonly Stack<int> numberStack;
-    
+
     private const string path = "Assets/Scripts/Board/";
 
     public Board()
     {
         numberStack = createRandomHexagonNumberStack(randomNumArray);
-        
+
         nodes = initializeNodes();
         edges = initializeEdges();
         hexagons = initializeHexagons();
@@ -120,8 +120,8 @@ public class Board
     /// <returns>random HEXAGONTYPE stack</returns>
     private Stack<HEXAGONTYPE> createRandomHexagonStackFromArray(HEXAGONTYPE[] array)
     {
-        
-        
+
+
         return new Stack<HEXAGONTYPE>(array.OrderBy(n => Guid.NewGuid()).ToArray());
     }
 
@@ -134,7 +134,7 @@ public class Board
     {
         return new Stack<int>(array.OrderBy(n => Guid.NewGuid()).ToArray());
     }
-    
+
     private Node[] initializeNodes()
     {
         Node[] nodes = new Node[54];
@@ -156,7 +156,7 @@ public class Board
         }
         return edges;
     }
-    
+
     /// <summary>
     /// reads from config file and adds to all hexagons in hexagons[] the adjacent nodes 
     /// </summary>
@@ -170,22 +170,22 @@ public class Board
             {
                 // continue if there is no hexagon at given index
                 if (hexagons[row, col] == null) continue;
-                
+
                 Hexagon currentHexagon = hexagons[row, col];
                 Console.WriteLine(currentHexagon.GetType());
-                
+
                 // give all neighbors a hexagon needs to know
                 string line = file.ReadLine();
                 string[] subStrings = line.Split(',');
-                
+
                 for (int i = 0; i < 6; i++)
                 {
                     if (subStrings[i] == "-") continue;
-                    
+
                     int neighborPos = int.Parse(subStrings[i]);
                     currentHexagon.addNode(nodes[neighborPos], i);
                 }
-                
+
                 // set field number
                 int fieldNumber = numberStack.Pop();
                 currentHexagon.setFieldNumber(fieldNumber);
@@ -206,13 +206,13 @@ public class Board
         StreamReader hexagonsFile = new StreamReader(path + "AdjacentHexagonsToNodes.txt");
         StreamReader nodesFile = new StreamReader(path + "AdjacentNodesToNodes.txt");
         StreamReader edgesFile = new StreamReader(path + "AdjacentEdgesToNodes.txt");
-        
+
         foreach (Node currentNode in nodes)
         {
             string[] nHexagons = hexagonsFile.ReadLine().Split(',');
             string[] nNodes = nodesFile.ReadLine().Split(',');
             string[] nEdges = edgesFile.ReadLine().Split(',');
-            
+
             for (int i = 0; i < 3; i++)
             {
                 // sets adjacent hexagon
@@ -220,7 +220,7 @@ public class Board
                 int nHexagonPosX = int.Parse(nHexagonCoordinates[0]);
                 int nHexagonPosY = int.Parse(nHexagonCoordinates[1]);
                 currentNode.setAdjacentHexagon(hexagons[nHexagonPosX, nHexagonPosY], i);
-                
+
                 // sets adjacent node
                 if (nNodes[i] != "-")
                 {
@@ -232,7 +232,7 @@ public class Board
                 if (nEdges[i] != "-")
                 {
                     int nEdgePos = int.Parse(nEdges[i]);
-                    currentNode.setAdjacentEdge(edges[nEdgePos], i);   
+                    currentNode.setAdjacentEdge(edges[nEdgePos], i);
                 }
             }
         }
@@ -286,9 +286,9 @@ public class Board
     public void placeBuilding(int nodeId, PLAYERCOLOR player)
     {
         Node currentNode = nodes[nodeId];
-        
+
         if (!allowedToBuildOnNode(currentNode, player)) return;
-        
+
         if (currentNode.getBuildingType() == BUILDINGTYPE.NONE)
         {
             currentNode.setBuildingType(BUILDINGTYPE.VILLAGE);
@@ -345,7 +345,7 @@ public class Board
         Edge currentEdge = edges[edgeId];
 
         if (!allowedToBuildOnEdge(currentEdge, player)) return;
-        
+
         currentEdge.setOccupant(player);
     }
 
@@ -358,7 +358,7 @@ public class Board
     private bool allowedToBuildOnEdge(Edge currentEdge, PLAYERCOLOR player)
     {
         if (currentEdge.getOccupant() != PLAYERCOLOR.NONE) return false;
-        
+
         Node[] neighborNodes = currentEdge.getAdjacentNodes();
         Edge[] neighborEdges = currentEdge.getAdjacentEdges();
 
@@ -374,4 +374,48 @@ public class Board
 
         return false;
     }
+    int[][] fieldNumbers = new int[7][];
+
+    private int[] availableNumbers = new int[] { 2, 3, 3, 4, 4, 5, 5, 6, 6, 7, 7, 8, 8, 9, 9, 10, 10, 11, 11, 12 };
+
+
+    private void createNumbersArray()
+    {
+        System.Random random = new System.Random();
+        foreach (Hexagon hexagon in hexagons)
+        {
+            if (hexagon != null && hexagon.isLand() && hexagon.getType() != HEXAGONTYPE.DESERT)
+            {
+                int nextFieldNumber = availableNumbers[random.Next(availableNumbers.Length - 1)];
+                hexagon.setFieldNumber(nextFieldNumber);
+            }
+        }
+    }
+
+    // private void quicksort(int[] numberArray)
+    // {
+    //     int pivot = numberArray.Length;
+
+    //     int i = 0;
+    //     int j = pivot;
+
+    //     while (true)
+    //     {
+    //         if (i >= j)
+    //         {
+    //             pivot = j;
+    //             break;
+    //         }
+    //         else if (i >= numberArray.Length || j < 0)
+    //         {
+    //             int swapElem = numberArray[i];
+    //             numberArray[i] = numberArray[j];
+    //             numberArray[j] = swapElem;
+    //         }
+    //     }
+    //     //int swapElem = numberArray[i];
+    //     //numberArray[i] = numberArray[j];
+    //     //numberArray[j] = swapElem;
+    //     //pivot =
+    // }
 }
