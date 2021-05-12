@@ -13,6 +13,15 @@ namespace Networking
             Client.sendRequest(PacketSerializer.objectToJsonString(packet));
         }
 
+        public void requestPlayerReady(bool isReady)
+        {
+            Packet packet = new Packet();
+            packet.type = (int) COMMUNICATION_METHODS.handlePlayerReady;
+            packet.isReady = isReady;
+            
+            Client.sendRequest(PacketSerializer.objectToJsonString(packet));
+        }
+
         public void requestRollDice()
         {
             Packet packet = new Packet();

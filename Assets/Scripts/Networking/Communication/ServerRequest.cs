@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using Enums;
+using UnityEngine;
 
 namespace Networking.Communication
 {
@@ -38,13 +39,13 @@ namespace Networking.Communication
         }
 
 
-        public void notifyObjectPlacement(BUYABLES buildType, int buildID, string color)
+        public void notifyObjectPlacement(BUYABLES buildType, int buildID, Color color)
         {
             Packet packet = new Packet();
             packet.type = (int) COMMUNICATION_METHODS.handleObjectPlacement;
             packet.buildID = buildID;
             packet.buildType = (int) buildType;
-            packet.buildColor = color;
+            packet.buildColor = color.ToString();
             
             // send to all
             Server.sendDataToAll(PacketSerializer.objectToJsonString(packet));
@@ -62,24 +63,24 @@ namespace Networking.Communication
         }
 
 
-        public void notifyVictory(string playerName, string color)
+        public void notifyVictory(string playerName, Color color)
         {
             Packet packet = new Packet();
             packet.type = (int) COMMUNICATION_METHODS.handleVictory;
             packet.playerName = playerName;
-            packet.playerColor = color;
+            packet.playerColor = new float[] {color.r, color.g, color.b, color.a};
             
             // send to all
             Server.sendDataToAll(PacketSerializer.objectToJsonString(packet));
         }
 
 
-        public void notifyClientDisconnect(string playerName, string color)
+        public void notifyClientDisconnect(string playerName, Color color)
         {
             Packet packet = new Packet();
             packet.type = (int) COMMUNICATION_METHODS.handleClientDisconnect;
             packet.playerName = playerName;
-            packet.playerColor = color;
+            packet.playerColor = new float[] {color.r, color.g, color.b, color.a};
             
             // send to all
             Server.sendDataToAll(PacketSerializer.objectToJsonString(packet));
@@ -96,6 +97,16 @@ namespace Networking.Communication
             
             // send to active
             Server.sendDataToOne(playerID, PacketSerializer.objectToJsonString(packet));
+        }
+
+        public void notifyPlayerReady(string playerName)
+        {
+            Packet packet = new Packet();
+            packet.type = (int) COMMUNICATION_METHODS.handlePlayerReadyNotification;
+            packet.playerName = playerName;
+            
+            // send to active
+            Server.sendDataToAll(PacketSerializer.objectToJsonString(packet));
         }
 
 

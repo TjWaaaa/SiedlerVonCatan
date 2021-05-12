@@ -20,8 +20,9 @@ namespace Networking
         private static readonly byte[] buffer = new byte[BUFFER_SIZE];
         
         private static Stack<Color> playerColors = new Stack<Color>();
-                
-        
+        private static ServerGameLogic serverGameLogic = new ServerGameLogic();
+
+
         /// <summary>
         /// Starts the server to host a game.
         /// </summary>
@@ -78,6 +79,7 @@ namespace Networking
             }
 
             // generate a new random client ID
+            Debug.Log("initiate client id");
             int newClientID;
             Random random = new Random();
             bool validClientID = false;
@@ -88,8 +90,13 @@ namespace Networking
             } while (!validClientID);
 
             //todo: tell server logic the clients ID
+            Debug.Log("client ID: " + newClientID);
+            serverGameLogic.generatePlayer(newClientID);
             socketPlayerData.Add(newClientID, clientSocket); //save client to socket list
-            clientSocket.BeginReceive(buffer, 0, BUFFER_SIZE, SocketFlags.None, ReceiveCallback, clientSocket); // open "chanel" to recieve data from the connected socket
+            Debug.Log("client stored in dictionary");
+            
+            
+            clientSocket.BeginReceive(buffer, 0, BUFFER_SIZE, SocketFlags.None, ReceiveCallback, new object[] {clientSocket, newClientID}); // open "chanel" to recieve data from the connected socket
             Debug.Log($"Server: Client {clientSocket.RemoteEndPoint} connected, waiting for request...");
             
             RepresentJoinigClients.representNewPlayer();
@@ -114,7 +121,10 @@ namespace Networking
         /// <param name="AR">IAsyncResult</param>
         private static void ReceiveCallback(IAsyncResult AR)
         {
-            Socket currentClientSocket = (Socket) AR.AsyncState;
+            object[] socketIDArray = (object[]) AR.AsyncState;
+            Socket currentClientSocket = (Socket) socketIDArray[0];
+            int currentClientID = (int) socketIDArray[1];
+
             int recievedByteLengh;
 
             try
@@ -138,8 +148,10 @@ namespace Networking
             Packet incomingPacket = PacketSerializer.jsonToObject(incomingDataString);
             Debug.Log($"Server: Received Text (from {currentClientSocket.LocalEndPoint}): " + incomingDataString);
             
-            delegateIncomingDataToMethods(incomingPacket);
-            //TODO: trigger gui to display new player and add PlayerData to Dictionary
+            // map socket to id and send id to method call
+            
+            
+            delegateIncomingDataToMethods(incomingPacket, currentClientID);
 
             currentClientSocket.BeginReceive(buffer, 0, BUFFER_SIZE, SocketFlags.None, ReceiveCallback,
                 currentClientSocket); // Begins waiting for incoming traffic again. Overwrites buffer.
@@ -230,12 +242,13 @@ namespace Networking
         /// map the incoming data by its type to a handle method
         /// </summary>
         /// <param name="incomingData">received data from client</param>
-        private static void delegateIncomingDataToMethods(Packet incomingData)
+        private static void delegateIncomingDataToMethods(Packet incomingData, int currentClientID)
         {
             switch (incomingData.type)
             {
                 case (int) COMMUNICATION_METHODS.handleRequestJoinLobby:
-                    //handleRequestJoinLobby(incomingData);
+                    // ServerGameLogic serverGameLogic = new ServerGameLogic();
+                    serverGameLogic.handleRequestJoinLobby(incomingData, currentClientID);
                     break;
                 
                 case (int) COMMUNICATION_METHODS.handleBeginRound:
@@ -273,14 +286,14 @@ namespace Networking
             }
             
             //todo: remove this when communication works!!!
-            string data = PacketSerializer.objectToJsonString(incomingData);
-            Debug.Log($"Server: Echoing text: {data}");
-            byte[] dataToSend = Encoding.ASCII.GetBytes(data);
-                
-            foreach (Socket socket in socketPlayerData.Values)
-            {
-                socket.BeginSend(dataToSend, 0, dataToSend.Length, SocketFlags.None, sendCallback, serverSocket);
-            }
+            // string data = PacketSerializer.objectToJsonString(incomingData);
+            // Debug.Log($"Server: Echoing text: {data}");
+            // byte[] dataToSend = Encoding.ASCII.GetBytes(data);
+            //     
+            // foreach (Socket socket in socketPlayerData.Values)
+            // {
+            //     socket.BeginSend(dataToSend, 0, dataToSend.Length, SocketFlags.None, sendCallback, serverSocket);
+            // }
         }
     }
 }

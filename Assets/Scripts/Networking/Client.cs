@@ -16,6 +16,8 @@ namespace Networking
         private static readonly Socket clientSocket =
             new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
 
+        private static ClientGameLogic clientGameLogic = new ClientGameLogic();
+
 
         /// <summary>
         /// Initializes a client instance and tries to connect to the game server using the given IP address.
@@ -140,7 +142,7 @@ namespace Networking
             switch (incomingData.type)
             {
                 case (int) COMMUNICATION_METHODS.handleClientJoined:
-                    //handleClientJoined(incomingData);
+                    clientGameLogic.handleClientJoined(incomingData);
                     break;
                 
                 case (int) COMMUNICATION_METHODS.handleGameStartInitialize:

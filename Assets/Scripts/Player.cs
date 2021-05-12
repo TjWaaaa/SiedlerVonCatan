@@ -10,6 +10,8 @@ public class Player
 {
     private string playerName;
     private Color color;
+    private int playerID;
+    private bool isReady;
 
     private int points;
 
@@ -23,18 +25,46 @@ public class Player
 
     }; 
     
+    public Player(int playerID) {
+        this.playerID = playerID;
+    }
     
+    // TODO: remove this one, only use the upper one with the id!!!
     public Player(string playerName, Color color) {
         this.playerName = playerName;
         this.color = color;
     }
 
+    public int GetPlayerID() {
+        return playerID;
+    }
+    
     public Color GetColor() {
         return color;
+    }
+    
+    public void setColor(Color color)
+    {
+        this.color = color;
     }
 
     public string GetName() {
         return playerName;
+    }
+    
+    public void setPlayerName(string name)
+    {
+        this.playerName = name;
+    }
+
+    public void setIsReady(bool isReady)
+    {
+        this.isReady = isReady;
+    }
+
+    public bool getIsReady()
+    {
+        return isReady;
     }
 
     public void setResourceAmount(RESOURCE resource, int amount)

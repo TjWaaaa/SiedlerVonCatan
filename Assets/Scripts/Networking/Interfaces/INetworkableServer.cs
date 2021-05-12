@@ -5,8 +5,16 @@
         /// <summary>
         /// React to client call requestJoinLobby(). Update Player information
         /// </summary>
-        /// <param name="clientPacket">information of requesting client</param>
-        public void handleRequestJoinLobby(Packet clientPacket);
+        /// <param name="clientPacket">information of requesting client</param>u
+        /// <param name="currentClientID">id of current client</param>
+        public void handleRequestJoinLobby(Packet clientPacket, int currentClientID);
+
+        
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="clientPacket"></param>
+        public void handleRequestPlayerReady(Packet clientPacket, int currentClientID);
 
         // Phase: 1 (roll dice + Raw material yields + what ever happens here ...)
         /// <summary>
