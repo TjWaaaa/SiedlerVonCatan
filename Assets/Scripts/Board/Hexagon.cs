@@ -19,9 +19,9 @@ public class Hexagon
         this.fieldNumber = 0;
     }
 
-    public void setFieldNumber(int fieldNumber)
+    public int getFieldNumber()
     {
-        this.fieldNumber = fieldNumber;
+        return this.fieldNumber;
     }
 
     public bool isPort()
