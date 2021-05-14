@@ -46,9 +46,7 @@ namespace Networking
             }
             catch (Exception e)
             {
-                Debug.Log("failed to start server!!!");
-                Debug.Log(e);
-                throw;
+                Debug.LogError(e);
             }
             
             //todo: Close server after the end of the game.
@@ -72,14 +70,13 @@ namespace Networking
             
             try {
                 clientSocket = serverSocket.EndAccept(AR); //accepts clients connection attempt, returns client socket
-            } catch (ObjectDisposedException) 
+            } catch (ObjectDisposedException e) 
             {
-                Debug.Log("Server: ObjectDisposedException. Client disconnected?");
+                Debug.LogError("Server: ObjectDisposedException. Client disconnected?" + e.Message);
                 return;
             }
 
             // generate a new random client ID
-            Debug.Log("initiate client id");
             int newClientID;
             Random random = new Random();
             bool validClientID = false;
@@ -90,16 +87,15 @@ namespace Networking
             } while (!validClientID);
 
             //todo: tell server logic the clients ID
-            Debug.Log("client ID: " + newClientID);
             serverGameLogic.generatePlayer(newClientID);
             socketPlayerData.Add(newClientID, clientSocket); //save client to socket list
-            Debug.Log("client stored in dictionary");
+            Debug.Log($"Server: client (id: {newClientID}) stored in dictionary");
             
             
             clientSocket.BeginReceive(buffer, 0, BUFFER_SIZE, SocketFlags.None, ReceiveCallback, new object[] {clientSocket, newClientID}); // open "chanel" to recieve data from the connected socket
             Debug.Log($"Server: Client {clientSocket.RemoteEndPoint} connected, waiting for request...");
             
-            RepresentJoinigClients.representNewPlayer();
+            //RepresentJoinigClients.representNewPlayer();
             
             serverSocket.BeginAccept(AcceptCallback, null); //begins waiting for client connection attempts
         }

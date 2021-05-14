@@ -24,20 +24,19 @@ namespace Networking
             // prefab instanziieren mit daten
             Debug.Log("Client recieved new package: " + PacketSerializer.objectToJsonString(serverPacket));
 
-            Debug.Log("Client a new player appeared: ");
             foreach (JArray item in serverPacket.lobbyContent)
             {
                 try
                 {
-                    Debug.Log("is this even working???");
-                    Debug.Log("Client PlayerName: " + (string) item[0]); //fix verhexeln von Namen (auf serverseite gehen zeichen kaputt und werden zu ?)
-                    Debug.Log("Client PlayerColor: " + decodeColor((float[]) item[1].ToObject(typeof(float[])))); // ¯\_(ツ)_/¯
+                    string playerName = item[0].ToObject<string>();
+                    Color playerColor = decodeColor(item[1].ToObject<float[]>());
+                    Debug.Log("Client PlayerName: " + playerName); //done? fix verhexeln von Namen (auf serverseite gehen zeichen kaputt und werden zu ?)
+                    Debug.Log("Client PlayerColor: " + playerColor); // ¯\_(ツ)_/¯
                     
                     // DODO: display this fancy data in the Lobby
                 } catch (Exception e)
                 {
-                    Debug.LogWarning("paaaaanik");
-                    Debug.LogWarning(e.ToString());
+                    Debug.LogError(e.Message);
                 }
             }
         }

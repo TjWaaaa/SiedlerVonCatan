@@ -35,17 +35,18 @@ namespace Networking
                 {
                     return false;
                 }
+
                 clientSocket.BeginReceive(buffer, 0, BUFFER_SIZE, SocketFlags.None, receiveCallback, clientSocket);
-            } 
+            }
             catch (Exception e)
             {
                 Debug.Log("Client could not start");
                 throw e;
             }
-            
+
             return true;
         }
-        
+
 
         /// <summary>
         /// Try to connect to the server socket via user input ip address.
@@ -56,8 +57,9 @@ namespace Networking
         private static bool connectToServer(string ipAddress)
         {
             int attempts = 0;
-            
-            while(!clientSocket.Connected && attempts < 5) {
+
+            while (!clientSocket.Connected && attempts < 5)
+            {
                 try
                 {
                     attempts++;
@@ -75,12 +77,12 @@ namespace Networking
                 Debug.Log("Client: Failed connecting to Server!");
                 return false;
             }
-            
+
             Debug.Log("Client: Connected");
             return true;
         }
-        
-        
+
+
         /// <summary>
         /// Sends a request to the server.
         /// </summary>
@@ -93,7 +95,7 @@ namespace Networking
             clientSocket.BeginSend(buffer, 0, buffer.Length, SocketFlags.None, sendCallback, clientSocket);
         }
 
-        
+
         /// <summary>
         /// Callback method is called when the client has finished sending data.
         /// </summary>
@@ -102,13 +104,14 @@ namespace Networking
         {
             clientSocket.EndSend(AR);
         }
-        
-        
+
+
         /// <summary>
         /// Callback method is called in case of data being sent to the client.
         /// </summary>
         /// <param name="AR">IAsyncResult</param>
-        private static void receiveCallback(IAsyncResult AR) {
+        private static void receiveCallback(IAsyncResult AR)
+        {
             Socket currentServerSocket = (Socket) AR.AsyncState;
             int receivedBufferSize;
 
@@ -122,82 +125,90 @@ namespace Networking
                 //todo handle connection loss
                 return;
             }
-            
+
             byte[] receievedBuffer = new byte[receivedBufferSize];
             Array.Copy(buffer, receievedBuffer, receivedBufferSize);
             Packet serverData = PacketSerializer.jsonToObject(Encoding.ASCII.GetString(receievedBuffer));
-            
+
             delegateIncomingDataToMethods(serverData);
-            
-            clientSocket.BeginReceive(buffer, 0, BUFFER_SIZE, SocketFlags.None, receiveCallback, clientSocket); // start listening again
+
+            clientSocket.BeginReceive(buffer, 0, BUFFER_SIZE, SocketFlags.None, receiveCallback,
+                clientSocket); // start listening again
         }
-        
-        
+
+
         /// <summary>
         /// map the incoming data by its type to a handle method
         /// </summary>
         /// <param name="incomingData">received data from server</param>
         private static void delegateIncomingDataToMethods(Packet incomingData)
         {
-            switch (incomingData.type)
+            try
             {
-                case (int) COMMUNICATION_METHODS.handleClientJoined:
-                    clientGameLogic.handleClientJoined(incomingData);
-                    break;
-                
-                case (int) COMMUNICATION_METHODS.handleGameStartInitialize:
-                    //handleGameStartInitialize(incomingData);
-                    break;
+                switch (incomingData.type)
+                {
+                    case (int) COMMUNICATION_METHODS.handleClientJoined:
+                        clientGameLogic.handleClientJoined(incomingData);
+                        break;
 
-                case (int) COMMUNICATION_METHODS.handleObjectPlacement:
-                    //handleObjectPlacement(incomingData);
-                    break;
-                
-                case (int) COMMUNICATION_METHODS.handleNextPlayer:
-                    //handleNextPlayer(incomingData);
-                    break;
-                
-                case (int) COMMUNICATION_METHODS.handleVictory:
-                    //handleVictory(incomingData);
-                    break;
-                
-                case (int) COMMUNICATION_METHODS.handleClientDisconnect:
-                    //handleClientDisconnect(incomingData);
-                    break;
-                
-                
-                case (int) COMMUNICATION_METHODS.handleRejection:
-                    //handleRejection(incomingData);
-                    break;
-                
-                case (int) COMMUNICATION_METHODS.handleAccpetBeginRound:
-                    //handleAccpetBeginRound(incomingData);
-                    break;
-                
-                case (int) COMMUNICATION_METHODS.handleAcceptTradeBank:
-                    //handleAcceptTradeBank(incomingData);
-                    break;
-                
-                case (int) COMMUNICATION_METHODS.handleAcceptBuild:
-                    //handleAcceptBuild(incomingData);
-                    break;
-                
-                case (int) COMMUNICATION_METHODS.handleGetResources:
-                    //handleGetResources(incomingData);
-                    break;
-                
-                case (int) COMMUNICATION_METHODS.handleAcceptBuyDevelopement:
-                    //handleAcceptBuyDevelopement(incomingData);
-                    break;
+                    case (int) COMMUNICATION_METHODS.handleGameStartInitialize:
+                        //handleGameStartInitialize(incomingData);
+                        break;
 
-                case (int) COMMUNICATION_METHODS.handleAcceptPlayDevelopement:
-                    //handleAcceptPlayDevelopement(incomingData);
-                    break;
-                
-                default:
-                    Debug.LogWarning("there was no target method send, invalid data packet");
-                    // TODO: trow exception!!!
-                    break;
+                    case (int) COMMUNICATION_METHODS.handleObjectPlacement:
+                        //handleObjectPlacement(incomingData);
+                        break;
+
+                    case (int) COMMUNICATION_METHODS.handleNextPlayer:
+                        //handleNextPlayer(incomingData);
+                        break;
+
+                    case (int) COMMUNICATION_METHODS.handleVictory:
+                        //handleVictory(incomingData);
+                        break;
+
+                    case (int) COMMUNICATION_METHODS.handleClientDisconnect:
+                        //handleClientDisconnect(incomingData);
+                        break;
+
+
+                    case (int) COMMUNICATION_METHODS.handleRejection:
+                        //handleRejection(incomingData);
+                        break;
+
+                    case (int) COMMUNICATION_METHODS.handleAccpetBeginRound:
+                        //handleAccpetBeginRound(incomingData);
+                        break;
+
+                    case (int) COMMUNICATION_METHODS.handleAcceptTradeBank:
+                        //handleAcceptTradeBank(incomingData);
+                        break;
+
+                    case (int) COMMUNICATION_METHODS.handleAcceptBuild:
+                        //handleAcceptBuild(incomingData);
+                        break;
+
+                    case (int) COMMUNICATION_METHODS.handleGetResources:
+                        //handleGetResources(incomingData);
+                        break;
+
+                    case (int) COMMUNICATION_METHODS.handleAcceptBuyDevelopement:
+                        //handleAcceptBuyDevelopement(incomingData);
+                        break;
+
+                    case (int) COMMUNICATION_METHODS.handleAcceptPlayDevelopement:
+                        //handleAcceptPlayDevelopement(incomingData);
+                        break;
+
+                    default:
+                        Debug.LogWarning("there was no target method send, invalid data packet");
+                        // TODO: trow exception!!!
+                        break;
+                }
+            }
+            catch (Exception e)
+            {
+                Debug.LogError(e);
             }
             
             string receievedText = PacketSerializer.objectToJsonString(incomingData);
