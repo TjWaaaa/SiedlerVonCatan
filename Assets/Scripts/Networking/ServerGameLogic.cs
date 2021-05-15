@@ -58,7 +58,7 @@ namespace Networking
                 if (player.GetPlayerID() == currentClientID)
                 {
                     player.setIsReady(clientPacket.isReady);
-                    serverRequest.notifyPlayerReady(player.GetName(), clientPacket.isReady);
+                    serverRequest.notifyPlayerReady(currentClientID, player.GetName(), clientPacket.isReady);
                     return;
                     // todo: check if all players are ready
                 }

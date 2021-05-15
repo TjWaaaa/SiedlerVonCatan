@@ -99,15 +99,15 @@ namespace Networking.Communication
             Server.sendDataToOne(playerID, PacketSerializer.objectToJsonString(packet));
         }
 
-        public void notifyPlayerReady(string playerName, bool readyStatus)
+        public void notifyPlayerReady(int currentClientID, string playerName, bool readyStatus)
         {
             Packet packet = new Packet();
             packet.type = (int) COMMUNICATION_METHODS.handlePlayerReadyNotification;
             packet.playerName = playerName;
             packet.isReady = readyStatus;
             
-            // send to active
-            Server.sendDataToAll(PacketSerializer.objectToJsonString(packet));
+            // send to all but the player that changed its status
+            Server.sendDataToAllButOne(currentClientID, PacketSerializer.objectToJsonString(packet));
         }
 
 

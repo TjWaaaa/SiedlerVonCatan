@@ -151,7 +151,7 @@ namespace Networking
             delegateIncomingDataToMethods(incomingPacket, currentClientID);
 
             currentClientSocket.BeginReceive(buffer, 0, BUFFER_SIZE, SocketFlags.None, ReceiveCallback,
-                currentClientSocket); // Begins waiting for incoming traffic again. Overwrites buffer.
+                socketIDArray); // Begins waiting for incoming traffic again. Overwrites buffer.
         }
 
 
@@ -235,7 +235,7 @@ namespace Networking
                 }
                 catch (Exception e)
                 {
-                    Debug.LogWarning("Server: Socket could not be shut down. Closing...");
+                    Debug.LogWarning("Server: Socket could not be shut down. Closing..." + e);
                 }
                 finally
                 {

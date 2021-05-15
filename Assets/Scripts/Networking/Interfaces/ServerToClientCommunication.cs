@@ -83,9 +83,10 @@ namespace Networking
         /// <summary>
         /// Tell the clients the new state of a player.
         /// </summary>
+        /// <param name="currentClientID">ID of the client</param>
         /// <param name="playerName">playerName whose status changes</param>
         /// <param name="readyStatus">The players ready status</param>
-        public void notifyPlayerReady(string playerName, bool readyStatus);
+        public void notifyPlayerReady(int currentClientID, string playerName, bool readyStatus);
 
 
         /// <summary>
