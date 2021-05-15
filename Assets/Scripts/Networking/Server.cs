@@ -12,12 +12,12 @@ namespace Networking
 {
     public class Server
     {
-        private static readonly Socket serverSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-        private static Dictionary<int, Socket> socketPlayerData = new Dictionary<int, Socket>();  //serves to store all sockets with playerID
+        private static Socket serverSocket;
+        private static Dictionary<int, Socket> socketPlayerData;  //serves to store all sockets with playerID
         // private static readonly List<Socket> clientSockets = new List<Socket>(); //serves to store all sockets
         private const int BUFFER_SIZE = 2048;
         private const int PORT = 50042; //freely selectable
-        private static readonly byte[] buffer = new byte[BUFFER_SIZE];
+        private static byte[] buffer;
         
         private static Stack<Color> playerColors = new Stack<Color>();
         private static ServerGameLogic serverGameLogic = new ServerGameLogic();
@@ -28,7 +28,12 @@ namespace Networking
         /// </summary>
         public static bool setupServer()
         {
-            Boolean isRunning = false;
+            serverSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+            socketPlayerData = new Dictionary<int, Socket>();
+            buffer = new byte[BUFFER_SIZE];
+            
+            bool isRunning = false;
+            
             playerColors.Push(Color.red);
             playerColors.Push(Color.green);
             playerColors.Push(Color.blue);
@@ -47,16 +52,12 @@ namespace Networking
             catch (Exception e)
             {
                 Debug.LogError(e);
+                Debug.LogWarning("Closing all Sockets");
+                
+                closeAllSockets();
             }
             
             //todo: Close server after the end of the game.
-            //Debug.Log("Press any key to quit.");
-            //Console.ReadLine(); // to keep console open
-            //while (true)
-            //{
-                
-            //}
-            //closeAllSockets();
             return isRunning;
         }
         
@@ -224,11 +225,24 @@ namespace Networking
         /// <summary>
         /// needs to be called at the end of the session to close all connected Sockets and the serverSocket
         /// </summary>
-        private static void closeAllSockets() {
-            foreach (Socket socket in socketPlayerData.Values) {
-                socket.Shutdown(SocketShutdown.Both);
-                socket.Close();
+        private static void closeAllSockets()
+        {
+            foreach (Socket socket in socketPlayerData.Values)
+            {
+                try
+                {
+                    socket.Shutdown(SocketShutdown.Both);
+                }
+                catch (Exception e)
+                {
+                    Debug.LogWarning("Server: Socket could not be shut down. Closing...");
+                }
+                finally
+                {
+                    socket.Close();
+                }
             }
+
             //todo: maybe serversocket.BeginDisconnect() ?
             serverSocket.Close();
         }

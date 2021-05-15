@@ -11,10 +11,9 @@ namespace Networking
     {
         private const int BUFFER_SIZE = 2048;
         private const int PORT = 50042;
-        private static readonly byte[] buffer = new byte[BUFFER_SIZE];
+        private static byte[] buffer;
 
-        private static readonly Socket clientSocket =
-            new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+        private static Socket clientSocket;
 
         private static GameObject clientGameLogic;
 
@@ -32,6 +31,9 @@ namespace Networking
             var gameLogicObject = new GameObject();
             gameLogicObject.AddComponent<ClientGameLogic>();
             clientGameLogic = GameObject.Instantiate(gameLogicObject);
+            
+            buffer = new byte[BUFFER_SIZE];
+            clientSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
             
             try
             {
