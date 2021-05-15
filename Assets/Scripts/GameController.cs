@@ -14,8 +14,7 @@ public class GameController : MonoBehaviour
     private static int currentPlayer;
 
     private Builder builder;
-
-    public GameObject tradeMenu;
+    
 
     public GameObject bricksText;
     public GameObject oreText;
@@ -51,13 +50,29 @@ public class GameController : MonoBehaviour
                 new Player("Player4", Color.yellow)
             };
 
-        players[0].setResourceAmount(RESOURCE.ORE,5);
-        players[0].setResourceAmount(RESOURCE.WOOD,5);
-
-        players[1].setResourceAmount(RESOURCE.ORE,5);
-        players[1].setResourceAmount(RESOURCE.WOOD,5);
-        players[1].setResourceAmount(RESOURCE.SHEEP,1);
-        players[1].setResourceAmount(RESOURCE.BRICK,2);
+        players[0].setResourceAmount(RESOURCE.WHEAT,10);
+        players[0].setResourceAmount(RESOURCE.WOOD,10);
+        players[0].setResourceAmount(RESOURCE.SHEEP,10);
+        players[0].setResourceAmount(RESOURCE.BRICK,10);
+        players[0].setResourceAmount(RESOURCE.ORE,10);
+        
+        players[1].setResourceAmount(RESOURCE.WHEAT,10);
+        players[1].setResourceAmount(RESOURCE.WOOD,10);
+        players[1].setResourceAmount(RESOURCE.SHEEP,10);
+        players[1].setResourceAmount(RESOURCE.BRICK,10);
+        players[1].setResourceAmount(RESOURCE.ORE,10);
+        
+        players[2].setResourceAmount(RESOURCE.WHEAT,10);
+        players[2].setResourceAmount(RESOURCE.WOOD,10);
+        players[2].setResourceAmount(RESOURCE.SHEEP,10);
+        players[2].setResourceAmount(RESOURCE.BRICK,10);
+        players[2].setResourceAmount(RESOURCE.ORE,10);
+        
+        players[3].setResourceAmount(RESOURCE.WHEAT,10);
+        players[3].setResourceAmount(RESOURCE.WOOD,10);
+        players[3].setResourceAmount(RESOURCE.SHEEP,10);
+        players[3].setResourceAmount(RESOURCE.BRICK,10);
+        players[3].setResourceAmount(RESOURCE.ORE,10);
 
         currentPlayer = 0;
 
