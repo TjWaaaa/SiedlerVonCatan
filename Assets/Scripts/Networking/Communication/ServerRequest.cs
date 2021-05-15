@@ -99,11 +99,12 @@ namespace Networking.Communication
             Server.sendDataToOne(playerID, PacketSerializer.objectToJsonString(packet));
         }
 
-        public void notifyPlayerReady(string playerName)
+        public void notifyPlayerReady(string playerName, bool readyStatus)
         {
             Packet packet = new Packet();
             packet.type = (int) COMMUNICATION_METHODS.handlePlayerReadyNotification;
             packet.playerName = playerName;
+            packet.isReady = readyStatus;
             
             // send to active
             Server.sendDataToAll(PacketSerializer.objectToJsonString(packet));

@@ -247,6 +247,10 @@ namespace Networking
                     serverGameLogic.handleRequestJoinLobby(incomingData, currentClientID);
                     break;
                 
+                case (int) COMMUNICATION_METHODS.handlePlayerReady:
+                    serverGameLogic.handleRequestPlayerReady(incomingData, currentClientID);
+                    break;
+                
                 case (int) COMMUNICATION_METHODS.handleBeginRound:
                     //handleBeginRound(incomingData);
                     break;
@@ -276,20 +280,10 @@ namespace Networking
                     break;
                 
                 default:
-                    Debug.LogWarning("there was no target method send, invalid data packet");
+                    Debug.LogWarning($"there was no target method send, invalid data packet. Packet Type: {incomingData.type}");
                     // TODO: trow exception!!!
                     break;
             }
-            
-            //todo: remove this when communication works!!!
-            // string data = PacketSerializer.objectToJsonString(incomingData);
-            // Debug.Log($"Server: Echoing text: {data}");
-            // byte[] dataToSend = Encoding.ASCII.GetBytes(data);
-            //     
-            // foreach (Socket socket in socketPlayerData.Values)
-            // {
-            //     socket.BeginSend(dataToSend, 0, dataToSend.Length, SocketFlags.None, sendCallback, serverSocket);
-            // }
         }
     }
 }

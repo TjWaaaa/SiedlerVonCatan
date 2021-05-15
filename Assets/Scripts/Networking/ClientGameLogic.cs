@@ -1,6 +1,7 @@
 ﻿using System;
 using Newtonsoft.Json.Linq;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace Networking
 {
@@ -46,8 +47,8 @@ namespace Networking
                 {
                     string playerName = item[0].ToObject<string>();
                     Color playerColor = decodeColor(item[1].ToObject<float[]>());
-                    Debug.Log("Client PlayerName: " + playerName); //done? fix verhexeln von Namen (auf serverseite gehen zeichen kaputt und werden zu ?)
-                    Debug.Log("Client PlayerColor: " + playerColor); // ¯\_(ツ)_/¯
+                    
+                    Debug.Log($"Client joined: Name: {playerName}, Color: {playerColor}");
                     
                     // DODO: display this fancy data in the Lobby
                     RepresentJoinigClients.representNewPlayer(playerName, playerColor);
@@ -60,7 +61,8 @@ namespace Networking
 
         public void handlePlayerReadyNotification(Packet serverPacket)
         {
-            throw new System.NotImplementedException();
+            var gameObject = GameObject.Find(serverPacket.playerName);
+            gameObject.transform.Find("IsReady").GetComponent<Toggle>().isOn = serverPacket.isReady;
         }
 
         public void handleGameStartInitialize(Packet serverPacket)

@@ -164,6 +164,14 @@ namespace Networking
                         //handleGameStartInitialize(incomingData);
                         break;
 
+                    case (int) COMMUNICATION_METHODS.handlePlayerReadyNotification:
+                        ThreadManager.executeOnMainThread(() =>
+                        {
+                            clientGameLogic.GetComponent<ClientGameLogic>()
+                                .handlePlayerReadyNotification(incomingData);
+                        });
+                        break;
+
                     case (int) COMMUNICATION_METHODS.handleObjectPlacement:
                         //handleObjectPlacement(incomingData);
                         break;
@@ -210,7 +218,7 @@ namespace Networking
                         break;
 
                     default:
-                        Debug.LogWarning("there was no target method send, invalid data packet");
+                        Debug.LogWarning($"there was no target method send, invalid data packet. Packet Type: {incomingData.type}");
                         // TODO: trow exception!!!
                         break;
                 }

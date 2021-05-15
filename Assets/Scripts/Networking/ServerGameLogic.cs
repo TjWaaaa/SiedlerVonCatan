@@ -7,8 +7,9 @@ namespace Networking
 {
     public class ServerGameLogic : INetworkableServer
     {
-        private List<Player> allPlayer = new List<Player>();
-        private Stack<Color> possibleColors = new Stack<Color>();
+        private readonly List<Player> allPlayer = new List<Player>();
+        private readonly Stack<Color> possibleColors = new Stack<Color>();
+        private readonly ServerRequest serverRequest = new ServerRequest();
 
         public ServerGameLogic()
         {
@@ -45,14 +46,27 @@ namespace Networking
                         {player.GetName(), new float[] {playerColor.r, playerColor.g, playerColor.b, playerColor.a}});
                 }
             }
-
-            ServerRequest serverRequest = new ServerRequest();
+            
             serverRequest.notifyClientJoined(allPlayerInformation);
         }
 
+        
         public void handleRequestPlayerReady(Packet clientPacket, int currentClientID)
         {
-            throw new System.NotImplementedException();
+            foreach (Player player in allPlayer)
+            {
+                if (player.GetPlayerID() == currentClientID)
+                {
+                    player.setIsReady(clientPacket.isReady);
+                    serverRequest.notifyPlayerReady(player.GetName(), clientPacket.isReady);
+                    return;
+                    // todo: check if all players are ready
+                }
+            }
+            
+            // send error if no player was found
+            // todo: send error to all?
+            serverRequest.notifyRejection(currentClientID, "You seem to be not existing...");
         }
 
         public void handleBeginRound(Packet clientPacket)

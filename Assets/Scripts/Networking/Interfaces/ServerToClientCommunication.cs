@@ -73,7 +73,7 @@ namespace Networking
         // return requested information/resources ------------------------
         
         /// <summary>
-        /// Return error message to client
+        /// Return error message to client.
         /// </summary>
         /// <param name="errorMessage">Message(String) describing the problem/error</param>
         public void notifyRejection(int playerID, string errorMessage);
@@ -81,10 +81,11 @@ namespace Networking
         
         
         /// <summary>
-        /// tell the clients the new state of a player
+        /// Tell the clients the new state of a player.
         /// </summary>
         /// <param name="playerName">playerName whose status changes</param>
-        public void notifyPlayerReady(string playerName);
+        /// <param name="readyStatus">The players ready status</param>
+        public void notifyPlayerReady(string playerName, bool readyStatus);
 
 
         /// <summary>
