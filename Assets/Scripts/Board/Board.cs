@@ -72,7 +72,10 @@ public class Board
         checkPlacementConstraints();
         foreach (Hexagon hex in hexagons)
         {
-            Debug.Log(hex.getFieldNumber());
+            if (hex.getFieldNumber() != null)
+            {
+                Debug.Log(hex.getFieldNumber());
+            }
 
         }
         // assignNeighborsToHexagons();
@@ -395,23 +398,27 @@ public class Board
         {
             for (int col = 1; col < 6; col++)
             {
-                int fieldNumber = hexagons[row, col].getFieldNumber();
-
-                //neighbors just needs to be checked if fieldnumber is 6 or 8
-                if (fieldNumber == 6 || fieldNumber == 8)
+                Hexagon currentHex = hexagons[row, col];
+                if (currentHex != null)
                 {
-                    for (int offsetIndex = 0; offsetIndex < neighborOffsetX.Length; offsetIndex++)
+                    int fieldNumber = currentHex.getFieldNumber();
+
+                    //neighbors just needs to be checked if fieldnumber is 6 or 8
+                    if (fieldNumber == 6 || fieldNumber == 8)
                     {
-                        int yOffset = row + neighborOffsetY[offsetIndex];
-                        int xOffset = col + neighborOffsetX[offsetIndex];
-                        int neighborFieldnumber = hexagons[yOffset, xOffset].getFieldNumber();
-
-                        //if one of the neighbors fieldnumber is 6 or 8 the hexagon needs to be moved
-                        if (neighborFieldnumber == 6 || neighborFieldnumber == 8)
+                        for (int offsetIndex = 0; offsetIndex < neighborOffsetX.Length; offsetIndex++)
                         {
-                            int[] suitablePos = findSuitablePos();
-                            swapHexagonPositions(row, col, suitablePos[0], suitablePos[1]);
+                            int yOffset = row + neighborOffsetY[offsetIndex];
+                            int xOffset = col + neighborOffsetX[offsetIndex];
+                            int neighborFieldnumber = hexagons[yOffset, xOffset].getFieldNumber();
 
+                            //if one of the neighbors fieldnumber is 6 or 8 the hexagon needs to be moved
+                            if (neighborFieldnumber == 6 || neighborFieldnumber == 8)
+                            {
+                                int[] suitablePos = findSuitablePos();
+                                swapHexagonPositions(row, col, suitablePos[0], suitablePos[1]);
+
+                            }
                         }
                     }
                 }
@@ -430,17 +437,21 @@ public class Board
         {
             for (int col = 1; col < 6; col++)
             {
-                int fieldNumber = hexagons[row, col].getFieldNumber();
-                if (fieldNumber != 6 && fieldNumber != 8 && fieldNumber != 0)
+                Hexagon currentHex = hexagons[row, col];
+                if (currentHex != null)
                 {
-                    for (int offsetIndex = 0; offsetIndex < neighborOffsetX.Length; offsetIndex++)
+                    int fieldNumber = currentHex.getFieldNumber();
+                    if (fieldNumber != 6 && fieldNumber != 8 && fieldNumber != 0)
                     {
-                        int yOffset = row + neighborOffsetY[offsetIndex];
-                        int xOffset = col + neighborOffsetX[offsetIndex];
-                        int neighborFieldnumber = hexagons[yOffset, xOffset].getFieldNumber();
-                        if (neighborFieldnumber != 6 || neighborFieldnumber != 8)
+                        for (int offsetIndex = 0; offsetIndex < neighborOffsetX.Length; offsetIndex++)
                         {
-                            return new int[] { row, col };
+                            int yOffset = row + neighborOffsetY[offsetIndex];
+                            int xOffset = col + neighborOffsetX[offsetIndex];
+                            int neighborFieldnumber = hexagons[yOffset, xOffset].getFieldNumber();
+                            if (neighborFieldnumber != 6 || neighborFieldnumber != 8)
+                            {
+                                return new int[] { row, col };
+                            }
                         }
                     }
                 }
