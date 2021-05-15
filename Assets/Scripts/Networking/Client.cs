@@ -16,7 +16,7 @@ namespace Networking
         private static readonly Socket clientSocket =
             new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
 
-        private static ClientGameLogic clientGameLogic = new ClientGameLogic();
+        private static GameObject clientGameLogic;
 
 
         /// <summary>
@@ -28,6 +28,11 @@ namespace Networking
         /// <exception cref="Exception"></exception>
         public static bool initClient(string ipAddress)
         {
+            // instantiate a ClientGameLogic object
+            var gameLogicObject = new GameObject();
+            gameLogicObject.AddComponent<ClientGameLogic>();
+            clientGameLogic = GameObject.Instantiate(gameLogicObject);
+            
             try
             {
                 bool connectionSuccess = connectToServer(ipAddress);
@@ -148,7 +153,11 @@ namespace Networking
                 switch (incomingData.type)
                 {
                     case (int) COMMUNICATION_METHODS.handleClientJoined:
-                        clientGameLogic.handleClientJoined(incomingData);
+                        ThreadManager.executeOnMainThread(() =>
+                        {
+                            clientGameLogic.GetComponent<ClientGameLogic>()
+                                .handleClientJoined(incomingData);
+                        });
                         break;
 
                     case (int) COMMUNICATION_METHODS.handleGameStartInitialize:

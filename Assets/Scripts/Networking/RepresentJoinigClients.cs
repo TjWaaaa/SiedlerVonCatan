@@ -6,18 +6,20 @@ using UnityEngine.UI;
 
 public class RepresentJoinigClients : MonoBehaviour
 {
-    public static GameObject PlayerListItem;
+    private static GameObject _playerListItemPrefab;
+    public GameObject playerListItemPrefab;
     private static GameObject scrollViewContent;
     private static int playerNumber = 1;
     
     public void Start()
     {
         scrollViewContent = GameObject.Find("Canvas/Scroll View/Viewport/Content");
+        _playerListItemPrefab = playerListItemPrefab; // weird workaround to get a static prefab reference
     }
 
     public static void representNewPlayer(string playerName, Color playerColor)
     {
-        GameObject listItem = Instantiate(PlayerListItem, scrollViewContent.transform);
+        GameObject listItem = Instantiate(_playerListItemPrefab, scrollViewContent.transform);
         listItem.transform.Find("No.").GetComponent<Text>().text = playerNumber.ToString();
         playerNumber++;
         listItem.transform.Find("Player").GetComponent<Text>().text = playerName;

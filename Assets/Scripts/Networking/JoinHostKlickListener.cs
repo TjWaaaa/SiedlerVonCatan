@@ -72,7 +72,6 @@ public class JoinHostKlickListener : MonoBehaviour
 
             if (initComplete)
             {
-                ClientGameLogic clientGameLogic = new ClientGameLogic();
                 ClientRequest clientRequest = new ClientRequest();
                 clientRequest.requestJoinLobby(playerName);
                 // Client.sendRequest(PacketSerializer.objectToJsonString(gameInformation)); //send playerName to host

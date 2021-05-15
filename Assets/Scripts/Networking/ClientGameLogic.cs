@@ -4,9 +4,25 @@ using UnityEngine;
 
 namespace Networking
 {
-    public class ClientGameLogic : INetworkableClient
+    public class ClientGameLogic : MonoBehaviour, INetworkableClient
     {
+        /// <summary>
+        /// Create a persistent ClientGameLogicObject that stays over scene changes.
+        /// </summary>
+        public void Start()
+        {
+            DontDestroyOnLoad(this);
+        }
+
         
+        /// <summary>
+        /// Call the ThreadManager's updateMainThread() method every frame.
+        /// </summary>
+        public void Update()
+        {
+            ThreadManager.updateMainThread();
+        }
+
         /// <summary>
         /// converts a float array with r,g,b,a to a Color object
         /// </summary>
@@ -34,6 +50,7 @@ namespace Networking
                     Debug.Log("Client PlayerColor: " + playerColor); // ¯\_(ツ)_/¯
                     
                     // DODO: display this fancy data in the Lobby
+                    RepresentJoinigClients.representNewPlayer(playerName, playerColor);
                 } catch (Exception e)
                 {
                     Debug.LogError(e.Message);
