@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using ResourceType;
+using TMPro;
 using Trade;
 using UnityEngine;
 using UnityEngine.UI;
@@ -16,11 +17,11 @@ public class GameController : MonoBehaviour
     private Builder builder;
 
 
-    public GameObject bricksText;
-    public GameObject oreText;
-    public GameObject sheepText;
-    public GameObject wheatText;
-    public GameObject woodText;
+    public TextMeshProUGUI bricksText;
+    public TextMeshProUGUI oreText;
+    public TextMeshProUGUI sheepText;
+    public TextMeshProUGUI wheatText;
+    public TextMeshProUGUI woodText;
 
     public GameObject villageBlue;
     public GameObject villageRed;
@@ -235,11 +236,11 @@ public class GameController : MonoBehaviour
 
     private void ChangeRessourcesOutput(Player player)
     {
-        bricksText.GetComponent<Text>().text = player.getResourceAmount(RESOURCETYPE.BRICK).ToString();
-        oreText.GetComponent<Text>().text = player.getResourceAmount(RESOURCETYPE.ORE).ToString();
-        sheepText.GetComponent<Text>().text = player.getResourceAmount(RESOURCETYPE.SHEEP).ToString();
-        wheatText.GetComponent<Text>().text = player.getResourceAmount(RESOURCETYPE.WHEAT).ToString();
-        woodText.GetComponent<Text>().text = player.getResourceAmount(RESOURCETYPE.WOOD).ToString();
+        bricksText.text = player.getResourceAmount(RESOURCETYPE.BRICK).ToString();
+        oreText.text = player.getResourceAmount(RESOURCETYPE.ORE).ToString();
+        sheepText.text = player.getResourceAmount(RESOURCETYPE.SHEEP).ToString();
+        wheatText.text = player.getResourceAmount(RESOURCETYPE.WHEAT).ToString();
+        woodText.text = player.getResourceAmount(RESOURCETYPE.WOOD).ToString();
     }
 
     public static int getCurrentPlayer()
