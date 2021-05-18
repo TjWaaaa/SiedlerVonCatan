@@ -24,7 +24,7 @@ public class RenderRollDices : MonoBehaviour
         if (Input.GetKeyDown("space"))
         {
             Debug.Log("space pressed");
-            renderRollDices(new int[] {1,4});
+            renderRollDices(new int[] {6,6});
         }
     }
 
