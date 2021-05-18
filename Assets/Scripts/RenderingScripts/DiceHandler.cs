@@ -69,5 +69,6 @@ public class DiceHandler : MonoBehaviour
     {
         dice.enabled = false;
         diceNumber = -1;
+        Debug.Log(dice.enabled + "   " +  diceNumber);
     }
 }
