@@ -15,7 +15,7 @@ namespace Networking
         /// If updateMainThread() is called this List is emptied and all actions are executed.
         /// </summary>
         /// <param name="action">Action to execute on main thread.</param>
-        private static void executeOnMainThread(Action action)
+        public static void executeOnMainThread(Action action)
         {
             if (action == null)
             {
@@ -35,7 +35,7 @@ namespace Networking
         /// IMPORTANT!! This method must be called only from Unity's main thread!
         /// Copy the content of execOnMainThreadList to a second list and execute it.
         /// </summary>
-        private static void updateMainThread()
+        public static void updateMainThread()
         {
             if (!actionsToExec)
             {

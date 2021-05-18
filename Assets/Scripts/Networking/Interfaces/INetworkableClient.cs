@@ -8,6 +8,12 @@ namespace Networking
         /// <param name="serverPacket">New client information</param>
         public void handleClientJoined(Packet serverPacket);
 
+        /// <summary>
+        /// A player changed his/her ready status -> search UI for corresponding object -> update.
+        /// </summary>
+        /// <param name="serverPacket">Playername, readyStatus</param>
+        public void handlePlayerReadyNotification(Packet serverPacket);
+
         
         /// <summary>
         /// The game has started and the board has been sent -> render initial gameboard
@@ -32,10 +38,8 @@ namespace Networking
         /// <summary>
         /// The winner of the game is announced -> display winner in UI
         /// </summary>
-        /// <param name="playerID">ID of winning player</param>
-        /// <param name="playerName">Name of winning player</param>
-        /// <param name="color">Color of winning player</param>
-        public void handleVictory(int playerID, string playerName, string color);
+        /// <param name="serverPacket">Packet from server</param>
+        public void handleVictory(Packet serverPacket);
 
         
         // /// <summary>

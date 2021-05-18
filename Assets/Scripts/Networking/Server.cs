@@ -12,22 +12,28 @@ namespace Networking
 {
     public class Server
     {
-        private static readonly Socket serverSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-        private static Dictionary<int, Socket> socketPlayerData = new Dictionary<int, Socket>();  //serves to store all sockets with playerID
+        private static Socket serverSocket;
+        private static Dictionary<int, Socket> socketPlayerData;  //serves to store all sockets with playerID
         // private static readonly List<Socket> clientSockets = new List<Socket>(); //serves to store all sockets
         private const int BUFFER_SIZE = 2048;
         private const int PORT = 50042; //freely selectable
-        private static readonly byte[] buffer = new byte[BUFFER_SIZE];
+        private static byte[] buffer;
         
         private static Stack<Color> playerColors = new Stack<Color>();
-                
-        
+        private static ServerGameLogic serverGameLogic = new ServerGameLogic();
+
+
         /// <summary>
         /// Starts the server to host a game.
         /// </summary>
         public static bool setupServer()
         {
-            Boolean isRunning = false;
+            serverSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+            socketPlayerData = new Dictionary<int, Socket>();
+            buffer = new byte[BUFFER_SIZE];
+            
+            bool isRunning = false;
+            
             playerColors.Push(Color.red);
             playerColors.Push(Color.green);
             playerColors.Push(Color.blue);
@@ -45,19 +51,13 @@ namespace Networking
             }
             catch (Exception e)
             {
-                Debug.Log("failed to start server!!!");
-                Debug.Log(e);
-                throw;
+                Debug.LogError(e);
+                Debug.LogWarning("Closing all Sockets");
+                
+                closeAllSockets();
             }
             
             //todo: Close server after the end of the game.
-            //Debug.Log("Press any key to quit.");
-            //Console.ReadLine(); // to keep console open
-            //while (true)
-            //{
-                
-            //}
-            //closeAllSockets();
             return isRunning;
         }
         
@@ -71,9 +71,9 @@ namespace Networking
             
             try {
                 clientSocket = serverSocket.EndAccept(AR); //accepts clients connection attempt, returns client socket
-            } catch (ObjectDisposedException) 
+            } catch (ObjectDisposedException e) 
             {
-                Debug.Log("Server: ObjectDisposedException. Client disconnected?");
+                Debug.LogError("Server: ObjectDisposedException. Client disconnected?" + e.Message);
                 return;
             }
 
@@ -84,15 +84,19 @@ namespace Networking
             do
             {
                 newClientID = random.Next(100);
-                validClientID = socketPlayerData.ContainsKey(newClientID);  
+                validClientID = !socketPlayerData.ContainsKey(newClientID);  
             } while (!validClientID);
 
             //todo: tell server logic the clients ID
+            serverGameLogic.generatePlayer(newClientID);
             socketPlayerData.Add(newClientID, clientSocket); //save client to socket list
-            clientSocket.BeginReceive(buffer, 0, BUFFER_SIZE, SocketFlags.None, ReceiveCallback, clientSocket); // open "chanel" to recieve data from the connected socket
+            Debug.Log($"Server: client (id: {newClientID}) stored in dictionary");
+            
+            
+            clientSocket.BeginReceive(buffer, 0, BUFFER_SIZE, SocketFlags.None, ReceiveCallback, new object[] {clientSocket, newClientID}); // open "chanel" to recieve data from the connected socket
             Debug.Log($"Server: Client {clientSocket.RemoteEndPoint} connected, waiting for request...");
             
-            RepresentJoinigClients.representNewPlayer();
+            //RepresentJoinigClients.representNewPlayer();
             
             serverSocket.BeginAccept(AcceptCallback, null); //begins waiting for client connection attempts
         }
@@ -114,7 +118,10 @@ namespace Networking
         /// <param name="AR">IAsyncResult</param>
         private static void ReceiveCallback(IAsyncResult AR)
         {
-            Socket currentClientSocket = (Socket) AR.AsyncState;
+            object[] socketIDArray = (object[]) AR.AsyncState;
+            Socket currentClientSocket = (Socket) socketIDArray[0];
+            int currentClientID = (int) socketIDArray[1];
+
             int recievedByteLengh;
 
             try
@@ -138,11 +145,13 @@ namespace Networking
             Packet incomingPacket = PacketSerializer.jsonToObject(incomingDataString);
             Debug.Log($"Server: Received Text (from {currentClientSocket.LocalEndPoint}): " + incomingDataString);
             
-            delegateIncomingDataToMethods(incomingPacket);
-            //TODO: trigger gui to display new player and add PlayerData to Dictionary
+            // map socket to id and send id to method call
+            
+            
+            delegateIncomingDataToMethods(incomingPacket, currentClientID);
 
             currentClientSocket.BeginReceive(buffer, 0, BUFFER_SIZE, SocketFlags.None, ReceiveCallback,
-                currentClientSocket); // Begins waiting for incoming traffic again. Overwrites buffer.
+                socketIDArray); // Begins waiting for incoming traffic again. Overwrites buffer.
         }
 
 
@@ -151,8 +160,10 @@ namespace Networking
         /// </summary>
         /// <param name="playerID">Player to send data to</param>
         /// <param name="dataString">Data to send</param>
-        public static void sendDataToOne(int playerID, string dataString)
+        public static void sendDataToOne(int playerID, Packet data)
         {
+            data.playerNumber = playerID;
+            string dataString = PacketSerializer.objectToJsonString(data);
             byte[] dataToSend = Encoding.ASCII.GetBytes(dataString);
             socketPlayerData[playerID].BeginSend(dataToSend, 0, dataToSend.Length, SocketFlags.None, sendCallback, serverSocket);
             
@@ -164,14 +175,15 @@ namespace Networking
         /// </summary>
         /// <param name="playerID">Player who is excluded from sending data</param>
         /// <param name="dataString">Data to send</param>
-        public static void sendDataToAllButOne(int playerID, string dataString)
+        public static void sendDataToAllButOne(int playerID, Packet data)
         {
-            byte[] dataToSend = Encoding.ASCII.GetBytes(dataString);
-            
             foreach (int id in socketPlayerData.Keys)
             {
                 if(id != playerID)
                 {
+                    data.playerNumber = playerID;
+                    string dataString = PacketSerializer.objectToJsonString(data);
+                    byte[] dataToSend = Encoding.ASCII.GetBytes(dataString);
                     socketPlayerData[id].BeginSend(dataToSend, 0, dataToSend.Length, SocketFlags.None, sendCallback, serverSocket);
                 }
             }
@@ -182,11 +194,13 @@ namespace Networking
         /// Send data to all players.
         /// </summary>
         /// <param name="dataString">Data to send</param>
-        public static void sendDataToAll(string dataString)
+        public static void sendDataToAll(Packet data)
         {
-            byte[] dataToSend = Encoding.ASCII.GetBytes(dataString);
             foreach (int id in socketPlayerData.Keys)
             {
+                data.playerNumber = id;
+                string dataString = PacketSerializer.objectToJsonString(data);
+                byte[] dataToSend = Encoding.ASCII.GetBytes(dataString);
                 socketPlayerData[id].BeginSend(dataToSend, 0, dataToSend.Length, SocketFlags.None, sendCallback, serverSocket);
             }
         }
@@ -216,11 +230,24 @@ namespace Networking
         /// <summary>
         /// needs to be called at the end of the session to close all connected Sockets and the serverSocket
         /// </summary>
-        private static void closeAllSockets() {
-            foreach (Socket socket in socketPlayerData.Values) {
-                socket.Shutdown(SocketShutdown.Both);
-                socket.Close();
+        private static void closeAllSockets()
+        {
+            foreach (Socket socket in socketPlayerData.Values)
+            {
+                try
+                {
+                    socket.Shutdown(SocketShutdown.Both);
+                }
+                catch (Exception e)
+                {
+                    Debug.LogWarning("Server: Socket could not be shut down. Closing..." + e);
+                }
+                finally
+                {
+                    socket.Close();
+                }
             }
+
             //todo: maybe serversocket.BeginDisconnect() ?
             serverSocket.Close();
         }
@@ -230,10 +257,18 @@ namespace Networking
         /// map the incoming data by its type to a handle method
         /// </summary>
         /// <param name="incomingData">received data from client</param>
-        private static void delegateIncomingDataToMethods(Packet incomingData)
+        private static void delegateIncomingDataToMethods(Packet incomingData, int currentClientID)
         {
             switch (incomingData.type)
             {
+                case (int) COMMUNICATION_METHODS.handleRequestJoinLobby:
+                    serverGameLogic.handleRequestJoinLobby(incomingData, currentClientID);
+                    break;
+                
+                case (int) COMMUNICATION_METHODS.handlePlayerReady:
+                    serverGameLogic.handleRequestPlayerReady(incomingData, currentClientID);
+                    break;
+                
                 case (int) COMMUNICATION_METHODS.handleBeginRound:
                     //handleBeginRound(incomingData);
                     break;
@@ -263,19 +298,9 @@ namespace Networking
                     break;
                 
                 default:
-                    Debug.LogWarning("there was no target method send, invalid data packet");
+                    Debug.LogWarning($"there was no target method send, invalid data packet. Packet Type: {incomingData.type}");
                     // TODO: trow exception!!!
                     break;
-            }
-            
-            //todo: remove this when communication works!!!
-            string data = PacketSerializer.objectToJsonString(incomingData);
-            Debug.Log($"Server: Echoing text: {data}");
-            byte[] dataToSend = Encoding.ASCII.GetBytes(data);
-                
-            foreach (Socket socket in socketPlayerData.Values)
-            {
-                socket.BeginSend(dataToSend, 0, dataToSend.Length, SocketFlags.None, sendCallback, serverSocket);
             }
         }
     }

@@ -5,6 +5,8 @@
         // it's going to be GRAAAAAAAAND:D
         
         //Client tell Server what to call:
+        handleRequestJoinLobby,
+        handlePlayerReady,
         handleBeginRound,
         handleTradeBank,
         handleBuild,
@@ -24,6 +26,7 @@
         handleClientDisconnect,
         
         handleRejection,
+        handlePlayerReadyNotification,
         handleAccpetBeginRound,
         handleAcceptTradeBank,
         handleAcceptTradePort,

@@ -22,9 +22,6 @@ public class JoinHostKlickListener : MonoBehaviour
             ? "127.0.0.1"
             : GameObject.Find("Canvas/InputField_hostIP").GetComponent<InputField>().text;
 
-        Packet gameInformation = new Packet();
-        gameInformation.playerName = "Simon";
-
         Debug.Log("joining game...");
         Debug.Log("playerName: " + playerName);
         Debug.Log("hostIp: " + hostIp);
@@ -33,8 +30,8 @@ public class JoinHostKlickListener : MonoBehaviour
 
         if (initComplete)
         {
-            Client.sendRequest(PacketSerializer.objectToJsonString(gameInformation));
-            Debug.Log(PacketSerializer.objectToJsonString(gameInformation)); //send playerName to host
+            ClientRequest clientRequest = new ClientRequest();
+            clientRequest.requestJoinLobby(playerName);
 
             SceneManager.LoadScene("Scenes/Lobby");
         }
@@ -56,8 +53,8 @@ public class JoinHostKlickListener : MonoBehaviour
         bool isRunning = Server.setupServer(); //host server
         string playerName = GameObject.Find("Canvas/InputField_playerName").GetComponent<InputField>().text;
         
-        Packet gameInformation = new Packet();
-        gameInformation.playerName = "Simon";
+        // Packet gameInformation = new Packet();
+        // gameInformation.playerName = "Simon";
         
         Debug.Log("hosting game...");
 
@@ -75,10 +72,12 @@ public class JoinHostKlickListener : MonoBehaviour
 
             if (initComplete)
             {
-                Client.sendRequest(PacketSerializer.objectToJsonString(gameInformation)); //send playerName to host
+                ClientRequest clientRequest = new ClientRequest();
+                clientRequest.requestJoinLobby(playerName);
+                // Client.sendRequest(PacketSerializer.objectToJsonString(gameInformation)); //send playerName to host
             }
 
-            Debug.Log("Host: hostIp: " + serverIPEndpoint.Address);
+            Debug.Log("Client: hostIp: " + serverIPEndpoint.Address);
             SceneManager.LoadScene("Scenes/Lobby");
         }
     }

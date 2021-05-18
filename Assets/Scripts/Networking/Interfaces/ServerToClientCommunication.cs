@@ -1,4 +1,6 @@
-﻿using Enums;
+﻿using System.Collections;
+using Enums;
+using UnityEngine;
 
 namespace Networking
 {
@@ -7,10 +9,8 @@ namespace Networking
         /// <summary>
         /// Pre game: send a notification to all clients that a new client has joined the game.
         /// </summary>
-        /// <param name="playerID">id of new player</param>
-        /// <param name="playerName">name of new player</param>
-        /// <param name="color">color of new player</param>
-        public void notifyClientJoined(int playerID, string playerName, string color);
+        /// <param name="playerInformation">contains {{playerName, playerColor, isReady}, {...}, ...}</param>
+        public void notifyClientJoined(ArrayList playerInformation);
 
         
         /// <summary>
@@ -35,7 +35,7 @@ namespace Networking
         /// <param name="buildType">type of building</param>
         /// <param name="buildID">ID of position on the board</param>
         /// <param name="color">color of building owner</param>
-        public void notifyObjectPlacement(BUYABLES buildType, int buildID, string color);
+        public void notifyObjectPlacement(BUYABLES buildType, int buildID, Color color);
 
         
         /// <summary>
@@ -49,7 +49,7 @@ namespace Networking
         /// </summary>
         /// <param name="playerName">winner name</param>
         /// <param name="color">winner color</param>
-        public void notifyVictory(string playerName, string color);
+        public void notifyVictory(string playerName, Color color);
 
         
         // /// <summary>
@@ -67,16 +67,26 @@ namespace Networking
         /// </summary>
         /// <param name="playerName">disconnected player name</param>
         /// <param name="color">disconnected player color</param>
-        public void notifyClientDisconnect(string playerName, string color);
+        public void notifyClientDisconnect(string playerName, Color color);
         
 
         // return requested information/resources ------------------------
         
         /// <summary>
-        /// Return error message to client
+        /// Return error message to client.
         /// </summary>
         /// <param name="errorMessage">Message(String) describing the problem/error</param>
         public void notifyRejection(int playerID, string errorMessage);
+
+        
+        
+        /// <summary>
+        /// Tell the clients the new state of a player.
+        /// </summary>
+        /// <param name="currentClientID">ID of the client</param>
+        /// <param name="playerName">playerName whose status changes</param>
+        /// <param name="readyStatus">The players ready status</param>
+        public void notifyPlayerReady(int currentClientID, string playerName, bool readyStatus);
 
 
         /// <summary>

@@ -1,21 +1,20 @@
-﻿using Enums;
+﻿using System.Collections;
+using Enums;
+using UnityEngine;
 
 namespace Networking.Communication
 {
     public class ServerRequest : ServerToClientCommunication
     {
-        public void notifyClientJoined(int playerID, string playerName, string color)
+        public void notifyClientJoined(ArrayList playerInformation)
         {
             Packet packet = new Packet();
             packet.type = (int) COMMUNICATION_METHODS.handleClientJoined;
-            packet.playerNumber = playerID;
-            packet.playerName = playerName;
-            packet.playerColor = color;
+            packet.lobbyContent = playerInformation;
             
             // send to all
-            Server.sendDataToAll(PacketSerializer.objectToJsonString(packet));
+            Server.sendDataToAll(packet);
         }
-
 
         public void gamestartInitialize(int[][] gameBoard)
         {
@@ -24,7 +23,7 @@ namespace Networking.Communication
             packet.gameBoard = gameBoard;
             
             // send to all
-            Server.sendDataToAll(PacketSerializer.objectToJsonString(packet));
+            Server.sendDataToAll(packet);
         }
 
         public void distributeResources(int playerID, int[] resources, int victoryPoints)
@@ -36,20 +35,20 @@ namespace Networking.Communication
             packet.victoryPoint = victoryPoints;
             
             // send to one
-            Server.sendDataToOne(playerID, PacketSerializer.objectToJsonString(packet));
+            Server.sendDataToOne(playerID, packet);
         }
 
 
-        public void notifyObjectPlacement(BUYABLES buildType, int buildID, string color)
+        public void notifyObjectPlacement(BUYABLES buildType, int buildID, Color color)
         {
             Packet packet = new Packet();
             packet.type = (int) COMMUNICATION_METHODS.handleObjectPlacement;
             packet.buildID = buildID;
             packet.buildType = (int) buildType;
-            packet.buildColor = color;
+            packet.buildColor = color.ToString();
             
             // send to all
-            Server.sendDataToAll(PacketSerializer.objectToJsonString(packet));
+            Server.sendDataToAll(packet);
         }
 
 
@@ -60,31 +59,31 @@ namespace Networking.Communication
             packet.playerName = playerName;
             
             // send to all
-            Server.sendDataToAll(PacketSerializer.objectToJsonString(packet));
+            Server.sendDataToAll(packet);
         }
 
 
-        public void notifyVictory(string playerName, string color)
+        public void notifyVictory(string playerName, Color color)
         {
             Packet packet = new Packet();
             packet.type = (int) COMMUNICATION_METHODS.handleVictory;
             packet.playerName = playerName;
-            packet.playerColor = color;
+            packet.playerColor = new float[] {color.r, color.g, color.b, color.a};
             
             // send to all
-            Server.sendDataToAll(PacketSerializer.objectToJsonString(packet));
+            Server.sendDataToAll(packet);
         }
 
 
-        public void notifyClientDisconnect(string playerName, string color)
+        public void notifyClientDisconnect(string playerName, Color color)
         {
             Packet packet = new Packet();
             packet.type = (int) COMMUNICATION_METHODS.handleClientDisconnect;
             packet.playerName = playerName;
-            packet.playerColor = color;
+            packet.playerColor = new float[] {color.r, color.g, color.b, color.a};
             
             // send to all
-            Server.sendDataToAll(PacketSerializer.objectToJsonString(packet));
+            Server.sendDataToAll(packet);
         }
 
 
@@ -97,7 +96,19 @@ namespace Networking.Communication
             packet.errorMessage = errorMessage;
             
             // send to active
-            Server.sendDataToOne(playerID, PacketSerializer.objectToJsonString(packet));
+            Server.sendDataToOne(playerID, packet);
+        }
+
+        public void notifyPlayerReady(int currentClientID, string playerName, bool readyStatus)
+        {
+            Packet packet = new Packet();
+            packet.type = (int) COMMUNICATION_METHODS.handlePlayerReadyNotification;
+            packet.playerName = playerName;
+            packet.isReady = readyStatus;
+            packet.currentPlayerNumber = currentClientID;
+            
+            // send to all but the player that changed its status
+            Server.sendDataToAllButOne(currentClientID, packet);
         }
 
 
@@ -108,7 +119,7 @@ namespace Networking.Communication
             packet.diceResult = diceResult;
             
             // send to all
-            Server.sendDataToAll(PacketSerializer.objectToJsonString(packet));
+            Server.sendDataToAll(packet);
         }
 
         public void acceptBuyDevelopement(int playerID, DEVELOPMENT_TYPE developmentCard)
@@ -119,7 +130,7 @@ namespace Networking.Communication
             packet.developmentCard = (int) developmentCard;
             
             // send to active
-            Server.sendDataToOne(playerID, PacketSerializer.objectToJsonString(packet));
+            Server.sendDataToOne(playerID, packet);
         }
 
 
@@ -131,7 +142,7 @@ namespace Networking.Communication
             packet.playerName = playerName;
             
             // send to all
-            Server.sendDataToAll(PacketSerializer.objectToJsonString(packet));
+            Server.sendDataToAll(packet);
         }
     }
 }
