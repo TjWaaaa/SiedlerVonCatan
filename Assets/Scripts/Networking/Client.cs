@@ -166,7 +166,10 @@ namespace Networking
                         break;
 
                     case (int) COMMUNICATION_METHODS.handleGameStartInitialize:
-                        //handleGameStartInitialize(incomingData);
+                        ThreadManager.executeOnMainThread(() =>
+                        {
+                            clientGameLogic.handleGameStartInitialize(incomingData);
+                        });
                         break;
 
                     case (int) COMMUNICATION_METHODS.handlePlayerReadyNotification:

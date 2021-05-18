@@ -3,6 +3,7 @@ using Enums;
 using Newtonsoft.Json.Linq;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 namespace Networking
@@ -122,7 +123,8 @@ namespace Networking
 
         public void handleGameStartInitialize(Packet serverPacket)
         {
-            throw new System.NotImplementedException();
+            SceneManager.LoadScene("GameScene");
+            Debug.Log("Client: Sie haben ein Spielbrett erhalten :)");
         }
 
         public void handleObjectPlacement(Packet serverPacket)

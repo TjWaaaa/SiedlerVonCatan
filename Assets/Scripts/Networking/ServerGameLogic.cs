@@ -53,20 +53,31 @@ namespace Networking
         
         public void handleRequestPlayerReady(Packet clientPacket, int currentClientID)
         {
+        
+            bool runGame = true;
+        
             foreach (Player player in allPlayer)
             {
                 if (player.GetPlayerID() == currentClientID)
                 {
                     player.setIsReady(clientPacket.isReady);
                     serverRequest.notifyPlayerReady(currentClientID, player.GetName(), clientPacket.isReady);
-                    return;
-                    // todo: check if all players are ready
+                }
+                
+                // check if all players are ready
+                if (!player.getIsReady())
+                {
+                    runGame = false;
                 }
             }
             
+            // start game if all player are ready
+            //todo: Boardgenerator!
+            serverRequest.gamestartInitialize(new int[][]{});
+            
             // send error if no player was found
             // todo: send error to all?
-            serverRequest.notifyRejection(currentClientID, "You seem to be not existing...");
+            // serverRequest.notifyRejection(currentClientID, "You seem to be not existing...");
         }
 
         public void handleBeginRound(Packet clientPacket)
