@@ -4,6 +4,7 @@ using System.Net.Sockets;
 using System.Text;
 using Enums;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace Networking
 {
@@ -15,7 +16,7 @@ namespace Networking
 
         private static Socket clientSocket;
 
-        private static GameObject clientGameLogic;
+        private static ClientGameLogic clientGameLogic;
 
 
         /// <summary>
@@ -30,8 +31,8 @@ namespace Networking
             // instantiate a ClientGameLogic object
             var gameLogicObject = new GameObject();
             gameLogicObject.AddComponent<ClientGameLogic>();
-            clientGameLogic = GameObject.Instantiate(gameLogicObject);
-            
+            clientGameLogic = GameObject.Instantiate(gameLogicObject).GetComponent<ClientGameLogic>();
+                        
             buffer = new byte[BUFFER_SIZE];
             clientSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
             
@@ -155,10 +156,12 @@ namespace Networking
                 switch (incomingData.type)
                 {
                     case (int) COMMUNICATION_METHODS.handleClientJoined:
+                        // todo: eliminate race condition!!!
+                        // while (SceneManager.GetActiveScene().name != "Lobby") ; //Waiting for Unity to load lobby
+                        
                         ThreadManager.executeOnMainThread(() =>
                         {
-                            clientGameLogic.GetComponent<ClientGameLogic>()
-                                .handleClientJoined(incomingData);
+                            clientGameLogic.handleClientJoined(incomingData);
                         });
                         break;
 
@@ -169,8 +172,7 @@ namespace Networking
                     case (int) COMMUNICATION_METHODS.handlePlayerReadyNotification:
                         ThreadManager.executeOnMainThread(() =>
                         {
-                            clientGameLogic.GetComponent<ClientGameLogic>()
-                                .handlePlayerReadyNotification(incomingData);
+                            clientGameLogic.handlePlayerReadyNotification(incomingData);
                         });
                         break;
 

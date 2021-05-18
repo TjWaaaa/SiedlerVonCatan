@@ -1,5 +1,7 @@
 ﻿using System;
+using Enums;
 using Newtonsoft.Json.Linq;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -7,15 +9,22 @@ namespace Networking
 {
     public class ClientGameLogic : MonoBehaviour, INetworkableClient
     {
+        public int myID { get; private set; }
+
+        private PrefabFactory prefabFactory;
+        private GameObject scrollViewContent;
+        private int playerNumber = 1;
+
         /// <summary>
         /// Create a persistent ClientGameLogicObject that stays over scene changes.
         /// </summary>
         public void Start()
         {
+            prefabFactory = GameObject.Find("PrefabFactory").GetComponent<PrefabFactory>();
             DontDestroyOnLoad(this);
         }
 
-        
+
         /// <summary>
         /// Call the ThreadManager's updateMainThread() method every frame.
         /// </summary>
@@ -35,24 +44,70 @@ namespace Networking
             return color;
         }
 
+        
+        /// <summary>
+        /// Add a player list entry to the lobby.
+        /// If a player already exists, its values are updated.
+        /// </summary>
+        /// <param name="playerName">Name of the player</param>
+        /// <param name="playerColor">Color of the player</param>
+        /// <param name="currentPlayerID">ID of the player</param>
+        public void representNewPlayer(int currentPlayerID, string playerName, Color playerColor)
+        {
+            try
+            {
+                scrollViewContent = GameObject.Find("Canvas/Scroll View/Viewport/Content");
+                
+                GameObject listItem = GameObject.Find(currentPlayerID.ToString()); // search for already existing list entries.
+
+                if (listItem == null) // If the list entry for a player doesn't exist --> instantiate new.
+                {
+                    listItem = prefabFactory.getPrefab(PREFABS.PlayerListItem, scrollViewContent.transform);
+                    listItem.transform.Find("No.").GetComponent<Text>().text = playerNumber.ToString();
+                    playerNumber++;
+                    listItem.transform.Find("Player").GetComponent<Text>().text = playerName;
+                    listItem.transform.Find("Color").GetComponent<Image>().color = playerColor;
+
+                    if (currentPlayerID != myID) // Disable all toggle components which don't belong to the local client
+                    {
+                        listItem.transform.Find("IsReady").GetComponent<Toggle>().enabled = false;
+                        listItem.transform.Find("IsReady").GetComponent<PlayerReady>().enabled = false;
+                    }
+                    listItem.name = currentPlayerID.ToString();
+                }
+                else // List entry does already exist --> update name and color 
+                {
+                    listItem.transform.Find("Player").GetComponent<Text>().text = playerName;
+                    listItem.transform.Find("Color").GetComponent<Image>().color = playerColor;
+                }
+            }
+            catch (Exception e)
+            {
+                Debug.LogError(e);
+            }
+        }
+        
+        //---------------------------------------------- Interface INetworkableClient implementation ----------------------------------------------
+        
         public void handleClientJoined(Packet serverPacket)
         {
-            // für jeden player:
-            // prefab instanziieren mit daten
+            // for each player:
+            // initiialize prefab with data
             Debug.Log("Client recieved new package: " + PacketSerializer.objectToJsonString(serverPacket));
 
+            myID = serverPacket.playerNumber;
             foreach (JArray item in serverPacket.lobbyContent)
             {
                 try
                 {
-                    string playerName = item[0].ToObject<string>();
-                    Color playerColor = decodeColor(item[1].ToObject<float[]>());
-                    
-                    Debug.Log($"Client joined: Name: {playerName}, Color: {playerColor}");
-                    
-                    // DODO: display this fancy data in the Lobby
-                    RepresentJoinigClients.representNewPlayer(playerName, playerColor);
-                } catch (Exception e)
+                    int currentPlayerID = item[0].ToObject<int>();
+                    string playerName = item[1].ToObject<string>();
+                    Color playerColor = decodeColor(item[2].ToObject<float[]>());
+
+                    Debug.Log($"Client joined: Name: {playerName}, Color: {playerColor}, ID: {currentPlayerID}");
+                    representNewPlayer(currentPlayerID, playerName, playerColor);
+                }
+                catch (Exception e)
                 {
                     Debug.LogError(e.Message);
                 }
@@ -61,7 +116,7 @@ namespace Networking
 
         public void handlePlayerReadyNotification(Packet serverPacket)
         {
-            var gameObject = GameObject.Find(serverPacket.playerName);
+            var gameObject = GameObject.Find(serverPacket.currentPlayerNumber.ToString());
             gameObject.transform.Find("IsReady").GetComponent<Toggle>().isOn = serverPacket.isReady;
         }
 

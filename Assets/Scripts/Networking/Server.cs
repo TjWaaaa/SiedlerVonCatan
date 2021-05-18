@@ -160,8 +160,10 @@ namespace Networking
         /// </summary>
         /// <param name="playerID">Player to send data to</param>
         /// <param name="dataString">Data to send</param>
-        public static void sendDataToOne(int playerID, string dataString)
+        public static void sendDataToOne(int playerID, Packet data)
         {
+            data.playerNumber = playerID;
+            string dataString = PacketSerializer.objectToJsonString(data);
             byte[] dataToSend = Encoding.ASCII.GetBytes(dataString);
             socketPlayerData[playerID].BeginSend(dataToSend, 0, dataToSend.Length, SocketFlags.None, sendCallback, serverSocket);
             
@@ -173,14 +175,15 @@ namespace Networking
         /// </summary>
         /// <param name="playerID">Player who is excluded from sending data</param>
         /// <param name="dataString">Data to send</param>
-        public static void sendDataToAllButOne(int playerID, string dataString)
+        public static void sendDataToAllButOne(int playerID, Packet data)
         {
-            byte[] dataToSend = Encoding.ASCII.GetBytes(dataString);
-            
             foreach (int id in socketPlayerData.Keys)
             {
                 if(id != playerID)
                 {
+                    data.playerNumber = playerID;
+                    string dataString = PacketSerializer.objectToJsonString(data);
+                    byte[] dataToSend = Encoding.ASCII.GetBytes(dataString);
                     socketPlayerData[id].BeginSend(dataToSend, 0, dataToSend.Length, SocketFlags.None, sendCallback, serverSocket);
                 }
             }
@@ -191,11 +194,13 @@ namespace Networking
         /// Send data to all players.
         /// </summary>
         /// <param name="dataString">Data to send</param>
-        public static void sendDataToAll(string dataString)
+        public static void sendDataToAll(Packet data)
         {
-            byte[] dataToSend = Encoding.ASCII.GetBytes(dataString);
             foreach (int id in socketPlayerData.Keys)
             {
+                data.playerNumber = id;
+                string dataString = PacketSerializer.objectToJsonString(data);
+                byte[] dataToSend = Encoding.ASCII.GetBytes(dataString);
                 socketPlayerData[id].BeginSend(dataToSend, 0, dataToSend.Length, SocketFlags.None, sendCallback, serverSocket);
             }
         }
@@ -257,7 +262,6 @@ namespace Networking
             switch (incomingData.type)
             {
                 case (int) COMMUNICATION_METHODS.handleRequestJoinLobby:
-                    // ServerGameLogic serverGameLogic = new ServerGameLogic();
                     serverGameLogic.handleRequestJoinLobby(incomingData, currentClientID);
                     break;
                 

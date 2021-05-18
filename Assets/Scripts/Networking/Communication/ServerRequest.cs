@@ -13,7 +13,7 @@ namespace Networking.Communication
             packet.lobbyContent = playerInformation;
             
             // send to all
-            Server.sendDataToAll(PacketSerializer.objectToJsonString(packet));
+            Server.sendDataToAll(packet);
         }
 
         public void gamestartInitialize(int[][] gameBoard)
@@ -23,7 +23,7 @@ namespace Networking.Communication
             packet.gameBoard = gameBoard;
             
             // send to all
-            Server.sendDataToAll(PacketSerializer.objectToJsonString(packet));
+            Server.sendDataToAll(packet);
         }
 
         public void distributeResources(int playerID, int[] resources, int victoryPoints)
@@ -35,7 +35,7 @@ namespace Networking.Communication
             packet.victoryPoint = victoryPoints;
             
             // send to one
-            Server.sendDataToOne(playerID, PacketSerializer.objectToJsonString(packet));
+            Server.sendDataToOne(playerID, packet);
         }
 
 
@@ -48,7 +48,7 @@ namespace Networking.Communication
             packet.buildColor = color.ToString();
             
             // send to all
-            Server.sendDataToAll(PacketSerializer.objectToJsonString(packet));
+            Server.sendDataToAll(packet);
         }
 
 
@@ -59,7 +59,7 @@ namespace Networking.Communication
             packet.playerName = playerName;
             
             // send to all
-            Server.sendDataToAll(PacketSerializer.objectToJsonString(packet));
+            Server.sendDataToAll(packet);
         }
 
 
@@ -71,7 +71,7 @@ namespace Networking.Communication
             packet.playerColor = new float[] {color.r, color.g, color.b, color.a};
             
             // send to all
-            Server.sendDataToAll(PacketSerializer.objectToJsonString(packet));
+            Server.sendDataToAll(packet);
         }
 
 
@@ -83,7 +83,7 @@ namespace Networking.Communication
             packet.playerColor = new float[] {color.r, color.g, color.b, color.a};
             
             // send to all
-            Server.sendDataToAll(PacketSerializer.objectToJsonString(packet));
+            Server.sendDataToAll(packet);
         }
 
 
@@ -96,7 +96,7 @@ namespace Networking.Communication
             packet.errorMessage = errorMessage;
             
             // send to active
-            Server.sendDataToOne(playerID, PacketSerializer.objectToJsonString(packet));
+            Server.sendDataToOne(playerID, packet);
         }
 
         public void notifyPlayerReady(int currentClientID, string playerName, bool readyStatus)
@@ -105,9 +105,10 @@ namespace Networking.Communication
             packet.type = (int) COMMUNICATION_METHODS.handlePlayerReadyNotification;
             packet.playerName = playerName;
             packet.isReady = readyStatus;
+            packet.currentPlayerNumber = currentClientID;
             
             // send to all but the player that changed its status
-            Server.sendDataToAllButOne(currentClientID, PacketSerializer.objectToJsonString(packet));
+            Server.sendDataToAllButOne(currentClientID, packet);
         }
 
 
@@ -118,7 +119,7 @@ namespace Networking.Communication
             packet.diceResult = diceResult;
             
             // send to all
-            Server.sendDataToAll(PacketSerializer.objectToJsonString(packet));
+            Server.sendDataToAll(packet);
         }
 
         public void acceptBuyDevelopement(int playerID, DEVELOPMENT_TYPE developmentCard)
@@ -129,7 +130,7 @@ namespace Networking.Communication
             packet.developmentCard = (int) developmentCard;
             
             // send to active
-            Server.sendDataToOne(playerID, PacketSerializer.objectToJsonString(packet));
+            Server.sendDataToOne(playerID, packet);
         }
 
 
@@ -141,7 +142,7 @@ namespace Networking.Communication
             packet.playerName = playerName;
             
             // send to all
-            Server.sendDataToAll(PacketSerializer.objectToJsonString(packet));
+            Server.sendDataToAll(packet);
         }
     }
 }

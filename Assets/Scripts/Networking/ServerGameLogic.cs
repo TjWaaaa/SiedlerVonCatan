@@ -15,8 +15,8 @@ namespace Networking
         {
             possibleColors.Push(Color.blue);
             possibleColors.Push(Color.red);
-            possibleColors.Push(Color.green);
             possibleColors.Push(Color.white);
+            possibleColors.Push(Color.green);
         }    
 
         public void generatePlayer(int playerId)
@@ -43,7 +43,7 @@ namespace Networking
                 {
                     Color playerColor = player.GetColor(); // needs to be done, because Color is not serializable ¯\_(ツ)_/¯
                     allPlayerInformation.Add(new object[]
-                        {player.GetName(), new float[] {playerColor.r, playerColor.g, playerColor.b, playerColor.a}});
+                        {player.GetPlayerID(), player.GetName(), new float[] {playerColor.r, playerColor.g, playerColor.b, playerColor.a}});
                 }
             }
             
