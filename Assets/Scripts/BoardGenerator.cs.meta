@@ -4,6 +4,7 @@ MonoImporter:
   externalObjects: {}
   serializedVersion: 2
   defaultReferences:
+  - Board: {instanceID: 0}
   - robber: {fileID: 3788127331573154054, guid: 2e1533a3b472ba44ca1de86e28cd87b1, type: 3}
   - hexagonPrefabDesert: {fileID: 8472554331270197990, guid: bd936c91cafb06b4cb968f4ef38c5e9f, type: 3}
   - hexagonPrefabBrick: {fileID: 6211165981206033278, guid: fca051b7163a2da4d98310fefad7ae70, type: 3}
