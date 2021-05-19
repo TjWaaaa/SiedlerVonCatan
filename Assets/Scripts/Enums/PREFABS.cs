@@ -2,6 +2,6 @@ namespace Enums
 {
     public enum PREFABS
     {
-        PlayerListItem
+        PLAYER_LIST_ITEM
     }
 }

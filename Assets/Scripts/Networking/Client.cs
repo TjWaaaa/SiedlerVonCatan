@@ -6,7 +6,7 @@ using Enums;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-namespace Networking
+namespace Enums
 {
     public class Client
     {
@@ -155,7 +155,7 @@ namespace Networking
             {
                 switch (incomingData.type)
                 {
-                    case (int) COMMUNICATION_METHODS.handleClientJoined:
+                    case (int) COMMUNICATION_METHODS.HANDLE_CLIENT_JOINED:
                         // todo: eliminate race condition!!!
                         // while (SceneManager.GetActiveScene().name != "Lobby") ; //Waiting for Unity to load lobby
                         
@@ -165,62 +165,62 @@ namespace Networking
                         });
                         break;
 
-                    case (int) COMMUNICATION_METHODS.handleGameStartInitialize:
+                    case (int) COMMUNICATION_METHODS.HANDLE_GAMESTART_INITIALIZE:
                         ThreadManager.executeOnMainThread(() =>
                         {
                             clientGameLogic.handleGameStartInitialize(incomingData);
                         });
                         break;
 
-                    case (int) COMMUNICATION_METHODS.handlePlayerReadyNotification:
+                    case (int) COMMUNICATION_METHODS.HANDLE_PLAYER_READY_NOTIFICATION:
                         ThreadManager.executeOnMainThread(() =>
                         {
                             clientGameLogic.handlePlayerReadyNotification(incomingData);
                         });
                         break;
 
-                    case (int) COMMUNICATION_METHODS.handleObjectPlacement:
+                    case (int) COMMUNICATION_METHODS.HANDLE_OBJECT_PLACEMENT:
                         //handleObjectPlacement(incomingData);
                         break;
 
-                    case (int) COMMUNICATION_METHODS.handleNextPlayer:
+                    case (int) COMMUNICATION_METHODS.HANDLE_NEXT_PLAYER:
                         //handleNextPlayer(incomingData);
                         break;
 
-                    case (int) COMMUNICATION_METHODS.handleVictory:
+                    case (int) COMMUNICATION_METHODS.HANDLE_VICTORY:
                         //handleVictory(incomingData);
                         break;
 
-                    case (int) COMMUNICATION_METHODS.handleClientDisconnect:
+                    case (int) COMMUNICATION_METHODS.HANDLE_CLIENT_DISCONNECT:
                         //handleClientDisconnect(incomingData);
                         break;
 
 
-                    case (int) COMMUNICATION_METHODS.handleRejection:
+                    case (int) COMMUNICATION_METHODS.HANDLE_REJECTION:
                         //handleRejection(incomingData);
                         break;
 
-                    case (int) COMMUNICATION_METHODS.handleAccpetBeginRound:
+                    case (int) COMMUNICATION_METHODS.HANDLE_ACCEPT_BEGIN_ROUND:
                         //handleAccpetBeginRound(incomingData);
                         break;
 
-                    case (int) COMMUNICATION_METHODS.handleAcceptTradeBank:
+                    case (int) COMMUNICATION_METHODS.HANDLE_ACCEPT_TRADE_BANK:
                         //handleAcceptTradeBank(incomingData);
                         break;
 
-                    case (int) COMMUNICATION_METHODS.handleAcceptBuild:
+                    case (int) COMMUNICATION_METHODS.HANDLE_ACCEPT_BUILD:
                         //handleAcceptBuild(incomingData);
                         break;
 
-                    case (int) COMMUNICATION_METHODS.handleGetResources:
+                    case (int) COMMUNICATION_METHODS.HANDLE_GET_RESOURCES:
                         //handleGetResources(incomingData);
                         break;
 
-                    case (int) COMMUNICATION_METHODS.handleAcceptBuyDevelopement:
+                    case (int) COMMUNICATION_METHODS.HANDLE_ACCEPT_BUY_DEVELOPMENT_CARD:
                         //handleAcceptBuyDevelopement(incomingData);
                         break;
 
-                    case (int) COMMUNICATION_METHODS.handleAcceptPlayDevelopement:
+                    case (int) COMMUNICATION_METHODS.HANDLE_ACCEPT_PLAY_DEVELOPMENT_CARD:
                         //handleAcceptPlayDevelopement(incomingData);
                         break;
 

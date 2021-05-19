@@ -21,7 +21,7 @@ public class PrefabFactory : MonoBehaviour
     {
         switch (prefabType) 
         {
-            case(PREFABS.PlayerListItem):
+            case(PREFABS.PLAYER_LIST_ITEM):
                 return Instantiate(PlayerListItem, location);
 
             default: 

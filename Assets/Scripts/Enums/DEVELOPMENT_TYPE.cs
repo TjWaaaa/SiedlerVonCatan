@@ -2,8 +2,8 @@
 {
     public enum DEVELOPMENT_TYPE
     {
-        victoryPoint,
-        knight,
-        progress // there are some different progress types!!!
+        VICTORY_POINT,
+        KNIGHT,
+        PROGRESS // there are some different progress types!!!
     }
 }

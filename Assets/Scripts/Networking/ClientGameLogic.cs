@@ -6,7 +6,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
-namespace Networking
+namespace Enums
 {
     public class ClientGameLogic : MonoBehaviour, INetworkableClient
     {
@@ -63,7 +63,7 @@ namespace Networking
 
                 if (listItem == null) // If the list entry for a player doesn't exist --> instantiate new.
                 {
-                    listItem = prefabFactory.getPrefab(PREFABS.PlayerListItem, scrollViewContent.transform);
+                    listItem = prefabFactory.getPrefab(PREFABS.PLAYER_LIST_ITEM, scrollViewContent.transform);
                     listItem.transform.Find("No.").GetComponent<Text>().text = playerNumber.ToString();
                     playerNumber++;
                     listItem.transform.Find("Player").GetComponent<Text>().text = playerName;

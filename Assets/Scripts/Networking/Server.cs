@@ -8,7 +8,7 @@ using Enums;
 using UnityEngine;
 using Random = System.Random;
 
-namespace Networking
+namespace Enums
 {
     public class Server
     {
@@ -261,39 +261,39 @@ namespace Networking
         {
             switch (incomingData.type)
             {
-                case (int) COMMUNICATION_METHODS.handleRequestJoinLobby:
+                case (int) COMMUNICATION_METHODS.HANDLE_REQUEST_JOIN_LOBBY:
                     serverGameLogic.handleRequestJoinLobby(incomingData, currentClientID);
                     break;
                 
-                case (int) COMMUNICATION_METHODS.handlePlayerReady:
+                case (int) COMMUNICATION_METHODS.HANDLE_PLAYER_READY:
                     serverGameLogic.handleRequestPlayerReady(incomingData, currentClientID);
                     break;
                 
-                case (int) COMMUNICATION_METHODS.handleBeginRound:
+                case (int) COMMUNICATION_METHODS.HANDLE_BEGIN_ROUND:
                     //handleBeginRound(incomingData);
                     break;
                 
-                case (int) COMMUNICATION_METHODS.handleTradeBank:
+                case (int) COMMUNICATION_METHODS.HANDLE_TRADE_BANK:
                     //handleTradeBank(incomingData);
                     break;
                 
-                case (int) COMMUNICATION_METHODS.handleBuild:
+                case (int) COMMUNICATION_METHODS.HANDLE_BUILD:
                     //handleBuild(incomingData);
                     break;
                 
-                case (int) COMMUNICATION_METHODS.handleBuyDevelopement:
+                case (int) COMMUNICATION_METHODS.HANDLE_BUY_DEVELOPMENT:
                     //handleBuyDevelopement(incomingData);
                     break;
                 
-                case (int) COMMUNICATION_METHODS.handlePlayDevelopement:
+                case (int) COMMUNICATION_METHODS.HANDLE_PLAY_DEVELOPMENT:
                     //handlePlayDevelopement(incomingData);
                     break;
                 
-                case (int) COMMUNICATION_METHODS.handleEndTurn:
+                case (int) COMMUNICATION_METHODS.HANDLE_END_TURN:
                     //handleEndTurn(incomingData);
                     break;
                 
-                case (int) COMMUNICATION_METHODS.handleClientDisconnectServerCall:
+                case (int) COMMUNICATION_METHODS.HANDLE_CLIENT_DISCONNECT_SERVER_CALL:
                     //handleClientDisconnectServerCall(incomingData);
                     break;
                 

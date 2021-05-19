@@ -1,13 +1,11 @@
-namespace Networking
+namespace Enums
 {
     public enum BUYABLES
     {
         // [Wheat, Sheep, Ore, Brick, Wood] -> TODO: store values to buy buyables   
-        Road,
-        Village,
-        City,
-        DevelopmentCards //maybe not needed :) due to extra function
-        
-        
+        ROAD,
+        VILLAGE,
+        CITY,
+        DEVELOPMENT_CARDS //maybe not needed :) due to extra function
     }
 }

@@ -1,4 +1,4 @@
-namespace Networking
+namespace Enums
 {
     public interface INetworkableClient
     {

@@ -1,13 +1,13 @@
 ﻿using Enums;
 
-namespace Networking
+namespace Enums
 {
     public class ClientRequest : ClientToServerCommunication
     {
         public void requestJoinLobby(string playerName)
         {
             Packet packet = new Packet();
-            packet.type = (int) COMMUNICATION_METHODS.handleRequestJoinLobby;
+            packet.type = (int) COMMUNICATION_METHODS.HANDLE_REQUEST_JOIN_LOBBY;
             packet.playerName = playerName;
             
             Client.sendRequest(PacketSerializer.objectToJsonString(packet));
@@ -16,7 +16,7 @@ namespace Networking
         public void requestPlayerReady(bool isReady)
         {
             Packet packet = new Packet();
-            packet.type = (int) COMMUNICATION_METHODS.handlePlayerReady;
+            packet.type = (int) COMMUNICATION_METHODS.HANDLE_PLAYER_READY;
             packet.isReady = isReady;
             
             Client.sendRequest(PacketSerializer.objectToJsonString(packet));
@@ -25,7 +25,7 @@ namespace Networking
         public void requestRollDice()
         {
             Packet packet = new Packet();
-            packet.type = (int) COMMUNICATION_METHODS.handleBeginRound;
+            packet.type = (int) COMMUNICATION_METHODS.HANDLE_BEGIN_ROUND;
             
             Client.sendRequest(PacketSerializer.objectToJsonString(packet));
         }
@@ -33,7 +33,7 @@ namespace Networking
         public void requestTradeBank(int[] offer, int[] expect)
         {
             Packet packet = new Packet();
-            packet.type = (int) COMMUNICATION_METHODS.handleTradeBank;
+            packet.type = (int) COMMUNICATION_METHODS.HANDLE_TRADE_BANK;
             packet.tradeResourcesOffer = offer;
             packet.tradeResourcesExpect = expect;
             
@@ -43,7 +43,7 @@ namespace Networking
         public void requestBuild(BUYABLES type, int buildID)
         {
             Packet packet = new Packet();
-            packet.type = (int) COMMUNICATION_METHODS.handleBuild;
+            packet.type = (int) COMMUNICATION_METHODS.HANDLE_BUILD;
             packet.buildID = buildID;
             packet.buildType = (int) type;
             
@@ -53,7 +53,7 @@ namespace Networking
         public void requestBuyDevelopement()
         {
             Packet packet = new Packet();
-            packet.type = (int) COMMUNICATION_METHODS.handleBuyDevelopement;
+            packet.type = (int) COMMUNICATION_METHODS.HANDLE_BUY_DEVELOPMENT;
             
             Client.sendRequest(PacketSerializer.objectToJsonString(packet));
         }
@@ -61,7 +61,7 @@ namespace Networking
         public void requestPlayDevelopement(DEVELOPMENT_TYPE developmentType)
         {
             Packet packet = new Packet();
-            packet.type = (int) COMMUNICATION_METHODS.handlePlayDevelopement;
+            packet.type = (int) COMMUNICATION_METHODS.HANDLE_PLAY_DEVELOPMENT;
             packet.developmentCard = (int) developmentType;
             
             Client.sendRequest(PacketSerializer.objectToJsonString(packet));
@@ -70,7 +70,7 @@ namespace Networking
         public void requestEndTurn()
         {
             Packet packet = new Packet();
-            packet.type = (int) COMMUNICATION_METHODS.handleEndTurn;
+            packet.type = (int) COMMUNICATION_METHODS.HANDLE_END_TURN;
             
             Client.sendRequest(PacketSerializer.objectToJsonString(packet));
         }

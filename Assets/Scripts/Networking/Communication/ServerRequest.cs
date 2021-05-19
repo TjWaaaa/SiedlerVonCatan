@@ -2,14 +2,14 @@
 using Enums;
 using UnityEngine;
 
-namespace Networking.Communication
+namespace Enums.Communication
 {
     public class ServerRequest : ServerToClientCommunication
     {
         public void notifyClientJoined(ArrayList playerInformation)
         {
             Packet packet = new Packet();
-            packet.type = (int) COMMUNICATION_METHODS.handleClientJoined;
+            packet.type = (int) COMMUNICATION_METHODS.HANDLE_CLIENT_JOINED;
             packet.lobbyContent = playerInformation;
             
             // send to all
@@ -19,7 +19,7 @@ namespace Networking.Communication
         public void gamestartInitialize(int[][] gameBoard)
         {
             Packet packet = new Packet();
-            packet.type = (int) COMMUNICATION_METHODS.handleGameStartInitialize;
+            packet.type = (int) COMMUNICATION_METHODS.HANDLE_GAMESTART_INITIALIZE;
             packet.gameBoard = gameBoard;
             
             // send to all
@@ -29,7 +29,7 @@ namespace Networking.Communication
         public void distributeResources(int playerID, int[] resources, int victoryPoints)
         {
             Packet packet = new Packet();
-            packet.type = (int) COMMUNICATION_METHODS.handleGetResources;
+            packet.type = (int) COMMUNICATION_METHODS.HANDLE_GET_RESOURCES;
             packet.playerNumber = playerID;
             packet.resourcesObtained = resources;
             packet.victoryPoint = victoryPoints;
@@ -42,7 +42,7 @@ namespace Networking.Communication
         public void notifyObjectPlacement(BUYABLES buildType, int buildID, Color color)
         {
             Packet packet = new Packet();
-            packet.type = (int) COMMUNICATION_METHODS.handleObjectPlacement;
+            packet.type = (int) COMMUNICATION_METHODS.HANDLE_OBJECT_PLACEMENT;
             packet.buildID = buildID;
             packet.buildType = (int) buildType;
             packet.buildColor = color.ToString();
@@ -55,7 +55,7 @@ namespace Networking.Communication
         public void notifyNextPlayer(string playerName)
         {
             Packet packet = new Packet();
-            packet.type = (int) COMMUNICATION_METHODS.handleNextPlayer;
+            packet.type = (int) COMMUNICATION_METHODS.HANDLE_NEXT_PLAYER;
             packet.playerName = playerName;
             
             // send to all
@@ -66,7 +66,7 @@ namespace Networking.Communication
         public void notifyVictory(string playerName, Color color)
         {
             Packet packet = new Packet();
-            packet.type = (int) COMMUNICATION_METHODS.handleVictory;
+            packet.type = (int) COMMUNICATION_METHODS.HANDLE_VICTORY;
             packet.playerName = playerName;
             packet.playerColor = new float[] {color.r, color.g, color.b, color.a};
             
@@ -78,7 +78,7 @@ namespace Networking.Communication
         public void notifyClientDisconnect(string playerName, Color color)
         {
             Packet packet = new Packet();
-            packet.type = (int) COMMUNICATION_METHODS.handleClientDisconnect;
+            packet.type = (int) COMMUNICATION_METHODS.HANDLE_CLIENT_DISCONNECT;
             packet.playerName = playerName;
             packet.playerColor = new float[] {color.r, color.g, color.b, color.a};
             
@@ -92,7 +92,7 @@ namespace Networking.Communication
         public void notifyRejection(int playerID, string errorMessage)
         {
             Packet packet = new Packet();
-            packet.type = (int) COMMUNICATION_METHODS.handleRejection;
+            packet.type = (int) COMMUNICATION_METHODS.HANDLE_REJECTION;
             packet.errorMessage = errorMessage;
             
             // send to active
@@ -102,7 +102,7 @@ namespace Networking.Communication
         public void notifyPlayerReady(int currentClientID, string playerName, bool readyStatus)
         {
             Packet packet = new Packet();
-            packet.type = (int) COMMUNICATION_METHODS.handlePlayerReadyNotification;
+            packet.type = (int) COMMUNICATION_METHODS.HANDLE_PLAYER_READY_NOTIFICATION;
             packet.playerName = playerName;
             packet.isReady = readyStatus;
             packet.currentPlayerNumber = currentClientID;
@@ -115,7 +115,7 @@ namespace Networking.Communication
         public void notifyRollDice(int[] diceResult)
         {
             Packet packet = new Packet();
-            packet.type = (int) COMMUNICATION_METHODS.handleAccpetBeginRound;
+            packet.type = (int) COMMUNICATION_METHODS.HANDLE_ACCEPT_BEGIN_ROUND;
             packet.diceResult = diceResult;
             
             // send to all
@@ -125,7 +125,7 @@ namespace Networking.Communication
         public void acceptBuyDevelopement(int playerID, DEVELOPMENT_TYPE developmentCard)
         {
             Packet packet = new Packet();
-            packet.type = (int) COMMUNICATION_METHODS.handleAcceptBuyDevelopement;
+            packet.type = (int) COMMUNICATION_METHODS.HANDLE_ACCEPT_BUY_DEVELOPMENT_CARD;
             packet.playerNumber = playerID;
             packet.developmentCard = (int) developmentCard;
             
@@ -137,7 +137,7 @@ namespace Networking.Communication
         public void notifyAcceptPlayDevelopement(DEVELOPMENT_TYPE developmentCard, string playerName)
         {
             Packet packet = new Packet();
-            packet.type = (int) COMMUNICATION_METHODS.handleAcceptPlayDevelopement;
+            packet.type = (int) COMMUNICATION_METHODS.HANDLE_ACCEPT_PLAY_DEVELOPMENT_CARD;
             packet.developmentCard = (int) developmentCard;
             packet.playerName = playerName;
             
