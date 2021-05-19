@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
 using UnityEngine.UI;
-using ResourceType;
+using Enums;
 
 namespace Trade
 {

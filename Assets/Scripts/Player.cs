@@ -2,7 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Data;
-using ResourceType;
+using Enums;
 using UnityEngine;
 using UnityEngine.UI;
 

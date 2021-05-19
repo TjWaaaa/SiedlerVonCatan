@@ -1,6 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
-using ResourceType;
+using Enums;
 using Trade;
 using UnityEngine;
 using UnityEngine.UI;
