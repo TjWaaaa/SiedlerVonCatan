@@ -1,6 +1,9 @@
 ﻿using Enums;
+using Networking.Interfaces;
+using Networking.Package;
+using Networking.ClientSide;
 
-namespace Enums
+namespace Networking.Communication
 {
     public class ClientRequest : ClientToServerCommunication
     {

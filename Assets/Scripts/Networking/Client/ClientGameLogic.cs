@@ -1,12 +1,13 @@
 ﻿using System;
 using Enums;
 using Newtonsoft.Json.Linq;
-using UnityEditor;
+using Networking.Interfaces;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using Networking.Package;
 
-namespace Enums
+namespace Networking.ClientSide
 {
     public class ClientGameLogic : MonoBehaviour, INetworkableClient
     {

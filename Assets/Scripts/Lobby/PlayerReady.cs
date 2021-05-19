@@ -2,6 +2,7 @@ using Enums;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using Networking.Communication;
 
 public class PlayerReady : MonoBehaviour, IPointerClickHandler
 {

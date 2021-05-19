@@ -1,6 +1,6 @@
 using Newtonsoft.Json;
 
-namespace Enums
+namespace Networking.Package
 {
     public class PacketSerializer
     {

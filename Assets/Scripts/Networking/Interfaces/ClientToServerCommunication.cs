@@ -1,6 +1,6 @@
 ﻿using Enums;
 
-namespace Enums
+namespace Networking.Interfaces
 {
     public interface ClientToServerCommunication
     {

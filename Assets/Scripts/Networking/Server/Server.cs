@@ -4,11 +4,12 @@ using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
-using Enums;
+using Networking.Package;
 using UnityEngine;
 using Random = System.Random;
+using Enums;
 
-namespace Enums
+namespace Networking.ServerSide
 {
     public class Server
     {

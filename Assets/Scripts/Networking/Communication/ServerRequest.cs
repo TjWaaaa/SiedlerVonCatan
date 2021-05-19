@@ -1,8 +1,11 @@
 ﻿using System.Collections;
-using Enums;
+using Networking.Interfaces;
 using UnityEngine;
+using Networking.Package;
+using Networking.ServerSide;
+using Enums;
 
-namespace Enums.Communication
+namespace Networking.Communication
 {
     public class ServerRequest : ServerToClientCommunication
     {
