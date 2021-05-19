@@ -1,4 +1,6 @@
-﻿namespace Enums
+﻿using Networking.Package;
+
+namespace Networking.Interfaces
 {
     public interface INetworkableServer
     {

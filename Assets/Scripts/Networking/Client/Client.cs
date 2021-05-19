@@ -4,9 +4,9 @@ using System.Net.Sockets;
 using System.Text;
 using Enums;
 using UnityEngine;
-using UnityEngine.SceneManagement;
+using Networking.Package;
 
-namespace Enums
+namespace Networking.ClientSide
 {
     public class Client
     {

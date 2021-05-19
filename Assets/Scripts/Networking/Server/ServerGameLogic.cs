@@ -1,9 +1,11 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using Enums.Communication;
+using Networking.Communication;
 using UnityEngine;
+using Networking.Interfaces;
+using Networking.Package;
 
-namespace Enums
+namespace Networking.ServerSide
 {
     public class ServerGameLogic : INetworkableServer
     {

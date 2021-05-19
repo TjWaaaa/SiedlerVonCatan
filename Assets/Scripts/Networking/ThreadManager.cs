@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Enums
+namespace Networking
 {
     public class ThreadManager
     {

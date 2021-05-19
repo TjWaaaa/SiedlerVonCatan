@@ -2,7 +2,7 @@
 using Enums;
 using UnityEngine;
 
-namespace Enums
+namespace Networking.Interfaces
 {
     public interface ServerToClientCommunication
     {
