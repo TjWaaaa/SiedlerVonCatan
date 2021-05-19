@@ -73,8 +73,11 @@ namespace Enums
             
             // start game if all player are ready
             //todo: Boardgenerator!
-            serverRequest.gamestartInitialize(new int[][]{});
-            
+            if (runGame)
+            {
+                serverRequest.gamestartInitialize(new int[][]{});
+            }
+
             // send error if no player was found
             // todo: send error to all?
             // serverRequest.notifyRejection(currentClientID, "You seem to be not existing...");
