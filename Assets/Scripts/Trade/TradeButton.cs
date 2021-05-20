@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System;
-using ResourceType;
+using Enums;
 using UnityEngine.Serialization;
 using UnityEngine.UI;
 
@@ -19,7 +19,7 @@ public class TradeButton : MonoBehaviour
     void Start()
     {
         //get the resource of each button individually
-        resourcetype = (RESOURCETYPE)Enum.Parse(typeof(ResourceType.RESOURCETYPE), gameObject.name, true);
+        resourcetype = (RESOURCETYPE)Enum.Parse(typeof(RESOURCETYPE), gameObject.name, true);
     }
 
     public void clickButton()

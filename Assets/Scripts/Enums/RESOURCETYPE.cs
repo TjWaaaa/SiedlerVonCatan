@@ -1,4 +1,4 @@
-﻿namespace ResourceType
+﻿namespace Enums
 {
     public enum RESOURCETYPE
     {
