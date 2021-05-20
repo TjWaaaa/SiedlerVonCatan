@@ -65,7 +65,7 @@ public class Board
     public Board()
     {
         numberStack = createRandomHexagonNumberStack(availableNumbers);
-
+        Debug.Log("alksjd");
         nodes = initializeNodes();
         edges = initializeEdges();
         hexagons = initializeHexagons();
@@ -89,7 +89,7 @@ public class Board
             for (int col = 1; col < 6; col++)
             {
                 Hexagon hex = hexagons[row, col];
-                if (hex != null && hex.getFieldNumber() != 0)
+                if (hex != null && hex.isLand())
                 {
                     Debug.Log(hex.getFieldNumber());
                     test += Convert.ToString(hex.getFieldNumber()) + "|";
@@ -427,9 +427,9 @@ public class Board
                         {
                             int yOffset = row + neighborOffsetY[offsetIndex];
                             int xOffset = col + neighborOffsetX[offsetIndex];
-                            int neighborFieldnumber = hexagons[yOffset, xOffset].getFieldNumber();
+                            Hexagon neighbor = hexagons[yOffset, xOffset];
                             //if one of the neighbors fieldnumber is 6 or 8 the hexagon needs to be moved
-                            if (neighborFieldnumber == 6 || neighborFieldnumber == 8)
+                            if (neighbor != null && (neighbor.getFieldNumber() == 6 || neighbor.getFieldNumber() == 8))
                             {
                                 int[] suitablePos = findSuitablePos();
                                 swapHexagonPositions(row, col, suitablePos[0], suitablePos[1]);
@@ -449,13 +449,13 @@ public class Board
     /// <returns>an int array with the first occouring coordinates of a suitable position</returns>
     private int[] findSuitablePos()
     {
-        int[] suitablePosition = null;
-        for (int row = 1; row < hexagons.Length - 2; row++)
+        bool suitable = true;
+        for (int row = 1; row < 6; row++)
         {
             for (int col = 1; col < 6; col++)
             {
                 Hexagon currentHex = hexagons[row, col];
-                if (currentHex != null)
+                if (currentHex != null && currentHex.getFieldNumber() != 0)
                 {
                     int fieldNumber = currentHex.getFieldNumber();
                     if (fieldNumber != 6 && fieldNumber != 8 && fieldNumber != 0)
@@ -464,8 +464,20 @@ public class Board
                         {
                             int yOffset = row + neighborOffsetY[offsetIndex];
                             int xOffset = col + neighborOffsetX[offsetIndex];
-                            int neighborFieldnumber = hexagons[yOffset, xOffset].getFieldNumber();
-                            if (neighborFieldnumber != 6 || neighborFieldnumber != 8)
+                            int neighborFieldnumber = 0;
+                            try
+                            {
+                                neighborFieldnumber = hexagons[yOffset, xOffset].getFieldNumber();
+                            }
+                            catch (NullReferenceException e)
+                            {
+
+                            }
+                            if (neighborFieldnumber == 6 || neighborFieldnumber == 8)
+                            {
+                                break;
+                            }
+                            else if (offsetIndex == neighborOffsetX.Length - 1)
                             {
                                 return new int[] { row, col };
                             }
@@ -474,7 +486,7 @@ public class Board
                 }
             }
         }
-        return suitablePosition;
+        return new int[] { };
     }
 
     /// <summary>
