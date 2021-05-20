@@ -69,19 +69,36 @@ public class Board
         nodes = initializeNodes();
         edges = initializeEdges();
         hexagons = initializeHexagons();
+        testNeighbors();
         checkPlacementConstraints();
-        foreach (Hexagon hex in hexagons)
-        {
-            if (hex.getFieldNumber() != null)
-            {
-                Debug.Log(hex.getFieldNumber());
-            }
-
-        }
+        testNeighbors();
         // assignNeighborsToHexagons();
         // assignNeighborsToNodes();
         // assignNeighborsToEdges();
 
+    }
+    /// <summary>
+    /// delete this method, its just for testing
+    /// </summary>
+    private void testNeighbors()
+    {
+        string test = "";
+        test += "\n";
+        for (int row = 1; row < 6; row++)
+        {
+            for (int col = 1; col < 6; col++)
+            {
+                Hexagon hex = hexagons[row, col];
+                if (hex != null && hex.getFieldNumber() != 0)
+                {
+                    Debug.Log(hex.getFieldNumber());
+                    test += Convert.ToString(hex.getFieldNumber()) + "|";
+                }
+
+            }
+            test += "\n";
+        }
+        Debug.Log(test);
     }
 
     /// <summary>
@@ -394,15 +411,15 @@ public class Board
     private void checkPlacementConstraints()
     {
 
-        for (int row = 1; row < hexagons.Length - 2; row++)
+        for (int row = 1; row < 6; row++)
         {
             for (int col = 1; col < 6; col++)
             {
                 Hexagon currentHex = hexagons[row, col];
-                if (currentHex != null)
+                if (currentHex != null && currentHex.getFieldNumber() != 0)
                 {
                     int fieldNumber = currentHex.getFieldNumber();
-
+                    Debug.Log("row: " + row + "col: " + col);
                     //neighbors just needs to be checked if fieldnumber is 6 or 8
                     if (fieldNumber == 6 || fieldNumber == 8)
                     {
@@ -411,12 +428,12 @@ public class Board
                             int yOffset = row + neighborOffsetY[offsetIndex];
                             int xOffset = col + neighborOffsetX[offsetIndex];
                             int neighborFieldnumber = hexagons[yOffset, xOffset].getFieldNumber();
-
                             //if one of the neighbors fieldnumber is 6 or 8 the hexagon needs to be moved
                             if (neighborFieldnumber == 6 || neighborFieldnumber == 8)
                             {
                                 int[] suitablePos = findSuitablePos();
                                 swapHexagonPositions(row, col, suitablePos[0], suitablePos[1]);
+                                break;
 
                             }
                         }
@@ -474,30 +491,4 @@ public class Board
         hexagons[firstHexRow, firstHexCol] = hexagons[secondHexRow, secondHexCol];
         hexagons[secondHexRow, secondHexCol] = tempHex;
     }
-    // private void quicksort(int[] numberArray)
-    // {
-    //     int pivot = numberArray.Length;
-
-    //     int i = 0;
-    //     int j = pivot;
-
-    //     while (true)
-    //     {
-    //         if (i >= j)
-    //         {
-    //             pivot = j;
-    //             break;
-    //         }
-    //         else if (i >= numberArray.Length || j < 0)
-    //         {
-    //             int swapElem = numberArray[i];
-    //             numberArray[i] = numberArray[j];
-    //             numberArray[j] = swapElem;
-    //         }
-    //     }
-    //     //int swapElem = numberArray[i];
-    //     //numberArray[i] = numberArray[j];
-    //     //numberArray[j] = swapElem;
-    //     //pivot =
-    // }
 }
