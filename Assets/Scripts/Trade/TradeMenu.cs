@@ -60,10 +60,7 @@ namespace Trade
 
             if (currentPlayer.canTrade(button.GetComponent<TradeButton>().resourcetype))
             {
-                if (button.GetComponent<TradeButton>().clickButton())
-                {
-                    resourceOffer.text = button.GetComponent<TradeButton>().resourcetype.ToString().ToLower() + "s";
-                }
+                resourceOffer.text = button.GetComponent<TradeButton>().clickButton();
             }
 
         }
@@ -71,10 +68,7 @@ namespace Trade
         //When the buttons on the right side are clicked -> th resource the player wants to get
         void expectResource(GameObject button)
         {
-            if (button.GetComponent<TradeButton>().clickButton())
-            {
-                resourceExpect.text = button.GetComponent<TradeButton>().resourcetype.ToString().ToLower();
-            }
+            resourceExpect.text = button.GetComponent<TradeButton>().clickButton();
         }
 
         void startTrade()

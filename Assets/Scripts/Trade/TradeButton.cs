@@ -24,29 +24,31 @@ public class TradeButton : MonoBehaviour
         
     }
 
-    public Boolean clickButton()
+    public String clickButton()
     {
         if (!isClicked)
         {
-            if (gameObject.CompareTag("giveResource") && _giveResourcetype == RESOURCETYPE.NONE)
+            if (gameObject.CompareTag("giveResource"))
             {
-                
-                _giveResourcetype = resourcetype;
-                
-                gameObject.transform.GetChild(1).SetAsFirstSibling();
-                
-                isClicked = true;
-                return true;
+                if (_giveResourcetype == RESOURCETYPE.NONE)
+                {
+                    _giveResourcetype = resourcetype;
+                    gameObject.transform.GetChild(1).SetAsFirstSibling();
+                    isClicked = true;
+                }
+                return _giveResourcetype.ToString().ToLower();
             }
-            else if (gameObject.CompareTag("getResource") && _getResourcetype == RESOURCETYPE.NONE)
+            else //if (gameObject.CompareTag("getResource"))
             {
-                _getResourcetype = resourcetype;
-                gameObject.transform.GetChild(1).SetAsFirstSibling();
-                isClicked = true;
-                return true;
+                if (_getResourcetype == RESOURCETYPE.NONE)
+                {
+                    _getResourcetype = resourcetype;
+                                    gameObject.transform.GetChild(1).SetAsFirstSibling();
+                                    isClicked = true;
+                }
+                return _getResourcetype.ToString().ToLower();
             }
-
-            return false;
+            
         }
         else
         {
@@ -54,7 +56,7 @@ public class TradeButton : MonoBehaviour
             isClicked = false;
             if (gameObject.CompareTag("giveResource")) _giveResourcetype = RESOURCETYPE.NONE;
             else _getResourcetype = RESOURCETYPE.NONE;
-            return false;
+            return "";
         }
     }
 
