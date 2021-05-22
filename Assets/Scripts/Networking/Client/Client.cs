@@ -201,7 +201,11 @@ namespace Networking.ClientSide
                         break;
 
                     case (int) COMMUNICATION_METHODS.HANDLE_ACCEPT_BEGIN_ROUND:
-                        //handleAccpetBeginRound(incomingData);
+                        Debug.Log("before calling Threadmanager");
+                        ThreadManager.executeOnMainThread(() =>
+                        {
+                            clientGameLogic.handleAccpetBeginRound(incomingData);
+                        });
                         break;
 
                     case (int) COMMUNICATION_METHODS.HANDLE_ACCEPT_TRADE_BANK:

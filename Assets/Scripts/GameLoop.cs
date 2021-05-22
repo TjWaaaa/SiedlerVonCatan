@@ -92,6 +92,6 @@ public class GameLoop : MonoBehaviour
         {
             return true;
         }
-        return false;
+        // return false;
     }
 }

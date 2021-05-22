@@ -20,16 +20,17 @@ public class RenderRollDices : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown("space"))
-        {
-            Debug.Log("space pressed");
-            StartCoroutine(TimeYield());
-            renderRollDices(new int[] {6,6});
-        }
+        // if (Input.GetKeyDown("space"))
+        // {
+        //     Debug.Log("space pressed");
+        //     StartCoroutine(TimeYield());
+        //     renderRollDices(new int[] {6,6});
+        // }
     }
 
     public void renderRollDices(int[] numbers)
     {
+        StartCoroutine(TimeYield());
         Dice1.GetComponent<Animator>().enabled = true;
         Dice2.GetComponent<Animator>().enabled = true;
         diceNumbers = numbers;
@@ -44,6 +45,7 @@ public class RenderRollDices : MonoBehaviour
         yield return new WaitForSeconds(2);
         Debug.Log("Waited 2 Seconds");
         Dice1.updateDiceNumber(diceNumbers[0]);
+        yield return new WaitForSeconds(1);
         Dice2.updateDiceNumber(diceNumbers[1]);
     }
 

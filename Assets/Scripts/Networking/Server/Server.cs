@@ -291,7 +291,7 @@ namespace Networking.ServerSide
                     break;
                 
                 case (int) COMMUNICATION_METHODS.HANDLE_END_TURN:
-                    //handleEndTurn(incomingData);
+                    serverGameLogic.handleEndTurn(incomingData);
                     break;
                 
                 case (int) COMMUNICATION_METHODS.HANDLE_CLIENT_DISCONNECT_SERVER_CALL:

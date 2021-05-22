@@ -1,12 +1,14 @@
 using System.Collections;
 using System.Collections.Generic;
 using Enums;
+using Networking.ClientSide;
 using Trade;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class GameController : MonoBehaviour
 {
+    private GameObject clientGameLogic;
     public GameObject showCurrentPlayer;
 
     private static Player[] players;
@@ -219,6 +221,10 @@ public class GameController : MonoBehaviour
 
     public void NextPlayer()
     {
+        Debug.Log("NextPlayer in GameController is called");
+        clientGameLogic = GameObject.FindGameObjectWithTag("clientGameLogic");
+        clientGameLogic.GetComponent<ClientGameLogic>().handleNextPlayer();
+
         if (currentPlayer == players.Length - 1)
         {
             currentPlayer = 0;
