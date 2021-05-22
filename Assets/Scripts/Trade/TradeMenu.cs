@@ -4,6 +4,7 @@ using System.IO;
 using UnityEngine;
 using UnityEngine.UI;
 using Enums;
+using TMPro;
 
 namespace Trade
 {
@@ -16,8 +17,12 @@ namespace Trade
         private GameObject closeTradeButton;
         private GameObject trade;
 
-        private GameObject[] giveResources = new GameObject[5];
-        private GameObject[] getResources = new GameObject[5];
+        private GameObject[] offerResources = new GameObject[5];
+        private GameObject[] expectResources = new GameObject[5];
+
+        public TextMeshProUGUI resourceOffer;
+        public TextMeshProUGUI resourceExpect;
+        public TextMeshProUGUI amountOffer;
 
         private static Boolean active;
 
@@ -32,10 +37,10 @@ namespace Trade
             closeTradeButton.GetComponent<Button>().onClick.AddListener(closeTrade);
             trade.GetComponent<Button>().onClick.AddListener(tryTrade);
 
-            giveResources = GameObject.FindGameObjectsWithTag("giveResource");
-            getResources = GameObject.FindGameObjectsWithTag("getResource");
-            foreach (GameObject button in giveResources) { button.GetComponent<Button>().onClick.AddListener(delegate { giveResource(button); }); }
-            foreach (GameObject button in getResources) { button.GetComponent<Button>().onClick.AddListener(delegate { getResource(button); }); }
+            offerResources = GameObject.FindGameObjectsWithTag("giveResource");
+            expectResources = GameObject.FindGameObjectsWithTag("getResource");
+            foreach (GameObject button in offerResources) { button.GetComponent<Button>().onClick.AddListener(delegate { offerResource(button); }); }
+            foreach (GameObject button in expectResources) { button.GetComponent<Button>().onClick.AddListener(delegate { expectResource(button); }); }
 
             //Inactive by default
             gameObject.SetActive(false);
@@ -50,20 +55,20 @@ namespace Trade
         }
 
         //When the buttons on the left side are clicked -> the resource the player wants to give away
-        void giveResource(GameObject button)
+        void offerResource(GameObject button)
         {
 
             if (currentPlayer.canTrade(button.GetComponent<TradeButton>().resourcetype))
             {
-                button.GetComponent<TradeButton>().clickButton();
+                resourceOffer.text = button.GetComponent<TradeButton>().clickButton();
             }
 
         }
 
         //When the buttons on the right side are clicked -> th resource the player wants to get
-        void getResource(GameObject button)
+        void expectResource(GameObject button)
         {
-            button.GetComponent<TradeButton>().clickButton();
+            resourceExpect.text = button.GetComponent<TradeButton>().clickButton();
         }
 
         void startTrade()
@@ -95,8 +100,11 @@ namespace Trade
 
         void setInactive()
         {
-            foreach (GameObject button in giveResources) { button.GetComponent<TradeButton>().reset(); }
-            foreach (GameObject button in getResources) { button.GetComponent<TradeButton>().reset(); }
+            foreach (GameObject button in offerResources) { button.GetComponent<TradeButton>().reset(); }
+            foreach (GameObject button in expectResources) { button.GetComponent<TradeButton>().reset(); }
+
+            resourceExpect.text = "";
+            resourceOffer.text = "";
             gameObject.SetActive(false);
             active = false;
 

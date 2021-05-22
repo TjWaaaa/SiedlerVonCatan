@@ -8,7 +8,7 @@ using UnityEngine.UI;
 
 public class TradeButton : MonoBehaviour
 {
-
+    
     [FormerlySerializedAs("resource")] public RESOURCETYPE resourcetype;
     private Boolean isClicked = false;
 
@@ -18,41 +18,54 @@ public class TradeButton : MonoBehaviour
 
     void Start()
     {
+        
         //get the resource of each button individually
         resourcetype = (RESOURCETYPE)Enum.Parse(typeof(RESOURCETYPE), gameObject.name, true);
+        
     }
 
-    public void clickButton()
+    public String clickButton()
     {
         if (!isClicked)
         {
-            if (gameObject.CompareTag("giveResource") && _giveResourcetype == RESOURCETYPE.NONE)
+            if (gameObject.CompareTag("giveResource"))
             {
-                _giveResourcetype = resourcetype;
-                gameObject.GetComponent<Image>().color = Color.red;
-                isClicked = true;
-
+                if (_giveResourcetype == RESOURCETYPE.NONE)
+                {
+                    _giveResourcetype = resourcetype;
+                    gameObject.transform.GetChild(1).SetAsFirstSibling();
+                    isClicked = true;
+                }
+                return _giveResourcetype.ToString().ToLower();
             }
-            else if (gameObject.CompareTag("getResource") && _getResourcetype == RESOURCETYPE.NONE)
+            else //if (gameObject.CompareTag("getResource"))
             {
-                _getResourcetype = resourcetype;
-                gameObject.GetComponent<Image>().color = Color.green;
-                isClicked = true;
+                if (_getResourcetype == RESOURCETYPE.NONE)
+                {
+                    _getResourcetype = resourcetype;
+                                    gameObject.transform.GetChild(1).SetAsFirstSibling();
+                                    isClicked = true;
+                }
+                return _getResourcetype.ToString().ToLower();
             }
-
+            
         }
         else
         {
-            gameObject.GetComponent<Image>().color = Color.white;
+            gameObject.transform.GetChild(1).SetAsFirstSibling();
             isClicked = false;
             if (gameObject.CompareTag("giveResource")) _giveResourcetype = RESOURCETYPE.NONE;
             else _getResourcetype = RESOURCETYPE.NONE;
+            return "";
         }
     }
 
     public void reset()
     {
-        gameObject.GetComponent<Image>().color = Color.white;
+        if (isClicked)
+        {
+            gameObject.transform.GetChild(1).SetAsFirstSibling();
+        }
         isClicked = false;
         _giveResourcetype = RESOURCETYPE.NONE;
         _getResourcetype = RESOURCETYPE.NONE;
