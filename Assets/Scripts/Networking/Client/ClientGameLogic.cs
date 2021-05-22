@@ -67,8 +67,9 @@ namespace Networking.ClientSide
                     listItem = prefabFactory.getPrefab(PREFABS.PLAYER_LIST_ITEM, scrollViewContent.transform);
                     listItem.transform.Find("No.").GetComponent<Text>().text = playerNumber.ToString();
                     playerNumber++;
+                    listItem.transform.Find("No.").GetComponent<Text>().color = playerColor;
                     listItem.transform.Find("Player").GetComponent<Text>().text = playerName;
-                    listItem.transform.Find("Color").GetComponent<Image>().color = playerColor;
+                    //listItem.transform.Find("Color").GetComponent<Image>().color = playerColor;
 
                     if (currentPlayerID != myID) // Disable all toggle components which don't belong to the local client
                     {
@@ -80,7 +81,7 @@ namespace Networking.ClientSide
                 else // List entry does already exist --> update name and color 
                 {
                     listItem.transform.Find("Player").GetComponent<Text>().text = playerName;
-                    listItem.transform.Find("Color").GetComponent<Image>().color = playerColor;
+                    listItem.transform.Find("Player").GetComponent<Text>().color = playerColor;
                 }
             }
             catch (Exception e)
