@@ -180,24 +180,39 @@ namespace Networking.ClientSide
                         break;
 
                     case (int) COMMUNICATION_METHODS.HANDLE_OBJECT_PLACEMENT:
-                        //handleObjectPlacement(incomingData);
+                        ThreadManager.executeOnMainThread(() =>
+                        {
+                            clientGameLogic.handleObjectPlacement(incomingData);
+                        });
                         break;
 
                     case (int) COMMUNICATION_METHODS.HANDLE_NEXT_PLAYER:
-                        //handleNextPlayer(incomingData);
+                        ThreadManager.executeOnMainThread(() =>
+                        {
+                            clientGameLogic.handleNextPlayer(incomingData);
+                        });
                         break;
 
                     case (int) COMMUNICATION_METHODS.HANDLE_VICTORY:
-                        //handleVictory(incomingData);
+                        ThreadManager.executeOnMainThread(() =>
+                        {
+                            clientGameLogic.handleVictory(incomingData);
+                        });
                         break;
 
                     case (int) COMMUNICATION_METHODS.HANDLE_CLIENT_DISCONNECT:
-                        //handleClientDisconnect(incomingData);
+                        ThreadManager.executeOnMainThread(() =>
+                        {
+                            clientGameLogic.handleClientDisconnect(incomingData);
+                        });
                         break;
 
 
                     case (int) COMMUNICATION_METHODS.HANDLE_REJECTION:
-                        //handleRejection(incomingData);
+                        ThreadManager.executeOnMainThread(() =>
+                        {
+                            clientGameLogic.handleRejection(incomingData);
+                        });
                         break;
 
                     case (int) COMMUNICATION_METHODS.HANDLE_ACCEPT_BEGIN_ROUND:
@@ -209,23 +224,38 @@ namespace Networking.ClientSide
                         break;
 
                     case (int) COMMUNICATION_METHODS.HANDLE_ACCEPT_TRADE_BANK:
-                        //handleAcceptTradeBank(incomingData);
+                        ThreadManager.executeOnMainThread(() =>
+                        {
+                            clientGameLogic.handleAcceptTradeBank(incomingData);
+                        });
                         break;
 
                     case (int) COMMUNICATION_METHODS.HANDLE_ACCEPT_BUILD:
-                        //handleAcceptBuild(incomingData);
+                        ThreadManager.executeOnMainThread(() =>
+                        {
+                            clientGameLogic.handleAcceptBuild(incomingData);
+                        });
                         break;
 
                     case (int) COMMUNICATION_METHODS.HANDLE_GET_RESOURCES:
-                        //handleGetResources(incomingData);
+                        ThreadManager.executeOnMainThread(() =>
+                        {
+                            clientGameLogic.handleGetResources(incomingData);
+                        });
                         break;
 
                     case (int) COMMUNICATION_METHODS.HANDLE_ACCEPT_BUY_DEVELOPMENT_CARD:
-                        //handleAcceptBuyDevelopement(incomingData);
+                        ThreadManager.executeOnMainThread(() =>
+                        {
+                            clientGameLogic.handleAcceptBuyDevelopement(incomingData);
+                        });
                         break;
 
                     case (int) COMMUNICATION_METHODS.HANDLE_ACCEPT_PLAY_DEVELOPMENT_CARD:
-                        //handleAcceptPlayDevelopement(incomingData);
+                        ThreadManager.executeOnMainThread(() =>
+                        {  
+                            clientGameLogic.handleAcceptPlayDevelopement(incomingData);
+                        });
                         break;
 
                     default:

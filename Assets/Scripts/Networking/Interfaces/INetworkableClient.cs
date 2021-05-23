@@ -34,7 +34,8 @@ namespace Networking.Interfaces
         /// <summary>
         /// Client is informed who the next player is.
         /// </summary>
-        public void handleNextPlayer();
+        /// <param name="serverPacket">Name of next Player</param>
+        public void handleNextPlayer(Packet serverPacket);
 
         
         /// <summary>

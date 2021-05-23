@@ -6,6 +6,7 @@ using Networking.ClientSide;
 using Trade;
 using UnityEngine;
 using UnityEngine.UI;
+using Networking.Communication;
 
 public class GameController : MonoBehaviour
 {
@@ -40,10 +41,11 @@ public class GameController : MonoBehaviour
     public GameObject roadWhite;
     public GameObject roadYellow;
 
+    private ClientRequest clientRequest = new ClientRequest();
+
     // Start is called before the first frame update
     void Start()
     {
-        clientGameLogic = GameObject.FindGameObjectWithTag("clientGameLogic");
         //builder = new Builder();
 
         players = new Player[]
@@ -224,7 +226,7 @@ public class GameController : MonoBehaviour
     public void NextPlayer()
     {
         Debug.Log("NextPlayer in GameController is called");
-        clientGameLogic.GetComponent<ClientGameLogic>().handleNextPlayer();
+        clientRequest.requestEndTurn();
 
         if (currentPlayer == players.Length - 1)
         {
