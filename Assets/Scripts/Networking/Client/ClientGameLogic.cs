@@ -162,9 +162,11 @@ namespace Networking.ClientSide
 
         public void handleAccpetBeginRound(Packet serverPacket)
         {
+            Debug.Log("handleAcceptBeginRound has been called");
             diceHolder = GameObject.FindGameObjectWithTag("diceHolder");
-            Debug.Log(diceHolder + " diceHolder object");
+            Debug.Log(diceHolder.name + " diceHolder object");
             diceHolder.GetComponent<RenderRollDices>().renderRollDices(serverPacket.diceResult);
+            Debug.Log(serverPacket.diceResult);
         }
 
         public void handleAcceptTradeBank(Packet serverPacket)

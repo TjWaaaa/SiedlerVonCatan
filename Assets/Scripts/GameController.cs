@@ -43,6 +43,7 @@ public class GameController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        clientGameLogic = GameObject.FindGameObjectWithTag("clientGameLogic");
         //builder = new Builder();
 
         players = new Player[]
@@ -223,7 +224,6 @@ public class GameController : MonoBehaviour
     public void NextPlayer()
     {
         Debug.Log("NextPlayer in GameController is called");
-        clientGameLogic = GameObject.FindGameObjectWithTag("clientGameLogic");
         clientGameLogic.GetComponent<ClientGameLogic>().handleNextPlayer();
 
         if (currentPlayer == players.Length - 1)
