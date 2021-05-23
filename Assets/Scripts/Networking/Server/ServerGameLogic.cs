@@ -129,7 +129,7 @@ namespace Networking.ServerSide
 
         public void handleEndTurn(Packet clientPacket)
         {
-            // TODO
+            // TODO change method call => handleBeginRound should only be called after the new player is already set and all have been notified
             Debug.Log("handleEndTurn has been called");
             handleBeginRound(clientPacket);
         }
