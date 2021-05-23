@@ -87,7 +87,18 @@ namespace Networking.ServerSide
 
         public void handleBeginRound(Packet clientPacket)
         {
-            throw new System.NotImplementedException();
+            // Roll dices
+            Debug.Log("handleBeginRound has been called");
+            int[] diceNumbers = new int[2];
+            // diceNumbers[0] = (int)Random.Range(1,7);
+            // diceNumbers[1] = (int)Random.Range(1,7);
+
+            System.Random r = new System.Random();
+            diceNumbers[0] = r.Next(1,7);
+            diceNumbers[1] = r.Next(1,7);
+
+            Debug.Log(diceNumbers[0] + " " + diceNumbers[1]);
+            serverRequest.notifyRollDice(diceNumbers);
         }
 
         public void handleTradeBank(Packet clientPacket)
@@ -112,7 +123,9 @@ namespace Networking.ServerSide
 
         public void handleEndTurn(Packet clientPacket)
         {
-            throw new System.NotImplementedException();
+            // TODO
+            Debug.Log("handleEndTurn has been called");
+            handleBeginRound(clientPacket);
         }
 
         public void handleClientDisconnectServerCall()

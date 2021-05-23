@@ -4,6 +4,10 @@ using UnityEngine;
 using Networking.Package;
 using Networking.ServerSide;
 using Enums;
+using System;
+using System.Collections.Generic;
+
+
 
 namespace Networking.Communication
 {
@@ -117,6 +121,7 @@ namespace Networking.Communication
 
         public void notifyRollDice(int[] diceResult)
         {
+            Debug.Log("notifyRollDice has been called");
             Packet packet = new Packet();
             packet.type = (int) COMMUNICATION_METHODS.HANDLE_ACCEPT_BEGIN_ROUND;
             packet.diceResult = diceResult;

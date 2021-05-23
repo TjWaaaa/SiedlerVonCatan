@@ -2,12 +2,14 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using Enums;
+using Networking.ClientSide;
 using Trade;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class GameController : MonoBehaviour
 {
+    private GameObject clientGameLogic;
     public GameObject showCurrentPlayer;
 
     private static Player[] players;
@@ -41,6 +43,7 @@ public class GameController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        clientGameLogic = GameObject.FindGameObjectWithTag("clientGameLogic");
         //builder = new Builder();
 
         players = new Player[]
@@ -220,6 +223,9 @@ public class GameController : MonoBehaviour
 
     public void NextPlayer()
     {
+        Debug.Log("NextPlayer in GameController is called");
+        clientGameLogic.GetComponent<ClientGameLogic>().handleNextPlayer();
+
         if (currentPlayer == players.Length - 1)
         {
             currentPlayer = 0;

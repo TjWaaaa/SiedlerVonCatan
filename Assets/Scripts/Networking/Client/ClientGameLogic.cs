@@ -6,6 +6,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using Networking.Package;
+using Networking.Communication;
 
 namespace Networking.ClientSide
 {
@@ -16,6 +17,10 @@ namespace Networking.ClientSide
         private PrefabFactory prefabFactory;
         private GameObject scrollViewContent;
         private int playerNumber = 1;
+        private readonly ClientRequest clientRequest = new ClientRequest();
+
+
+        private GameObject diceHolder;
 
         /// <summary>
         /// Create a persistent ClientGameLogicObject that stays over scene changes.
@@ -135,8 +140,9 @@ namespace Networking.ClientSide
         }
 
         public void handleNextPlayer()
-        {
-            throw new System.NotImplementedException();
+        {   
+            Debug.Log("handleNextPlayer has been called");
+            clientRequest.requestEndTurn();
         }
 
         public void handleVictory(Packet serverPacket)
@@ -156,7 +162,11 @@ namespace Networking.ClientSide
 
         public void handleAccpetBeginRound(Packet serverPacket)
         {
-            throw new System.NotImplementedException();
+            Debug.Log("handleAcceptBeginRound has been called");
+            diceHolder = GameObject.FindGameObjectWithTag("diceHolder");
+            Debug.Log(diceHolder.name + " diceHolder object");
+            diceHolder.GetComponent<RenderRollDices>().renderRollDices(serverPacket.diceResult);
+            Debug.Log(serverPacket.diceResult);
         }
 
         public void handleAcceptTradeBank(Packet serverPacket)
