@@ -130,7 +130,7 @@ namespace Networking.ClientSide
 
         public void handleGameStartInitialize(Packet serverPacket)
         {
-            SceneManager.LoadScene("GameScene");
+            SceneManager.LoadScene("2_GameScene");
             Debug.Log("Client: Sie haben ein Spielbrett erhalten :)");
         }
 
