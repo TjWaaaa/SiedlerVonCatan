@@ -14,7 +14,6 @@ public class BoardTest
     public void BoardTestSimplePasses()
     {
         // Use the Assert class to test conditions
-
         Stack<int> testStack = new Stack<int> { };
         testStack.Push(9);
         testStack.Push(8);
@@ -37,11 +36,11 @@ public class BoardTest
 
         Board boardInstance = new Board(testStack);
         Hexagon[][] hexagons = boardInstance.getHexagons();
-        for(int row=1;row<hexagons.Length;row++)
+        for (int row = 1; row < hexagons.Length; row++)
         {
-            for(int col = 1; col < hexagons[row].Length;col++)
+            for (int col = 1; col < hexagons[row].Length; col++)
             {
-                
+
                 if (hexagons[row][col].getFieldNumber() != 6 && hexagons[row][col].getFieldNumber() != 8)
                 {
                     continue;
@@ -49,8 +48,8 @@ public class BoardTest
 
                 for (int i = 0; i < neighborOffsetX.Length; i++)
                 {
-                   Hexagon neighbor = hexagons[row + neighborOffsetY[i]][col + neighborOffsetX[i]];
-                    if(neighbor != null &&(neighbor.getFieldNumber() == 6 || neighbor.getFieldNumber() == 8))
+                    Hexagon neighbor = hexagons[row + neighborOffsetY[i]][col + neighborOffsetX[i]];
+                    if (neighbor != null && (neighbor.getFieldNumber() == 6 || neighbor.getFieldNumber() == 8))
                     {
                         Assert.IsTrue(false);
                     }
