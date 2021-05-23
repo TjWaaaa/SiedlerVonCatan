@@ -1,6 +1,6 @@
-﻿namespace HexagonType
+﻿namespace Enums
 {
-    public enum HEXAGONTYPE
+    public enum HEXAGON_TYPE
     {
         WATER, DESERT,
         PORTNORMAL, PORTSHEEP, PORTWOOD, PORTBRICK, PORTORE, PORTWHEAT,

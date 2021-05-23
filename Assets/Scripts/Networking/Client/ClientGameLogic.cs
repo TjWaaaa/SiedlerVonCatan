@@ -130,7 +130,7 @@ namespace Networking.ClientSide
 
         public void handleGameStartInitialize(Packet serverPacket)
         {
-            SceneManager.LoadScene("GameScene");
+            SceneManager.LoadScene("2_GameScene");
             Debug.Log("Client: Sie haben ein Spielbrett erhalten :)");
         }
 
@@ -139,10 +139,9 @@ namespace Networking.ClientSide
             throw new System.NotImplementedException();
         }
 
-        public void handleNextPlayer()
+        public void handleNextPlayer(Packet serverPacket)
         {   
-            Debug.Log("handleNextPlayer has been called");
-            clientRequest.requestEndTurn();
+            throw new System.NotImplementedException();
         }
 
         public void handleVictory(Packet serverPacket)
@@ -193,5 +192,7 @@ namespace Networking.ClientSide
         {
             throw new System.NotImplementedException();
         }
+
+        
     }
 }

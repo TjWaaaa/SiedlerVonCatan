@@ -271,23 +271,23 @@ namespace Networking.ServerSide
                     break;
                 
                 case (int) COMMUNICATION_METHODS.HANDLE_BEGIN_ROUND:
-                    //handleBeginRound(incomingData);
+                    serverGameLogic.handleBeginRound(incomingData);
                     break;
                 
                 case (int) COMMUNICATION_METHODS.HANDLE_TRADE_BANK:
-                    //handleTradeBank(incomingData);
+                    serverGameLogic.handleTradeBank(incomingData);
                     break;
                 
                 case (int) COMMUNICATION_METHODS.HANDLE_BUILD:
-                    //handleBuild(incomingData);
+                    serverGameLogic.handleBuild(incomingData);
                     break;
                 
                 case (int) COMMUNICATION_METHODS.HANDLE_BUY_DEVELOPMENT:
-                    //handleBuyDevelopement(incomingData);
+                    serverGameLogic.handleBuyDevelopement(incomingData);
                     break;
                 
                 case (int) COMMUNICATION_METHODS.HANDLE_PLAY_DEVELOPMENT:
-                    //handlePlayDevelopement(incomingData);
+                    serverGameLogic.handlePlayDevelopement(incomingData);
                     break;
                 
                 case (int) COMMUNICATION_METHODS.HANDLE_END_TURN:

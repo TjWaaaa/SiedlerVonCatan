@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using BuildingType;
+using Enums;
 using PlayerColor;
 
 public class Node
@@ -10,7 +10,7 @@ public class Node
     private Node[] adjacentNodes = new Node[3];
     private Edge[] adjacentEdges = new Edge[3];
     private PLAYERCOLOR occupant = PLAYERCOLOR.NONE;
-    private BUILDINGTYPE buildingType = BUILDINGTYPE.NONE;
+    private BUILDING_TYPE building_Type = BUILDING_TYPE.NONE;
 
     public Node(int nodeId)
     {
@@ -57,13 +57,13 @@ public class Node
         return adjacentEdges;
     }
 
-    public void setBuildingType(BUILDINGTYPE buildingType)
+    public void setBuilding_Type(BUILDING_TYPE building_Type)
     {
-        this.buildingType = buildingType;
+        this.building_Type = building_Type;
     }
 
-    public BUILDINGTYPE getBuildingType()
+    public BUILDING_TYPE getBuilding_Type()
     {
-        return buildingType;
+        return building_Type;
     }
 }

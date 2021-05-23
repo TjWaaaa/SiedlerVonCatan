@@ -36,7 +36,7 @@ public class JoinHostKlickListener : MonoBehaviour
             ClientRequest clientRequest = new ClientRequest();
             clientRequest.requestJoinLobby(playerName);
 
-            SceneManager.LoadScene("Scenes/Lobby");
+            SceneManager.LoadScene("Scenes/1_LobbyScene");
         }
         else
         {
@@ -81,7 +81,7 @@ public class JoinHostKlickListener : MonoBehaviour
             }
 
             Debug.Log("Client: hostIp: " + serverIPEndpoint.Address);
-            SceneManager.LoadScene("Scenes/Lobby");
+            SceneManager.LoadScene("Scenes/1_LobbyScene");
         }
     }
 }
