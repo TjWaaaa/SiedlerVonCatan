@@ -65,7 +65,6 @@ public class Board
     public Board()
     {
         numberStack = createRandomHexagonNumberStack(availableNumbers);
-        Debug.Log("alksjd");
         nodes = initializeNodes();
         edges = initializeEdges();
         hexagons = initializeHexagons();
@@ -406,38 +405,47 @@ public class Board
         return false;
     }
     /// <summary>
-    /// Checks if Hexagons with a fieldnumber of 6 or 8 are beside each other
+    /// Checks if Hexagons with a fieldnumber of 6 or 8 are adjacent
     /// </summary>
     private void checkPlacementConstraints()
     {
-
         for (int row = 1; row < 6; row++)
         {
             for (int col = 1; col < 6; col++)
             {
                 Hexagon currentHex = hexagons[row, col];
-                if (currentHex != null && currentHex.getFieldNumber() != 0)
-                {
-                    int fieldNumber = currentHex.getFieldNumber();
-                    Debug.Log("row: " + row + "col: " + col);
-                    //neighbors just needs to be checked if fieldnumber is 6 or 8
-                    if (fieldNumber == 6 || fieldNumber == 8)
-                    {
-                        for (int offsetIndex = 0; offsetIndex < neighborOffsetX.Length; offsetIndex++)
-                        {
-                            int yOffset = row + neighborOffsetY[offsetIndex];
-                            int xOffset = col + neighborOffsetX[offsetIndex];
-                            Hexagon neighbor = hexagons[yOffset, xOffset];
-                            //if one of the neighbors fieldnumber is 6 or 8 the hexagon needs to be moved
-                            if (neighbor != null && (neighbor.getFieldNumber() == 6 || neighbor.getFieldNumber() == 8))
-                            {
-                                int[] suitablePos = findSuitablePos();
-                                swapHexagonPositions(row, col, suitablePos[0], suitablePos[1]);
-                                break;
 
-                            }
-                        }
+                if (currentHex == null || currentHex.getFieldNumber() == 0)
+                {
+                    continue;
+                }
+
+                int fieldNumber = currentHex.getFieldNumber();
+                Debug.Log("row: " + row + "col: " + col);
+
+                //neighbors just needs to be checked if fieldnumber is 6 or 8
+
+                if (fieldNumber != 6 && fieldNumber != 8)
+                {
+                    continue;
+                }
+
+                for (int offsetIndex = 0; offsetIndex < neighborOffsetX.Length; offsetIndex++)
+                {
+                    int yOffset = row + neighborOffsetY[offsetIndex];
+                    int xOffset = col + neighborOffsetX[offsetIndex];
+                    Hexagon neighbor = hexagons[yOffset, xOffset];
+
+                    //if one of the neighbors fieldnumber is 6 or 8 the hexagon needs to be moved
+                    if (neighbor == null || (neighbor.getFieldNumber() != 6 && neighbor.getFieldNumber() != 8))
+                    {
+                        continue;
                     }
+
+                    int[] suitablePos = findSuitablePos();
+                    swapHexagonPositions(row, col, suitablePos[0], suitablePos[1]);
+                    break;
+
                 }
             }
         }
@@ -455,34 +463,36 @@ public class Board
             for (int col = 1; col < 6; col++)
             {
                 Hexagon currentHex = hexagons[row, col];
-                if (currentHex != null && currentHex.getFieldNumber() != 0)
+                if (currentHex == null || currentHex.getFieldNumber() == 0)
                 {
-                    int fieldNumber = currentHex.getFieldNumber();
-                    if (fieldNumber != 6 && fieldNumber != 8 && fieldNumber != 0)
-                    {
-                        for (int offsetIndex = 0; offsetIndex < neighborOffsetX.Length; offsetIndex++)
-                        {
-                            int yOffset = row + neighborOffsetY[offsetIndex];
-                            int xOffset = col + neighborOffsetX[offsetIndex];
-                            int neighborFieldnumber = 0;
-                            try
-                            {
-                                neighborFieldnumber = hexagons[yOffset, xOffset].getFieldNumber();
-                            }
-                            catch (NullReferenceException e)
-                            {
+                    continue;
+                }
 
-                            }
-                            if (neighborFieldnumber == 6 || neighborFieldnumber == 8)
-                            {
-                                break;
-                            }
-                            else if (offsetIndex == neighborOffsetX.Length - 1)
-                            {
-                                return new int[] { row, col };
-                            }
+                int fieldNumber = currentHex.getFieldNumber();
+                if (fieldNumber != 6 && fieldNumber != 8 && fieldNumber != 0)
+                {
+                    //iterate over neighbors
+                    for (int offsetIndex = 0; offsetIndex < neighborOffsetX.Length; offsetIndex++)
+                    {
+                        int yOffset = row + neighborOffsetY[offsetIndex];
+                        int xOffset = col + neighborOffsetX[offsetIndex];
+                        int neighborFieldnumber = 0;
+                        try
+                        {
+                            neighborFieldnumber = hexagons[yOffset, xOffset].getFieldNumber();
+                        }
+                        catch (NullReferenceException e)
+                        {
+
+                        }
+                        //if one of the neighbors is 6 || 8 position is mot suitable
+                        if (neighborFieldnumber == 6 || neighborFieldnumber == 8)
+                        {
+                            break;
                         }
                     }
+                    // loop didn´t brak, therefore the position is suitable
+                    return new int[] { row, col };
                 }
             }
         }
