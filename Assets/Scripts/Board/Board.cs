@@ -9,7 +9,7 @@ using UnityEngine;
 
 public class Board
 {
-    private Hexagon[,] hexagons;
+    private Hexagon[][] hexagons;
     private Node[] nodes = new Node[54];
     private Edge[] edges = new Edge[72];
 
@@ -77,20 +77,33 @@ public class Board
 
     }
     /// <summary>
+    /// Contructor for test purposes. Takes a pre defined Numberstack an initalizes a Board Object
+    /// </summary>
+    /// <param name="numberStack">Stack of int values representing the fieldnumbers of the boards hexagons</param>
+    public Board(Stack<int> numberStack)
+    {
+        this.numberStack = numberStack;
+        nodes = initializeNodes();
+        edges = initializeEdges();
+        hexagons = initializeHexagons();
+        testNeighbors();
+        checkPlacementConstraints();
+        testNeighbors();
+    }
+    /// <summary>
     /// delete this method, its just for testing
     /// </summary>
-    private void testNeighbors()
+    public void testNeighbors()
     {
         string test = "";
         test += "\n";
-        for (int row = 1; row < 6; row++)
+        for (int row = 1; row < hexagons.Length - 1; row++)
         {
-            for (int col = 1; col < 6; col++)
+            for (int col = 1; col < hexagons[row].Length - 1; col++)
             {
-                Hexagon hex = hexagons[row, col];
+                Hexagon hex = hexagons[row][col];
                 if (hex != null && hex.isLand())
                 {
-                    Debug.Log(hex.getFieldNumber());
                     test += Convert.ToString(hex.getFieldNumber()) + "|";
                 }
 
@@ -104,15 +117,16 @@ public class Board
     /// creates a 7x7 array of Hexagons with randomly placed hexagonTypes and hexagonNumbers
     /// </summary>
     /// <returns>returns the array</returns>
-    private Hexagon[,] initializeHexagons()
+    private Hexagon[][] initializeHexagons()
     {
         Stack<HEXAGONTYPE> landStack = createRandomHexagonStackFromArray(landHexagons);
         Stack<HEXAGONTYPE> portStack = createRandomHexagonStackFromArray(portHexagons);
 
-        Hexagon[,] hexagons = new Hexagon[7, 7];
+        Hexagon[][] hexagons = new Hexagon[7][];
 
         for (int row = 0; row < boardConfig.Length; row++)
         {
+            hexagons[row] = new Hexagon[boardConfig[row].Length];
             for (int col = 0; col < boardConfig[row].Length; col++)
             {
                 int currentConfig = boardConfig[row][col];
@@ -129,11 +143,11 @@ public class Board
                 if (currentConfig == 2)
                 {
                     Hexagon newHexagon = new Hexagon(type, numberStack.Pop());
-                    hexagons[row, col] = newHexagon;
+                    hexagons[row][col] = newHexagon;
                 }
                 else
                 {
-                    hexagons[row, col] = new Hexagon(type);
+                    hexagons[row][col] = new Hexagon(type);
                 }
             }
         }
@@ -196,9 +210,9 @@ public class Board
             for (int col = 0; col < boardConfig[row].Length; col++)
             {
                 // continue if there is no hexagon at given index
-                if (hexagons[row, col] == null) continue;
+                if (hexagons[row][col] == null) continue;
 
-                Hexagon currentHexagon = hexagons[row, col];
+                Hexagon currentHexagon = hexagons[row][col];
                 Console.WriteLine(currentHexagon.GetType());
 
                 // give all neighbors a hexagon needs to know
@@ -249,7 +263,7 @@ public class Board
                 string[] nHexagonCoordinates = nHexagons[i].Split('.');
                 int nHexagonPosX = int.Parse(nHexagonCoordinates[0]);
                 int nHexagonPosY = int.Parse(nHexagonCoordinates[1]);
-                currentNode.setAdjacentHexagon(hexagons[nHexagonPosX, nHexagonPosY], i);
+                currentNode.setAdjacentHexagon(hexagons[nHexagonPosX][nHexagonPosY], i);
 
                 // sets adjacent node
                 if (nNodes[i] != "-")
@@ -409,11 +423,11 @@ public class Board
     /// </summary>
     private void checkPlacementConstraints()
     {
-        for (int row = 1; row < 6; row++)
+        for (int row = 1; row < hexagons.Length - 1; row++)
         {
-            for (int col = 1; col < 6; col++)
+            for (int col = 1; col < hexagons[row].Length; col++)
             {
-                Hexagon currentHex = hexagons[row, col];
+                Hexagon currentHex = hexagons[row][col];
 
                 if (currentHex == null || currentHex.getFieldNumber() == 0)
                 {
@@ -421,7 +435,6 @@ public class Board
                 }
 
                 int fieldNumber = currentHex.getFieldNumber();
-                Debug.Log("row: " + row + "col: " + col);
 
                 //neighbors just needs to be checked if fieldnumber is 6 or 8
 
@@ -434,10 +447,19 @@ public class Board
                 {
                     int yOffset = row + neighborOffsetY[offsetIndex];
                     int xOffset = col + neighborOffsetX[offsetIndex];
-                    Hexagon neighbor = hexagons[yOffset, xOffset];
+                    Hexagon neighbor = null;
+
+                    try
+                    {
+                        neighbor = hexagons[yOffset][xOffset];
+                    }
+                    catch (IndexOutOfRangeException e)
+                    {
+                        continue;
+                    }
 
                     //if one of the neighbors fieldnumber is 6 or 8 the hexagon needs to be moved
-                    if (neighbor == null || (neighbor.getFieldNumber() != 6 && neighbor.getFieldNumber() != 8))
+                    if (neighbor.getFieldNumber() != 6 && neighbor.getFieldNumber() != 8)
                     {
                         continue;
                     }
@@ -458,11 +480,11 @@ public class Board
     private int[] findSuitablePos()
     {
         bool suitable = true;
-        for (int row = 1; row < 6; row++)
+        for (int row = 1; row < hexagons.Length - 1; row++)
         {
-            for (int col = 1; col < 6; col++)
+            for (int col = 1; col < hexagons[row].Length - 1; col++)
             {
-                Hexagon currentHex = hexagons[row, col];
+                Hexagon currentHex = hexagons[row][col];
                 if (currentHex == null || currentHex.getFieldNumber() == 0)
                 {
                     continue;
@@ -477,21 +499,14 @@ public class Board
                         int yOffset = row + neighborOffsetY[offsetIndex];
                         int xOffset = col + neighborOffsetX[offsetIndex];
                         int neighborFieldnumber = 0;
-                        try
-                        {
-                            neighborFieldnumber = hexagons[yOffset, xOffset].getFieldNumber();
-                        }
-                        catch (NullReferenceException e)
-                        {
-
-                        }
+                        neighborFieldnumber = hexagons[yOffset][xOffset].getFieldNumber();
                         //if one of the neighbors is 6 || 8 position is mot suitable
                         if (neighborFieldnumber == 6 || neighborFieldnumber == 8)
                         {
                             break;
                         }
                     }
-                    // loop didn´t brak, therefore the position is suitable
+                    // loop didn´t break, therefore the position is suitable
                     return new int[] { row, col };
                 }
             }
@@ -509,8 +524,13 @@ public class Board
 
     private void swapHexagonPositions(int firstHexRow, int firstHexCol, int secondHexRow, int secondHexCol)
     {
-        Hexagon tempHex = hexagons[firstHexRow, firstHexCol];
-        hexagons[firstHexRow, firstHexCol] = hexagons[secondHexRow, secondHexCol];
-        hexagons[secondHexRow, secondHexCol] = tempHex;
+        Hexagon tempHex = hexagons[firstHexRow][firstHexCol];
+        hexagons[firstHexRow][firstHexCol] = hexagons[secondHexRow][secondHexCol];
+        hexagons[secondHexRow][secondHexCol] = tempHex;
+    }
+
+    public Hexagon[][] getHexagons()
+    {
+        return this.hexagons;
     }
 }
