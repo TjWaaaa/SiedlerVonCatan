@@ -1,6 +1,6 @@
-﻿namespace BuildingType
+﻿namespace Enums
 {
-    public enum BUILDINGTYPE
+    public enum BUILDING_TYPE
     { 
         NONE = 0,
         VILLAGE = 1, CITY = 2

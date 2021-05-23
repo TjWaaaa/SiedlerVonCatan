@@ -26,6 +26,19 @@ namespace Networking.ServerSide
             allPlayer.Add(new Player(playerId));
         }
 
+        public int[] rollDices()
+        {
+            Debug.Log("handleBeginRound has been called");
+            int[] diceNumbers = new int[2];
+            // diceNumbers[0] = (int)Random.Range(1,7);
+            // diceNumbers[1] = (int)Random.Range(1,7);
+
+            System.Random r = new System.Random();
+            diceNumbers[0] = r.Next(1,7);
+            diceNumbers[1] = r.Next(1,7);
+            return diceNumbers;
+        }
+
         public void handleRequestJoinLobby(Packet clientPacket, int currentClientID)
         {
             // ankommender spieler: name setzten + farbe zuweisen
@@ -88,15 +101,8 @@ namespace Networking.ServerSide
         public void handleBeginRound(Packet clientPacket)
         {
             // Roll dices
-            Debug.Log("handleBeginRound has been called");
-            int[] diceNumbers = new int[2];
-            // diceNumbers[0] = (int)Random.Range(1,7);
-            // diceNumbers[1] = (int)Random.Range(1,7);
-
-            System.Random r = new System.Random();
-            diceNumbers[0] = r.Next(1,7);
-            diceNumbers[1] = r.Next(1,7);
-
+            int[] diceNumbers = rollDices();
+            
             Debug.Log(diceNumbers[0] + " " + diceNumbers[1]);
             serverRequest.notifyRollDice(diceNumbers);
         }
@@ -132,5 +138,6 @@ namespace Networking.ServerSide
         {
             throw new System.NotImplementedException();
         }
+        
     }
 }

@@ -1,10 +1,9 @@
 using System;
 using System.Collections.Generic;
-using HexagonType;
 using UnityEngine;
 using System.IO;
 using System.Linq;
-using BuildingType;
+using Enums;
 using PlayerColor;
 
 
@@ -41,21 +40,21 @@ public class Board
     private int[] neighborOffsetX = new int[] { 0, -1, -1, 0, 1, 1 };
     private int[] neighborOffsetY = new int[] { -1, -1, 0, 1, 1, 0 };
 
-    private readonly HEXAGONTYPE[] landHexagons = {
-        HEXAGONTYPE.SHEEP, HEXAGONTYPE.SHEEP, HEXAGONTYPE.SHEEP, HEXAGONTYPE.SHEEP,
-        HEXAGONTYPE.WOOD, HEXAGONTYPE.WOOD, HEXAGONTYPE.WOOD, HEXAGONTYPE.WOOD,
-        HEXAGONTYPE.WHEAT, HEXAGONTYPE.WHEAT, HEXAGONTYPE.WHEAT, HEXAGONTYPE.WHEAT,
-        HEXAGONTYPE.BRICK, HEXAGONTYPE.BRICK, HEXAGONTYPE.BRICK,
-        HEXAGONTYPE.ORE, HEXAGONTYPE.ORE, HEXAGONTYPE.ORE
+    private readonly HEXAGON_TYPE[] landHexagons = {
+        HEXAGON_TYPE.SHEEP, HEXAGON_TYPE.SHEEP, HEXAGON_TYPE.SHEEP, HEXAGON_TYPE.SHEEP,
+        HEXAGON_TYPE.WOOD, HEXAGON_TYPE.WOOD, HEXAGON_TYPE.WOOD, HEXAGON_TYPE.WOOD,
+        HEXAGON_TYPE.WHEAT, HEXAGON_TYPE.WHEAT, HEXAGON_TYPE.WHEAT, HEXAGON_TYPE.WHEAT,
+        HEXAGON_TYPE.BRICK, HEXAGON_TYPE.BRICK, HEXAGON_TYPE.BRICK,
+        HEXAGON_TYPE.ORE, HEXAGON_TYPE.ORE, HEXAGON_TYPE.ORE
     };
 
-    private readonly HEXAGONTYPE[] portHexagons = {
-        HEXAGONTYPE.PORTNORMAL, HEXAGONTYPE.PORTNORMAL, HEXAGONTYPE.PORTNORMAL, HEXAGONTYPE.PORTNORMAL,
-        HEXAGONTYPE.PORTSHEEP,
-        HEXAGONTYPE.PORTWOOD,
-        HEXAGONTYPE.PORTBRICK,
-        HEXAGONTYPE.PORTORE,
-        HEXAGONTYPE.PORTWHEAT
+    private readonly HEXAGON_TYPE[] portHexagons = {
+        HEXAGON_TYPE.PORTNORMAL, HEXAGON_TYPE.PORTNORMAL, HEXAGON_TYPE.PORTNORMAL, HEXAGON_TYPE.PORTNORMAL,
+        HEXAGON_TYPE.PORTSHEEP,
+        HEXAGON_TYPE.PORTWOOD,
+        HEXAGON_TYPE.PORTBRICK,
+        HEXAGON_TYPE.PORTORE,
+        HEXAGON_TYPE.PORTWHEAT
     };
     
     private readonly int[] randomNumArray = {0, 1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6, 7, 7, 8, 8, 9};
@@ -73,13 +72,13 @@ public class Board
     }
 
     /// <summary>
-    /// creates a 7x7 array of Hexagons with randomly placed hexagonTypes and hexagonNumbers
+    /// creates a 7x7 array of Hexagons with randomly placed hexagon_Types and hexagonNumbers
     /// </summary>
     /// <returns>returns the array</returns>
     private Hexagon[,] initializeHexagons()
     {
-        Stack<HEXAGONTYPE> landStack = createRandomHexagonStackFromArray(landHexagons);
-        Stack<HEXAGONTYPE> portStack = createRandomHexagonStackFromArray(portHexagons);
+        Stack<HEXAGON_TYPE> landStack = createRandomHexagonStackFromArray(landHexagons);
+        Stack<HEXAGON_TYPE> portStack = createRandomHexagonStackFromArray(portHexagons);
         Stack<int> numberStack = createRandomHexagonNumberStack(randomNumArray);
 
         Hexagon[,] hexagons = new Hexagon[7, 7];
@@ -93,9 +92,9 @@ public class Board
                 hexagons[row, col] = currentConfig switch
                 {
                     0 => null,
-                    1 => new Hexagon(HEXAGONTYPE.WATER),
+                    1 => new Hexagon(HEXAGON_TYPE.WATER),
                     2 => new Hexagon(landStack.Pop(), numberStack.Pop()),
-                    3 => new Hexagon(HEXAGONTYPE.DESERT),
+                    3 => new Hexagon(HEXAGON_TYPE.DESERT),
                     4 => new Hexagon(portStack.Pop()),
                     _ => null,
                 };
@@ -104,7 +103,7 @@ public class Board
                 switch (currentConfig)
                 {
                     case 1:
-                        hexagons[row, col] = new Hexagon(HEXAGONTYPE.WATER);
+                        hexagons[row, col] = new Hexagon(HEXAGON_TYPE.WATER);
                         break;
                     case 2:
                         int fieldNumber = numberStack.Pop();
@@ -119,7 +118,7 @@ public class Board
                         }
                         break;
                     case 3:
-                        hexagons[row, col] = new Hexagon(HEXAGONTYPE.DESERT);
+                        hexagons[row, col] = new Hexagon(HEXAGON_TYPE.DESERT);
                         break;
                     case 4:
                         hexagons[row, col] = new Hexagon(portStack.Pop());
@@ -131,13 +130,13 @@ public class Board
     }
 
     /// <summary>
-    /// creates a HEXAGONTYPE stack with types of a given array
+    /// creates a HEXAGON_TYPE stack with types of a given array
     /// </summary>
-    /// <param name="array">array of HEXAGONTYPEs with specific types</param>
-    /// <returns>random HEXAGONTYPE stack</returns>
-    private Stack<HEXAGONTYPE> createRandomHexagonStackFromArray(HEXAGONTYPE[] array)
+    /// <param name="array">array of HEXAGON_TYPEs with specific types</param>
+    /// <returns>random HEXAGON_TYPE stack</returns>
+    private Stack<HEXAGON_TYPE> createRandomHexagonStackFromArray(HEXAGON_TYPE[] array)
     {
-        return new Stack<HEXAGONTYPE>(array.OrderBy(n => Guid.NewGuid()).ToArray());
+        return new Stack<HEXAGON_TYPE>(array.OrderBy(n => Guid.NewGuid()).ToArray());
     }
 
     /// <summary>
@@ -294,13 +293,13 @@ public class Board
         
         if (!allowedToBuildOnNode(currentNode, player)) return;
         
-        if (currentNode.getBuildingType() == BUILDINGTYPE.NONE)
+        if (currentNode.getBuilding_Type() == BUILDING_TYPE.NONE)
         {
-            currentNode.setBuildingType(BUILDINGTYPE.VILLAGE);
+            currentNode.setBuilding_Type(BUILDING_TYPE.VILLAGE);
         }
-        else if (currentNode.getBuildingType() == BUILDINGTYPE.VILLAGE)
+        else if (currentNode.getBuilding_Type() == BUILDING_TYPE.VILLAGE)
         {
-            currentNode.setBuildingType(BUILDINGTYPE.CITY);
+            currentNode.setBuilding_Type(BUILDING_TYPE.CITY);
         }
     }
 
@@ -315,7 +314,7 @@ public class Board
         // false if node is already occupied by enemy OR is city 
         if (currentNode.getOccupant() != PLAYERCOLOR.NONE
             && currentNode.getOccupant() != player
-            || currentNode.getBuildingType() == BUILDINGTYPE.CITY)
+            || currentNode.getBuilding_Type() == BUILDING_TYPE.CITY)
         {
             return false;
         }
@@ -326,7 +325,7 @@ public class Board
         foreach (Node neighbor in neighborNodes)
         {
             // false if a neighborNode is already occupied
-            if (neighbor.getBuildingType() != BUILDINGTYPE.NONE) return false;
+            if (neighbor.getBuilding_Type() != BUILDING_TYPE.NONE) return false;
         }
 
         foreach (Edge neighbor in neighborEdges)
