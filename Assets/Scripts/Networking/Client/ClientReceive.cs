@@ -103,7 +103,7 @@ namespace Networking.ClientSide
             // initiialize prefab with data
             Debug.Log("Client recieved new package: " + PacketSerializer.objectToJsonString(serverPacket));
 
-            myID = serverPacket.playerID;
+            myID = serverPacket.myPlayerID;
             foreach (JArray item in serverPacket.lobbyContent)
             {
                 try
@@ -124,7 +124,7 @@ namespace Networking.ClientSide
 
         public void handlePlayerReadyNotification(Packet serverPacket)
         {
-            var gameObject = GameObject.Find(serverPacket.currentPlayerNumber.ToString());
+            var gameObject = GameObject.Find(serverPacket.currentPlayerID.ToString());
             gameObject.transform.Find("IsReady").GetComponent<Toggle>().isOn = serverPacket.isReady;
         }
 
