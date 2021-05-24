@@ -37,7 +37,7 @@ namespace Networking.Communication
         {
             Packet packet = new Packet();
             packet.type = (int) COMMUNICATION_METHODS.HANDLE_GET_RESOURCES;
-            packet.playerNumber = playerID;
+            packet.myPlayerID = playerID;
             packet.resourcesObtained = resources;
             packet.victoryPoint = victoryPoints;
             
@@ -112,7 +112,7 @@ namespace Networking.Communication
             packet.type = (int) COMMUNICATION_METHODS.HANDLE_PLAYER_READY_NOTIFICATION;
             packet.playerName = playerName;
             packet.isReady = readyStatus;
-            packet.currentPlayerNumber = currentClientID;
+            packet.currentPlayerID = currentClientID;
             
             // send to all but the player that changed its status
             Server.sendDataToAllButOne(currentClientID, packet);
@@ -134,7 +134,7 @@ namespace Networking.Communication
         {
             Packet packet = new Packet();
             packet.type = (int) COMMUNICATION_METHODS.HANDLE_ACCEPT_BUY_DEVELOPMENT_CARD;
-            packet.playerNumber = playerID;
+            packet.myPlayerID = playerID;
             packet.developmentCard = (int) developmentCard;
             
             // send to active
