@@ -74,7 +74,6 @@ namespace Networking.ClientSide
                     playerNumber++;
                     listItem.transform.Find("No.").GetComponent<Text>().color = playerColor;
                     listItem.transform.Find("Player").GetComponent<Text>().text = playerName;
-                    //listItem.transform.Find("Color").GetComponent<Image>().color = playerColor;
 
                     if (currentPlayerID != myID) // Disable all toggle components which don't belong to the local client
                     {

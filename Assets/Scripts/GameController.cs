@@ -50,8 +50,8 @@ public class GameController : MonoBehaviour
 
         players = new Player[]
             {
-                new Player("Player1", Color.blue),
-                new Player("Player2", Color.red),
+                new Player("Player1", Color.red),
+                new Player("Player2", Color.blue),
                 new Player("Player3", Color.white),
                 new Player("Player4", Color.yellow)
             };
@@ -82,8 +82,8 @@ public class GameController : MonoBehaviour
 
         currentPlayer = 0;
 
-        showCurrentPlayer.GetComponent<Image>().color = players[currentPlayer].GetColor();
-        showCurrentPlayer.transform.GetChild(0).GetComponent<Text>().text = players[currentPlayer].GetName();
+        showCurrentPlayer.GetComponent<Image>().color = players[currentPlayer].getPlayerColor();
+        showCurrentPlayer.transform.GetChild(0).GetComponent<Text>().text = players[currentPlayer].getPlayerName();
         ChangeRessourcesOutput(players[currentPlayer]);
     }
 
@@ -104,7 +104,7 @@ public class GameController : MonoBehaviour
                     {
 
                         Debug.Log("Village: " + hit.transform.position);
-                        if (players[currentPlayer].canBuildVillage())
+                        if (players[currentPlayer].canBuyVillage())
                         {
 
                             //Color color = players[currentPlayer].GetColor();
@@ -120,7 +120,7 @@ public class GameController : MonoBehaviour
                     {
 
                         Debug.Log("City: " + hit.transform.position);
-                        if (players[currentPlayer].canBuildCity())
+                        if (players[currentPlayer].canBuyCity())
                         {
 
                             //Color color = players[currentPlayer].GetColor();
@@ -136,7 +136,7 @@ public class GameController : MonoBehaviour
                     {
 
                         Debug.Log("Road: " + hit.transform.position);
-                        if (players[currentPlayer].canBuildStreet())
+                        if (players[currentPlayer].canBuyStreet())
                         {
 
                             //Color color = players[currentPlayer].GetColor();
@@ -156,7 +156,7 @@ public class GameController : MonoBehaviour
     public void BuildVillage(Vector3 position)
     {
 
-        Color c = players[currentPlayer].GetColor();
+        Color c = players[currentPlayer].getPlayerColor();
 
         if (c.Equals(Color.blue))
         {
@@ -179,7 +179,7 @@ public class GameController : MonoBehaviour
     public void BuildCity(Vector3 position)
     {
 
-        Color c = players[currentPlayer].GetColor();
+        Color c = players[currentPlayer].getPlayerColor();
 
         if (c.Equals(Color.blue))
         {
@@ -202,7 +202,7 @@ public class GameController : MonoBehaviour
     public void BuildRoad(Vector3 position, Quaternion rotation)
     {
 
-        Color c = players[currentPlayer].GetColor();
+        Color c = players[currentPlayer].getPlayerColor();
 
         if (c.Equals(Color.blue))
         {
@@ -237,8 +237,8 @@ public class GameController : MonoBehaviour
             currentPlayer++;
         }
 
-        showCurrentPlayer.GetComponent<Image>().color = players[currentPlayer].GetColor();
-        showCurrentPlayer.transform.GetChild(0).GetComponent<Text>().text = players[currentPlayer].GetName();
+        showCurrentPlayer.GetComponent<Image>().color = players[currentPlayer].getPlayerColor();
+        showCurrentPlayer.transform.GetChild(0).GetComponent<Text>().text = players[currentPlayer].getPlayerName();
         ChangeRessourcesOutput(players[currentPlayer]);
     }
 

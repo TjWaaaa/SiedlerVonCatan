@@ -15,10 +15,10 @@ namespace Networking.ServerSide
 
         public ServerGameLogic()
         {
+            possibleColors.Push(Color.yellow);
+            possibleColors.Push(Color.white);
             possibleColors.Push(Color.blue);
             possibleColors.Push(Color.red);
-            possibleColors.Push(Color.white);
-            possibleColors.Push(Color.green);
         }    
 
         public void generatePlayer(int playerId)
@@ -47,18 +47,18 @@ namespace Networking.ServerSide
             ArrayList allPlayerInformation = new ArrayList();
             foreach (var player in allPlayer)
             {
-                if (player.GetPlayerID() == currentClientID)
+                if (player.getPlayerID() == currentClientID)
                 {
                     player.setPlayerName(clientPacket.playerName);
-                    player.setColor(possibleColors.Pop());
+                    player.setPlayerColor(possibleColors.Pop());
                 }
 
                 // look for all Players that are fully initialized and add it to ArrayList that updates client lobbies. 
-                if (player.GetName() != null)
+                if (player.getPlayerName() != null)
                 {
-                    Color playerColor = player.GetColor(); // needs to be done, because Color is not serializable ¯\_(ツ)_/¯
+                    Color playerColor = player.getPlayerColor(); // needs to be done, because Color is not serializable ¯\_(ツ)_/¯
                     allPlayerInformation.Add(new object[]
-                        {player.GetPlayerID(), player.GetName(), new float[] {playerColor.r, playerColor.g, playerColor.b, playerColor.a}});
+                        {player.getPlayerID(), player.getPlayerName(), new float[] {playerColor.r, playerColor.g, playerColor.b, playerColor.a}});
                 }
             }
             
@@ -73,10 +73,10 @@ namespace Networking.ServerSide
         
             foreach (Player player in allPlayer)
             {
-                if (player.GetPlayerID() == currentClientID)
+                if (player.getPlayerID() == currentClientID)
                 {
                     player.setIsReady(clientPacket.isReady);
-                    serverRequest.notifyPlayerReady(currentClientID, player.GetName(), clientPacket.isReady);
+                    serverRequest.notifyPlayerReady(currentClientID, player.getPlayerName(), clientPacket.isReady);
                 }
                 
                 // check if all players are ready
