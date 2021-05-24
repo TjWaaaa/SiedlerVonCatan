@@ -37,8 +37,8 @@ public class Board
         new[]    {4, 1, 4, 1}
     };
 
-    private int[] neighborOffsetX = new int[] { 0, -1, -1, 0, 1, 1 }; //specifies the position of adjacent hexagons in vertical direction
-    private int[] neighborOffsetY = new int[] { -1, -1, 0, 1, 1, 0 }; //specifies the position of adjacent hexagons in horizontal direction
+    private int[] neighborOffsetX = new int[] { 0, -1, -1, 0, 1, 1 }; //specifies the position of adjacent hexagons in horizontal direction
+    private int[] neighborOffsetY = new int[] { -1, -1, 0, 1, 1, 0 }; //specifies the position of adjacent hexagons in vertical direction
     private int[] availableNumbers = new int[] { 2, 3, 3, 4, 4, 5, 5, 6, 6, 8, 8, 9, 9, 10, 10, 11, 11, 12 };
 
     private readonly HEXAGONTYPE[] landHexagons = {
@@ -425,10 +425,11 @@ public class Board
     {
         for (int row = 1; row < hexagons.Length - 1; row++)
         {
-            for (int col = 1; col < hexagons[row].Length; col++)
+            for (int col = 1; col < hexagons[row].Length - 1; col++)
             {
                 Hexagon currentHex = hexagons[row][col];
 
+                //no need to check ports or dessert
                 if (currentHex == null || currentHex.getFieldNumber() == 0)
                 {
                     continue;
@@ -437,12 +438,12 @@ public class Board
                 int fieldNumber = currentHex.getFieldNumber();
 
                 //neighbors just needs to be checked if fieldnumber is 6 or 8
-
                 if (fieldNumber != 6 && fieldNumber != 8)
                 {
                     continue;
                 }
 
+                //iterating over adjacent hexagons
                 for (int offsetIndex = 0; offsetIndex < neighborOffsetX.Length; offsetIndex++)
                 {
                     int yOffset = row + neighborOffsetY[offsetIndex];
@@ -455,6 +456,7 @@ public class Board
                     }
                     catch (IndexOutOfRangeException e)
                     {
+                        //if index is out of range there is no adjacent hexagon, therefore the constraint for this neighbor is met
                         continue;
                     }
 
@@ -476,41 +478,58 @@ public class Board
     /// <summary>
     /// checks the hexagons array for a suitable position where none of the adjacent hexagons has a 6 or 8 as fielnumber.
     /// </summary>
-    /// <returns>an int array with the first occouring coordinates of a suitable position</returns>
+    /// <returns>an int array with the first occouring coordinates of a suitable position or empty array if no suitable position is found</returns>
     private int[] findSuitablePos()
     {
-        bool suitable = true;
         for (int row = 1; row < hexagons.Length - 1; row++)
         {
             for (int col = 1; col < hexagons[row].Length - 1; col++)
             {
                 Hexagon currentHex = hexagons[row][col];
+
+                //no need to check ports or dessert
                 if (currentHex == null || currentHex.getFieldNumber() == 0)
                 {
                     continue;
                 }
 
                 int fieldNumber = currentHex.getFieldNumber();
+
+                //if hexgon itself is 6 or 8, there is no sense in switching
                 if (fieldNumber != 6 && fieldNumber != 8 && fieldNumber != 0)
                 {
-                    //iterate over neighbors
+                    bool suitable = true;
+                    //iterate over neighbors to see if suitable
                     for (int offsetIndex = 0; offsetIndex < neighborOffsetX.Length; offsetIndex++)
                     {
                         int yOffset = row + neighborOffsetY[offsetIndex];
                         int xOffset = col + neighborOffsetX[offsetIndex];
                         int neighborFieldnumber = 0;
-                        neighborFieldnumber = hexagons[yOffset][xOffset].getFieldNumber();
+
+                        try
+                        {
+                            neighborFieldnumber = hexagons[yOffset][xOffset].getFieldNumber();
+                        }
+                        catch (IndexOutOfRangeException e)
+                        {
+                            //nothing needs to be done, out of Range occours because the differnce in row length 
+                        }
                         //if one of the neighbors is 6 || 8 position is mot suitable
                         if (neighborFieldnumber == 6 || neighborFieldnumber == 8)
                         {
+                            suitable = false;
                             break;
                         }
                     }
                     // loop didn´t break, therefore the position is suitable
-                    return new int[] { row, col };
+                    if (suitable)
+                    {
+                        return new int[] { row, col };
+                    }
                 }
             }
         }
+        //
         return new int[] { };
     }
 
