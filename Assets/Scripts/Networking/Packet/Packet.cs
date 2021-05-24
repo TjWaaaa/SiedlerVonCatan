@@ -17,6 +17,8 @@ namespace Networking.Package
         
         public bool isReady { get; set; } // is a player ready or not (lobby only)
         
+        public string lobbyIP { get; set; }
+        
         public ArrayList lobbyContent { get; set; } // {{PlayerName, PlayerColor, isReady}}
         
         public string currentPlayerName { get; set; } //target of actions or current player
