@@ -6,6 +6,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using Networking.Package;
+using Networking.Communication;
 
 namespace Networking.ClientSide
 {
@@ -16,6 +17,10 @@ namespace Networking.ClientSide
         private PrefabFactory prefabFactory;
         private GameObject scrollViewContent;
         private int playerNumber = 1;
+        private readonly ClientRequest clientRequest = new ClientRequest();
+
+
+        private GameObject diceHolder;
 
         /// <summary>
         /// Create a persistent ClientGameLogicObject that stays over scene changes.
@@ -67,8 +72,9 @@ namespace Networking.ClientSide
                     listItem = prefabFactory.getPrefab(PREFABS.PLAYER_LIST_ITEM, scrollViewContent.transform);
                     listItem.transform.Find("No.").GetComponent<Text>().text = playerNumber.ToString();
                     playerNumber++;
+                    listItem.transform.Find("No.").GetComponent<Text>().color = playerColor;
                     listItem.transform.Find("Player").GetComponent<Text>().text = playerName;
-                    listItem.transform.Find("Color").GetComponent<Image>().color = playerColor;
+                    //listItem.transform.Find("Color").GetComponent<Image>().color = playerColor;
 
                     if (currentPlayerID != myID) // Disable all toggle components which don't belong to the local client
                     {
@@ -80,7 +86,7 @@ namespace Networking.ClientSide
                 else // List entry does already exist --> update name and color 
                 {
                     listItem.transform.Find("Player").GetComponent<Text>().text = playerName;
-                    listItem.transform.Find("Color").GetComponent<Image>().color = playerColor;
+                    listItem.transform.Find("Player").GetComponent<Text>().color = playerColor;
                 }
             }
             catch (Exception e)
@@ -124,7 +130,7 @@ namespace Networking.ClientSide
 
         public void handleGameStartInitialize(Packet serverPacket)
         {
-            SceneManager.LoadScene("GameScene");
+            SceneManager.LoadScene("2_GameScene");
             Debug.Log("Client: Sie haben ein Spielbrett erhalten :)");
         }
 
@@ -133,8 +139,8 @@ namespace Networking.ClientSide
             throw new System.NotImplementedException();
         }
 
-        public void handleNextPlayer()
-        {
+        public void handleNextPlayer(Packet serverPacket)
+        {   
             throw new System.NotImplementedException();
         }
 
@@ -155,7 +161,11 @@ namespace Networking.ClientSide
 
         public void handleAccpetBeginRound(Packet serverPacket)
         {
-            throw new System.NotImplementedException();
+            Debug.Log("handleAcceptBeginRound has been called");
+            diceHolder = GameObject.FindGameObjectWithTag("diceHolder");
+            Debug.Log(diceHolder.name + " diceHolder object");
+            diceHolder.GetComponent<RenderRollDices>().renderRollDices(serverPacket.diceResult);
+            Debug.Log(serverPacket.diceResult);
         }
 
         public void handleAcceptTradeBank(Packet serverPacket)
@@ -182,5 +192,7 @@ namespace Networking.ClientSide
         {
             throw new System.NotImplementedException();
         }
+
+        
     }
 }

@@ -9,6 +9,8 @@ TagManager:
   - Village
   - giveResource
   - getResource
+  - diceHolder
+  - clientGameLogic
   layers:
   - Default
   - TransparentFX

@@ -26,6 +26,19 @@ namespace Networking.ServerSide
             allPlayer.Add(new Player(playerId));
         }
 
+        public int[] rollDices()
+        {
+            Debug.Log("handleBeginRound has been called");
+            int[] diceNumbers = new int[2];
+            // diceNumbers[0] = (int)Random.Range(1,7);
+            // diceNumbers[1] = (int)Random.Range(1,7);
+
+            System.Random r = new System.Random();
+            diceNumbers[0] = r.Next(1,7);
+            diceNumbers[1] = r.Next(1,7);
+            return diceNumbers;
+        }
+
         public void handleRequestJoinLobby(Packet clientPacket, int currentClientID)
         {
             // ankommender spieler: name setzten + farbe zuweisen
@@ -87,7 +100,11 @@ namespace Networking.ServerSide
 
         public void handleBeginRound(Packet clientPacket)
         {
-            throw new System.NotImplementedException();
+            // Roll dices
+            int[] diceNumbers = rollDices();
+            
+            Debug.Log(diceNumbers[0] + " " + diceNumbers[1]);
+            serverRequest.notifyRollDice(diceNumbers);
         }
 
         public void handleTradeBank(Packet clientPacket)
@@ -112,12 +129,15 @@ namespace Networking.ServerSide
 
         public void handleEndTurn(Packet clientPacket)
         {
-            throw new System.NotImplementedException();
+            // TODO change method call => handleBeginRound should only be called after the new player is already set and all have been notified
+            Debug.Log("handleEndTurn has been called");
+            handleBeginRound(clientPacket);
         }
 
         public void handleClientDisconnectServerCall()
         {
             throw new System.NotImplementedException();
         }
+        
     }
 }

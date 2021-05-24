@@ -1,12 +1,16 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using Enums;
+using Networking.ClientSide;
 using Trade;
 using UnityEngine;
 using UnityEngine.UI;
+using Networking.Communication;
 
 public class GameController : MonoBehaviour
 {
+    private GameObject clientGameLogic;
     public GameObject showCurrentPlayer;
 
     private static Player[] players;
@@ -16,11 +20,11 @@ public class GameController : MonoBehaviour
     private Builder builder;
 
 
-    public GameObject bricksText;
-    public GameObject oreText;
-    public GameObject sheepText;
-    public GameObject wheatText;
-    public GameObject woodText;
+    public TextMeshProUGUI bricksText;
+    public TextMeshProUGUI oreText;
+    public TextMeshProUGUI sheepText;
+    public TextMeshProUGUI wheatText;
+    public TextMeshProUGUI woodText;
 
     public GameObject villageBlue;
     public GameObject villageRed;
@@ -36,6 +40,8 @@ public class GameController : MonoBehaviour
     public GameObject roadRed;
     public GameObject roadWhite;
     public GameObject roadYellow;
+
+    private ClientRequest clientRequest = new ClientRequest();
 
     // Start is called before the first frame update
     void Start()
@@ -219,6 +225,9 @@ public class GameController : MonoBehaviour
 
     public void NextPlayer()
     {
+        Debug.Log("NextPlayer in GameController is called");
+        clientRequest.requestEndTurn();
+
         if (currentPlayer == players.Length - 1)
         {
             currentPlayer = 0;
@@ -235,11 +244,11 @@ public class GameController : MonoBehaviour
 
     private void ChangeRessourcesOutput(Player player)
     {
-        bricksText.GetComponent<Text>().text = player.getResourceAmount(RESOURCETYPE.BRICK).ToString();
-        oreText.GetComponent<Text>().text = player.getResourceAmount(RESOURCETYPE.ORE).ToString();
-        sheepText.GetComponent<Text>().text = player.getResourceAmount(RESOURCETYPE.SHEEP).ToString();
-        wheatText.GetComponent<Text>().text = player.getResourceAmount(RESOURCETYPE.WHEAT).ToString();
-        woodText.GetComponent<Text>().text = player.getResourceAmount(RESOURCETYPE.WOOD).ToString();
+        bricksText.text = player.getResourceAmount(RESOURCETYPE.BRICK).ToString();
+        oreText.text = player.getResourceAmount(RESOURCETYPE.ORE).ToString();
+        sheepText.text = player.getResourceAmount(RESOURCETYPE.SHEEP).ToString();
+        wheatText.text = player.getResourceAmount(RESOURCETYPE.WHEAT).ToString();
+        woodText.text = player.getResourceAmount(RESOURCETYPE.WOOD).ToString();
     }
 
     public static int getCurrentPlayer()

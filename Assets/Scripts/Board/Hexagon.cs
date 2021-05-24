@@ -1,19 +1,19 @@
-using HexagonType;
+using Enums;
 
 public class Hexagon
 {
     private int fieldNumber;
-    private HEXAGONTYPE type;
+    private HEXAGON_TYPE type;
     private int[] position;
     private Node[] nodes = new Node[6];
     private bool blockedByRobber = false;
 
-    public Hexagon(HEXAGONTYPE type, int fieldNumber)
+    public Hexagon(HEXAGON_TYPE type, int fieldNumber)
     {
         this.type = type;
         this.fieldNumber = fieldNumber;
     }
-    public Hexagon(HEXAGONTYPE type)
+    public Hexagon(HEXAGON_TYPE type)
     {
         this.type = type;
         this.fieldNumber = 0;
@@ -28,12 +28,12 @@ public class Hexagon
     {
         switch (this.type)
         {
-            case HEXAGONTYPE.PORTNORMAL:
-            case HEXAGONTYPE.PORTSHEEP:
-            case HEXAGONTYPE.PORTWOOD:
-            case HEXAGONTYPE.PORTBRICK:
-            case HEXAGONTYPE.PORTORE:
-            case HEXAGONTYPE.PORTWHEAT: return true;
+            case HEXAGON_TYPE.PORTNORMAL:
+            case HEXAGON_TYPE.PORTSHEEP:
+            case HEXAGON_TYPE.PORTWOOD:
+            case HEXAGON_TYPE.PORTBRICK:
+            case HEXAGON_TYPE.PORTORE:
+            case HEXAGON_TYPE.PORTWHEAT: return true;
             default: return false;
         }
     }
@@ -41,12 +41,12 @@ public class Hexagon
     {
         switch (this.type)
         {
-            case HEXAGONTYPE.SHEEP:
-            case HEXAGONTYPE.WOOD:
-            case HEXAGONTYPE.BRICK:
-            case HEXAGONTYPE.ORE:
-            case HEXAGONTYPE.WHEAT:
-            case HEXAGONTYPE.DESERT: return true;
+            case HEXAGON_TYPE.SHEEP:
+            case HEXAGON_TYPE.WOOD:
+            case HEXAGON_TYPE.BRICK:
+            case HEXAGON_TYPE.ORE:
+            case HEXAGON_TYPE.WHEAT:
+            case HEXAGON_TYPE.DESERT: return true;
             default: return false;
         }
     }
@@ -75,7 +75,7 @@ public class Hexagon
         }
     }
 
-    public HEXAGONTYPE getType()
+    public HEXAGON_TYPE getType()
     {
         return type;
     }
