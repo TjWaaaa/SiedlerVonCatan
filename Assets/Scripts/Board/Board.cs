@@ -9,7 +9,16 @@ using PlayerColor;
 
 public class Board
 {
-    private Hexagon[,] hexagonsArray;
+    private Hexagon[][] hexagonsArray =
+    {
+        new Hexagon[4],
+        new Hexagon[5],
+        new Hexagon[6],
+        new Hexagon[7],
+        new Hexagon[6],
+        new Hexagon[5],
+        new Hexagon[4],
+    };
     private Node[] nodesArray = new Node[54];
     private Edge[] edgesArray = new Edge[72];
     
@@ -63,52 +72,44 @@ public class Board
 
     public Board()
     {
-        nodesArray = initializeNodes();
-        edgesArray = initializeEdges();
-        hexagonsArray = initializeHexagons();
+        initializeNodes();
+        initializeEdges();
+        initializeHexagons();
         assignNeighborsToHexagons();
         assignNeighborsToNodes();
         assignNeighborsToEdges();
+    }
+
+    public Hexagon[][] getHexagonsArray()
+    {
+        return hexagonsArray;
     }
 
     /// <summary>
     /// creates a 7x7 array of Hexagons with randomly placed hexagon_Types and hexagonNumbers
     /// </summary>
     /// <returns>returns the array</returns>
-    private Hexagon[,] initializeHexagons()
+    private void initializeHexagons()
     {
         Stack<HEXAGON_TYPE> landStack = createRandomHexagonStackFromArray(landHexagons);
         Stack<HEXAGON_TYPE> portStack = createRandomHexagonStackFromArray(portHexagons);
         Stack<int> numberStack = createRandomHexagonNumberStack(randomNumArray);
-
-        Hexagon[,] hexagons = new Hexagon[7, 7];
 
         for (int row = 0; row < boardConfig.Length; row++)
         {
             for (int col = 0; col < boardConfig[row].Length; col++)
             {
                 int currentConfig = boardConfig[row][col];
-                /*
-                hexagons[row, col] = currentConfig switch
-                {
-                    0 => null,
-                    1 => new Hexagon(HEXAGON_TYPE.WATER),
-                    2 => new Hexagon(landStack.Pop(), numberStack.Pop()),
-                    3 => new Hexagon(HEXAGON_TYPE.DESERT),
-                    4 => new Hexagon(portStack.Pop()),
-                    _ => null,
-                };
-                */
 
                 switch (currentConfig)
                 {
                     case 1:
-                        hexagons[row, col] = new Hexagon(HEXAGON_TYPE.WATER);
+                        hexagonsArray[row][col] = new Hexagon(HEXAGON_TYPE.WATER);
                         break;
                     case 2:
                         int fieldNumber = numberStack.Pop();
                         Hexagon newHexagon = new Hexagon(landStack.Pop(), fieldNumber);
-                        hexagons[row, col] = newHexagon;
+                        hexagonsArray[row][col] = newHexagon;
                         
                         // adds Hexagon to empty slot in array
                         Debug.Log(fieldNumber + " - " + hexagonDiceNumbers[fieldNumber].Length);
@@ -118,15 +119,14 @@ public class Board
                         }
                         break;
                     case 3:
-                        hexagons[row, col] = new Hexagon(HEXAGON_TYPE.DESERT);
+                        hexagonsArray[row][col] = new Hexagon(HEXAGON_TYPE.DESERT);
                         break;
                     case 4:
-                        hexagons[row, col] = new Hexagon(portStack.Pop());
+                        hexagonsArray[row][col] = new Hexagon(portStack.Pop());
                         break;
                 }
             }
         }
-        return hexagons;
     }
 
     /// <summary>
@@ -149,26 +149,20 @@ public class Board
         return new Stack<int>(array.OrderBy(n => Guid.NewGuid()).ToArray());
     }
     
-    private Node[] initializeNodes()
+    private void initializeNodes()
     {
-        Node[] nodes = new Node[54];
-
         for (int i = 0; i < 54; i++)
         {
-            nodes[i] = new Node();
+            nodesArray[i] = new Node();
         }
-        return nodes;
     }
 
-    private Edge[] initializeEdges()
+    private void initializeEdges()
     {
-        Edge[] edges = new Edge[72];
-
         for (int i = 0; i < 72; i++)
         {
-            edges[i] = new Edge();
+            edgesArray[i] = new Edge();
         }
-        return edges;
     }
     
     /// <summary>
@@ -183,9 +177,9 @@ public class Board
             for (int col = 0; col < boardConfig[row].Length; col++)
             {
                 // continue if there is no hexagon at given index
-                if (hexagonsArray[row, col] == null) continue;
+                if (hexagonsArray[row][col] == null) continue;
 
-                Hexagon currentHexagon = hexagonsArray[row, col];
+                Hexagon currentHexagon = hexagonsArray[row][col];
                 Console.WriteLine(currentHexagon.GetType());
                 string line = file.ReadLine();
                 string[] subStrings = line.Split(',');

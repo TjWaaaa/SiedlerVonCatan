@@ -131,6 +131,10 @@ namespace Networking.ClientSide
         public void handleGameStartInitialize(Packet serverPacket)
         {
             SceneManager.LoadScene("2_GameScene");
+            Hexagon[][] gameBoard = serverPacket.gameBoard;
+
+            GetComponent<BoardGenerator>().instantiateGameBoard(gameBoard);
+            
             Debug.Log("Client: Sie haben ein Spielbrett erhalten :)");
         }
 

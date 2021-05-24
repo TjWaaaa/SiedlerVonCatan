@@ -14,6 +14,7 @@ public class Hexagon
         this.fieldNumber = fieldNumber;
     }
     
+    [JsonConstructor]
     public Hexagon(HEXAGON_TYPE type)
     {
         this.fieldNumber = 0;

@@ -7,9 +7,6 @@ using UnityEngine.Serialization;
 
 public class BoardGenerator : MonoBehaviour
 {
-
-    public GameObject Board;
-    
     public GameObject robber;
     
     public GameObject[] hexagons;
@@ -50,69 +47,16 @@ public class BoardGenerator : MonoBehaviour
     private const float s = 1.73205f;
     private const float offset = 3f / 2f * a;
 
-
-    // Start is called before the first frame update
     void Start()
     {
-        initalizeRandomHexagons();
-        initalizeRandomPortHexagons();
-        initializeRandomNumbers();
         
-
-        for (int z = 0; z < gameboardConfig.GetLength(0); z++)
-        {
-            for (int x = 0; x < gameboardConfig.GetLength(1); x++)
-            {
-                int currentConfig = gameboardConfig[z, x];
-                Debug.Log("Hello World z:" + z + " x:" + x + " config:" + currentConfig);
-                GameObject whatHexagon = currentConfig switch
-                {
-                    0 => null,
-                    1 => hexagonPrefabWater,
-                    2 => getNextRandomHexagon(),
-                    3 => hexagonPrefabDesert,
-                    4 => getNextRandomPortHexagon(),
-                    _ => null,
-                };
-                if (whatHexagon == null) {
-                    continue;
-                }
-
-                GameObject newHexagon;
-                
-
-                if (z % 2 == 0)
-                {
-                    newHexagon = Instantiate(whatHexagon, new Vector3(x * s, 0, z / 2f * (d + a)), Rotation(currentConfig, z, x));
-                }
-                else
-                {
-                    newHexagon = Instantiate(whatHexagon, new Vector3(x * s + r, 0, (z - 1) / 2f * (d + a) + offset), Rotation(currentConfig, z, x));
-                }
-
-
-                newHexagon.transform.parent = Board.transform;
-                
-                // change hexagon numbers
-                if (currentConfig == 2) {
-                    GameObject text = newHexagon.transform.GetChild(1).GetChild(0).gameObject;
-
-                    text.GetComponent<TextMesh>().text = getNextRandomNumber().ToString();
-                }
-                
-                //get position of desert
-                if (whatHexagon == hexagonPrefabDesert)
-                {
-                    whatHexagon.transform.position = newHexagon.transform.position;
-                }
-                
-            }
-        }
-        
-        //robber
-        Instantiate(robber, hexagonPrefabDesert.transform.position, Quaternion.identity);
     }
-
+    
+    public void instantiateGameBoard(Hexagon[][] gameBoard)
+    {
+        Debug.Log("instantiateGameBoard called");
+    }
+    
     Quaternion Rotation(int currentConfig, int z, int x)
     {
         //Ports need to be rotated
@@ -135,59 +79,121 @@ public class BoardGenerator : MonoBehaviour
         return Quaternion.identity;
     }
 
-    void initalizeRandomHexagons()
-    {
-        GameObject[] randomHexArray = new[]
-        {
-            hexagonPrefabBrick, hexagonPrefabBrick, hexagonPrefabBrick,
-            hexagonPrefabOre, hexagonPrefabOre, hexagonPrefabOre,
-            hexagonPrefabSheep, hexagonPrefabSheep, hexagonPrefabSheep, hexagonPrefabSheep,
-            hexagonPrefabWheat, hexagonPrefabWheat, hexagonPrefabWheat, hexagonPrefabWheat,
-            hexagonPrefabWood, hexagonPrefabWood, hexagonPrefabWood, hexagonPrefabWood,
-        };
+    // Start is called before the first frame update
+    // void Start()
+    // {
+    //     initalizeRandomHexagons();
+    //     initalizeRandomPortHexagons();
+    //     initializeRandomNumbers();
+    //     
+    //
+    //     for (int z = 0; z < gameboardConfig.GetLength(0); z++)
+    //     {
+    //         for (int x = 0; x < gameboardConfig.GetLength(1); x++)
+    //         {
+    //             int currentConfig = gameboardConfig[z, x];
+    //             Debug.Log("Hello World z:" + z + " x:" + x + " config:" + currentConfig);
+    //             GameObject whatHexagon = currentConfig switch
+    //             {
+    //                 0 => null,
+    //                 1 => hexagonPrefabWater,
+    //                 2 => getNextRandomHexagon(),
+    //                 3 => hexagonPrefabDesert,
+    //                 4 => getNextRandomPortHexagon(),
+    //                 _ => null,
+    //             };
+    //             if (whatHexagon == null) {
+    //                 continue;
+    //             }
+    //
+    //             GameObject newHexagon;
+    //             
+    //
+    //             if (z % 2 == 0)
+    //             {
+    //                 newHexagon = Instantiate(whatHexagon, new Vector3(x * s, 0, z / 2f * (d + a)), Rotation(currentConfig, z, x));
+    //             }
+    //             else
+    //             {
+    //                 newHexagon = Instantiate(whatHexagon, new Vector3(x * s + r, 0, (z - 1) / 2f * (d + a) + offset), Rotation(currentConfig, z, x));
+    //             }
+    //
+    //
+    //             newHexagon.transform.parent = Board.transform;
+    //             
+    //             // change hexagon numbers
+    //             if (currentConfig == 2) {
+    //                 GameObject text = newHexagon.transform.GetChild(1).GetChild(0).gameObject;
+    //
+    //                 text.GetComponent<TextMesh>().text = getNextRandomNumber().ToString();
+    //             }
+    //             
+    //             //get position of desert
+    //             if (whatHexagon == hexagonPrefabDesert)
+    //             {
+    //                 whatHexagon.transform.position = newHexagon.transform.position;
+    //             }
+    //             
+    //         }
+    //     }
+    //     
+    //     //robber
+    //     Instantiate(robber, hexagonPrefabDesert.transform.position, Quaternion.identity);
+    // }
 
-        randomHexStack = new Stack<GameObject>(randomHexArray.OrderBy(n => Guid.NewGuid()).ToArray());
-    }
-    
-    void initalizeRandomPortHexagons()
-    {
-        GameObject[] randomHexArray = new[]
-        {
-            hexagonPrefabRandomPort, hexagonPrefabRandomPort, hexagonPrefabRandomPort, hexagonPrefabRandomPort,
-            hexagonPrefabBrickPort,
-            hexagonPrefabOrePort,
-            hexagonPrefabSheepPort,
-            hexagonPrefabWheatPort,
-            hexagonPrefabWoodPort
-        };
-
-        randomPortHexStack = new Stack<GameObject>(randomHexArray.OrderBy(n => Guid.NewGuid()).ToArray());
-    }
-
-    void initializeRandomNumbers()
-    {
-        int[] randomNumArray = new[] {2, 3, 3, 4, 4, 5, 5, 6, 6, 8, 8, 9, 9, 10, 10, 11, 11, 12};
-
-        randomNumStack = new Stack<int>(randomNumArray.OrderBy(n => Guid.NewGuid()).ToArray());
-    }
-    
-    private GameObject getNextRandomHexagon()
-    {
-        return randomHexStack.Pop();
-    }
-    
-    private GameObject getNextRandomPortHexagon()
-    {
-        return randomPortHexStack.Pop();
-    }
-
-    private int getNextRandomNumber()
-    {
-        return randomNumStack.Pop();
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-    }
+    // void initalizeRandomHexagons()
+    // {
+    //     GameObject[] randomHexArray = new[]
+    //     {
+    //         hexagonPrefabBrick, hexagonPrefabBrick, hexagonPrefabBrick,
+    //         hexagonPrefabOre, hexagonPrefabOre, hexagonPrefabOre,
+    //         hexagonPrefabSheep, hexagonPrefabSheep, hexagonPrefabSheep, hexagonPrefabSheep,
+    //         hexagonPrefabWheat, hexagonPrefabWheat, hexagonPrefabWheat, hexagonPrefabWheat,
+    //         hexagonPrefabWood, hexagonPrefabWood, hexagonPrefabWood, hexagonPrefabWood,
+    //     };
+    //
+    //     randomHexStack = new Stack<GameObject>(randomHexArray.OrderBy(n => Guid.NewGuid()).ToArray());
+    // }
+    //
+    // void initalizeRandomPortHexagons()
+    // {
+    //     GameObject[] randomHexArray = new[]
+    //     {
+    //         hexagonPrefabRandomPort, hexagonPrefabRandomPort, hexagonPrefabRandomPort, hexagonPrefabRandomPort,
+    //         hexagonPrefabBrickPort,
+    //         hexagonPrefabOrePort,
+    //         hexagonPrefabSheepPort,
+    //         hexagonPrefabWheatPort,
+    //         hexagonPrefabWoodPort
+    //     };
+    //
+    //     randomPortHexStack = new Stack<GameObject>(randomHexArray.OrderBy(n => Guid.NewGuid()).ToArray());
+    // }
+    //
+    // void initializeRandomNumbers()
+    // {
+    //     int[] randomNumArray = new[] {2, 3, 3, 4, 4, 5, 5, 6, 6, 8, 8, 9, 9, 10, 10, 11, 11, 12};
+    //
+    //     randomNumStack = new Stack<int>(randomNumArray.OrderBy(n => Guid.NewGuid()).ToArray());
+    // }
+    //
+    // private GameObject getNextRandomHexagon()
+    // {
+    //     return randomHexStack.Pop();
+    // }
+    //
+    // private GameObject getNextRandomPortHexagon()
+    // {
+    //     return randomPortHexStack.Pop();
+    // }
+    //
+    // private int getNextRandomNumber()
+    // {
+    //     return randomNumStack.Pop();
+    // }
+    //
+    // // Update is called once per frame
+    // void Update()
+    // {
+    // }
 }
