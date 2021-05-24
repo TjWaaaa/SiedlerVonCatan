@@ -37,7 +37,7 @@ namespace Networking.Communication
         {
             Packet packet = new Packet();
             packet.type = (int) COMMUNICATION_METHODS.HANDLE_GET_RESOURCES;
-            packet.playerNumber = playerID;
+            packet.playerID = playerID;
             packet.resourcesObtained = resources;
             packet.victoryPoint = victoryPoints;
             
@@ -134,7 +134,7 @@ namespace Networking.Communication
         {
             Packet packet = new Packet();
             packet.type = (int) COMMUNICATION_METHODS.HANDLE_ACCEPT_BUY_DEVELOPMENT_CARD;
-            packet.playerNumber = playerID;
+            packet.playerID = playerID;
             packet.developmentCard = (int) developmentCard;
             
             // send to active

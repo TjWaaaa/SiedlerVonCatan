@@ -103,7 +103,7 @@ namespace Networking.ClientSide
             // initiialize prefab with data
             Debug.Log("Client recieved new package: " + PacketSerializer.objectToJsonString(serverPacket));
 
-            myID = serverPacket.playerNumber;
+            myID = serverPacket.playerID;
             foreach (JArray item in serverPacket.lobbyContent)
             {
                 try
