@@ -13,8 +13,8 @@ public class GameController : MonoBehaviour
     private GameObject clientGameLogic;
     public GameObject showCurrentPlayer;
 
+    public static List<string> playerRep = new List<string>();
     private static Player[] players;
-
     private static int currentPlayer;
 
     private Builder builder;
@@ -49,36 +49,21 @@ public class GameController : MonoBehaviour
         //builder = new Builder();
 
         players = new Player[]
-            {
-                new Player("Player1", Color.red),
-                new Player("Player2", Color.blue),
-                new Player("Player3", Color.white),
-                new Player("Player4", Color.yellow)
-            };
+        {
+            new Player("Player1", Color.red),
+            new Player("Player2", Color.blue)
+        };
+        
 
-        players[0].setResourceAmount(RESOURCETYPE.WHEAT, 10);
-        players[0].setResourceAmount(RESOURCETYPE.WOOD, 10);
-        players[0].setResourceAmount(RESOURCETYPE.SHEEP, 10);
-        players[0].setResourceAmount(RESOURCETYPE.BRICK, 10);
-        players[0].setResourceAmount(RESOURCETYPE.ORE, 10);
-
-        players[1].setResourceAmount(RESOURCETYPE.WHEAT, 10);
-        players[1].setResourceAmount(RESOURCETYPE.WOOD, 10);
-        players[1].setResourceAmount(RESOURCETYPE.SHEEP, 10);
-        players[1].setResourceAmount(RESOURCETYPE.BRICK, 10);
-        players[1].setResourceAmount(RESOURCETYPE.ORE, 10);
-
-        players[2].setResourceAmount(RESOURCETYPE.WHEAT, 10);
-        players[2].setResourceAmount(RESOURCETYPE.WOOD, 10);
-        players[2].setResourceAmount(RESOURCETYPE.SHEEP, 10);
-        players[2].setResourceAmount(RESOURCETYPE.BRICK, 10);
-        players[2].setResourceAmount(RESOURCETYPE.ORE, 10);
-
-        players[3].setResourceAmount(RESOURCETYPE.WHEAT, 10);
-        players[3].setResourceAmount(RESOURCETYPE.WOOD, 10);
-        players[3].setResourceAmount(RESOURCETYPE.SHEEP, 10);
-        players[3].setResourceAmount(RESOURCETYPE.BRICK, 10);
-        players[3].setResourceAmount(RESOURCETYPE.ORE, 10);
+        foreach (Player player in players)
+        {
+            player.setResourceAmount(RESOURCETYPE.WHEAT, 10);
+            player.setResourceAmount(RESOURCETYPE.WOOD, 10);
+            player.setResourceAmount(RESOURCETYPE.SHEEP, 10);
+            player.setResourceAmount(RESOURCETYPE.BRICK, 10);
+            player.setResourceAmount(RESOURCETYPE.ORE, 10);
+        }
+        
 
         currentPlayer = 0;
 
@@ -153,6 +138,14 @@ public class GameController : MonoBehaviour
         else ChangeRessourcesOutput(players[currentPlayer]);
     }
 
+    public static void createPlayer(string playerName)
+    {
+        playerRep.Add(playerName);
+        Debug.Log("client: "+ playerName + " created. Player Number " + playerRep.Count);
+    }
+
+    
+    
     public void BuildVillage(Vector3 position)
     {
 

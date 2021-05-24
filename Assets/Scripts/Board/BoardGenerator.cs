@@ -64,7 +64,7 @@ public class BoardGenerator : MonoBehaviour
             for (int x = 0; x < gameboardConfig.GetLength(1); x++)
             {
                 int currentConfig = gameboardConfig[z, x];
-                Debug.Log("Hello World z:" + z + " x:" + x + " config:" + currentConfig);
+                //Debug.Log("Hello World z:" + z + " x:" + x + " config:" + currentConfig);
                 GameObject whatHexagon = currentConfig switch
                 {
                     0 => null,
