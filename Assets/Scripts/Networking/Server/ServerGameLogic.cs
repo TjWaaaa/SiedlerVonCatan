@@ -4,12 +4,13 @@ using Networking.Communication;
 using UnityEngine;
 using Networking.Interfaces;
 using Networking.Package;
+using Player;
 
 namespace Networking.ServerSide
 {
     public class ServerGameLogic : INetworkableServer
     {
-        private readonly List<Player> allPlayer = new List<Player>();
+        private readonly List<ServerPlayer> allPlayer = new List<ServerPlayer>();
         private readonly Stack<Color> possibleColors = new Stack<Color>();
         private readonly ServerRequest serverRequest = new ServerRequest();
 
@@ -23,7 +24,7 @@ namespace Networking.ServerSide
 
         public void generatePlayer(int playerId)
         {
-            allPlayer.Add(new Player(playerId));
+            allPlayer.Add(new Player.ServerPlayer(playerId));
         }
 
         public int[] rollDices()
@@ -71,7 +72,7 @@ namespace Networking.ServerSide
         
             bool runGame = true;
         
-            foreach (Player player in allPlayer)
+            foreach (ServerPlayer player in allPlayer)
             {
                 if (player.getPlayerID() == currentClientID)
                 {

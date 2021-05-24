@@ -7,6 +7,7 @@ using Trade;
 using UnityEngine;
 using UnityEngine.UI;
 using Networking.Communication;
+using Player;
 
 public class GameController : MonoBehaviour
 {
@@ -14,7 +15,7 @@ public class GameController : MonoBehaviour
     public GameObject showCurrentPlayer;
 
     public static List<string> playerRep = new List<string>();
-    private static Player[] players;
+    private static ServerPlayer[] players;
     private static int currentPlayer;
 
     private Builder builder;
@@ -48,14 +49,14 @@ public class GameController : MonoBehaviour
     {
         //builder = new Builder();
 
-        players = new Player[]
+        players = new ServerPlayer[]
         {
-            new Player("Player1", Color.red),
-            new Player("Player2", Color.blue)
+            new ServerPlayer("Player1", Color.red),
+            new ServerPlayer("Player2", Color.blue)
         };
         
 
-        foreach (Player player in players)
+        foreach (ServerPlayer player in players)
         {
             player.setResourceAmount(RESOURCETYPE.WHEAT, 10);
             player.setResourceAmount(RESOURCETYPE.WOOD, 10);
@@ -235,7 +236,7 @@ public class GameController : MonoBehaviour
         ChangeRessourcesOutput(players[currentPlayer]);
     }
 
-    private void ChangeRessourcesOutput(Player player)
+    private void ChangeRessourcesOutput(ServerPlayer player)
     {
         bricksText.text = player.getResourceAmount(RESOURCETYPE.BRICK).ToString();
         oreText.text = player.getResourceAmount(RESOURCETYPE.ORE).ToString();
@@ -249,7 +250,7 @@ public class GameController : MonoBehaviour
         return currentPlayer;
     }
 
-    public static Player[] getPlayers()
+    public static ServerPlayer[] getPlayers()
     {
         return players;
     }

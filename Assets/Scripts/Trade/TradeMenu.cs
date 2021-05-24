@@ -5,13 +5,15 @@ using UnityEngine;
 using UnityEngine.UI;
 using Enums;
 using TMPro;
+using Player;
 
 namespace Trade
 {
     public class TradeMenu : MonoBehaviour
     {
         //is needed right now, there should be a better solution later
-        private Player currentPlayer;
+        
+        private ServerPlayer currentPlayer;
 
         private GameObject startTradeButton;
         private GameObject closeTradeButton;
