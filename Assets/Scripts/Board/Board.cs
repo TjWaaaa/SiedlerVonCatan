@@ -1,10 +1,10 @@
 using System;
 using System.Collections.Generic;
-using UnityEngine;
 using System.IO;
 using System.Linq;
 using Enums;
 using PlayerColor;
+using UnityEngine;
 using UnityEngine;
 
 public class Board
@@ -12,6 +12,7 @@ public class Board
     private Hexagon[][] hexagons;
     private Node[] nodes = new Node[54];
     private Edge[] edges = new Edge[72];
+    private Stack<int> numberStack;
 
     private Hexagon[][] hexagonDiceNumbers =
     {
@@ -57,9 +58,7 @@ public class Board
         HEXAGON_TYPE.PORTORE,
         HEXAGON_TYPE.PORTWHEAT
     };
-    
-    private readonly int[] randomNumArray = {0, 1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6, 7, 7, 8, 8, 9};
-    
+
     private const string path = "Assets/Scripts/Board/";
 
     public Board()
@@ -70,9 +69,9 @@ public class Board
         testNeighbors();
         checkPlacementConstraints();
         testNeighbors();
-        // assignNeighborsToHexagons();
-        // assignNeighborsToNodes();
-        // assignNeighborsToEdges();
+        assignNeighborsToHexagons();
+        assignNeighborsToNodes();
+        assignNeighborsToEdges();
 
     }
     /// <summary>
@@ -120,7 +119,7 @@ public class Board
     {
         Stack<HEXAGON_TYPE> landStack = createRandomHexagonStackFromArray(landHexagons);
         Stack<HEXAGON_TYPE> portStack = createRandomHexagonStackFromArray(portHexagons);
-        Stack<int> numberStack = createRandomHexagonNumberStack(randomNumArray);
+        numberStack = createRandomHexagonNumberStack(availableNumbers);
 
         Hexagon[][] hexagons = new Hexagon[7][];
 
@@ -130,39 +129,28 @@ public class Board
             for (int col = 0; col < boardConfig[row].Length; col++)
             {
                 int currentConfig = boardConfig[row][col];
-                /*
-                hexagons[row, col] = currentConfig switch
-                {
-                    0 => null,
-                    1 => new Hexagon(HEXAGONTYPE.WATER),
-                    2 => new Hexagon(landStack.Pop(), numberStack.Pop()),
-                    3 => new Hexagon(HEXAGONTYPE.DESERT),
-                    4 => new Hexagon(portStack.Pop()),
-                    _ => null,
-                };
 
                 switch (currentConfig)
                 {
                     case 1:
-                        hexagons[row, col] = new Hexagon(HEXAGON_TYPE.WATER);
+                        hexagons[row][col] = new Hexagon(HEXAGON_TYPE.WATER);
                         break;
                     case 2:
                         int fieldNumber = numberStack.Pop();
                         Hexagon newHexagon = new Hexagon(landStack.Pop(), fieldNumber);
-                        hexagons[row, col] = newHexagon;
-                        
+                        hexagons[row][col] = newHexagon;
+
                         // adds Hexagon to empty slot in array
-                        Debug.Log(fieldNumber + " - " + hexagonDiceNumbers[fieldNumber].Length);
                         for (int i = 0; i < hexagonDiceNumbers[fieldNumber].Length; i++)
                         {
                             hexagonDiceNumbers[fieldNumber][i] ??= newHexagon;  // only adds Hexagon to slot if slot empty
                         }
                         break;
                     case 3:
-                        hexagons[row, col] = new Hexagon(HEXAGON_TYPE.DESERT);
+                        hexagons[row][col] = new Hexagon(HEXAGON_TYPE.DESERT);
                         break;
                     case 4:
-                        hexagons[row, col] = new Hexagon(portStack.Pop());
+                        hexagons[row][col] = new Hexagon(portStack.Pop());
                         break;
                 }
             }
@@ -227,7 +215,6 @@ public class Board
                 if (hexagons[row][col] == null) continue;
 
                 Hexagon currentHexagon = hexagons[row][col];
-                Console.WriteLine(currentHexagon.GetType());
 
                 // give all neighbors a hexagon needs to know
                 string line = file.ReadLine();
@@ -335,7 +322,7 @@ public class Board
         Node currentNode = nodes[nodeId];
 
         if (!allowedToBuildOnNode(currentNode, player)) return;
-        
+
         if (currentNode.getBuilding_Type() == BUILDING_TYPE.NONE)
         {
             currentNode.setBuilding_Type(BUILDING_TYPE.VILLAGE);
