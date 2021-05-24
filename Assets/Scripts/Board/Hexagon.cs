@@ -1,23 +1,48 @@
 using Enums;
+using Newtonsoft.Json;
 
 public class Hexagon
 {
-
-    private int fieldNumber;
-    private HEXAGON_TYPE type;
-    private int[] position;
-    private Node[] nodes = new Node[6];
-    private bool blockedByRobber = false;
+    [JsonProperty] private int fieldNumber;
+    [JsonProperty] private HEXAGON_TYPE type;
+    [JsonProperty] private int[] adjacentNodesPos = new int[6];
+    [JsonProperty] private bool blockedByRobber = false;
 
     public Hexagon(HEXAGON_TYPE type, int fieldNumber)
     {
         this.type = type;
         this.fieldNumber = fieldNumber;
     }
+    
     public Hexagon(HEXAGON_TYPE type)
     {
         this.fieldNumber = 0;
         this.type = type;
+    }
+
+    public int getFieldNumber()
+    {
+        return fieldNumber;
+    }
+    
+    public HEXAGON_TYPE getType()
+    {
+        return type;
+    }
+    
+    public void setAdjacentNodePos(int nodePos, int index)
+    {
+        adjacentNodesPos[index] = nodePos;
+    }
+
+    public int[] getAdjacentNodesPos()
+    {
+        return adjacentNodesPos;
+    }
+
+    public bool isBlockedByRobber()
+    {
+        return blockedByRobber;
     }
 
     public bool isPort()
@@ -33,6 +58,7 @@ public class Hexagon
             default: return false;
         }
     }
+    
     public bool isLand()
     {
         switch (this.type)
@@ -45,34 +71,5 @@ public class Hexagon
             case HEXAGON_TYPE.DESERT: return true;
             default: return false;
         }
-    }
-
-    public Node getNode(int index)
-    {
-        if (index > 5 || index < 0)
-        {
-            throw new System.ArgumentOutOfRangeException("Index out of Range!");
-        }
-        else
-        {
-            return nodes[index];
-        }
-    }
-
-    public void addNode(Node node, int index)
-    {
-        if (index < 0 || index > 5 || nodes[index] != null || nodes == null)
-        {
-            throw new System.ArgumentException("Illegal Arguments:" + node);
-        }
-        else
-        {
-            nodes[index] = node;
-        }
-    }
-
-    public HEXAGON_TYPE getType()
-    {
-        return type;
     }
 }

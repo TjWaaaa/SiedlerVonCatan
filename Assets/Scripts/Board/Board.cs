@@ -9,9 +9,9 @@ using PlayerColor;
 
 public class Board
 {
-    private Hexagon[,] hexagons;
-    private Node[] nodes = new Node[54];
-    private Edge[] edges = new Edge[72];
+    private Hexagon[,] hexagonsArray;
+    private Node[] nodesArray = new Node[54];
+    private Edge[] edgesArray = new Edge[72];
     
     private Hexagon[][] hexagonDiceNumbers =
     {
@@ -63,9 +63,9 @@ public class Board
 
     public Board()
     {
-        nodes = initializeNodes();
-        edges = initializeEdges();
-        hexagons = initializeHexagons();
+        nodesArray = initializeNodes();
+        edgesArray = initializeEdges();
+        hexagonsArray = initializeHexagons();
         assignNeighborsToHexagons();
         assignNeighborsToNodes();
         assignNeighborsToEdges();
@@ -155,7 +155,7 @@ public class Board
 
         for (int i = 0; i < 54; i++)
         {
-            nodes[i] = new Node(i);
+            nodes[i] = new Node();
         }
         return nodes;
     }
@@ -166,7 +166,7 @@ public class Board
 
         for (int i = 0; i < 72; i++)
         {
-            edges[i] = new Edge(i);
+            edges[i] = new Edge();
         }
         return edges;
     }
@@ -183,9 +183,9 @@ public class Board
             for (int col = 0; col < boardConfig[row].Length; col++)
             {
                 // continue if there is no hexagon at given index
-                if (hexagons[row, col] == null) continue;
+                if (hexagonsArray[row, col] == null) continue;
 
-                Hexagon currentHexagon = hexagons[row, col];
+                Hexagon currentHexagon = hexagonsArray[row, col];
                 Console.WriteLine(currentHexagon.GetType());
                 string line = file.ReadLine();
                 string[] subStrings = line.Split(',');
@@ -195,7 +195,7 @@ public class Board
                     if (subStrings[i] == "-") continue;
                     
                     int neighborPos = int.Parse(subStrings[i]);
-                    currentHexagon.addNode(nodes[neighborPos], i);
+                    currentHexagon.setAdjacentNodePos(neighborPos, i);
                 }
             }
         }
@@ -211,7 +211,7 @@ public class Board
         StreamReader nodesFile = new StreamReader(path + "AdjacentNodesToNodes.txt");
         StreamReader edgesFile = new StreamReader(path + "AdjacentEdgesToNodes.txt");
         
-        foreach (Node currentNode in nodes)
+        foreach (Node currentNode in nodesArray)
         {
             string[] nHexagons = hexagonsFile.ReadLine().Split(',');
             string[] nNodes = nodesFile.ReadLine().Split(',');
@@ -223,20 +223,20 @@ public class Board
                 string[] nHexagonCoordinates = nHexagons[i].Split('.');
                 int nHexagonPosX = int.Parse(nHexagonCoordinates[0]);
                 int nHexagonPosY = int.Parse(nHexagonCoordinates[1]);
-                currentNode.setAdjacentHexagon(hexagons[nHexagonPosX, nHexagonPosY], i);
+                currentNode.setAdjacentHexagonPos(nHexagonPosX, nHexagonPosY, i);
                 
                 // sets adjacent node
                 if (nNodes[i] != "-")
                 {
                     int nNodePos = int.Parse(nNodes[i]);
-                    currentNode.setAdjacentNode(nodes[nNodePos], i);
+                    currentNode.setAdjacentNodePos(nNodePos, i);
                 }
 
                 // sets adjacent edge
                 if (nEdges[i] != "-")
                 {
                     int nEdgePos = int.Parse(nEdges[i]);
-                    currentNode.setAdjacentEdge(edges[nEdgePos], i);   
+                    currentNode.setAdjacentEdgePos(nEdgePos, i);   
                 }
             }
         }
@@ -253,7 +253,7 @@ public class Board
         StreamReader nodesFile = new StreamReader(path + "AdjacentNodesToEdges.txt");
         StreamReader edgesFile = new StreamReader(path + "AdjacentEdgesToEdges.txt");
 
-        foreach (Edge currentEdge in edges)
+        foreach (Edge currentEdge in edgesArray)
         {
             string[] nNodes = nodesFile.ReadLine().Split(',');
             string[] nEdges = edgesFile.ReadLine().Split(',');
@@ -263,7 +263,7 @@ public class Board
                 if (nNodes[i] != "-")
                 {
                     int nNodePos = int.Parse(nNodes[i]);
-                    currentEdge.setAdjacentNode(nodes[nNodePos], i);
+                    currentEdge.setAdjacentNodePos(nNodePos, i);
                 }
             }
 
@@ -272,7 +272,7 @@ public class Board
                 if (nEdges[i] != "-")
                 {
                     int nEdgePos = int.Parse(nEdges[i]);
-                    currentEdge.setAdjacentEdge(edges[nEdgePos], i);
+                    currentEdge.setAdjacentEdge(nEdgePos, i);
                 }
             }
         }
@@ -289,17 +289,17 @@ public class Board
     /// <param name="player">color of the player who tries to build</param>
     public void placeBuilding(int nodeId, PLAYERCOLOR player)
     {
-        Node currentNode = nodes[nodeId];
+        Node currentNode = nodesArray[nodeId];
         
         if (!allowedToBuildOnNode(currentNode, player)) return;
         
-        if (currentNode.getBuilding_Type() == BUILDING_TYPE.NONE)
+        if (currentNode.getBuildingType() == BUILDING_TYPE.NONE)
         {
-            currentNode.setBuilding_Type(BUILDING_TYPE.VILLAGE);
+            currentNode.setBuildingType(BUILDING_TYPE.VILLAGE);
         }
-        else if (currentNode.getBuilding_Type() == BUILDING_TYPE.VILLAGE)
+        else if (currentNode.getBuildingType() == BUILDING_TYPE.VILLAGE)
         {
-            currentNode.setBuilding_Type(BUILDING_TYPE.CITY);
+            currentNode.setBuildingType(BUILDING_TYPE.CITY);
         }
     }
 
@@ -314,24 +314,27 @@ public class Board
         // false if node is already occupied by enemy OR is city 
         if (currentNode.getOccupant() != PLAYERCOLOR.NONE
             && currentNode.getOccupant() != player
-            || currentNode.getBuilding_Type() == BUILDING_TYPE.CITY)
+            || currentNode.getBuildingType() == BUILDING_TYPE.CITY)
         {
             return false;
         }
 
-        Node[] neighborNodes = currentNode.getAdjacentNodes();
-        Edge[] neighborEdges = currentNode.getAdjacentEdges();
+        int[] neighborNodesPos = currentNode.getAdjacentNodesPos();
+        int[] neighborEdgesPos = currentNode.getAdjacentEdgesPos();
 
-        foreach (Node neighbor in neighborNodes)
+        foreach (int nodePos in neighborNodesPos)
         {
+            Node node = nodesArray[nodePos];
+            
             // false if a neighborNode is already occupied
-            if (neighbor.getBuilding_Type() != BUILDING_TYPE.NONE) return false;
+            if (node.getBuildingType() != BUILDING_TYPE.NONE) return false;
         }
 
-        foreach (Edge neighbor in neighborEdges)
+        foreach (int edgePos in neighborEdgesPos)
         {
+            Edge edge = edgesArray[edgePos];
             // true if at least 1 edge is occupied by player
-            if (neighbor.getOccupant() == player) return true;
+            if (edge.getOccupant() == player) return true;
         }
 
         return false;
@@ -346,7 +349,7 @@ public class Board
     /// <param name="player">color of the player who tries to build</param>
     public void placeRoad(int edgeId, PLAYERCOLOR player)
     {
-        Edge currentEdge = edges[edgeId];
+        Edge currentEdge = edgesArray[edgeId];
 
         if (!allowedToBuildOnEdge(currentEdge, player)) return;
         
@@ -363,17 +366,19 @@ public class Board
     {
         if (currentEdge.getOccupant() != PLAYERCOLOR.NONE) return false;
         
-        Node[] neighborNodes = currentEdge.getAdjacentNodes();
-        Edge[] neighborEdges = currentEdge.getAdjacentEdges();
+        int[] neighborNodesPos = currentEdge.getAdjacentNodesPos();
+        int[] neighborEdgesPos = currentEdge.getAdjacentEdges();
 
-        foreach (Node neighbor in neighborNodes)
+        foreach (int nodePos in neighborNodesPos)
         {
-            if (neighbor.getOccupant() == player) return true;
+            Node node = nodesArray[nodePos];
+            if (node.getOccupant() == player) return true;
         }
 
-        foreach (Edge neighbor in neighborEdges)
+        foreach (int edgePos in neighborEdgesPos)
         {
-            if (neighbor.getOccupant() == player) return true;
+            Edge edge = edgesArray[edgePos];
+            if (edge.getOccupant() == player) return true;
         }
 
         return false;
