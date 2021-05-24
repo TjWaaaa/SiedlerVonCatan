@@ -81,7 +81,7 @@ namespace Networking.ClientSide
                         listItem.transform.Find("IsReady").GetComponent<PlayerReady>().enabled = false;
                     }
                     listItem.name = currentPlayerID.ToString();
-                    GameController.createPlayer(playerName);
+                    GameController.createPlayer(currentPlayerID, playerName, playerColor);
                 }
                 else // List entry does already exist --> update name and color 
                 {

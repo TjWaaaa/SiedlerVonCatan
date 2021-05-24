@@ -13,8 +13,8 @@ public class GameController : MonoBehaviour
 {
     private GameObject clientGameLogic;
     public GameObject showCurrentPlayer;
-
-    public static List<string> playerRep = new List<string>();
+    
+    public static List<RepresentativePlayer> representativePlayers = new List<RepresentativePlayer>();
     private static ServerPlayer[] players;
     private static int currentPlayer;
 
@@ -49,12 +49,12 @@ public class GameController : MonoBehaviour
     {
         //builder = new Builder();
 
+        // All this stuff has to go.
         players = new ServerPlayer[]
         {
             new ServerPlayer("Player1", Color.red),
             new ServerPlayer("Player2", Color.blue)
         };
-        
 
         foreach (ServerPlayer player in players)
         {
@@ -139,10 +139,10 @@ public class GameController : MonoBehaviour
         else ChangeRessourcesOutput(players[currentPlayer]);
     }
 
-    public static void createPlayer(string playerName)
+    public static void createPlayer(int playerID, string playerName, Color playerColor)
     {
-        playerRep.Add(playerName);
-        Debug.Log("client: "+ playerName + " created. Player Number " + playerRep.Count);
+        representativePlayers.Add( new RepresentativePlayer(playerID, playerName, playerColor));
+        Debug.Log("client: "+ playerName + " created. Player Number " + representativePlayers.Count);
     }
 
     
