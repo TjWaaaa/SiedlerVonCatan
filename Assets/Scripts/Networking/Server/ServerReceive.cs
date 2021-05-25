@@ -16,6 +16,8 @@ namespace Networking.ServerSide
         private readonly Stack<Color> possibleColors = new Stack<Color>();
         private readonly ServerRequest serverRequest = new ServerRequest();
 
+        private Board gameBoard = new Board();
+
         public ServerGameLogic()
         {
             possibleColors.Push(Color.yellow);
@@ -83,7 +85,7 @@ namespace Networking.ServerSide
             //todo: Boardgenerator!
             if (runGame)
             {
-                serverRequest.gamestartInitialize(new int[][]{});
+                serverRequest.gamestartInitialize(gameBoard.getHexagonsArray());
             }
 
             // send error if no player was found

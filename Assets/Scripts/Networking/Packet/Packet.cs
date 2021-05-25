@@ -1,8 +1,4 @@
-using System;
 using System.Collections;
-using System.Collections.Generic;
-using JetBrains.Annotations;
-using UnityEngine;
 
 namespace Networking.Package
 {
@@ -20,7 +16,7 @@ namespace Networking.Package
         public ArrayList lobbyContent { get; set; } // {{PlayerName, PlayerColor, isReady}}
         
         public string currentPlayerName { get; set; } //target of actions or current player
-        public int[][] gameBoard { get; set; }
+        public Hexagon[][] gameBoard { get; set; }
         
         public int[] diceResult { get; set; }
         public int[] resourcesObtained { get; set; } // [+ gain resources, - spent resources]

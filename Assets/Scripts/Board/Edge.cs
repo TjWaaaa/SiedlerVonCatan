@@ -1,18 +1,34 @@
-using System;
 using PlayerColor;
 
 public class Edge
 {
-    private int edgeId;
-    private Node[] adjacentNodes;
-    private Edge[] adjacentEdges;
+    private int[] adjacentNodesPos = new int[2];
+    private int[] adjacentEdgesPos = new int[4];
     private PLAYERCOLOR occupant = PLAYERCOLOR.NONE;
 
-    public Edge(int id)
+    public Edge()
     {
-        edgeId = id;
-        adjacentEdges = new Edge[4];
-        adjacentNodes = new Node[2];
+
+    }
+
+    public void setAdjacentNodePos(int nodePos, int index)
+    {
+        adjacentNodesPos[index] = nodePos;
+    }
+
+    public int[] getAdjacentNodesPos()
+    {
+        return adjacentNodesPos;
+    }
+
+    public void setAdjacentEdge(int edge, int index)
+    {
+        adjacentEdgesPos[index] = edge;
+    }
+
+    public int[] getAdjacentEdges()
+    {
+        return adjacentEdgesPos;
     }
     
     public void setOccupant(PLAYERCOLOR occupant)
@@ -23,25 +39,5 @@ public class Edge
     public PLAYERCOLOR getOccupant()
     {
         return occupant;
-    }
-
-    public void setAdjacentNode(Node node, int index)
-    {
-        adjacentNodes[index] = node;
-    }
-
-    public Node[] getAdjacentNodes()
-    {
-        return adjacentNodes;
-    }
-
-    public void setAdjacentEdge(Edge edge, int index)
-    {
-        adjacentEdges[index] = edge;
-    }
-
-    public Edge[] getAdjacentEdges()
-    {
-        return adjacentEdges;
     }
 }
