@@ -5,6 +5,7 @@ using PlayerColor;
 
 public class Node
 {
+    private int 
     private int[,] adjacentHexagonsPos = new int[3, 3];
     private int[] adjacentNodesPos = new int[3];
     private int[] adjacentEdgesPos = new int[3];
