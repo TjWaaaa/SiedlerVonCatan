@@ -15,12 +15,16 @@ public class GameController : MonoBehaviour
     public GameObject showCurrentPlayer;
     
     public static List<RepresentativePlayer> representativePlayers = new List<RepresentativePlayer>();
+    public static OwnClientPlayer ownClientPlayer;
+    
+    // only for testing
     private static ServerPlayer[] players;
     private static int currentPlayer;
 
     private Builder builder;
 
 
+    //only for testing
     public TextMeshProUGUI bricksText;
     public TextMeshProUGUI oreText;
     public TextMeshProUGUI sheepText;
@@ -56,14 +60,12 @@ public class GameController : MonoBehaviour
             new ServerPlayer("Player2", Color.blue)
         };
 
-        foreach (ServerPlayer player in players)
-        {
-            player.setResourceAmount(RESOURCETYPE.WHEAT, 10);
-            player.setResourceAmount(RESOURCETYPE.WOOD, 10);
-            player.setResourceAmount(RESOURCETYPE.SHEEP, 10);
-            player.setResourceAmount(RESOURCETYPE.BRICK, 10);
-            player.setResourceAmount(RESOURCETYPE.ORE, 10);
-        }
+        // Only for testing. This stuff should come from server
+        ownClientPlayer.setResourceAmount(RESOURCETYPE.SHEEP,10);
+        ownClientPlayer.setResourceAmount(RESOURCETYPE.WOOD,10);
+        ownClientPlayer.setResourceAmount(RESOURCETYPE.BRICK,10);
+        ownClientPlayer.setResourceAmount(RESOURCETYPE.ORE,10);
+        ownClientPlayer.setResourceAmount(RESOURCETYPE.WHEAT,10);
         
 
         currentPlayer = 0;
@@ -139,13 +141,17 @@ public class GameController : MonoBehaviour
         else ChangeRessourcesOutput(players[currentPlayer]);
     }
 
-    public static void createPlayer(int playerID, string playerName, Color playerColor)
+    public static void createRepresentativePlayer(int playerID, string playerName, Color playerColor)
     {
         representativePlayers.Add( new RepresentativePlayer(playerID, playerName, playerColor));
         Debug.Log("client: "+ playerName + " created. Player Number " + representativePlayers.Count);
     }
 
-    
+    public static void createOwnClientPlayer(int playerID)
+    {
+        ownClientPlayer = new OwnClientPlayer(playerID);
+        Debug.Log("Created OwnClientPlayer with ID" + playerID);
+    }
     
     public void BuildVillage(Vector3 position)
     {

@@ -653,7 +653,7 @@ GameObject:
   - component: {fileID: 50286458}
   - component: {fileID: 50286457}
   m_Layer: 5
-  m_Name: currentPlayerBrick
+  m_Name: OwnPlayerBrick
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -9002,7 +9002,7 @@ GameObject:
   - component: {fileID: 884234837}
   - component: {fileID: 884234836}
   m_Layer: 5
-  m_Name: actions
+  m_Name: Actions
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -10664,7 +10664,7 @@ GameObject:
   - component: {fileID: 1031716334}
   - component: {fileID: 1031716333}
   m_Layer: 5
-  m_Name: currentPlayerOre
+  m_Name: OwnPlayerOre
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -12191,7 +12191,7 @@ GameObject:
   - component: {fileID: 1187498931}
   - component: {fileID: 1187498930}
   m_Layer: 5
-  m_Name: currentPlayerLeftVillages
+  m_Name: OwnPlayerLeftVillages
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -14200,7 +14200,7 @@ GameObject:
   - component: {fileID: 1393319311}
   - component: {fileID: 1393319310}
   m_Layer: 5
-  m_Name: currentPlayerWood
+  m_Name: OwnPlayerWood
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -17463,7 +17463,7 @@ GameObject:
   - component: {fileID: 1616603398}
   - component: {fileID: 1616603397}
   m_Layer: 5
-  m_Name: currentPlayerWheat
+  m_Name: OwnPlayerWheat
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -18012,7 +18012,7 @@ GameObject:
   - component: {fileID: 1655867596}
   - component: {fileID: 1655867595}
   m_Layer: 5
-  m_Name: currentPlayerSheep
+  m_Name: OwnPlayerSheep
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -19645,7 +19645,7 @@ GameObject:
   - component: {fileID: 1796323136}
   - component: {fileID: 1796323135}
   m_Layer: 5
-  m_Name: currentPlayerLeftStreets
+  m_Name: OwnPlayerLeftStreets
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -21242,6 +21242,7 @@ GameObject:
   - component: {fileID: 1934553798}
   - component: {fileID: 1934553797}
   - component: {fileID: 1934553801}
+  - component: {fileID: 1934553802}
   m_Layer: 5
   m_Name: _Standard Overlay
   m_TagString: Untagged
@@ -21344,6 +21345,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e15facd2936b4a6c98f9fd25d3a99a85, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1934553802
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1934553796}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3ac3848670934242a894c18a1a33588d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &1946550779
@@ -22479,7 +22492,7 @@ GameObject:
   - component: {fileID: 2011726996}
   - component: {fileID: 2011726995}
   m_Layer: 5
-  m_Name: CurrentPlayerRessources
+  m_Name: OwnPlayerResources
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -22643,7 +22656,7 @@ GameObject:
   - component: {fileID: 2022019572}
   - component: {fileID: 2022019571}
   m_Layer: 5
-  m_Name: currentPlayerLeftCitys
+  m_Name: OwnPlayerLeftCitys
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

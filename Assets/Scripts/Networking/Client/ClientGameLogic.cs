@@ -80,8 +80,12 @@ namespace Networking.ClientSide
                         listItem.transform.Find("IsReady").GetComponent<Toggle>().enabled = false;
                         listItem.transform.Find("IsReady").GetComponent<PlayerReady>().enabled = false;
                     }
+                    else
+                    {
+                        GameController.createOwnClientPlayer(currentPlayerID);
+                    }
                     listItem.name = currentPlayerID.ToString();
-                    GameController.createPlayer(currentPlayerID, playerName, playerColor);
+                    GameController.createRepresentativePlayer(currentPlayerID, playerName, playerColor);
                 }
                 else // List entry does already exist --> update name and color 
                 {

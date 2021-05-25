@@ -9,14 +9,14 @@ namespace UI
     public class PlayerRepresentation : MonoBehaviour
     {
         //private PrefabFactory prefabFactory;
-        private GameObject allPlayers;
+       
         private GameObject[] playerRepresentations = new GameObject[4];
 
         public void Start()
         {
-            allPlayers = GameObject.Find("AllPlayers");
 
-            // set all Playerboards inactive
+            // find all Playerboards and set them inactive
+            
             for (int playerRepresentation = 0; playerRepresentation < playerRepresentations.Length; playerRepresentation++)
             {
                 playerRepresentations[playerRepresentation] = GameObject.Find("Player"+(playerRepresentation+1));
@@ -24,36 +24,38 @@ namespace UI
 
             }
 
+            
             // represent all players
+            
             for (int player = 0; player < GameController.representativePlayers.Count; player++)
             {
                 playerRepresentations[player].SetActive(true);
                 GameObject.Find("Player" + (player +1)+ "/PlayerRepresentation/PlayerName").GetComponent<TextMeshProUGUI>().text = GameController.representativePlayers[player].getPlayerName();
                 GameObject.Find("Player" + (player +1)+ "/PlayerRepresentation/PlayerName").GetComponent<TextMeshProUGUI>().color = GameController.representativePlayers[player].getPlayerColor();
                 Debug.Log(GameController.representativePlayers[player] + " writed on board number "+ (player+1));
-                GameObject.Find("Player" + (player +1)+ "/PlayerRepresentation/VictoryPoints").GetComponent<TextMeshProUGUI>().text = GameController.representativePlayers[player].getVictoryPoints().ToString();
-                GameObject.Find("Player" + (player +1)+ "/PlayerRepresentation/TotalResourceAmount").GetComponent<TextMeshProUGUI>().text = GameController.representativePlayers[player].getTotalResourceAmount().ToString();
-                GameObject.Find("Player" + (player +1)+ "/PlayerRepresentation/DevCards").GetComponent<TextMeshProUGUI>().text = GameController.representativePlayers[player].getDevCardAmount().ToString();
+                updateVictoryPoints(player);
+                updateTotalResourceAmount(player);
+                updateDevCardAmount(player);
             }
         }
 
         
-        // playerNumber = index in representativePlayers
-        public void updateVictoryPoints(int playerNumber, int victoryPoints)
+        // player = index in representativePlayers
+        public void updateVictoryPoints(int player)
         {
-            GameObject.Find("Player" + playerNumber + "/PlayerRepresentation/VictoryPoints").GetComponent<TextMeshProUGUI>().text = GameController.representativePlayers[playerNumber].getVictoryPoints().ToString();
+            GameObject.Find("Player" + (player +1) + "/PlayerRepresentation/VictoryPoints").GetComponent<TextMeshProUGUI>().text = GameController.representativePlayers[player].getVictoryPoints().ToString();
 
         }
         
-        public void updateTotalResourceAmount(int playerNumber, int totalResourceAmount)
+        public void updateTotalResourceAmount(int player)
         {
-            GameObject.Find("Player" + playerNumber + "/PlayerRepresentation/TotalResourceAmount").GetComponent<TextMeshProUGUI>().text = GameController.representativePlayers[playerNumber].getTotalResourceAmount().ToString();
+            GameObject.Find("Player" + (player +1) + "/PlayerRepresentation/TotalResourceAmount").GetComponent<TextMeshProUGUI>().text = GameController.representativePlayers[player].getTotalResourceAmount().ToString();
 
         }
         
-        public void updateDevCardAmount(int playerNumber, int devCardsAmount)
+        public void updateDevCardAmount(int player)
         {
-            GameObject.Find("Player" + playerNumber + "/PlayerRepresentation/DevCards").GetComponent<TextMeshProUGUI>().text = GameController.representativePlayers[playerNumber].getDevCardAmount().ToString();
+            GameObject.Find("Player" + (player +1)+ "/PlayerRepresentation/DevCards").GetComponent<TextMeshProUGUI>().text = GameController.representativePlayers[player].getDevCardAmount().ToString();
 
         }
     }
