@@ -131,40 +131,43 @@ namespace Player
 
         // Buy
 
-        public Boolean canBuyStreet()
+        public Boolean canBuyBuyable(BUYABLES buyable)
         {
-            if (resources[RESOURCETYPE.BRICK] >= 1 && resources[RESOURCETYPE.WOOD] >= 1)
-                return true;
-            else return false;
+            switch (buyable)
+            {
+              case BUYABLES.ROAD:
+                  if (resources[RESOURCETYPE.BRICK] >= 1 && resources[RESOURCETYPE.WOOD] >= 1)
+                  {
+                      return true;
+                  }
+                  else return false;
+              case BUYABLES.VILLAGE:
+                  if (resources[RESOURCETYPE.BRICK] >= 1
+                      && resources[RESOURCETYPE.WOOD] >= 1
+                      && resources[RESOURCETYPE.SHEEP] >= 1
+                      && resources[RESOURCETYPE.WHEAT] >= 1)
+                  {
+                      return true;
+                  }
+                  else return false;
+              case BUYABLES.CITY:
+                  if (resources[RESOURCETYPE.ORE] >= 3
+                      && resources[RESOURCETYPE.WHEAT] >= 2)
+                  {
+                      return true;
+                  }
+                  else return false;
+              case BUYABLES.DEVELOPMENT_CARDS:
+                  if (resources[RESOURCETYPE.ORE] >= 1
+                      && resources[RESOURCETYPE.WHEAT] >= 1
+                      && resources[RESOURCETYPE.SHEEP] >= 1)
+                  {
+                      return true;
+                  }
+                  else return false;
+              default: return false;
+            }
         }
-
-        public Boolean canBuyVillage()
-        {
-            if (resources[RESOURCETYPE.BRICK] >= 1
-                && resources[RESOURCETYPE.WOOD] >= 1
-                && resources[RESOURCETYPE.SHEEP] >= 1
-                && resources[RESOURCETYPE.WHEAT] >= 1)
-                return true;
-            else return false;
-        }
-
-        public Boolean canBuyCity()
-        {
-            if (resources[RESOURCETYPE.ORE] >= 3
-                && resources[RESOURCETYPE.WHEAT] >= 2)
-                return true;
-            else return false;
-        }
-
-        public Boolean canBuyDevCard()
-        {
-            if (resources[RESOURCETYPE.ORE] >= 1
-                && resources[RESOURCETYPE.WHEAT] >= 1
-                && resources[RESOURCETYPE.SHEEP] >= 1)
-                return true;
-            else return false;
-        }
-
 
         public void buyStreet()
         {
