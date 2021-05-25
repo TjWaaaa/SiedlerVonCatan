@@ -19,9 +19,6 @@ namespace Networking.ClientSide
         private int playerNumber = 1;
         private readonly ClientRequest clientRequest = new ClientRequest();
 
-
-        private GameObject diceHolder;
-
         /// <summary>
         /// Create a persistent ClientGameLogicObject that stays over scene changes.
         /// </summary>
@@ -173,8 +170,7 @@ namespace Networking.ClientSide
             Debug.Log("New Round iniciated");
             // Show new currentPlayer
             // Render dice rolling
-            diceHolder = GameObject.FindGameObjectWithTag("diceHolder");
-            diceHolder.GetComponent<RenderRollDices>().renderRollDices(serverPacket.diceResult);
+            GameObject.FindGameObjectWithTag("diceHolder").GetComponent<RenderRollDices>().renderRollDices(serverPacket.diceResult);
             // Render gained ressources
         }
 

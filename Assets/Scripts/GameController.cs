@@ -56,24 +56,24 @@ public class GameController : MonoBehaviour
         //builder = new Builder();
 
         // All this stuff has to go.
-        players = new ServerPlayer[]
-        {
-            new ServerPlayer("Player1", Color.red),
-            new ServerPlayer("Player2", Color.blue)
-        };
+        // players = new ServerPlayer[]
+        // {
+        //     new ServerPlayer("Player1", Color.red),
+        //     new ServerPlayer("Player2", Color.blue)
+        // };
 
         // Only for testing. This stuff should come from server
-        ownClientPlayer.setResourceAmount(RESOURCETYPE.SHEEP,10);
-        ownClientPlayer.setResourceAmount(RESOURCETYPE.WOOD,10);
-        ownClientPlayer.setResourceAmount(RESOURCETYPE.BRICK,10);
-        ownClientPlayer.setResourceAmount(RESOURCETYPE.ORE,10);
-        ownClientPlayer.setResourceAmount(RESOURCETYPE.WHEAT,10);
+        // ownClientPlayer.setResourceAmount(RESOURCETYPE.SHEEP,10);
+        // ownClientPlayer.setResourceAmount(RESOURCETYPE.WOOD,10);
+        // ownClientPlayer.setResourceAmount(RESOURCETYPE.BRICK,10);
+        // ownClientPlayer.setResourceAmount(RESOURCETYPE.ORE,10);
+        // ownClientPlayer.setResourceAmount(RESOURCETYPE.WHEAT,10);
         
 
         currentPlayer = 0;
 
         // test
-        PlayerRepresentation.showNextPlayer(0,1);
+        // PlayerRepresentation.showNextPlayer(0,1);
 
         showCurrentPlayer.GetComponent<Image>().color = players[currentPlayer].getPlayerColor();
         showCurrentPlayer.transform.GetChild(0).GetComponent<Text>().text = players[currentPlayer].getPlayerName();

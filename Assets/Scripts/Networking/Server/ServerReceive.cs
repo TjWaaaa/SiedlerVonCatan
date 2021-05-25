@@ -57,8 +57,7 @@ namespace Networking.ServerSide
             
             serverRequest.notifyClientJoined(allPlayerInformation);
         }
-
-        
+ 
         public void handleRequestPlayerReady(Packet clientPacket, int currentClientID)
         {
         
@@ -95,9 +94,8 @@ namespace Networking.ServerSide
         {
             // Roll dices
             int[] diceNumbers = rollDices();
-            
-            Debug.Log(diceNumbers[0] + " " + diceNumbers[1]);
             serverRequest.notifyRollDice(diceNumbers);
+            // Distribute ressources
         }
 
         public void handleTradeBank(Packet clientPacket)
