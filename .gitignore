@@ -72,3 +72,4 @@ crashlytics-build.properties
 
 #own Stuff
 .idea
+.vsconfig

@@ -17,7 +17,7 @@ namespace Networking.Interfaces
         /// Game start: when the game starts send the board to all clients.
         /// </summary>
         /// <param name="gameBoard">Game board</param>
-        public void gamestartInitialize(int[][] gameBoard);
+        public void gamestartInitialize(Hexagon[][] gameBoard);
         
         
         /// <summary>

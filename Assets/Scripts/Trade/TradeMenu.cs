@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using UnityEngine;
-using UnityEngine.UI;
 using Enums;
 using TMPro;
 using Player;
+using UnityEngine;
+using UnityEngine.UI;
 
 namespace Trade
 {

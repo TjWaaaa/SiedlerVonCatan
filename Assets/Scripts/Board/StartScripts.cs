@@ -7,7 +7,7 @@ public class StartScripts : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        Board board = new Board();
+        //Board board = new Board();
     }
 
     // Update is called once per frame
