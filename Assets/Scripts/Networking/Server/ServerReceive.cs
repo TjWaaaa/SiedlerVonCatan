@@ -11,6 +11,8 @@ namespace Networking.ServerSide
     public class ServerGameLogic : INetworkableServer
     {
         private readonly Dictionary<int,ServerPlayer> allPlayer = new Dictionary<int, ServerPlayer>();
+
+        //private RepresentativePlayer[] representativePlayerArray;
         private int playerAmount = 0;
         private int currentPlayer = 0;
         private readonly Stack<Color> possibleColors = new Stack<Color>();
@@ -25,13 +27,6 @@ namespace Networking.ServerSide
             possibleColors.Push(Color.blue);
             possibleColors.Push(Color.red);
         }    
-
-        public void generatePlayer(int playerId)
-        {
-            ServerPlayer newPlayer = new ServerPlayer(playerId);
-            allPlayer.Add(playerId,newPlayer);
-            playerAmount++;
-        }
     
     // Here come all handling methods
         public void handleRequestJoinLobby(Packet clientPacket, int currentClientID)
@@ -84,6 +79,7 @@ namespace Networking.ServerSide
             //todo: Boardgenerator!
             if (runGame)
             {
+                //int[][] updateRepPlayers = convertSPAToRPA();
                 serverRequest.gamestartInitialize(gameBoard.getHexagonsArray());
             }
 
@@ -131,6 +127,8 @@ namespace Networking.ServerSide
             {
                 currentPlayer++;
             }
+            //serverRequest.;
+            
             // TODO change method call => handleBeginRound should only be called after the new player is already set and all have been notified
             Debug.Log("handleEndTurn has been called");
             handleBeginRound(clientPacket);
@@ -151,6 +149,23 @@ namespace Networking.ServerSide
             diceNumbers[1] = r.Next(1,7);
             Debug.Log($"Dice value 1: {diceNumbers[0]} // Dice value 2: {diceNumbers[1]}");
             return diceNumbers;
+        }
+
+        // public int[][] convertSPAToRPA() // ServerPlayerArray / RepPlayerArray
+        // {
+        //     int i = 0;
+        //     foreach (ServerPlayer player in allPlayer.Values)
+        //     {
+        //         player.convertFromSPToRP();
+        //         i++;
+        //     }
+        // }
+
+        public void generatePlayer(int playerId)
+        {
+            ServerPlayer newPlayer = new ServerPlayer(playerId);
+            allPlayer.Add(playerId,newPlayer);
+            playerAmount++;
         }
     }
 }

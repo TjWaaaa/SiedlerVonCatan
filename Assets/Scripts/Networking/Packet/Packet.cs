@@ -1,4 +1,5 @@
 using System.Collections;
+using Player;
 
 namespace Networking.Package
 {
@@ -34,5 +35,7 @@ namespace Networking.Package
         public int victoryPoint { get; set; }
         
         public string errorMessage { get; set; } // when client request is rejected
+
+        public RepresentativePlayer[] representativePlayerArray{get; set;}
     }
 }
