@@ -21,6 +21,7 @@ public class Board
         new Hexagon[2], // 4
         new Hexagon[2], // 5
         new Hexagon[2], // 6
+        new Hexagon[0], // 7
         new Hexagon[2], // 8
         new Hexagon[2], // 9
         new Hexagon[2], // 10
@@ -115,9 +116,9 @@ public class Board
                         hexagons[row][col] = newHexagon;
 
                         // adds Hexagon to empty slot in array
-                        for (int i = 0; i < hexagonDiceNumbers[fieldNumber].Length; i++)
+                        for (int i = 0; i < hexagonDiceNumbers[fieldNumber-2].Length; i++)
                         {
-                            hexagonDiceNumbers[fieldNumber][i] ??= newHexagon;  // only adds Hexagon to slot if slot empty
+                            hexagonDiceNumbers[fieldNumber-2][i] ??= newHexagon;  // only adds Hexagon to slot if slot empty
                         }
                         break;
                     case 3:
