@@ -10,7 +10,7 @@ namespace Networking.ClientSide
 {
     public class Client
     {
-        private const int BUFFER_SIZE = 2048;
+        private const int BUFFER_SIZE = 64000;
         private const int PORT = 50042;
         private static byte[] buffer;
 
@@ -31,7 +31,8 @@ namespace Networking.ClientSide
             // instantiate a ClientGameLogic object
             var gameLogicObject = new GameObject();
             gameLogicObject.AddComponent<ClientGameLogic>();
-            clientGameLogic = GameObject.Instantiate(gameLogicObject).GetComponent<ClientGameLogic>();
+            gameLogicObject.AddComponent<BoardGenerator>();
+            clientGameLogic = gameLogicObject.GetComponent<ClientGameLogic>();
                         
             buffer = new byte[BUFFER_SIZE];
             clientSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
@@ -120,28 +121,38 @@ namespace Networking.ClientSide
         /// <param name="AR">IAsyncResult</param>
         private static void receiveCallback(IAsyncResult AR)
         {
-            Socket currentServerSocket = (Socket) AR.AsyncState;
-            int receivedBufferSize;
-
+            // necessary to log errors that occur in the side thread
             try
             {
-                receivedBufferSize = currentServerSocket.EndReceive(AR);
+                Socket currentServerSocket = (Socket) AR.AsyncState;
+                int receivedBufferSize;
+
+                try
+                {
+                    receivedBufferSize = currentServerSocket.EndReceive(AR);
+                }
+                catch (SocketException)
+                {
+                    Debug.Log("Client: Server forcefully disconnected");
+                    //TODO handle connection loss
+                    return;
+                }
+                
+                byte[] receievedBuffer = new byte[receivedBufferSize];
+                Array.Copy(buffer, receievedBuffer, receivedBufferSize);
+                var jsonString = Encoding.ASCII.GetString(receievedBuffer);
+                Packet serverData = PacketSerializer.jsonToObject(jsonString);
+                
+                Debug.Log("Client received Data: " + jsonString);
+                delegateIncomingDataToMethods(serverData);
+
+                clientSocket.BeginReceive(buffer, 0, BUFFER_SIZE, SocketFlags.None, receiveCallback, clientSocket); // start listening again
             }
-            catch (SocketException)
+            catch (Exception e)
             {
-                Debug.Log("Client: Server forcefully disconnected");
-                //todo handle connection loss
-                return;
+                Debug.Log(e);
+                throw e;
             }
-
-            byte[] receievedBuffer = new byte[receivedBufferSize];
-            Array.Copy(buffer, receievedBuffer, receivedBufferSize);
-            Packet serverData = PacketSerializer.jsonToObject(Encoding.ASCII.GetString(receievedBuffer));
-
-            delegateIncomingDataToMethods(serverData);
-
-            clientSocket.BeginReceive(buffer, 0, BUFFER_SIZE, SocketFlags.None, receiveCallback,
-                clientSocket); // start listening again
         }
 
 
