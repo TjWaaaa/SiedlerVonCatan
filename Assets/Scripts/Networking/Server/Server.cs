@@ -163,7 +163,7 @@ namespace Networking.ServerSide
         /// <param name="dataString">Data to send</param>
         public static void sendDataToOne(int playerID, Packet data)
         {
-            data.playerNumber = playerID;
+            data.myPlayerID = playerID;
             string dataString = PacketSerializer.objectToJsonString(data);
             byte[] dataToSend = Encoding.ASCII.GetBytes(dataString);
             socketPlayerData[playerID].BeginSend(dataToSend, 0, dataToSend.Length, SocketFlags.None, sendCallback, serverSocket);
@@ -182,7 +182,7 @@ namespace Networking.ServerSide
             {
                 if(id != playerID)
                 {
-                    data.playerNumber = playerID;
+                    data.myPlayerID = playerID;
                     string dataString = PacketSerializer.objectToJsonString(data);
                     byte[] dataToSend = Encoding.ASCII.GetBytes(dataString);
                     socketPlayerData[id].BeginSend(dataToSend, 0, dataToSend.Length, SocketFlags.None, sendCallback, serverSocket);
@@ -199,7 +199,7 @@ namespace Networking.ServerSide
         {
             foreach (int id in socketPlayerData.Keys)
             {
-                data.playerNumber = id;
+                data.myPlayerID = id;
                 string dataString = PacketSerializer.objectToJsonString(data);
                 byte[] dataToSend = Encoding.ASCII.GetBytes(dataString);
                 socketPlayerData[id].BeginSend(dataToSend, 0, dataToSend.Length, SocketFlags.None, sendCallback, serverSocket);
