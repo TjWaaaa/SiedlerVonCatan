@@ -478,15 +478,9 @@ public class Board
                         int yOffset = row + neighborOffsetY[offsetIndex];
                         int xOffset = col + neighborOffsetX[offsetIndex];
                         int neighborFieldnumber = 0;
+                        
+                        neighborFieldnumber = hexagonsArray[yOffset][xOffset].getFieldNumber();
 
-                        try
-                        {
-                            neighborFieldnumber = hexagonsArray[yOffset][xOffset].getFieldNumber();
-                        }
-                        catch (IndexOutOfRangeException e)
-                        {
-                            //nothing needs to be done, out of Range occours because the differnce in row length 
-                        }
                         //if one of the neighbors is 6 || 8 position is mot suitable
                         if (neighborFieldnumber == 6 || neighborFieldnumber == 8)
                         {
