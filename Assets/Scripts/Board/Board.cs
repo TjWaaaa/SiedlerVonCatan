@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using Enums;
 using PlayerColor;
+using UnityEngine;
 
 public class Board
 {
@@ -98,11 +99,11 @@ public class Board
         Stack<HEXAGON_TYPE> portStack = createRandomHexagonStackFromArray(portHexagons);
         numberStack = createRandomHexagonNumberStack(availableNumbers);
 
-        Hexagon[][] hexagons = new Hexagon[7][];
+        hexagonsArray = new Hexagon[7][];
 
         for (int row = 0; row < boardConfig.Length; row++)
         {
-            hexagons[row] = new Hexagon[boardConfig[row].Length];
+            hexagonsArray[row] = new Hexagon[boardConfig[row].Length];
             for (int col = 0; col < boardConfig[row].Length; col++)
             {
                 int currentConfig = boardConfig[row][col];
@@ -110,12 +111,12 @@ public class Board
                 switch (currentConfig)
                 {
                     case 1:
-                        hexagons[row][col] = new Hexagon(HEXAGON_TYPE.WATER);
+                        hexagonsArray[row][col] = new Hexagon(HEXAGON_TYPE.WATER);
                         break;
                     case 2:
                         int fieldNumber = numberStack.Pop();
                         Hexagon newHexagon = new Hexagon(landStack.Pop(), fieldNumber);
-                        hexagons[row][col] = newHexagon;
+                        hexagonsArray[row][col] = newHexagon;
 
                         // adds Hexagon to empty slot in array
                         for (int i = 0; i < hexagonDiceNumbers[fieldNumber - 2].Length; i++)
@@ -124,10 +125,10 @@ public class Board
                         }
                         break;
                     case 3:
-                        hexagons[row][col] = new Hexagon(HEXAGON_TYPE.DESERT);
+                        hexagonsArray[row][col] = new Hexagon(HEXAGON_TYPE.DESERT);
                         break;
                     case 4:
-                        hexagons[row][col] = new Hexagon(portStack.Pop());
+                        hexagonsArray[row][col] = new Hexagon(portStack.Pop());
                         break;
                 }
             }
@@ -181,8 +182,15 @@ public class Board
         {
             for (int col = 0; col < boardConfig[row].Length; col++)
             {
-                // continue if there is no hexagon at given index
-                if (hexagonsArray[row][col] == null) continue;
+                try
+                {
+                    // continue if there is no hexagon at given index
+                    if (hexagonsArray[row][col] == null) continue;
+                }
+                catch (Exception e)
+                {
+                    Debug.Log(e);
+                }
 
                 Hexagon currentHexagon = hexagonsArray[row][col];
 
@@ -413,7 +421,7 @@ public class Board
                 {
                     int yOffset = row + neighborOffsetY[offsetIndex];
                     int xOffset = col + neighborOffsetX[offsetIndex];
-                    Hexagon neighbor = null;
+                    Hexagon neighbor;
 
                     try
                     {

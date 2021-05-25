@@ -67,8 +67,7 @@ public class Hexagon
             case HEXAGON_TYPE.WOOD:
             case HEXAGON_TYPE.BRICK:
             case HEXAGON_TYPE.ORE:
-            case HEXAGON_TYPE.WHEAT:
-            case HEXAGON_TYPE.DESERT: return true;
+            case HEXAGON_TYPE.WHEAT: return true;
             default: return false;
         }
     }

@@ -75,7 +75,7 @@ public class BoardGenerator : MonoBehaviour
             for (int col = 0; col < gameBoard[row].Length; col++)
             {
                 Hexagon hexagon = gameBoard[row][col];
-                string hexagonPath = "Tiles3D/" + findPrefabByHexagonType(hexagon.getType());
+                string hexagonPath = "Tiles3D/" + findPrefabByHexagonType(hexagon.getType()) + "Prefab";
                 Debug.Log(hexagonPath);
                 GameObject prefab = (GameObject) Resources.Load(hexagonPath);
 
@@ -99,6 +99,13 @@ public class BoardGenerator : MonoBehaviour
                 else
                 {
                     newHexagon = Instantiate(prefab, new Vector3(col * s + r + offsetX * s, 0, (row - 1) / 2f * (d + a) + offset), Rotation(hexagon, row, col));
+                }
+
+                // change hexagon numbers
+                if (hexagon.isLand()) {
+                    GameObject text = newHexagon.transform.GetChild(1).GetChild(0).gameObject;
+
+                    text.GetComponent<TextMesh>().text = hexagon.getFieldNumber().ToString();
                 }
             }
         }
@@ -134,7 +141,7 @@ public class BoardGenerator : MonoBehaviour
             case HEXAGON_TYPE.DESERT: return "desert";
             
             case HEXAGON_TYPE.SHEEP: return "sheep";
-            case HEXAGON_TYPE.WOOD: return "sheep";
+            case HEXAGON_TYPE.WOOD: return "wood";
             case HEXAGON_TYPE.BRICK: return "brick";
             case HEXAGON_TYPE.ORE: return "ore";
             case HEXAGON_TYPE.WHEAT: return "wheat";
@@ -212,7 +219,7 @@ public class BoardGenerator : MonoBehaviour
     //     //robber
     //     Instantiate(robber, hexagonPrefabDesert.transform.position, Quaternion.identity);
     // }
-
+    //
     // void initalizeRandomHexagons()
     // {
     //     GameObject[] randomHexArray = new[]
