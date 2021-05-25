@@ -23,6 +23,7 @@ namespace Networking.ClientSide
 
         //private RepresentativePlayer[] representativePlayerArray;
         public static List<RepresentativePlayer> representativePlayers = new List<RepresentativePlayer>();
+        public static OwnClientPlayer ownClientPlayer;
         private int playerNumber = 1;
 
         private int currentPlayer = 0;
@@ -112,7 +113,8 @@ namespace Networking.ClientSide
                     }
                     else
                     {
-                        GameController.createOwnClientPlayer(currentPlayerID);
+                        ownClientPlayer = new OwnClientPlayer(currentPlayerID);
+                        Debug.Log("Created OwnClientPlayer with ID" + currentPlayerID);
                     }
                     listItem.name = currentPlayerID.ToString();
                     representativePlayers.Add( new RepresentativePlayer(currentPlayerID, playerName, playerColor));

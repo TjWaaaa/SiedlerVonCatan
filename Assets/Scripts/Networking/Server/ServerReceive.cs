@@ -1,5 +1,7 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Enums;
 using Networking.Communication;
 using UnityEngine;
@@ -12,8 +14,7 @@ namespace Networking.ServerSide
     public class ServerGameLogic : INetworkableServer
     {
         private readonly Dictionary<int,ServerPlayer> allPlayer = new Dictionary<int, ServerPlayer>();
-
-        //private RepresentativePlayer[] representativePlayerArray;
+        
         private int playerAmount = 0;
         private int currentPlayer = 0;
         private readonly Stack<Color> possibleColors = new Stack<Color>();
@@ -104,7 +105,16 @@ namespace Networking.ServerSide
 
         public void handleBuild(Packet clientPacket)
         {
-            throw new System.NotImplementedException();
+            ServerPlayer currentServerPlayer = allPlayer.ElementAt(currentPlayer).Value;
+            
+            if (currentServerPlayer.canBuyBuyable((BUYABLES)clientPacket.buildType))
+            {
+                
+            }
+            else
+            {
+                Debug.Log("not enough resources");
+            }
         }
 
         public void handleBuyDevelopement(Packet clientPacket)
