@@ -14,9 +14,7 @@ namespace Player
         private Color playerColor;
         private int playerID;
         private bool isReady;
-
         private int victoryPoints;
-
         private int leftStreets = 15;
         private int leftVillages = 5;
         private int leftCitys = 4;
@@ -195,10 +193,9 @@ namespace Player
             resources[RESOURCETYPE.SHEEP] -= 1;
         }
 
-        // public int[] convertFromSPToRP()
-        // {
-
-        //     return int[]
-        // }
+        public int[] convertFromSPToRP()
+        {
+            return new int[] { playerID, victoryPoints, devCardAmount };
+        }
     }
 }

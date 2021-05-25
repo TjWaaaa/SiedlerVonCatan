@@ -15,8 +15,6 @@ public class GameController : MonoBehaviour
     private GameObject clientGameLogic;
     public GameObject showCurrentPlayer;
     
-    
-    public static List<RepresentativePlayer> representativePlayers = new List<RepresentativePlayer>();
     public static OwnClientPlayer ownClientPlayer;
     
     // only for testing
@@ -137,12 +135,6 @@ public class GameController : MonoBehaviour
         else ChangeRessourcesOutput(players[currentPlayer]);
     }
 
-    public static void createRepresentativePlayer(int playerID, string playerName, Color playerColor)
-    {
-        representativePlayers.Add( new RepresentativePlayer(playerID, playerName, playerColor));
-        Debug.Log("client: "+ playerName + " created. Player Number " + representativePlayers.Count);
-    }
-
     public static void createOwnClientPlayer(int playerID)
     {
         ownClientPlayer = new OwnClientPlayer(playerID);
@@ -223,18 +215,6 @@ public class GameController : MonoBehaviour
     {
         Debug.Log("NextPlayer in GameController is called");
         clientRequest.requestEndTurn();
-
-        int cache = currentPlayer;
-        if (currentPlayer == representativePlayers.Count - 1)
-        {
-            currentPlayer = 0;
-        }
-        else
-        {
-            currentPlayer++;
-        }
-
-        PlayerRepresentation.showNextPlayer(cache,currentPlayer);
     }
 
     private void ChangeRessourcesOutput(ServerPlayer player)

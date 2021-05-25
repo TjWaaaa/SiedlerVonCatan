@@ -28,21 +28,6 @@ namespace Networking.ServerSide
             possibleColors.Push(Color.blue);
             possibleColors.Push(Color.red);
         }    
-
-        public void generatePlayer(int playerId)
-        {
-            ServerPlayer newPlayer = new ServerPlayer(playerId);
-            
-            // only for testing
-            newPlayer.setResourceAmount(RESOURCETYPE.SHEEP,10);
-            newPlayer.setResourceAmount(RESOURCETYPE.WOOD,10);
-            newPlayer.setResourceAmount(RESOURCETYPE.BRICK,10);
-            newPlayer.setResourceAmount(RESOURCETYPE.ORE,10);
-            newPlayer.setResourceAmount(RESOURCETYPE.WHEAT,10);
-            
-            allPlayer.Add(playerId,newPlayer);
-            playerAmount++;
-        }
     
     // Here come all handling methods
         public void handleRequestJoinLobby(Packet clientPacket, int currentClientID)
@@ -176,10 +161,18 @@ namespace Networking.ServerSide
         //         i++;
         //     }
         // }
-
+        
         public void generatePlayer(int playerId)
         {
             ServerPlayer newPlayer = new ServerPlayer(playerId);
+            
+            // only for testing
+            newPlayer.setResourceAmount(RESOURCETYPE.SHEEP,10);
+            newPlayer.setResourceAmount(RESOURCETYPE.WOOD,10);
+            newPlayer.setResourceAmount(RESOURCETYPE.BRICK,10);
+            newPlayer.setResourceAmount(RESOURCETYPE.ORE,10);
+            newPlayer.setResourceAmount(RESOURCETYPE.WHEAT,10);
+            
             allPlayer.Add(playerId,newPlayer);
             playerAmount++;
         }

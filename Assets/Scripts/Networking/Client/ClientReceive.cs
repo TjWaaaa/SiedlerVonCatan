@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Generic;
 using Enums;
 using Newtonsoft.Json.Linq;
 using Networking.Interfaces;
@@ -9,6 +10,7 @@ using UnityEngine.UI;
 using Networking.Package;
 using Networking.Communication;
 using Player;
+using UI;
 
 namespace Networking.ClientSide
 {
@@ -19,8 +21,11 @@ namespace Networking.ClientSide
         private PrefabFactory prefabFactory;
         private GameObject scrollViewContent;
 
-        private RepresentativePlayer[] representativePlayerArray;
+        //private RepresentativePlayer[] representativePlayerArray;
+        public static List<RepresentativePlayer> representativePlayers = new List<RepresentativePlayer>();
         private int playerNumber = 1;
+
+        private int currentPlayer = 0;
         private Hexagon[][] gameBoard;
 
         private Scene currentScene;
@@ -110,7 +115,8 @@ namespace Networking.ClientSide
                         GameController.createOwnClientPlayer(currentPlayerID);
                     }
                     listItem.name = currentPlayerID.ToString();
-                    GameController.createRepresentativePlayer(currentPlayerID, playerName, playerColor);
+                    representativePlayers.Add( new RepresentativePlayer(currentPlayerID, playerName, playerColor));
+                    Debug.Log("client: "+ playerName + " created. Player Number " + representativePlayers.Count);
                 }
                 else // List entry does already exist --> update name and color 
                 {
@@ -161,7 +167,6 @@ namespace Networking.ClientSide
         {
             AsyncOperation asyncLoadLevel = SceneManager.LoadSceneAsync("2_GameScene");
             gameBoard = serverPacket.gameBoard;
-            representativePlayerArray = serverPacket.representativePlayerArray;
             Debug.Log("Client: Sie haben ein Spielbrett erhalten :)");
         }
 
@@ -199,6 +204,17 @@ namespace Networking.ClientSide
         {
             Debug.Log("New Round iniciated");
             // Show new currentPlayer
+            int cache = currentPlayer;
+            if (currentPlayer == representativePlayers.Count - 1)
+            {
+                currentPlayer = 0;
+            }
+            else
+            {
+                currentPlayer++;
+            }
+
+            PlayerRepresentation.showNextPlayer(cache,currentPlayer);
             // Render dice rolling
             GameObject.FindGameObjectWithTag("diceHolder").GetComponent<RenderRollDices>().renderRollDices(serverPacket.diceResult);
             // Render gained ressources
