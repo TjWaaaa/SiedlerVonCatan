@@ -37,7 +37,7 @@ public class RenderRollDices : MonoBehaviour
         TimeYield();
         Debug.Log("Behind the TimeYieldCall");
     }
-
+    
     public IEnumerator TimeYield()
     {
         Debug.Log("TimeYield Function is called");

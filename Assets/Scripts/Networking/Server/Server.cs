@@ -16,7 +16,7 @@ namespace Networking.ServerSide
         private static Socket serverSocket;
         private static Dictionary<int, Socket> socketPlayerData;  //serves to store all sockets with playerID
         // private static readonly List<Socket> clientSockets = new List<Socket>(); //serves to store all sockets
-        private const int BUFFER_SIZE = 2048;
+        private const int BUFFER_SIZE = 64000;
         private const int PORT = 50042; //freely selectable
         private static byte[] buffer;
         public static IPAddress serverIP { get; private set; }
@@ -70,38 +70,49 @@ namespace Networking.ServerSide
         /// </summary>
         /// <param name="AR">IAsyncResult</param>
         private static void AcceptCallback(IAsyncResult AR) {
-            Socket clientSocket;
             
-            try {
-                clientSocket = serverSocket.EndAccept(AR); //accepts clients connection attempt, returns client socket
-            } catch (ObjectDisposedException e) 
+            // necessary to log errors that occur in the side thread
+            try
             {
-                Debug.LogError("Server: ObjectDisposedException. Client disconnected?" + e.Message);
-                return;
+                Socket clientSocket;
+            
+                try
+                {
+                    clientSocket = serverSocket.EndAccept(AR); //accepts clients connection attempt, returns client socket
+                }
+                catch (ObjectDisposedException e) 
+                {
+                    Debug.LogError("Server: ObjectDisposedException. Client disconnected?" + e.Message);
+                    return;
+                }
+                
+                // generate a new random client ID
+                int newClientID;
+                Random random = new Random();
+                bool validClientID = false;
+                do
+                {
+                    newClientID = random.Next(100);
+                    validClientID = !socketPlayerData.ContainsKey(newClientID);  
+                } while (!validClientID);
+
+                //todo: tell server logic the clients ID
+                serverGameLogic.generatePlayer(newClientID);
+                socketPlayerData.Add(newClientID, clientSocket); //save client to socket list
+                Debug.Log($"Server: client (id: {newClientID}) stored in dictionary");
+                
+                
+                clientSocket.BeginReceive(buffer, 0, BUFFER_SIZE, SocketFlags.None, ReceiveCallback, new object[] {clientSocket, newClientID}); // open "chanel" to recieve data from the connected socket
+                Debug.Log($"Server: Client {clientSocket.RemoteEndPoint} connected, waiting for request...");
+
+                //RepresentJoinigClients.representNewPlayer();
+                serverSocket.BeginAccept(AcceptCallback, null); //begins waiting for client connection attempts
             }
-
-            // generate a new random client ID
-            int newClientID;
-            Random random = new Random();
-            bool validClientID = false;
-            do
+            catch (Exception e)
             {
-                newClientID = random.Next(100);
-                validClientID = !socketPlayerData.ContainsKey(newClientID);  
-            } while (!validClientID);
-
-            //todo: tell server logic the clients ID
-            serverGameLogic.generatePlayer(newClientID);
-            socketPlayerData.Add(newClientID, clientSocket); //save client to socket list
-            Debug.Log($"Server: client (id: {newClientID}) stored in dictionary");
-            
-            
-            clientSocket.BeginReceive(buffer, 0, BUFFER_SIZE, SocketFlags.None, ReceiveCallback, new object[] {clientSocket, newClientID}); // open "chanel" to recieve data from the connected socket
-            Debug.Log($"Server: Client {clientSocket.RemoteEndPoint} connected, waiting for request...");
-            
-            //RepresentJoinigClients.representNewPlayer();
-            
-            serverSocket.BeginAccept(AcceptCallback, null); //begins waiting for client connection attempts
+                Debug.Log(e);
+                throw;
+            }
         }
 
         
@@ -111,6 +122,7 @@ namespace Networking.ServerSide
         /// <param name="AR">IAsyncResult</param>
         private static void sendCallback(IAsyncResult AR)
         {
+            Debug.Log("IAsyncResult: " + AR);
             serverSocket.EndSend(AR);
         }
 
@@ -165,7 +177,7 @@ namespace Networking.ServerSide
         /// <param name="dataString">Data to send</param>
         public static void sendDataToOne(int playerID, Packet data)
         {
-            data.playerNumber = playerID;
+            data.myPlayerID = playerID;
             string dataString = PacketSerializer.objectToJsonString(data);
             byte[] dataToSend = Encoding.ASCII.GetBytes(dataString);
             socketPlayerData[playerID].BeginSend(dataToSend, 0, dataToSend.Length, SocketFlags.None, sendCallback, serverSocket);
@@ -184,7 +196,7 @@ namespace Networking.ServerSide
             {
                 if(id != playerID)
                 {
-                    data.playerNumber = playerID;
+                    data.myPlayerID = playerID;
                     string dataString = PacketSerializer.objectToJsonString(data);
                     byte[] dataToSend = Encoding.ASCII.GetBytes(dataString);
                     socketPlayerData[id].BeginSend(dataToSend, 0, dataToSend.Length, SocketFlags.None, sendCallback, serverSocket);
@@ -201,7 +213,7 @@ namespace Networking.ServerSide
         {
             foreach (int id in socketPlayerData.Keys)
             {
-                data.playerNumber = id;
+                data.myPlayerID = id;
                 string dataString = PacketSerializer.objectToJsonString(data);
                 byte[] dataToSend = Encoding.ASCII.GetBytes(dataString);
                 socketPlayerData[id].BeginSend(dataToSend, 0, dataToSend.Length, SocketFlags.None, sendCallback, serverSocket);
