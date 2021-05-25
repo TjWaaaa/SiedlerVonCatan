@@ -204,7 +204,7 @@ namespace Networking.ClientSide
 
         public void handleAccpetBeginRound(Packet serverPacket)
         {
-            Debug.Log("New Round iniciated");
+            Debug.Log("New Round initiated");
             // Show new currentPlayer
             int cache = currentPlayer;
             if (currentPlayer == representativePlayers.Count - 1)
@@ -254,7 +254,8 @@ namespace Networking.ClientSide
             foreach(RepresentativePlayer rp in representativePlayers)
             {
                 rp.updateNumbers(serverPacket.updateRP[i]);
-                i++;
+                PlayerRepresentation.updateUiPR(i);
+                i++;   
             }
         }
         

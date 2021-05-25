@@ -33,9 +33,7 @@ namespace UI
                 GameObject.Find("Player" + (player +1)+ "/PlayerRepresentation/PlayerName").GetComponent<TextMeshProUGUI>().text = ClientGameLogic.representativePlayers[player].getPlayerName();
                 GameObject.Find("Player" + (player +1)+ "/PlayerRepresentation/PlayerName").GetComponent<TextMeshProUGUI>().color = ClientGameLogic.representativePlayers[player].getPlayerColor();
                 Debug.Log(ClientGameLogic.representativePlayers[player] + " writed on board number "+ (player+1));
-                updateVictoryPoints(player);
-                updateTotalResourceAmount(player);
-                updateDevCardAmount(player);
+                updateUiPR(player);
             }
             
             // delete PLayerboards which aren't ingame
@@ -49,22 +47,13 @@ namespace UI
 
         
         // player = index in representativePlayers
-        public static void updateVictoryPoints(int player)
-        {
+
+        public static void updateUiPR(int player)
+        {   
+            Debug.Log("RPUi has been updated via PlayerRepresentation.cs");
             GameObject.Find("Player" + (player +1) + "/PlayerRepresentation/VictoryPoints").GetComponent<TextMeshProUGUI>().text = ClientGameLogic.representativePlayers[player].getVictoryPoints().ToString();
-
-        }
-        
-        public static void updateTotalResourceAmount(int player)
-        {
             GameObject.Find("Player" + (player +1) + "/PlayerRepresentation/TotalResourceAmount").GetComponent<TextMeshProUGUI>().text = ClientGameLogic.representativePlayers[player].getTotalResourceAmount().ToString();
-
-        }
-        
-        public static void updateDevCardAmount(int player)
-        {
             GameObject.Find("Player" + (player +1)+ "/PlayerRepresentation/DevCards").GetComponent<TextMeshProUGUI>().text = ClientGameLogic.representativePlayers[player].getDevCardAmount().ToString();
-
         }
 
         public static void showNextPlayer(int player, int nextPlayer)
