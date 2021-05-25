@@ -74,7 +74,7 @@ public class GameController : MonoBehaviour
 
         // test
         PlayerRepresentation.showNextPlayer(0,1);
-        
+
         showCurrentPlayer.GetComponent<Image>().color = players[currentPlayer].getPlayerColor();
         showCurrentPlayer.transform.GetChild(0).GetComponent<Text>().text = players[currentPlayer].getPlayerName();
         ChangeRessourcesOutput(players[currentPlayer]);

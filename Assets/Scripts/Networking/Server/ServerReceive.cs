@@ -10,7 +10,7 @@ namespace Networking.ServerSide
 {
     public class ServerGameLogic : INetworkableServer
     {
-        private readonly List<ServerPlayer> allPlayer = new List<ServerPlayer>();
+        private readonly Dictionary<int,ServerPlayer> allPlayer = new Dictionary<int, ServerPlayer>();
         private readonly Stack<Color> possibleColors = new Stack<Color>();
         private readonly ServerRequest serverRequest = new ServerRequest();
 
@@ -24,7 +24,8 @@ namespace Networking.ServerSide
 
         public void generatePlayer(int playerId)
         {
-            allPlayer.Add(new ServerPlayer(playerId));
+            ServerPlayer newPlayer = new ServerPlayer(playerId);
+            allPlayer.Add(playerId,newPlayer);
         }
 
         public int[] rollDices()
@@ -46,7 +47,7 @@ namespace Networking.ServerSide
             // alle lobby daten zurücksenden
 
             ArrayList allPlayerInformation = new ArrayList();
-            foreach (var player in allPlayer)
+            foreach (var player in allPlayer.Values)
             {
                 if (player.getPlayerID() == currentClientID)
                 {
@@ -72,7 +73,7 @@ namespace Networking.ServerSide
         
             bool runGame = true;
         
-            foreach (ServerPlayer player in allPlayer)
+            foreach (ServerPlayer player in allPlayer.Values)
             {
                 if (player.getPlayerID() == currentClientID)
                 {
