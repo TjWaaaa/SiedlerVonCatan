@@ -116,6 +116,7 @@ namespace Networking.ServerSide
             }
             else
             {
+                serverRequest.notifyRejection(currentServerPlayer.getPlayerID(),"You don't have enough resources");
                 Debug.Log("not enough resources");
             }
         }
