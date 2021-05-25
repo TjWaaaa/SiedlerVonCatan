@@ -85,9 +85,9 @@ public class GameController : MonoBehaviour
                     {
 
                         Debug.Log("Village: " + hit.transform.position);
-                        if (players[currentPlayer].canBuyVillage())
+                        if (players[currentPlayer].canBuyBuyable(BUYABLES.VILLAGE)) // clientGameLogic.requestBuild
                         {
-
+                        
                             //Color color = players[currentPlayer].GetColor();
                             BuildVillage(hit.transform.position + new Vector3(0, 0.065f, 0));
                             Destroy(hit.transform.gameObject);
@@ -101,7 +101,7 @@ public class GameController : MonoBehaviour
                     {
 
                         Debug.Log("City: " + hit.transform.position);
-                        if (players[currentPlayer].canBuyCity())
+                        if (players[currentPlayer].canBuyBuyable(BUYABLES.CITY))
                         {
 
                             //Color color = players[currentPlayer].GetColor();
@@ -117,7 +117,7 @@ public class GameController : MonoBehaviour
                     {
 
                         Debug.Log("Road: " + hit.transform.position);
-                        if (players[currentPlayer].canBuyStreet())
+                        if (players[currentPlayer].canBuyBuyable(BUYABLES.ROAD))
                         {
 
                             //Color color = players[currentPlayer].GetColor();
