@@ -61,13 +61,8 @@ public class GameController : MonoBehaviour
             new ServerPlayer("Player1", Color.red),
             new ServerPlayer("Player2", Color.blue)
         };
-
-        // Only for testing. This stuff should come from server
-        ownClientPlayer.setResourceAmount(RESOURCETYPE.SHEEP,10);
-        ownClientPlayer.setResourceAmount(RESOURCETYPE.WOOD,10);
-        ownClientPlayer.setResourceAmount(RESOURCETYPE.BRICK,10);
-        ownClientPlayer.setResourceAmount(RESOURCETYPE.ORE,10);
-        ownClientPlayer.setResourceAmount(RESOURCETYPE.WHEAT,10);
+        
+       
         
 
         currentPlayer = 0;

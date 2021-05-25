@@ -30,7 +30,8 @@ namespace Trade
         void Start()
         {
 
-            //Find all buttons and add EventListener
+            // find all buttons and add EventListener
+            
             startTradeButton = GameObject.Find("startTrade");
             closeTradeButton = GameObject.Find("closeTrade");
             trade = GameObject.Find("trade");
@@ -43,7 +44,8 @@ namespace Trade
             foreach (GameObject button in offerResources) { button.GetComponent<Button>().onClick.AddListener(delegate { offerResource(button); }); }
             foreach (GameObject button in expectResources) { button.GetComponent<Button>().onClick.AddListener(delegate { expectResource(button); }); }
 
-            //Inactive by default
+            // inactive by default
+            
             gameObject.SetActive(false);
             active = false;
 
@@ -51,7 +53,7 @@ namespace Trade
 
         private void Update()
         {
-            //only for now. Later there should be a better way to get the currentPlayer
+            // only for now. Later there should be a better way to get the currentPlayer
             currentPlayer = GameController.getPlayers()[GameController.getCurrentPlayer()];
         }
 

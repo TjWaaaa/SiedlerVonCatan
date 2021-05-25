@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using Enums;
 using Networking.Communication;
 using UnityEngine;
 using Networking.Interfaces;
@@ -29,6 +30,14 @@ namespace Networking.ServerSide
         public void generatePlayer(int playerId)
         {
             ServerPlayer newPlayer = new ServerPlayer(playerId);
+            
+            // only for testing
+            newPlayer.setResourceAmount(RESOURCETYPE.SHEEP,10);
+            newPlayer.setResourceAmount(RESOURCETYPE.WOOD,10);
+            newPlayer.setResourceAmount(RESOURCETYPE.BRICK,10);
+            newPlayer.setResourceAmount(RESOURCETYPE.ORE,10);
+            newPlayer.setResourceAmount(RESOURCETYPE.WHEAT,10);
+            
             allPlayer.Add(playerId,newPlayer);
             playerAmount++;
         }
