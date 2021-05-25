@@ -5,16 +5,21 @@ using PlayerColor;
 
 public class Node
 {
-    
+    private int posInArray;
     private int[,] adjacentHexagonsPos = new int[3, 3];
     private int[] adjacentNodesPos = new int[3];
     private int[] adjacentEdgesPos = new int[3];
     private PLAYERCOLOR occupant = PLAYERCOLOR.NONE;
     private BUILDING_TYPE buildingType = BUILDING_TYPE.NONE;
 
-    public Node()
+    public Node(int posInArray)
     {
         
+    }
+
+    public int getPosInArray()
+    {
+        return posInArray;
     }
 
     public void setAdjacentHexagonPos(int hexagonPosX, int hexagonPosY, int index)
