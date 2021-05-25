@@ -72,6 +72,7 @@ public class GameController : MonoBehaviour
 
         currentPlayer = 0;
 
+        // test
         PlayerRepresentation.showNextPlayer(0,1);
         
         showCurrentPlayer.GetComponent<Image>().color = players[currentPlayer].getPlayerColor();

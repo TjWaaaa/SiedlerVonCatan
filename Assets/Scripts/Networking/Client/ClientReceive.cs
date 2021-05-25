@@ -90,7 +90,6 @@ namespace Networking.ClientSide
                 else // List entry does already exist --> update name and color 
                 {
                     listItem.transform.Find("Player").GetComponent<Text>().text = playerName;
-                    listItem.transform.Find("Player").GetComponent<Text>().color = playerColor;
                 }
             }
             catch (Exception e)
