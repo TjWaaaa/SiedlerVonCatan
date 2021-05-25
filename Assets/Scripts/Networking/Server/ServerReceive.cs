@@ -106,6 +106,9 @@ namespace Networking.ServerSide
         public void handleBuild(Packet clientPacket)
         {
             ServerPlayer currentServerPlayer = allPlayer.ElementAt(currentPlayer).Value;
+            BUYABLES buildingType = (BUYABLES) clientPacket.buildType;
+            int posInArray = clientPacket.buildID;
+            
             
             if (currentServerPlayer.canBuyBuyable((BUYABLES)clientPacket.buildType))
             {

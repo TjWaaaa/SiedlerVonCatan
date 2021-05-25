@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -83,19 +84,22 @@ public class GameController : MonoBehaviour
 
                     if (hit.collider.tag == "VillageSlot")
                     {
-                        //  hit.ge
+                        int posInArray = Int32.Parse(hit.transform.name);
                         
-                        Debug.Log("Village: " + hit.transform.position);
-                        if (players[currentPlayer].canBuyBuyable(BUYABLES.VILLAGE)) // clientGameLogic.requestBuild
-                        {
-                        
-                            //Color color = players[currentPlayer].GetColor();
-                            BuildVillage(hit.transform.position + new Vector3(0, 0.065f, 0));
-                            Destroy(hit.transform.gameObject);
-                            players[currentPlayer].buyVillage();
-                            ChangeRessourcesOutput(players[currentPlayer]);
-                        }
-                        else Debug.Log("Not enough ressources");
+                        clientRequest.requestBuild(BUYABLES.VILLAGE, posInArray);
+                            
+                            
+                    //     Debug.Log("Village: " + hit.transform.position);
+                    //     if (players[currentPlayer].canBuyBuyable(BUYABLES.VILLAGE)) // clientGameLogic.requestBuild
+                    //     {
+                    //     
+                    //         //Color color = players[currentPlayer].GetColor();
+                    //         BuildVillage(hit.transform.position + new Vector3(0, 0.065f, 0));
+                    //         Destroy(hit.transform.gameObject);
+                    //         players[currentPlayer].buyVillage();
+                    //         ChangeRessourcesOutput(players[currentPlayer]);
+                    //     }
+                    //     else Debug.Log("Not enough ressources");
                     }
 
                     else if (hit.collider.tag == "Village")
