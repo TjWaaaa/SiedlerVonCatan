@@ -4,7 +4,7 @@ namespace Player
 {
     public class RepresentativePlayer
     {
-        private int playerID;
+        public int playerID;
         private string playerName;
         private Color playerColor;
         
@@ -46,23 +46,18 @@ namespace Player
         {
             return devCardAmount;
         }
+
+        public int getPlayerID()
+        {
+            return playerID;
+        }
         
         // setter
-        
-        public void setVictoryPoints(int victoryPoints)
+        public void updateNumbers(int[] updates)
         {
-            this.victoryPoints = victoryPoints;
+            victoryPoints = updates[0];
+            totalResourceAmount = updates[1];
+            devCardAmount = updates[2];
         }
-        
-        public void setTotalResourceAmount(int totalResourceAmount)
-        {
-            this.totalResourceAmount = totalResourceAmount;
-        }
-        
-        public void setDevCardAmount(int devCardAmount)
-        {
-            this.devCardAmount = devCardAmount;
-        }
-
     }
 }

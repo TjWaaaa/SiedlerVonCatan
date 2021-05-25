@@ -36,6 +36,6 @@ namespace Networking.Package
         
         public string errorMessage { get; set; } // when client request is rejected
 
-        public RepresentativePlayer[] representativePlayerArray{get; set;}
+        public int[][] updateRP { get; set; }
     }
 }

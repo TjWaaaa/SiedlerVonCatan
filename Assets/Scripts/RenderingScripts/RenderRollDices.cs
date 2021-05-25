@@ -35,7 +35,6 @@ public class RenderRollDices : MonoBehaviour
         Debug.Log(diceNumbers[0] + " " + diceNumbers[1]);
         StartCoroutine(TimeYield());
         TimeYield();
-        Debug.Log("Behind the TimeYieldCall");
     }
     
     public IEnumerator TimeYield()

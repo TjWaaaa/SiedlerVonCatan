@@ -269,6 +269,13 @@ namespace Networking.ClientSide
                         });
                         break;
 
+                    case (int) COMMUNICATION_METHODS.HANDLE_UPDATE_RP:
+                        ThreadManager.executeOnMainThread(() =>
+                        {  
+                            clientGameLogic.handleUpdateRP(incomingData);
+                        });
+                        break;
+
                     default:
                         Debug.LogWarning($"there was no target method send, invalid data packet. Packet Type: {incomingData.type}");
                         // TODO: trow exception!!!

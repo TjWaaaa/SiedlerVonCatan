@@ -245,6 +245,16 @@ namespace Networking.ClientSide
             throw new System.NotImplementedException();
         }
 
+        public void handleUpdateRP(Packet serverPacket)
+        {   
+            Debug.Log("handleUpdateRP in Client has been called");
+            int i = 0;
+            foreach(RepresentativePlayer rp in representativePlayers)
+            {
+                rp.updateNumbers(serverPacket.updateRP[i]);
+                i++;
+            }
+        }
         
     }
 }

@@ -151,5 +151,16 @@ namespace Networking.Communication
             // send to all
             Server.sendDataToAll(packet);
         }
+
+        public void updateRepPlayers(int[][] updateNumbers)
+        {
+            Debug.Log("ServerRequest updateRPPacket");
+            Packet packet = new Packet();
+            packet.type = (int) COMMUNICATION_METHODS.HANDLE_UPDATE_RP;
+            packet.updateRP = updateNumbers;
+
+            // send to all
+            Server.sendDataToAll(packet);
+        }
     }
 }

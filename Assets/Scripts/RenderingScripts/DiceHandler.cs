@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class DiceHandler : MonoBehaviour
 {
@@ -69,6 +70,7 @@ public class DiceHandler : MonoBehaviour
     {
         dice.enabled = false;
         diceNumber = -1;
-        Debug.Log(dice.enabled + "   " +  diceNumber);
+        Debug.Log("Animating: " + dice.enabled);
+        Debug.Log(gameObject.GetComponent<Image>().sprite);
     }
 }
