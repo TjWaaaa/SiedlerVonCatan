@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using Enums;
 using Newtonsoft.Json.Linq;
 using Networking.Interfaces;
@@ -130,13 +131,21 @@ namespace Networking.ClientSide
 
         public void handleGameStartInitialize(Packet serverPacket)
         {
-            SceneManager.LoadScene("2_GameScene");
-            Hexagon[][] gameBoard = serverPacket.gameBoard;
-
-            GetComponent<BoardGenerator>().instantiateGameBoard(gameBoard);
+            AsyncOperation asyncLoadLevel = SceneManager.LoadSceneAsync("2_GameScene");
             
+            Hexagon[][] gameBoard = serverPacket.gameBoard;
+            StartCoroutine(TimeYield(gameBoard));
+            TimeYield(gameBoard);
+
             Debug.Log("Client: Sie haben ein Spielbrett erhalten :)");
         }
+        
+        public IEnumerator TimeYield(Hexagon[][] gameBoard)
+        {
+            yield return new WaitForSeconds(5);
+            GetComponent<BoardGenerator>().instantiateGameBoard(gameBoard);
+        }
+
 
         public void handleObjectPlacement(Packet serverPacket)
         {

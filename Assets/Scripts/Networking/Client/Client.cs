@@ -31,7 +31,8 @@ namespace Networking.ClientSide
             // instantiate a ClientGameLogic object
             var gameLogicObject = new GameObject();
             gameLogicObject.AddComponent<ClientGameLogic>();
-            clientGameLogic = GameObject.Instantiate(gameLogicObject).GetComponent<ClientGameLogic>();
+            gameLogicObject.AddComponent<BoardGenerator>();
+            clientGameLogic = gameLogicObject.GetComponent<ClientGameLogic>();
                         
             buffer = new byte[BUFFER_SIZE];
             clientSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
