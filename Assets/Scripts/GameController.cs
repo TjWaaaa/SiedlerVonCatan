@@ -68,11 +68,7 @@ public class GameController : MonoBehaviour
         currentPlayer = 0;
 
         // test
-        PlayerRepresentation.showNextPlayer(0,1);
-
-        showCurrentPlayer.GetComponent<Image>().color = players[currentPlayer].getPlayerColor();
-        showCurrentPlayer.transform.GetChild(0).GetComponent<Text>().text = players[currentPlayer].getPlayerName();
-        ChangeRessourcesOutput(players[currentPlayer]);
+        // PlayerRepresentation.showNextPlayer(0,1);
     }
 
     // Update is called once per frame
@@ -228,7 +224,8 @@ public class GameController : MonoBehaviour
         Debug.Log("NextPlayer in GameController is called");
         clientRequest.requestEndTurn();
 
-        if (currentPlayer == players.Length - 1)
+        int cache = currentPlayer;
+        if (currentPlayer == representativePlayers.Count - 1)
         {
             currentPlayer = 0;
         }
@@ -237,9 +234,7 @@ public class GameController : MonoBehaviour
             currentPlayer++;
         }
 
-        showCurrentPlayer.GetComponent<Image>().color = players[currentPlayer].getPlayerColor();
-        showCurrentPlayer.transform.GetChild(0).GetComponent<Text>().text = players[currentPlayer].getPlayerName();
-        ChangeRessourcesOutput(players[currentPlayer]);
+        PlayerRepresentation.showNextPlayer(cache,currentPlayer);
     }
 
     private void ChangeRessourcesOutput(ServerPlayer player)

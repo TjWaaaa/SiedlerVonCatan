@@ -194,5 +194,11 @@ namespace Player
             resources[RESOURCETYPE.WHEAT] -= 1;
             resources[RESOURCETYPE.SHEEP] -= 1;
         }
+
+        // public int[] convertFromSPToRP()
+        // {
+
+        //     return int[]
+        // }
     }
 }

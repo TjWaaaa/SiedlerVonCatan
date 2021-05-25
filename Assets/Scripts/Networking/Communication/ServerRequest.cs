@@ -6,8 +6,7 @@ using Networking.ServerSide;
 using Enums;
 using System;
 using System.Collections.Generic;
-
-
+using Player;
 
 namespace Networking.Communication
 {
@@ -28,7 +27,7 @@ namespace Networking.Communication
             Packet packet = new Packet();
             packet.type = (int) COMMUNICATION_METHODS.HANDLE_GAMESTART_INITIALIZE;
             packet.gameBoard = gameBoard;
-            
+
             // send to all
             Server.sendDataToAll(packet);
         }

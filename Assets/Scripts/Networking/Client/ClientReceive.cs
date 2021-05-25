@@ -8,6 +8,7 @@ using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using Networking.Package;
 using Networking.Communication;
+using Player;
 
 namespace Networking.ClientSide
 {
@@ -17,8 +18,9 @@ namespace Networking.ClientSide
 
         private PrefabFactory prefabFactory;
         private GameObject scrollViewContent;
+
+        private RepresentativePlayer[] representativePlayerArray;
         private int playerNumber = 1;
-        private readonly ClientRequest clientRequest = new ClientRequest();
         private Hexagon[][] gameBoard;
 
         private Scene currentScene;
@@ -159,7 +161,7 @@ namespace Networking.ClientSide
         {
             AsyncOperation asyncLoadLevel = SceneManager.LoadSceneAsync("2_GameScene");
             gameBoard = serverPacket.gameBoard;
-
+            representativePlayerArray = serverPacket.representativePlayerArray;
             Debug.Log("Client: Sie haben ein Spielbrett erhalten :)");
         }
 
@@ -198,8 +200,7 @@ namespace Networking.ClientSide
             Debug.Log("New Round iniciated");
             // Show new currentPlayer
             // Render dice rolling
-            diceHolder = GameObject.FindGameObjectWithTag("diceHolder");
-            diceHolder.GetComponent<RenderRollDices>().renderRollDices(serverPacket.diceResult);
+            GameObject.FindGameObjectWithTag("diceHolder").GetComponent<RenderRollDices>().renderRollDices(serverPacket.diceResult);
             // Render gained ressources
         }
 
