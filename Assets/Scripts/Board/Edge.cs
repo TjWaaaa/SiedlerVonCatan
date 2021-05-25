@@ -2,14 +2,13 @@ using PlayerColor;
 
 public class Edge
 {
-    private int posInArray;
     private int[] adjacentNodesPos = new int[2];
     private int[] adjacentEdgesPos = new int[4];
     private PLAYERCOLOR occupant = PLAYERCOLOR.NONE;
 
-    public Edge(int posInArray)
+    public Edge()
     {
-        this.posInArray = posInArray;
+
     }
 
     public void setAdjacentNodePos(int nodePos, int index)

@@ -87,7 +87,7 @@ public class GameController : MonoBehaviour
                         Debug.Log("Village: " + hit.transform.position);
                         if (players[currentPlayer].canBuyVillage())
                         {
-                            
+
                             //Color color = players[currentPlayer].GetColor();
                             BuildVillage(hit.transform.position + new Vector3(0, 0.065f, 0));
                             Destroy(hit.transform.gameObject);
