@@ -11,6 +11,8 @@ namespace Networking.ServerSide
     public class ServerGameLogic : INetworkableServer
     {
         private readonly List<ServerPlayer> allPlayer = new List<ServerPlayer>();
+        private int playerAmount = 0;
+        private int currentPlayer = 0;
         private readonly Stack<Color> possibleColors = new Stack<Color>();
         private readonly ServerRequest serverRequest = new ServerRequest();
 
@@ -25,24 +27,13 @@ namespace Networking.ServerSide
         public void generatePlayer(int playerId)
         {
             allPlayer.Add(new ServerPlayer(playerId));
+            playerAmount++;
         }
-
-        public int[] rollDices()
-        {
-            Debug.Log("handleBeginRound has been called");
-            int[] diceNumbers = new int[2];
-            // diceNumbers[0] = (int)Random.Range(1,7);
-            // diceNumbers[1] = (int)Random.Range(1,7);
-
-            System.Random r = new System.Random();
-            diceNumbers[0] = r.Next(1,7);
-            diceNumbers[1] = r.Next(1,7);
-            return diceNumbers;
-        }
-
+    
+    // Here come all handling methods
         public void handleRequestJoinLobby(Packet clientPacket, int currentClientID)
         {
-            // ankommender spieler: name setzten + farbe zuweisen
+            // ankommender spieler: name setzen + farbe zuweisen
             // alle lobby daten zurücksenden
 
             ArrayList allPlayerInformation = new ArrayList();
@@ -130,6 +121,15 @@ namespace Networking.ServerSide
 
         public void handleEndTurn(Packet clientPacket)
         {
+            // Change currentPlayer
+            if (currentPlayer == playerAmount-1)
+            {
+                currentPlayer = 0;
+            }
+            else
+            {
+                currentPlayer++;
+            }
             // TODO change method call => handleBeginRound should only be called after the new player is already set and all have been notified
             Debug.Log("handleEndTurn has been called");
             handleBeginRound(clientPacket);
@@ -139,6 +139,17 @@ namespace Networking.ServerSide
         {
             throw new System.NotImplementedException();
         }
-        
+
+    // Here come all the Logical methods
+        public int[] rollDices()
+        {
+            Debug.Log("Dices are being rolled");
+            System.Random r = new System.Random();
+            int[] diceNumbers = new int[2];
+            diceNumbers[0] = r.Next(1,7);
+            diceNumbers[1] = r.Next(1,7);
+            Debug.Log($"Dice value 1: {diceNumbers[0]} // Dice value 2: {diceNumbers[1]}");
+            return diceNumbers;
+        }
     }
 }

@@ -140,6 +140,9 @@ namespace Networking.ClientSide
 
         public void handleObjectPlacement(Packet serverPacket)
         {
+            // Render the new Object
+            // Update Resources displayed for own player if you are the one who placed it
+            // Update the currentPlayers amount of cards
             throw new System.NotImplementedException();
         }
 
@@ -150,6 +153,8 @@ namespace Networking.ClientSide
 
         public void handleVictory(Packet serverPacket)
         {
+            // Show victorious Player
+            // Load the post game Scene or Lobby so a new game can be started
             throw new System.NotImplementedException();
         }
 
@@ -165,11 +170,12 @@ namespace Networking.ClientSide
 
         public void handleAccpetBeginRound(Packet serverPacket)
         {
-            Debug.Log("handleAcceptBeginRound has been called");
+            Debug.Log("New Round iniciated");
+            // Show new currentPlayer
+            // Render dice rolling
             diceHolder = GameObject.FindGameObjectWithTag("diceHolder");
-            Debug.Log(diceHolder.name + " diceHolder object");
             diceHolder.GetComponent<RenderRollDices>().renderRollDices(serverPacket.diceResult);
-            Debug.Log(serverPacket.diceResult);
+            // Render gained ressources
         }
 
         public void handleAcceptTradeBank(Packet serverPacket)
