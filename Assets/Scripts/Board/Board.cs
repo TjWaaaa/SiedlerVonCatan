@@ -66,9 +66,7 @@ public class Board
         nodes = initializeNodes();
         edges = initializeEdges();
         hexagons = initializeHexagons();
-        testNeighbors();
         checkPlacementConstraints();
-        testNeighbors();
         assignNeighborsToHexagons();
         assignNeighborsToNodes();
         assignNeighborsToEdges();
@@ -84,35 +82,11 @@ public class Board
         nodes = initializeNodes();
         edges = initializeEdges();
         hexagons = initializeHexagons();
-        testNeighbors();
         checkPlacementConstraints();
-        testNeighbors();
-    }
-    /// <summary>
-    /// delete this method, its just for testing
-    /// </summary>
-    public void testNeighbors()
-    {
-        string test = "";
-        test += "\n";
-        for (int row = 1; row < hexagons.Length - 1; row++)
-        {
-            for (int col = 1; col < hexagons[row].Length - 1; col++)
-            {
-                Hexagon hex = hexagons[row][col];
-                if (hex != null && hex.isLand())
-                {
-                    test += Convert.ToString(hex.getFieldNumber()) + "|";
-                }
-
-            }
-            test += "\n";
-        }
-        Debug.Log(test);
     }
 
     /// <summary>
-    /// creates a 7x7 array of Hexagons with randomly placed hexagon_Types and hexagonNumbers
+    /// creates an array of Hexagons with randomly placed hexagon_Types and hexagonNumbers
     /// </summary>
     /// <returns>returns the array</returns>
     private Hexagon[][] initializeHexagons()
