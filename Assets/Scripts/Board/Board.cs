@@ -4,14 +4,12 @@ using System.IO;
 using System.Linq;
 using Enums;
 using PlayerColor;
-using UnityEngine;
-using UnityEngine;
 
 public class Board
 {
-    private Hexagon[][] hexagons;
-    private Node[] nodes = new Node[54];
-    private Edge[] edges = new Edge[72];
+    private Hexagon[][] hexagonsArray;
+    private Node[] nodesArray = new Node[54];
+    private Edge[] edgesArray = new Edge[72];
     private Stack<int> numberStack;
 
     private Hexagon[][] hexagonDiceNumbers =
@@ -79,9 +77,9 @@ public class Board
     public Board(Stack<int> numberStack)
     {
         this.numberStack = numberStack;
-        nodes = initializeNodes();
-        edges = initializeEdges();
-        hexagons = initializeHexagons();
+        initializeNodes();
+        initializeEdges();
+        initializeHexagons();
         checkPlacementConstraints();
     }
 
@@ -120,9 +118,9 @@ public class Board
                         hexagons[row][col] = newHexagon;
 
                         // adds Hexagon to empty slot in array
-                        for (int i = 0; i < hexagonDiceNumbers[fieldNumber-2].Length; i++)
+                        for (int i = 0; i < hexagonDiceNumbers[fieldNumber - 2].Length; i++)
                         {
-                            hexagonDiceNumbers[fieldNumber-2][i] ??= newHexagon;  // only adds Hexagon to slot if slot empty
+                            hexagonDiceNumbers[fieldNumber - 2][i] ??= newHexagon;  // only adds Hexagon to slot if slot empty
                         }
                         break;
                     case 3:
@@ -155,7 +153,7 @@ public class Board
     {
         return new Stack<int>(array.OrderBy(n => Guid.NewGuid()).ToArray());
     }
-    
+
     private void initializeNodes()
     {
         for (int i = 0; i < 54; i++)
@@ -184,9 +182,9 @@ public class Board
             for (int col = 0; col < boardConfig[row].Length; col++)
             {
                 // continue if there is no hexagon at given index
-                if (hexagons[row][col] == null) continue;
+                if (hexagonsArray[row][col] == null) continue;
 
-                Hexagon currentHexagon = hexagons[row][col];
+                Hexagon currentHexagon = hexagonsArray[row][col];
 
                 // give all neighbors a hexagon needs to know
                 string line = file.ReadLine();
@@ -213,7 +211,7 @@ public class Board
         StreamReader nodesFile = new StreamReader(path + "AdjacentNodesToNodes.txt");
         StreamReader edgesFile = new StreamReader(path + "AdjacentEdgesToNodes.txt");
 
-        foreach (Node currentNode in nodes)
+        foreach (Node currentNode in nodesArray)
         {
             string[] nHexagons = hexagonsFile.ReadLine().Split(',');
             string[] nNodes = nodesFile.ReadLine().Split(',');
@@ -226,7 +224,7 @@ public class Board
                 int nHexagonPosX = int.Parse(nHexagonCoordinates[0]);
                 int nHexagonPosY = int.Parse(nHexagonCoordinates[1]);
                 currentNode.setAdjacentHexagonPos(nHexagonPosX, nHexagonPosY, i);
-                
+
                 // sets adjacent node
                 if (nNodes[i] != "-")
                 {
@@ -238,7 +236,7 @@ public class Board
                 if (nEdges[i] != "-")
                 {
                     int nEdgePos = int.Parse(nEdges[i]);
-                    currentNode.setAdjacentEdgePos(nEdgePos, i);   
+                    currentNode.setAdjacentEdgePos(nEdgePos, i);
                 }
             }
         }
@@ -291,11 +289,11 @@ public class Board
     /// <param name="player">color of the player who tries to build</param>
     public void placeBuilding(int nodeId, PLAYERCOLOR player)
     {
-        Node currentNode = nodes[nodeId];
+        Node currentNode = nodesArray[nodeId];
 
         if (!allowedToBuildOnNode(currentNode, player)) return;
 
-        if (currentNode.getBuilding_Type() == BUILDING_TYPE.NONE)
+        if (currentNode.getBuildingType() == BUILDING_TYPE.NONE)
         {
             currentNode.setBuildingType(BUILDING_TYPE.VILLAGE);
         }
@@ -327,7 +325,7 @@ public class Board
         foreach (int nodePos in neighborNodesPos)
         {
             Node node = nodesArray[nodePos];
-            
+
             // false if a neighborNode is already occupied
             if (node.getBuildingType() != BUILDING_TYPE.NONE) return false;
         }
@@ -367,7 +365,7 @@ public class Board
     private bool allowedToBuildOnEdge(Edge currentEdge, PLAYERCOLOR player)
     {
         if (currentEdge.getOccupant() != PLAYERCOLOR.NONE) return false;
-        
+
         int[] neighborNodesPos = currentEdge.getAdjacentNodesPos();
         int[] neighborEdgesPos = currentEdge.getAdjacentEdges();
 
@@ -390,11 +388,11 @@ public class Board
     /// </summary>
     private void checkPlacementConstraints()
     {
-        for (int row = 1; row < hexagons.Length - 1; row++)
+        for (int row = 1; row < hexagonsArray.Length - 1; row++)
         {
-            for (int col = 1; col < hexagons[row].Length - 1; col++)
+            for (int col = 1; col < hexagonsArray[row].Length - 1; col++)
             {
-                Hexagon currentHex = hexagons[row][col];
+                Hexagon currentHex = hexagonsArray[row][col];
 
                 //no need to check ports or dessert
                 if (currentHex == null || currentHex.getFieldNumber() == 0)
@@ -419,7 +417,7 @@ public class Board
 
                     try
                     {
-                        neighbor = hexagons[yOffset][xOffset];
+                        neighbor = hexagonsArray[yOffset][xOffset];
                     }
                     catch (IndexOutOfRangeException e)
                     {
@@ -448,11 +446,11 @@ public class Board
     /// <returns>an int array with the first occouring coordinates of a suitable position or empty array if no suitable position is found</returns>
     private int[] findSuitablePos()
     {
-        for (int row = 1; row < hexagons.Length - 1; row++)
+        for (int row = 1; row < hexagonsArray.Length - 1; row++)
         {
-            for (int col = 1; col < hexagons[row].Length - 1; col++)
+            for (int col = 1; col < hexagonsArray[row].Length - 1; col++)
             {
-                Hexagon currentHex = hexagons[row][col];
+                Hexagon currentHex = hexagonsArray[row][col];
 
                 //no need to check ports or dessert
                 if (currentHex == null || currentHex.getFieldNumber() == 0)
@@ -475,7 +473,7 @@ public class Board
 
                         try
                         {
-                            neighborFieldnumber = hexagons[yOffset][xOffset].getFieldNumber();
+                            neighborFieldnumber = hexagonsArray[yOffset][xOffset].getFieldNumber();
                         }
                         catch (IndexOutOfRangeException e)
                         {
@@ -510,13 +508,8 @@ public class Board
 
     private void swapHexagonPositions(int firstHexRow, int firstHexCol, int secondHexRow, int secondHexCol)
     {
-        Hexagon tempHex = hexagons[firstHexRow][firstHexCol];
-        hexagons[firstHexRow][firstHexCol] = hexagons[secondHexRow][secondHexCol];
-        hexagons[secondHexRow][secondHexCol] = tempHex;
-    }
-
-    public Hexagon[][] getHexagons()
-    {
-        return this.hexagons;
+        Hexagon tempHex = hexagonsArray[firstHexRow][firstHexCol];
+        hexagonsArray[firstHexRow][firstHexCol] = hexagonsArray[secondHexRow][secondHexCol];
+        hexagonsArray[secondHexRow][secondHexCol] = tempHex;
     }
 }

@@ -13,7 +13,7 @@ public class Hexagon
         this.type = type;
         this.fieldNumber = fieldNumber;
     }
-    
+
     [JsonConstructor]
     public Hexagon(HEXAGON_TYPE type)
     {
@@ -25,17 +25,11 @@ public class Hexagon
     {
         return this.fieldNumber;
     }
-
-    public int getFieldNumber()
-    {
-        return fieldNumber;
-    }
-    
     public HEXAGON_TYPE getType()
     {
         return type;
     }
-    
+
     public void setAdjacentNodePos(int nodePos, int index)
     {
         adjacentNodesPos[index] = nodePos;
@@ -64,7 +58,7 @@ public class Hexagon
             default: return false;
         }
     }
-    
+
     public bool isLand()
     {
         switch (this.type)
