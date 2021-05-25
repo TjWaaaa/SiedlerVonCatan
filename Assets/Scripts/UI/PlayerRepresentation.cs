@@ -8,18 +8,17 @@ namespace UI
 {
     public class PlayerRepresentation : MonoBehaviour
     {
-        //private PrefabFactory prefabFactory;
-       
-        private GameObject[] playerRepresentations = new GameObject[4];
+        
+        private List<GameObject> playerRepresentations = new List<GameObject>();
 
         public void Start()
         {
 
             // find all Playerboards and set them inactive
             
-            for (int playerRepresentation = 0; playerRepresentation < playerRepresentations.Length; playerRepresentation++)
+            for (int playerRepresentation = 0; playerRepresentation < 4; playerRepresentation++)
             {
-                playerRepresentations[playerRepresentation] = GameObject.Find("Player"+(playerRepresentation+1));
+                playerRepresentations.Add(GameObject.Find("Player"+(playerRepresentation+1)));
                 playerRepresentations[playerRepresentation].SetActive(false);
 
             }
@@ -37,26 +36,40 @@ namespace UI
                 updateTotalResourceAmount(player);
                 updateDevCardAmount(player);
             }
+            
+            // delete PLayerboards which aren't ingame
+
+            for (int playerboards = 4; playerboards > GameController.representativePlayers.Count; playerboards--)
+            {
+                playerRepresentations.RemoveAt(playerboards - 1);
+            }
+            Debug.Log("There are "+ playerRepresentations.Count + " Players ingame");
         }
 
         
         // player = index in representativePlayers
-        public void updateVictoryPoints(int player)
+        public static void updateVictoryPoints(int player)
         {
             GameObject.Find("Player" + (player +1) + "/PlayerRepresentation/VictoryPoints").GetComponent<TextMeshProUGUI>().text = GameController.representativePlayers[player].getVictoryPoints().ToString();
 
         }
         
-        public void updateTotalResourceAmount(int player)
+        public static void updateTotalResourceAmount(int player)
         {
             GameObject.Find("Player" + (player +1) + "/PlayerRepresentation/TotalResourceAmount").GetComponent<TextMeshProUGUI>().text = GameController.representativePlayers[player].getTotalResourceAmount().ToString();
 
         }
         
-        public void updateDevCardAmount(int player)
+        public static void updateDevCardAmount(int player)
         {
             GameObject.Find("Player" + (player +1)+ "/PlayerRepresentation/DevCards").GetComponent<TextMeshProUGUI>().text = GameController.representativePlayers[player].getDevCardAmount().ToString();
 
+        }
+
+        public static void showNextPlayer(int player, int nextPlayer)
+        {
+            GameObject.Find("Player" + (player +1)+ "/PlayerRepresentation/Board_light").transform.SetAsFirstSibling();
+            GameObject.Find("Player" + (nextPlayer +1)+ "/PlayerRepresentation/Board_light").transform.SetSiblingIndex(1);
         }
     }
 }

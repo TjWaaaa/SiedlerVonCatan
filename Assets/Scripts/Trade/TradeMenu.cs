@@ -12,7 +12,6 @@ namespace Trade
     public class TradeMenu : MonoBehaviour
     {
         //is needed right now, there should be a better solution later
-        
         private ServerPlayer currentPlayer;
 
         private GameObject startTradeButton;

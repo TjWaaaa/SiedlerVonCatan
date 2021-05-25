@@ -24,7 +24,7 @@ namespace Networking.ServerSide
 
         public void generatePlayer(int playerId)
         {
-            allPlayer.Add(new Player.ServerPlayer(playerId));
+            allPlayer.Add(new ServerPlayer(playerId));
         }
 
         public int[] rollDices()

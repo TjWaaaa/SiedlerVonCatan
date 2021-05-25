@@ -8,11 +8,13 @@ using UnityEngine;
 using UnityEngine.UI;
 using Networking.Communication;
 using Player;
+using UI;
 
 public class GameController : MonoBehaviour
 {
     private GameObject clientGameLogic;
     public GameObject showCurrentPlayer;
+    
     
     public static List<RepresentativePlayer> representativePlayers = new List<RepresentativePlayer>();
     public static OwnClientPlayer ownClientPlayer;
@@ -70,6 +72,8 @@ public class GameController : MonoBehaviour
 
         currentPlayer = 0;
 
+        PlayerRepresentation.showNextPlayer(0,1);
+        
         showCurrentPlayer.GetComponent<Image>().color = players[currentPlayer].getPlayerColor();
         showCurrentPlayer.transform.GetChild(0).GetComponent<Text>().text = players[currentPlayer].getPlayerName();
         ChangeRessourcesOutput(players[currentPlayer]);
