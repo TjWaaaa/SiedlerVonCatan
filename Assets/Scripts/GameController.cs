@@ -83,7 +83,8 @@ public class GameController : MonoBehaviour
 
                     if (hit.collider.tag == "VillageSlot")
                     {
-
+                        //  hit.ge
+                        
                         Debug.Log("Village: " + hit.transform.position);
                         if (players[currentPlayer].canBuyBuyable(BUYABLES.VILLAGE)) // clientGameLogic.requestBuild
                         {

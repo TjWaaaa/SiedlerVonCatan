@@ -159,7 +159,7 @@ public class Board
     {
         for (int i = 0; i < 54; i++)
         {
-            nodesArray[i] = new Node();
+            nodesArray[i] = new Node(i);
         }
     }
 
@@ -167,7 +167,7 @@ public class Board
     {
         for (int i = 0; i < 72; i++)
         {
-            edgesArray[i] = new Edge();
+            edgesArray[i] = new Edge(i);
         }
     }
 
