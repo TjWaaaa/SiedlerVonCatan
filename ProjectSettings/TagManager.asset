@@ -10,7 +10,7 @@ TagManager:
   - giveResource
   - getResource
   - diceHolder
-  - clientGameLogic
+  - ClientReceive
   layers:
   - Default
   - TransparentFX

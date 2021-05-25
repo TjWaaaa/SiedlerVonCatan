@@ -10,7 +10,7 @@ using Networking.Communication;
 
 namespace Networking.ClientSide
 {
-    public class ClientGameLogic : MonoBehaviour, INetworkableClient
+    public class ClientReceive : MonoBehaviour, INetworkableClient
     {
         public int myID { get; private set; }
 

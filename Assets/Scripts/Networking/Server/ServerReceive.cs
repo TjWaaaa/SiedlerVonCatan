@@ -7,13 +7,13 @@ using Networking.Package;
 
 namespace Networking.ServerSide
 {
-    public class ServerGameLogic : INetworkableServer
+    public class ServerReceive : INetworkableServer
     {
         private readonly List<Player> allPlayer = new List<Player>();
         private readonly Stack<Color> possibleColors = new Stack<Color>();
         private readonly ServerRequest serverRequest = new ServerRequest();
 
-        public ServerGameLogic()
+        public ServerReceive()
         {
             possibleColors.Push(Color.blue);
             possibleColors.Push(Color.red);

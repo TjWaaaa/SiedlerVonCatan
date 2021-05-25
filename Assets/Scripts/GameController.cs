@@ -10,7 +10,6 @@ using Networking.Communication;
 
 public class GameController : MonoBehaviour
 {
-    private GameObject clientGameLogic;
     public GameObject showCurrentPlayer;
 
     private static Player[] players;
