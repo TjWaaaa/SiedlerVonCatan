@@ -23,7 +23,7 @@ namespace Networking.Communication
             Server.sendDataToAll(packet);
         }
 
-        public void gamestartInitialize(int[][] gameBoard)
+        public void gamestartInitialize(Hexagon[][] gameBoard)
         {
             Packet packet = new Packet();
             packet.type = (int) COMMUNICATION_METHODS.HANDLE_GAMESTART_INITIALIZE;
