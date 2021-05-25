@@ -3,6 +3,7 @@ using Enums;
 using UnityEngine;
 using Player;
 using TMPro;
+using Networking.ClientSide;
 
 namespace UI
 {
@@ -44,26 +45,26 @@ namespace UI
 
         public void updateOwnPlayerResources()
         {
-            ownPlayerSheep.text = GameController.ownClientPlayer.getResourceAmount(RESOURCETYPE.SHEEP).ToString();
-            ownPlayerWood.text = GameController.ownClientPlayer.getResourceAmount(RESOURCETYPE.WOOD).ToString();
-            ownPlayerBrick.text = GameController.ownClientPlayer.getResourceAmount(RESOURCETYPE.BRICK).ToString();
-            ownPlayerOre.text = GameController.ownClientPlayer.getResourceAmount(RESOURCETYPE.ORE).ToString();
-            ownPlayerWheat.text = GameController.ownClientPlayer.getResourceAmount(RESOURCETYPE.WHEAT).ToString();
+            ownPlayerSheep.text = ClientGameLogic.ownClientPlayer.getResourceAmount(RESOURCETYPE.SHEEP).ToString();
+            ownPlayerWood.text = ClientGameLogic.ownClientPlayer.getResourceAmount(RESOURCETYPE.WOOD).ToString();
+            ownPlayerBrick.text = ClientGameLogic.ownClientPlayer.getResourceAmount(RESOURCETYPE.BRICK).ToString();
+            ownPlayerOre.text = ClientGameLogic.ownClientPlayer.getResourceAmount(RESOURCETYPE.ORE).ToString();
+            ownPlayerWheat.text = ClientGameLogic.ownClientPlayer.getResourceAmount(RESOURCETYPE.WHEAT).ToString();
         }
 
         public void updateOwnPlayerLeftStreets()
         {
-            ownPlayerLeftStreets.text = GameController.ownClientPlayer.getLeftStreets().ToString();
+            ownPlayerLeftStreets.text = ClientGameLogic.ownClientPlayer.getLeftStreets().ToString();
         }
 
         public void updateOwnPlayerLeftVillages()
         {
-            ownPlayerLeftVillages.text = GameController.ownClientPlayer.getLeftVillages().ToString();
+            ownPlayerLeftVillages.text = ClientGameLogic.ownClientPlayer.getLeftVillages().ToString();
         }
 
         public void updateOwnPlayerLeftCitys()
         {
-            ownPlayerLeftCitys.text = GameController.ownClientPlayer.getLeftCitys().ToString();
+            ownPlayerLeftCitys.text = ClientGameLogic.ownClientPlayer.getLeftCitys().ToString();
         }
         
     }

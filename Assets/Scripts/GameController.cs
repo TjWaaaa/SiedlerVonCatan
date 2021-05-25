@@ -15,7 +15,6 @@ public class GameController : MonoBehaviour
     private GameObject clientGameLogic;
     public GameObject showCurrentPlayer;
     
-    public static OwnClientPlayer ownClientPlayer;
     
     // only for testing
     private static ServerPlayer[] players;
@@ -134,12 +133,7 @@ public class GameController : MonoBehaviour
         }
         else ChangeRessourcesOutput(players[currentPlayer]);
     }
-
-    public static void createOwnClientPlayer(int playerID)
-    {
-        ownClientPlayer = new OwnClientPlayer(playerID);
-        Debug.Log("Created OwnClientPlayer with ID" + playerID);
-    }
+    
     
     public void BuildVillage(Vector3 position)
     {
