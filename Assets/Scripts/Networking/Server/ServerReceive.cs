@@ -191,6 +191,11 @@ namespace Networking.ServerSide
         public void generatePlayer(int playerId)
         {
             ServerPlayer newPlayer = new ServerPlayer(playerId);
+            newPlayer.setResourceAmount(RESOURCETYPE.SHEEP, 15);
+            newPlayer.setResourceAmount(RESOURCETYPE.WOOD, 15);
+            newPlayer.setResourceAmount(RESOURCETYPE.BRICK, 15);
+            newPlayer.setResourceAmount(RESOURCETYPE.BRICK, 15);
+            newPlayer.setResourceAmount(RESOURCETYPE.WHEAT, 15);
             allPlayer.Add(playerId,newPlayer);
             playerAmount++;
         }
