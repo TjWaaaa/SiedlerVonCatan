@@ -11,7 +11,7 @@ namespace Networking.Interfaces
         /// Pre game: send a notification to all clients that a new client has joined the game.
         /// </summary>
         /// <param name="playerInformation">contains {{playerName, playerColor, isReady}, {...}, ...}</param>
-        public void notifyClientJoined(ArrayList playerInformation);
+        public void notifyClientJoined(ArrayList playerInformation, string lobbyIP);
 
         
         /// <summary>
