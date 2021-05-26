@@ -6,16 +6,18 @@ namespace UI
 {
     public class changeVisibility : MonoBehaviour
     {
-        public GameObject changeVisibilityButton;
+        public GameObject showButton;
+        public GameObject hideButton;
         private Boolean isVisible = false;
 
         void Start()
         {
             gameObject.SetActive(false);
-            changeVisibilityButton.GetComponent<Button>().onClick.AddListener(changeVisible);
+            showButton.GetComponent<Button>().onClick.AddListener(show);
+            hideButton.GetComponent<Button>().onClick.AddListener(hide);
         }
-        
-        public void changeVisible()
+
+        public void show()
         {
             if (!isVisible)
             {
@@ -23,14 +25,16 @@ namespace UI
                 gameObject.SetActive(true);
                 isVisible = true;
             }
-            else
+        }
+
+        public void hide()
+        {
+            if (isVisible)
             {
                 Debug.Log("set hidden");
                 gameObject.SetActive(false);
                 isVisible = false;
             }
         }
-
-
     }
 }

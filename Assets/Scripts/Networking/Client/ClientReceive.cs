@@ -18,7 +18,11 @@ namespace Networking.ClientSide
         private GameObject scrollViewContent;
         private int playerNumber = 1;
         private readonly ClientRequest clientRequest = new ClientRequest();
+        private Hexagon[][] gameBoard;
 
+        private Scene currentScene;
+        private bool runFixedUpdate = true;
+        private BoardGenerator boardGenerator;
 
         private GameObject diceHolder;
 
@@ -29,8 +33,10 @@ namespace Networking.ClientSide
         {
             prefabFactory = GameObject.Find("PrefabFactory").GetComponent<PrefabFactory>();
             DontDestroyOnLoad(this);
+        
+            currentScene = SceneManager.GetActiveScene();
+            boardGenerator = GetComponent<BoardGenerator>();
         }
-
 
         /// <summary>
         /// Call the ThreadManager's updateMainThread() method every frame.
@@ -38,6 +44,22 @@ namespace Networking.ClientSide
         public void Update()
         {
             ThreadManager.updateMainThread();
+        }
+
+        public void FixedUpdate()
+        {
+            if (runFixedUpdate)
+            {
+                currentScene = SceneManager.GetActiveScene();
+
+                if (currentScene.name == "2_GameScene")
+                {
+                    // BoardGenerator boardGenerator = new BoardGenerator();
+                    // boardGenerator.instantiateGameBoard(gameBoard);
+                    boardGenerator.instantiateGameBoard(gameBoard);
+                    runFixedUpdate = false;
+                }
+            }
         }
 
         /// <summary>
@@ -99,6 +121,9 @@ namespace Networking.ClientSide
         
         public void handleClientJoined(Packet serverPacket)
         {
+            //set Loby IP
+            GameObject.Find("Canvas/LobbyIP").GetComponent<Text>().text = serverPacket.lobbyIP;
+            
             // for each player:
             // initiialize prefab with data
             Debug.Log("Client recieved new package: " + PacketSerializer.objectToJsonString(serverPacket));
@@ -130,7 +155,9 @@ namespace Networking.ClientSide
 
         public void handleGameStartInitialize(Packet serverPacket)
         {
-            SceneManager.LoadScene("2_GameScene");
+            AsyncOperation asyncLoadLevel = SceneManager.LoadSceneAsync("2_GameScene");
+            gameBoard = serverPacket.gameBoard;
+
             Debug.Log("Client: Sie haben ein Spielbrett erhalten :)");
         }
 

@@ -16,9 +16,10 @@ namespace Networking.ServerSide
         private static Socket serverSocket;
         private static Dictionary<int, Socket> socketPlayerData;  //serves to store all sockets with playerID
         // private static readonly List<Socket> clientSockets = new List<Socket>(); //serves to store all sockets
-        private const int BUFFER_SIZE = 2048;
+        private const int BUFFER_SIZE = 64000;
         private const int PORT = 50042; //freely selectable
         private static byte[] buffer;
+        public static IPAddress serverIP { get; private set; }
         
         private static ServerReceive _serverReceive = new ServerReceive();
 
@@ -39,6 +40,7 @@ namespace Networking.ServerSide
             try
             {
                 serverSocket.Bind(new IPEndPoint(IPAddress.Any, PORT)); //Bind endpoint with ip address and port to socket
+                serverIP = getServerEndpoint().Address;
                 serverSocket.Listen(4); //maximum pending connection attempts at one time
                 serverSocket.BeginAccept(AcceptCallback, null); //begins waiting for client connection attempts
                 Debug.Log("Server: Server setup complete, let's go!");
@@ -62,25 +64,40 @@ namespace Networking.ServerSide
         /// </summary>
         /// <param name="AR">IAsyncResult</param>
         private static void AcceptCallback(IAsyncResult AR) {
-            Socket clientSocket;
             
-            try {
-                clientSocket = serverSocket.EndAccept(AR); //accepts clients connection attempt, returns client socket
-            } catch (ObjectDisposedException e) 
+            // necessary to log errors that occur in the side thread
+            try
             {
-                Debug.LogError("Server: ObjectDisposedException. Client disconnected?" + e.Message);
-                return;
-            }
+                Socket clientSocket;
+            
+                try
+                {
+                    clientSocket = serverSocket.EndAccept(AR); //accepts clients connection attempt, returns client socket
+                }
+                catch (ObjectDisposedException e) 
+                {
+                    Debug.LogError("Server: ObjectDisposedException. Client disconnected?" + e.Message);
+                    return;
+                }
+                
+                // generate a new random client ID
+                int newClientID;
+                Random random = new Random();
+                bool validClientID = false;
+                do
+                {
+                    newClientID = random.Next(100);
+                    validClientID = !socketPlayerData.ContainsKey(newClientID);  
+                } while (!validClientID);
 
-            // generate a new random client ID
-            int newClientID;
-            Random random = new Random();
-            bool validClientID = false;
-            do
-            {
-                newClientID = random.Next(100);
-                validClientID = !socketPlayerData.ContainsKey(newClientID);  
-            } while (!validClientID);
+                //todo: tell server logic the clients ID
+                serverGameLogic.generatePlayer(newClientID);
+                socketPlayerData.Add(newClientID, clientSocket); //save client to socket list
+                Debug.Log($"Server: client (id: {newClientID}) stored in dictionary");
+                
+                
+                clientSocket.BeginReceive(buffer, 0, BUFFER_SIZE, SocketFlags.None, ReceiveCallback, new object[] {clientSocket, newClientID}); // open "chanel" to recieve data from the connected socket
+                Debug.Log($"Server: Client {clientSocket.RemoteEndPoint} connected, waiting for request...");
 
             //todo: tell server logic the clients ID
             _serverReceive.generatePlayer(newClientID);
@@ -103,6 +120,7 @@ namespace Networking.ServerSide
         /// <param name="AR">IAsyncResult</param>
         private static void sendCallback(IAsyncResult AR)
         {
+            Debug.Log("IAsyncResult: " + AR);
             serverSocket.EndSend(AR);
         }
 

@@ -13,17 +13,18 @@ namespace Networking.Communication
 {
     public class ServerRequest : ServerToClientCommunication
     {
-        public void notifyClientJoined(ArrayList playerInformation)
+        public void notifyClientJoined(ArrayList playerInformation, string lobbyIP)
         {
             Packet packet = new Packet();
             packet.type = (int) COMMUNICATION_METHODS.HANDLE_CLIENT_JOINED;
             packet.lobbyContent = playerInformation;
+            packet.lobbyIP = lobbyIP;
             
             // send to all
             Server.sendDataToAll(packet);
         }
 
-        public void gamestartInitialize(int[][] gameBoard)
+        public void gamestartInitialize(Hexagon[][] gameBoard)
         {
             Packet packet = new Packet();
             packet.type = (int) COMMUNICATION_METHODS.HANDLE_GAMESTART_INITIALIZE;
