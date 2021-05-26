@@ -4,6 +4,7 @@ using Enums;
 using TMPro;
 using UnityEngine;
 using Networking.ClientSide;
+using Player;
 
 namespace UI
 {
@@ -11,52 +12,50 @@ namespace UI
     {
         
         private List<GameObject> playerRepresentations = new List<GameObject>();
+        
 
-        public void Start()
+        public void represent(RepresentativePlayer[] representativePlayers)
         {
-
+            
             // find all Playerboards and set them inactive
-            
-            for (int playerRepresentation = 0; playerRepresentation < 4; playerRepresentation++)
-            {
-                playerRepresentations.Add(GameObject.Find("Player"+(playerRepresentation+1)));
-                playerRepresentations[playerRepresentation].SetActive(false);
-
-            }
-
-            
+                     
+                     for (int playerRepresentation = 0; playerRepresentation < 4; playerRepresentation++)
+                     {
+                         playerRepresentations.Add(GameObject.Find("Player"+(playerRepresentation+1)));
+                         playerRepresentations[playerRepresentation].SetActive(false);
+         
+                     }
             // represent all players
+                        
+                        for (int player = 0; player < representativePlayers.Length; player++)
+                        {
+                            playerRepresentations[player].SetActive(true);
+                            playerRepresentations[player].transform.GetChild(0).transform.GetChild(2).GetComponent<TextMeshProUGUI>().text = representativePlayers[player].getPlayerName();
+                            playerRepresentations[player].transform.GetChild(0).transform.GetChild(2).GetComponent<TextMeshProUGUI>().color = representativePlayers[player].getPlayerColor();
+                            Debug.Log(representativePlayers[player] + " writed on board number "+ (player+1));
+                            updateUiPR(player, representativePlayers[player]);
+                        }
+                        
+                        // delete PLayerboards which aren't ingame
             
-            for (int player = 0; player < ClientGameLogic.representativePlayers.Count; player++)
-            {
-                playerRepresentations[player].SetActive(true);
-                GameObject.Find("Player" + (player +1)+ "/PlayerRepresentation/PlayerName").GetComponent<TextMeshProUGUI>().text = ClientGameLogic.representativePlayers[player].getPlayerName();
-                GameObject.Find("Player" + (player +1)+ "/PlayerRepresentation/PlayerName").GetComponent<TextMeshProUGUI>().color = ClientGameLogic.representativePlayers[player].getPlayerColor();
-                Debug.Log(ClientGameLogic.representativePlayers[player] + " writed on board number "+ (player+1));
-                updateUiPR(player);
-            }
-            
-            // delete PLayerboards which aren't ingame
-
-            for (int playerboards = 4; playerboards > ClientGameLogic.representativePlayers.Count; playerboards--)
-            {
-                playerRepresentations.RemoveAt(playerboards - 1);
-            }
-            Debug.Log("There are "+ playerRepresentations.Count + " Players ingame");
+                        for (int playerboards = 4; playerboards > representativePlayers.Length; playerboards--)
+                        {
+                            playerRepresentations.RemoveAt(playerboards - 1);
+                        }
+                        Debug.Log("There are "+ playerRepresentations.Count + " Players ingame");
         }
-
         
         // player = index in representativePlayers
 
-        public static void updateUiPR(int player)
+        public void updateUiPR(int player, RepresentativePlayer representativePlayer)
         {   
             Debug.Log("RPUi has been updated via PlayerRepresentation.cs");
-            GameObject.Find("Player" + (player +1) + "/PlayerRepresentation/VictoryPoints").GetComponent<TextMeshProUGUI>().text = ClientGameLogic.representativePlayers[player].getVictoryPoints().ToString();
-            GameObject.Find("Player" + (player +1) + "/PlayerRepresentation/TotalResourceAmount").GetComponent<TextMeshProUGUI>().text = ClientGameLogic.representativePlayers[player].getTotalResourceAmount().ToString();
-            GameObject.Find("Player" + (player +1)+ "/PlayerRepresentation/DevCards").GetComponent<TextMeshProUGUI>().text = ClientGameLogic.representativePlayers[player].getDevCardAmount().ToString();
+            playerRepresentations[player].transform.GetChild(0).transform.GetChild(3).GetComponent<TextMeshProUGUI>().text = representativePlayer.getVictoryPoints().ToString();
+            playerRepresentations[player].transform.GetChild(0).transform.GetChild(4).GetComponent<TextMeshProUGUI>().text = representativePlayer.getTotalResourceAmount().ToString();
+            playerRepresentations[player].transform.GetChild(0).transform.GetChild(5).GetComponent<TextMeshProUGUI>().text = representativePlayer.getDevCardAmount().ToString();
         }
 
-        public static void showNextPlayer(int player, int nextPlayer)
+        public void showNextPlayer(int player, int nextPlayer)
         {
             GameObject.Find("Player" + (player +1)+ "/PlayerRepresentation/Board_light").transform.SetAsFirstSibling();
             GameObject.Find("Player" + (nextPlayer +1)+ "/PlayerRepresentation/Board_light").transform.SetSiblingIndex(1);
