@@ -227,7 +227,7 @@ namespace Networking.ClientSide
                         break;
 
                     case (int) COMMUNICATION_METHODS.HANDLE_ACCEPT_BEGIN_ROUND:
-                        Debug.Log("CLIENT: before calling Threadmanager");
+                        Debug.Log("CLIENT: calling handleAcceptBeginRound in ClientReceive");
                         ThreadManager.executeOnMainThread(() =>
                         {
                             clientGameLogic.handleAccpetBeginRound(incomingData);

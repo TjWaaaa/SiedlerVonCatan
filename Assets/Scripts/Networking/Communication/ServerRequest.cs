@@ -131,6 +131,7 @@ namespace Networking.Communication
             
             // send to all
             Server.sendDataToAll(packet);
+            Debug.Log("SERVER: Client should expect a Dice package");
         }
 
         public void acceptBuyDevelopement(int playerID, DEVELOPMENT_TYPE developmentCard)
@@ -166,6 +167,7 @@ namespace Networking.Communication
 
             // send to all
             Server.sendDataToAll(packet);
+            Debug.Log("SERVER: Client should expect an UpdateRP package");
         }
 
         public void updateOwnPlayer(int[] updateLeftBuildings,Dictionary<RESOURCETYPE, int> updateResources, int playerID)
@@ -178,6 +180,7 @@ namespace Networking.Communication
 
             // send to the current player
             Server.sendDataToOne(playerID,packet);
+            Debug.Log("SERVER: Current Client should expect an UpdateOP package");
         }
     }
 }
