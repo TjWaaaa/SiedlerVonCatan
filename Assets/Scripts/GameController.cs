@@ -86,7 +86,7 @@ public class GameController : MonoBehaviour
                     else if (hit.collider.tag == "Village")
                     {
                         int posInArray = Int32.Parse(hit.transform.name.Substring(1));
-                        Debug.Log(posInArray);
+                        Debug.Log("CLIENT: " + posInArray);
                         clientRequest.requestBuild(BUYABLES.CITY, posInArray);
                     }
                     else if (hit.collider.tag == "RoadSlot")
@@ -173,7 +173,7 @@ public class GameController : MonoBehaviour
 
     public void NextPlayer()
     {
-        Debug.Log("NextPlayer in GameController is called");
+        Debug.Log("CLIENT: NextPlayer in GameController is called");
         clientRequest.requestEndTurn();
     }
 

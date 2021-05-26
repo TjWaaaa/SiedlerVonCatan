@@ -78,7 +78,7 @@ namespace Networking.Communication
             packet.type = (int) COMMUNICATION_METHODS.HANDLE_VICTORY;
             packet.playerName = playerName;
             packet.playerColor = playerColor;
-            Debug.Log(playerColor);
+            Debug.Log("SERVER: " + playerColor);
             
             // send to all
             Server.sendDataToAll(packet);
@@ -124,13 +124,14 @@ namespace Networking.Communication
 
         public void notifyRollDice(int[] diceResult)
         {
-            Debug.Log("notifyRollDice has been called");
+            Debug.Log("SERVER: notifyRollDice has been called");
             Packet packet = new Packet();
             packet.type = (int) COMMUNICATION_METHODS.HANDLE_ACCEPT_BEGIN_ROUND;
             packet.diceResult = diceResult;
             
             // send to all
             Server.sendDataToAll(packet);
+            Debug.Log("SERVER: Client should expect a Dice package");
         }
 
         public void acceptBuyDevelopement(int playerID, DEVELOPMENT_TYPE developmentCard)
@@ -158,7 +159,7 @@ namespace Networking.Communication
 
         public void updateRepPlayers(int[][] updateNumbers)
         {
-            Debug.Log("ServerRequest updateRPPacket");
+            Debug.Log("SERVER: ServerRequest updateRPPacket");
             Packet packet = new Packet();
             packet.type = (int) COMMUNICATION_METHODS.HANDLE_UPDATE_RP;
             packet.updateRP = updateNumbers;
@@ -166,11 +167,12 @@ namespace Networking.Communication
 
             // send to all
             Server.sendDataToAll(packet);
+            Debug.Log("SERVER: Client should expect an UpdateRP package");
         }
 
         public void updateOwnPlayer(int[] updateLeftBuildings,Dictionary<RESOURCETYPE, int> updateResources, int playerID)
         {
-            Debug.Log("ServerRequest updateOwnPlayer");
+            Debug.Log("SERVER: ServerRequest updateOwnPlayer");
             Packet packet = new Packet();
             packet.type = (int) COMMUNICATION_METHODS.HANDLE_UPDATE_OP;
             packet.updateOP = updateLeftBuildings;
@@ -178,6 +180,7 @@ namespace Networking.Communication
 
             // send to the current player
             Server.sendDataToOne(playerID,packet);
+            Debug.Log("SERVER: Current Client should expect an UpdateOP package");
         }
     }
 }
