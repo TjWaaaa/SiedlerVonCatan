@@ -158,10 +158,7 @@ namespace Networking.ServerSide
 
         public void handleEndTurn(Packet clientPacket)
         {
-            //serverRequest.updateOwnPlayer(
-            //    allPlayer.ElementAt(currentPlayer).Value.convertFromSPToOP(), // int[] with left buildings
-            //    allPlayer.ElementAt(currentPlayer).Value.convertSPToOPResources(), // Resource Dictionary
-             //   allPlayer.ElementAt(currentPlayer).Key);
+            
             // Change currentPlayer
             if (currentPlayer == playerAmount - 1)
             {
@@ -176,6 +173,10 @@ namespace Networking.ServerSide
             // TODO change method call => handleBeginRound should only be called after the new player is already set and all have been notified
             Debug.Log("SERVER: handleEndTurn has been called");
             handleBeginRound(clientPacket);
+            serverRequest.updateOwnPlayer(
+                allPlayer.ElementAt(currentPlayer).Value.convertFromSPToOP(), // int[] with left buildings
+                allPlayer.ElementAt(currentPlayer).Value.convertSPToOPResources(), // Resource Dictionary
+                allPlayer.ElementAt(currentPlayer).Key);
         }
 
         public void handleClientDisconnectServerCall()

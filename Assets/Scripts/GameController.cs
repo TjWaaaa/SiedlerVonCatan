@@ -70,105 +70,45 @@ public class GameController : MonoBehaviour
     {
         Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
         RaycastHit hit;
-
-        if (!TradeMenu.isActive()) //that nobody can build cities by accident (while trading)
+        
+        if (Physics.Raycast(ray, out hit, 100f))
         {
-            if (Physics.Raycast(ray, out hit, 100f))
+            if (Input.GetMouseButtonDown(0))
             {
-                if (Input.GetMouseButtonDown(0))
+                if (InputController.buildVillageMode)
                 {
-
                     if (hit.collider.tag == "VillageSlot")
                     {
+                        Debug.Log("want to build a village");
                         int posInArray = Int32.Parse(hit.transform.name.Substring(1));
                         clientRequest.requestBuild(BUYABLES.VILLAGE, posInArray);
                     }
-                    else if (hit.collider.tag == "Village")
+                }
+
+                else if (InputController.buildCityMode)
+                {
+                    if (hit.collider.tag == "Village")
                     {
                         int posInArray = Int32.Parse(hit.transform.name.Substring(1));
                         Debug.Log("CLIENT: " + posInArray);
                         clientRequest.requestBuild(BUYABLES.CITY, posInArray);
                     }
-                    else if (hit.collider.tag == "RoadSlot")
+                }
+
+                else if (InputController.buildStreetMode)
+                {
+                    if (hit.collider.tag == "RoadSlot")
                     {
                         int posInArray = Int32.Parse(hit.transform.name.Substring(1));
                         clientRequest.requestBuild(BUYABLES.ROAD, posInArray);
                     }
                 }
+                    
             }
         }
-        else ChangeRessourcesOutput(players[currentPlayer]);
+        
     }
     
-    
-    public void BuildVillage(Vector3 position)
-    {
-    
-        PLAYERCOLOR c = players[currentPlayer].getPlayerColor();
-    
-        if (c.Equals(PLAYERCOLOR.BLUE))
-        {
-            Instantiate(villageBlue, position, Quaternion.identity);
-        }
-        else if (c.Equals(PLAYERCOLOR.RED))
-        {
-            Instantiate(villageRed, position, Quaternion.identity);
-        }
-        else if (c.Equals(PLAYERCOLOR.WHITE))
-        {
-            Instantiate(villageWhite, position, Quaternion.identity);
-        }
-        else if (c.Equals(PLAYERCOLOR.YELLOW))
-        {
-            Instantiate(villageYellow, position, Quaternion.identity);
-        }
-    }
-    
-    public void BuildCity(Vector3 position)
-    {
-    
-        PLAYERCOLOR c = players[currentPlayer].getPlayerColor();
-    
-        if (c.Equals(PLAYERCOLOR.BLUE))
-        {
-            Instantiate(cityBlue, position, Quaternion.identity);
-        }
-        else if (c.Equals(PLAYERCOLOR.RED))
-        {
-            Instantiate(cityRed, position, Quaternion.identity);
-        }
-        else if (c.Equals(PLAYERCOLOR.WHITE))
-        {
-            Instantiate(cityWhite, position, Quaternion.identity);
-        }
-        else if (c.Equals(PLAYERCOLOR.YELLOW))
-        {
-            Instantiate(cityYellow, position, Quaternion.identity);
-        }
-    }
-    
-    public void BuildRoad(Vector3 position, Quaternion rotation)
-    {
-    
-        PLAYERCOLOR c = players[currentPlayer].getPlayerColor();
-    
-        if (c.Equals(PLAYERCOLOR.BLUE))
-        {
-            Instantiate(roadBlue, position, rotation);
-        }
-        else if (c.Equals(PLAYERCOLOR.RED))
-        {
-            Instantiate(roadRed, position, rotation);
-        }
-        else if (c.Equals(PLAYERCOLOR.WHITE))
-        {
-            Instantiate(roadWhite, position, rotation);
-        }
-        else if (c.Equals(PLAYERCOLOR.YELLOW))
-        {
-            Instantiate(roadYellow, position, rotation);
-        }
-    }
 
 
     public void NextPlayer()
@@ -177,14 +117,7 @@ public class GameController : MonoBehaviour
         clientRequest.requestEndTurn();
     }
 
-    private void ChangeRessourcesOutput(ServerPlayer player)
-    {
-        bricksText.text = player.getResourceAmount(RESOURCETYPE.BRICK).ToString();
-        oreText.text = player.getResourceAmount(RESOURCETYPE.ORE).ToString();
-        sheepText.text = player.getResourceAmount(RESOURCETYPE.SHEEP).ToString();
-        wheatText.text = player.getResourceAmount(RESOURCETYPE.WHEAT).ToString();
-        woodText.text = player.getResourceAmount(RESOURCETYPE.WOOD).ToString();
-    }
+    
 
     public static int getCurrentPlayer()
     {
