@@ -47,6 +47,7 @@ namespace Networking.ServerSide
             // alle lobby daten zurücksenden
 
             ArrayList allPlayerInformation = new ArrayList();
+
             foreach (var player in allPlayer)
             {
                 if (player.GetPlayerID() == currentClientID)
@@ -64,7 +65,7 @@ namespace Networking.ServerSide
                 }
             }
             
-            serverRequest.notifyClientJoined(allPlayerInformation);
+            serverRequest.notifyClientJoined(allPlayerInformation, Server.serverIP.ToString());
         }
 
         

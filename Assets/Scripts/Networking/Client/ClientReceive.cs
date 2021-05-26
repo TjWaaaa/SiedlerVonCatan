@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using Enums;
 using Newtonsoft.Json.Linq;
 using Networking.Interfaces;
@@ -34,7 +33,7 @@ namespace Networking.ClientSide
         {
             prefabFactory = GameObject.Find("PrefabFactory").GetComponent<PrefabFactory>();
             DontDestroyOnLoad(this);
-
+        
             currentScene = SceneManager.GetActiveScene();
             boardGenerator = GetComponent<BoardGenerator>();
         }
@@ -122,6 +121,9 @@ namespace Networking.ClientSide
         
         public void handleClientJoined(Packet serverPacket)
         {
+            //set Loby IP
+            GameObject.Find("Canvas/LobbyIP").GetComponent<Text>().text = serverPacket.lobbyIP;
+            
             // for each player:
             // initiialize prefab with data
             Debug.Log("Client recieved new package: " + PacketSerializer.objectToJsonString(serverPacket));
