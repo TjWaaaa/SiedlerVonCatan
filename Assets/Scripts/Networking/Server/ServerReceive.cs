@@ -151,7 +151,7 @@ namespace Networking.ServerSide
             {
                 currentPlayer++;
             }
-            // Updating Representative Players
+            // Updating Representative Players and OwnPlayer
             serverRequest.updateRepPlayers(convertSPAToRPA(),allPlayer.ElementAt(currentPlayer).Value.convertFromSPToOP(),allPlayer.ElementAt(currentPlayer).Value.convertSPToCPResources());
             
             // TODO change method call => handleBeginRound should only be called after the new player is already set and all have been notified
@@ -194,7 +194,7 @@ namespace Networking.ServerSide
             newPlayer.setResourceAmount(RESOURCETYPE.SHEEP, 15);
             newPlayer.setResourceAmount(RESOURCETYPE.WOOD, 15);
             newPlayer.setResourceAmount(RESOURCETYPE.BRICK, 15);
-            newPlayer.setResourceAmount(RESOURCETYPE.BRICK, 15);
+            newPlayer.setResourceAmount(RESOURCETYPE.ORE, 15);
             newPlayer.setResourceAmount(RESOURCETYPE.WHEAT, 15);
             allPlayer.Add(playerId,newPlayer);
             playerAmount++;
