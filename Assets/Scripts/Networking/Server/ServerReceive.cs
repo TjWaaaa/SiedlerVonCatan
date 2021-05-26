@@ -52,7 +52,6 @@ namespace Networking.ServerSide
                     PLAYERCOLOR playerColor = player.getPlayerColor(); // needs to be done, because Color is not serializable ¯\_(ツ)_/¯
                     allPlayerInformation.Add(new object[] {player.getPlayerID(), player.getPlayerName(), player.getPlayerColor()});
                 }
-                
             }
             
             serverRequest.notifyClientJoined(allPlayerInformation, Server.serverIP.ToString());

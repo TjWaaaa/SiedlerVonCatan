@@ -272,7 +272,7 @@ GameObject:
   - component: {fileID: 34572271}
   - component: {fileID: 34572270}
   m_Layer: 0
-  m_Name: 53
+  m_Name: V53
   m_TagString: VillageSlot
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -558,7 +558,7 @@ GameObject:
   - component: {fileID: 49141457}
   - component: {fileID: 49141456}
   m_Layer: 0
-  m_Name: 49
+  m_Name: V49
   m_TagString: VillageSlot
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1286,7 +1286,7 @@ GameObject:
   - component: {fileID: 145281196}
   - component: {fileID: 145281195}
   m_Layer: 0
-  m_Name: 52
+  m_Name: V52
   m_TagString: VillageSlot
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1563,18 +1563,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   robber: {fileID: 3788127331573154054, guid: 2e1533a3b472ba44ca1de86e28cd87b1, type: 3}
-  villageBlue: {fileID: 1473430204017719237, guid: 06b2b5d8f93919149a47c3914917dd9d, type: 3}
-  villageRed: {fileID: 1866053306598989734, guid: 92b6d5734317208419595df81af13528, type: 3}
-  villageWhite: {fileID: 8846029281639864893, guid: 14264cbe6a9e0f8429eec1745c8ecc27, type: 3}
-  villageYellow: {fileID: 6556314139959314210, guid: 0c5644bb1be42f04f8037189e9bda360, type: 3}
-  cityBlue: {fileID: 2176914337095495632, guid: d330560e48e1b0e45b01b2f8c3b39561, type: 3}
-  cityRed: {fileID: 3552176500700860784, guid: eccb6e89d0407a14a97b5d0c44af3b1e, type: 3}
-  cityWhite: {fileID: 7532268434397492872, guid: 60f8ebd340c1c4844bb13c1c687206f7, type: 3}
-  cityYellow: {fileID: 1263915188082681082, guid: 68239779616515f44be30061105bb60c, type: 3}
-  roadBlue: {fileID: 8340757790129642905, guid: e56b7453d7e170240b12669f24b262ae, type: 3}
-  roadRed: {fileID: 2739458748758786287, guid: d108855e67b985447b90c1dd46d631bd, type: 3}
-  roadWhite: {fileID: 1051114755748909797, guid: 5ab0f20020add774787c9431f1cdeec5, type: 3}
-  roadYellow: {fileID: 316076876585621947, guid: 0f97f4339df0ef048b6d6067eb0c01ac, type: 3}
 --- !u!114 &153015446
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2070,7 +2058,7 @@ GameObject:
   - component: {fileID: 206358443}
   - component: {fileID: 206358442}
   m_Layer: 0
-  m_Name: 22
+  m_Name: V22
   m_TagString: VillageSlot
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2166,7 +2154,7 @@ GameObject:
   - component: {fileID: 210634708}
   - component: {fileID: 210634707}
   m_Layer: 0
-  m_Name: 29
+  m_Name: V29
   m_TagString: VillageSlot
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2357,7 +2345,7 @@ GameObject:
   - component: {fileID: 247417189}
   - component: {fileID: 247417188}
   m_Layer: 0
-  m_Name: 13
+  m_Name: V13
   m_TagString: VillageSlot
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2548,7 +2536,7 @@ GameObject:
   - component: {fileID: 269975322}
   - component: {fileID: 269975321}
   m_Layer: 0
-  m_Name: 42
+  m_Name: V42
   m_TagString: VillageSlot
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2719,7 +2707,7 @@ GameObject:
   - component: {fileID: 299546514}
   - component: {fileID: 299546513}
   m_Layer: 0
-  m_Name: 3
+  m_Name: V3
   m_TagString: VillageSlot
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4361,7 +4349,7 @@ GameObject:
   - component: {fileID: 374922944}
   - component: {fileID: 374922943}
   m_Layer: 0
-  m_Name: 47
+  m_Name: V47
   m_TagString: VillageSlot
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4627,7 +4615,7 @@ GameObject:
   - component: {fileID: 395218093}
   - component: {fileID: 395218092}
   m_Layer: 0
-  m_Name: 41
+  m_Name: V41
   m_TagString: VillageSlot
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4784,7 +4772,7 @@ GameObject:
   - component: {fileID: 397686511}
   - component: {fileID: 397686510}
   m_Layer: 0
-  m_Name: 46
+  m_Name: V46
   m_TagString: VillageSlot
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4880,7 +4868,7 @@ GameObject:
   - component: {fileID: 406288416}
   - component: {fileID: 406288415}
   m_Layer: 0
-  m_Name: 26
+  m_Name: V26
   m_TagString: VillageSlot
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5786,7 +5774,7 @@ GameObject:
   - component: {fileID: 507543794}
   - component: {fileID: 507543793}
   m_Layer: 0
-  m_Name: 51
+  m_Name: V51
   m_TagString: VillageSlot
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5882,7 +5870,7 @@ GameObject:
   - component: {fileID: 525845944}
   - component: {fileID: 525845943}
   m_Layer: 0
-  m_Name: 35
+  m_Name: V35
   m_TagString: VillageSlot
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5978,7 +5966,7 @@ GameObject:
   - component: {fileID: 541655523}
   - component: {fileID: 541655522}
   m_Layer: 0
-  m_Name: 9
+  m_Name: V9
   m_TagString: VillageSlot
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -6598,7 +6586,7 @@ GameObject:
   - component: {fileID: 630187930}
   - component: {fileID: 630187929}
   m_Layer: 0
-  m_Name: 4
+  m_Name: V4
   m_TagString: VillageSlot
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -7214,7 +7202,7 @@ GameObject:
   - component: {fileID: 672688412}
   - component: {fileID: 672688411}
   m_Layer: 0
-  m_Name: 0
+  m_Name: V0
   m_TagString: VillageSlot
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -7716,7 +7704,7 @@ GameObject:
   - component: {fileID: 697504219}
   - component: {fileID: 697504218}
   m_Layer: 0
-  m_Name: 2
+  m_Name: V2
   m_TagString: VillageSlot
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -8230,7 +8218,7 @@ GameObject:
   - component: {fileID: 790401534}
   - component: {fileID: 790401533}
   m_Layer: 0
-  m_Name: 11
+  m_Name: V11
   m_TagString: VillageSlot
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -9013,7 +9001,7 @@ GameObject:
   - component: {fileID: 867521506}
   - component: {fileID: 867521505}
   m_Layer: 0
-  m_Name: 17
+  m_Name: V17
   m_TagString: VillageSlot
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -9309,7 +9297,7 @@ GameObject:
   - component: {fileID: 890994868}
   - component: {fileID: 890994867}
   m_Layer: 0
-  m_Name: 15
+  m_Name: V15
   m_TagString: VillageSlot
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -9405,7 +9393,7 @@ GameObject:
   - component: {fileID: 893177522}
   - component: {fileID: 893177521}
   m_Layer: 0
-  m_Name: 39
+  m_Name: V39
   m_TagString: VillageSlot
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -9501,7 +9489,7 @@ GameObject:
   - component: {fileID: 896790621}
   - component: {fileID: 896790620}
   m_Layer: 0
-  m_Name: 45
+  m_Name: V45
   m_TagString: VillageSlot
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -9597,7 +9585,7 @@ GameObject:
   - component: {fileID: 900769634}
   - component: {fileID: 900769633}
   m_Layer: 0
-  m_Name: 8
+  m_Name: V8
   m_TagString: VillageSlot
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -10191,7 +10179,7 @@ GameObject:
   - component: {fileID: 958356961}
   - component: {fileID: 958356960}
   m_Layer: 0
-  m_Name: 10
+  m_Name: V10
   m_TagString: VillageSlot
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -10287,7 +10275,7 @@ GameObject:
   - component: {fileID: 966100303}
   - component: {fileID: 966100302}
   m_Layer: 0
-  m_Name: 37
+  m_Name: V37
   m_TagString: VillageSlot
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -10655,7 +10643,7 @@ GameObject:
   - component: {fileID: 1018948331}
   - component: {fileID: 1018948330}
   m_Layer: 0
-  m_Name: 5
+  m_Name: V5
   m_TagString: VillageSlot
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -11300,7 +11288,7 @@ GameObject:
   - component: {fileID: 1061722271}
   - component: {fileID: 1061722270}
   m_Layer: 0
-  m_Name: 19
+  m_Name: V19
   m_TagString: VillageSlot
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -11910,7 +11898,7 @@ GameObject:
   - component: {fileID: 1131309425}
   - component: {fileID: 1131309424}
   m_Layer: 0
-  m_Name: 1
+  m_Name: V1
   m_TagString: VillageSlot
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -12006,7 +11994,7 @@ GameObject:
   - component: {fileID: 1143084976}
   - component: {fileID: 1143084975}
   m_Layer: 0
-  m_Name: 18
+  m_Name: V18
   m_TagString: VillageSlot
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -12757,7 +12745,7 @@ GameObject:
   - component: {fileID: 1194676720}
   - component: {fileID: 1194676719}
   m_Layer: 0
-  m_Name: 30
+  m_Name: V30
   m_TagString: VillageSlot
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -12853,7 +12841,7 @@ GameObject:
   - component: {fileID: 1204316246}
   - component: {fileID: 1204316245}
   m_Layer: 0
-  m_Name: 20
+  m_Name: V20
   m_TagString: VillageSlot
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -13044,7 +13032,7 @@ GameObject:
   - component: {fileID: 1231909581}
   - component: {fileID: 1231909580}
   m_Layer: 0
-  m_Name: 14
+  m_Name: V14
   m_TagString: VillageSlot
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -13756,7 +13744,7 @@ GameObject:
   - component: {fileID: 1316095373}
   - component: {fileID: 1316095372}
   m_Layer: 0
-  m_Name: 48
+  m_Name: V48
   m_TagString: VillageSlot
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -14405,7 +14393,7 @@ GameObject:
   - component: {fileID: 1372353259}
   - component: {fileID: 1372353258}
   m_Layer: 0
-  m_Name: 27
+  m_Name: V27
   m_TagString: VillageSlot
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -15512,7 +15500,7 @@ GameObject:
   - component: {fileID: 1466032921}
   - component: {fileID: 1466032920}
   m_Layer: 0
-  m_Name: 25
+  m_Name: V25
   m_TagString: VillageSlot
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -15837,7 +15825,7 @@ GameObject:
   - component: {fileID: 1485802183}
   - component: {fileID: 1485802182}
   m_Layer: 0
-  m_Name: 34
+  m_Name: V34
   m_TagString: VillageSlot
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -16510,7 +16498,7 @@ GameObject:
   - component: {fileID: 1518649427}
   - component: {fileID: 1518649426}
   m_Layer: 0
-  m_Name: 23
+  m_Name: V23
   m_TagString: VillageSlot
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -16606,7 +16594,7 @@ GameObject:
   - component: {fileID: 1519974144}
   - component: {fileID: 1519974143}
   m_Layer: 0
-  m_Name: 24
+  m_Name: V24
   m_TagString: VillageSlot
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -17012,7 +17000,7 @@ GameObject:
   - component: {fileID: 1550546644}
   - component: {fileID: 1550546643}
   m_Layer: 0
-  m_Name: 21
+  m_Name: V21
   m_TagString: VillageSlot
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -17108,7 +17096,7 @@ GameObject:
   - component: {fileID: 1555717655}
   - component: {fileID: 1555717654}
   m_Layer: 0
-  m_Name: 16
+  m_Name: V16
   m_TagString: VillageSlot
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -17340,7 +17328,7 @@ GameObject:
   - component: {fileID: 1567363491}
   - component: {fileID: 1567363490}
   m_Layer: 0
-  m_Name: 32
+  m_Name: V32
   m_TagString: VillageSlot
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -17894,7 +17882,7 @@ GameObject:
   - component: {fileID: 1603041130}
   - component: {fileID: 1603041129}
   m_Layer: 0
-  m_Name: 12
+  m_Name: V12
   m_TagString: VillageSlot
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -18768,7 +18756,7 @@ GameObject:
   - component: {fileID: 1684922852}
   - component: {fileID: 1684922851}
   m_Layer: 0
-  m_Name: 7
+  m_Name: V7
   m_TagString: VillageSlot
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -19466,7 +19454,7 @@ GameObject:
   - component: {fileID: 1754674083}
   - component: {fileID: 1754674082}
   m_Layer: 0
-  m_Name: 33
+  m_Name: V33
   m_TagString: VillageSlot
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -19773,7 +19761,7 @@ GameObject:
   - component: {fileID: 1773682509}
   - component: {fileID: 1773682508}
   m_Layer: 0
-  m_Name: 38
+  m_Name: V38
   m_TagString: VillageSlot
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -20078,7 +20066,7 @@ GameObject:
   - component: {fileID: 1792402476}
   - component: {fileID: 1792402475}
   m_Layer: 0
-  m_Name: 43
+  m_Name: V43
   m_TagString: VillageSlot
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -20403,7 +20391,7 @@ GameObject:
   - component: {fileID: 1798938618}
   - component: {fileID: 1798938617}
   m_Layer: 0
-  m_Name: 6
+  m_Name: V6
   m_TagString: VillageSlot
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -20827,7 +20815,7 @@ GameObject:
   - component: {fileID: 1856262405}
   - component: {fileID: 1856262404}
   m_Layer: 0
-  m_Name: 31
+  m_Name: V31
   m_TagString: VillageSlot
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -20923,7 +20911,7 @@ GameObject:
   - component: {fileID: 1859466856}
   - component: {fileID: 1859466855}
   m_Layer: 0
-  m_Name: 44
+  m_Name: V44
   m_TagString: VillageSlot
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -22111,7 +22099,7 @@ GameObject:
   - component: {fileID: 1970818773}
   - component: {fileID: 1970818772}
   m_Layer: 0
-  m_Name: 36
+  m_Name: V36
   m_TagString: VillageSlot
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -22302,7 +22290,7 @@ GameObject:
   - component: {fileID: 1988706593}
   - component: {fileID: 1988706592}
   m_Layer: 0
-  m_Name: 50
+  m_Name: V50
   m_TagString: VillageSlot
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -22398,7 +22386,7 @@ GameObject:
   - component: {fileID: 1989172481}
   - component: {fileID: 1989172480}
   m_Layer: 0
-  m_Name: 28
+  m_Name: V28
   m_TagString: VillageSlot
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -23414,7 +23402,7 @@ GameObject:
   - component: {fileID: 2066281242}
   - component: {fileID: 2066281241}
   m_Layer: 0
-  m_Name: 40
+  m_Name: V40
   m_TagString: VillageSlot
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

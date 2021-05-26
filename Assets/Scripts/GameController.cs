@@ -80,54 +80,19 @@ public class GameController : MonoBehaviour
 
                     if (hit.collider.tag == "VillageSlot")
                     {
-                        int posInArray = Int32.Parse(hit.transform.name);
-                        
+                        int posInArray = Int32.Parse(hit.transform.name.Substring(1));
                         clientRequest.requestBuild(BUYABLES.VILLAGE, posInArray);
-                            
-                            
-                    //     Debug.Log("Village: " + hit.transform.position);
-                    //     if (players[currentPlayer].canBuyBuyable(BUYABLES.VILLAGE)) // clientGameLogic.requestBuild
-                    //     {
-                    //     
-                    //         //Color color = players[currentPlayer].GetColor();
-                    //         BuildVillage(hit.transform.position + new Vector3(0, 0.065f, 0));
-                    //         Destroy(hit.transform.gameObject);
-                    //         players[currentPlayer].buyBuyable(BUYABLES.VILLAGE);
-                    //         ChangeRessourcesOutput(players[currentPlayer]);
-                    //     }
-                    //     else Debug.Log("Not enough ressources");
                     }
-
                     else if (hit.collider.tag == "Village")
                     {
-
-                        Debug.Log("City: " + hit.transform.position);
-                        if (players[currentPlayer].canBuyBuyable(BUYABLES.CITY))
-                        {
-
-                            //Color color = players[currentPlayer].GetColor();
-                            BuildCity(hit.transform.position);
-                            Destroy(hit.transform.gameObject);
-                            players[currentPlayer].buyBuyable(BUYABLES.CITY);
-                            ChangeRessourcesOutput(players[currentPlayer]);
-                        }
-                        else Debug.Log("Not enough ressources");
+                        int posInArray = Int32.Parse(hit.transform.name.Substring(1));
+                        Debug.Log(posInArray);
+                        clientRequest.requestBuild(BUYABLES.CITY, posInArray);
                     }
-
                     else if (hit.collider.tag == "RoadSlot")
                     {
-
-                        Debug.Log("Road: " + hit.transform.position);
-                        if (players[currentPlayer].canBuyBuyable(BUYABLES.ROAD))
-                        {
-
-                            //Color color = players[currentPlayer].GetColor();
-                            BuildRoad(hit.transform.position + new Vector3(0, 0.065f, 0), hit.transform.rotation);
-                            Destroy(hit.transform.gameObject);
-                            players[currentPlayer].buyBuyable(BUYABLES.ROAD);
-                            ChangeRessourcesOutput(players[currentPlayer]);
-                        }
-                        else Debug.Log("Not enough resources");
+                        int posInArray = Int32.Parse(hit.transform.name);
+                        clientRequest.requestBuild(BUYABLES.ROAD, posInArray);
                     }
                 }
             }

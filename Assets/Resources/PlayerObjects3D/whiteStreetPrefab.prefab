@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 3635043118512506874}
   - component: {fileID: 1555627796216836912}
   m_Layer: 0
-  m_Name: whiteStreet
+  m_Name: whiteStreetPrefab
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
