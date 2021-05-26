@@ -1,5 +1,7 @@
 using System.Collections;
 using Player;
+using System.Collections.Generic;
+using Enums;
 
 namespace Networking.Package
 {
@@ -39,5 +41,9 @@ namespace Networking.Package
         public string errorMessage { get; set; } // when client request is rejected
 
         public int[][] updateRP { get; set; }
+
+        public int[] updateOP {get; set; }
+
+        public Dictionary<RESOURCETYPE, int> updateResourcesOnOP {get; set;}
     }
 }

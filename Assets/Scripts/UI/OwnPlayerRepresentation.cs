@@ -36,36 +36,20 @@ namespace UI
             
                         
                         // connect labels to ownClientPlayer
-                        
-                        updateOwnPlayerResources(ownClientPlayer);
-                        updateOwnPlayerLeftStreets(ownClientPlayer);
-                        updateOwnPlayerLeftVillages(ownClientPlayer);
-                        updateOwnPlayerLeftCitys(ownClientPlayer);
+                        updaetOwnPlayerUI(ownClientPlayer);
         }
-
-        public void updateOwnPlayerResources(OwnClientPlayer ownClientPlayer)
+        
+        public void updaetOwnPlayerUI(OwnClientPlayer ownClientPlayer)
         {
+            ownPlayerLeftStreets.text = ownClientPlayer.getLeftStreets().ToString();
+            ownPlayerLeftVillages.text = ownClientPlayer.getLeftVillages().ToString();
+            ownPlayerLeftCitys.text = ownClientPlayer.getLeftCitys().ToString();
+
             ownPlayerSheep.text = ownClientPlayer.getResourceAmount(RESOURCETYPE.SHEEP).ToString();
             ownPlayerWood.text = ownClientPlayer.getResourceAmount(RESOURCETYPE.WOOD).ToString();
             ownPlayerBrick.text = ownClientPlayer.getResourceAmount(RESOURCETYPE.BRICK).ToString();
             ownPlayerOre.text = ownClientPlayer.getResourceAmount(RESOURCETYPE.ORE).ToString();
             ownPlayerWheat.text = ownClientPlayer.getResourceAmount(RESOURCETYPE.WHEAT).ToString();
         }
-
-        public void updateOwnPlayerLeftStreets(OwnClientPlayer ownClientPlayer)
-        {
-            ownPlayerLeftStreets.text = ownClientPlayer.getLeftStreets().ToString();
-        }
-
-        public void updateOwnPlayerLeftVillages(OwnClientPlayer ownClientPlayer)
-        {
-            ownPlayerLeftVillages.text = ownClientPlayer.getLeftVillages().ToString();
-        }
-
-        public void updateOwnPlayerLeftCitys(OwnClientPlayer ownClientPlayer)
-        {
-            ownPlayerLeftCitys.text = ownClientPlayer.getLeftCitys().ToString();
-        }
-        
     }
 }

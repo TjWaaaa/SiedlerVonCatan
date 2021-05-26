@@ -153,12 +153,14 @@ namespace Networking.Communication
             Server.sendDataToAll(packet);
         }
 
-        public void updateRepPlayers(int[][] updateNumbers)
+        public void updateRepPlayers(int[][] updateNumbers, int[] updateLeftBuildings,Dictionary<RESOURCETYPE, int> updateResources)
         {
             Debug.Log("ServerRequest updateRPPacket");
             Packet packet = new Packet();
             packet.type = (int) COMMUNICATION_METHODS.HANDLE_UPDATE_RP;
             packet.updateRP = updateNumbers;
+            packet.updateOP = updateLeftBuildings;
+            packet.updateResourcesOnOP = updateResources;
 
             // send to all
             Server.sendDataToAll(packet);

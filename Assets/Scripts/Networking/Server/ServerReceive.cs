@@ -139,7 +139,7 @@ namespace Networking.ServerSide
                 currentPlayer++;
             }
             // Updating Representative Players
-            serverRequest.updateRepPlayers(convertSPAToRPA());
+            serverRequest.updateRepPlayers(convertSPAToRPA(),allPlayer.ElementAt(currentPlayer).Value.convertFromSPToOP(),allPlayer.ElementAt(currentPlayer).Value.convertSPToCPResources());
             
             // TODO change method call => handleBeginRound should only be called after the new player is already set and all have been notified
             Debug.Log("handleEndTurn has been called");

@@ -272,7 +272,7 @@ namespace Networking.ClientSide
                     case (int) COMMUNICATION_METHODS.HANDLE_UPDATE_RP:
                         ThreadManager.executeOnMainThread(() =>
                         {  
-                            clientGameLogic.handleUpdateRP(incomingData);
+                            clientGameLogic.handleUpdateRPandOP(incomingData);
                         });
                         break;
 
