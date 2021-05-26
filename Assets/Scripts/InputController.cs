@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Enums;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -21,9 +22,9 @@ public class InputController : MonoBehaviour
         buildVillageButton = GameObject.Find("buildVillage");
         buildCityButton = GameObject.Find("buildCity");
         
-        buildStreetButton.GetComponent<Button>().onClick.AddListener(changeBuildStreetMode);
-        buildVillageButton.GetComponent<Button>().onClick.AddListener(changeBuildVillageMode);
-        buildCityButton.GetComponent<Button>().onClick.AddListener(changeBuildCityMode);
+        buildStreetButton.GetComponent<Button>().onClick.AddListener(startBuildStreetMode);
+        buildVillageButton.GetComponent<Button>().onClick.AddListener(startBuildVillageMode);
+        buildCityButton.GetComponent<Button>().onClick.AddListener(startBuildCityMode);
     }
 
     // Update is called once per frame
@@ -32,54 +33,37 @@ public class InputController : MonoBehaviour
         
     }
 
-    private static void changeBuildStreetMode()
+    public static void stopBuildMode()
     {
-        if (buildStreetMode)
-        {
-            buildStreetMode = false;
-            Debug.Log("BUILDSTREETMODE IS OFF");
-        }
-        else
-        {
-            if (!buildVillageMode && !buildCityMode)
-            {
-                buildStreetMode = true;
-                Debug.Log("BUILDSTREETMODE IS ON");
-            }
-        }
+        buildStreetMode = false;
+        buildVillageMode = false;
+        buildCityMode = false;
     }
     
-    private static void changeBuildVillageMode()
+    private static void startBuildStreetMode()
     {
-        if (buildVillageMode)
-        {
-            buildVillageMode = false;
-            Debug.Log("BUILDVILLAGEMODE IS OFF");
-        }
-        else
-        {
-            if (!buildStreetMode && !buildCityMode)
-            {
-                buildVillageMode = true;
-                Debug.Log("BUILDVILLAGEMODE IS ON");
-            }
-        }
+        buildStreetMode = true;
+        buildCityMode = false;
+        buildVillageMode = false;
+        Debug.Log("BUILDSTREETMODE IS ON");
+         
     }
     
-    private static void changeBuildCityMode()
+    private static void startBuildVillageMode()
     {
-        if (buildCityMode)
-        {
-            buildCityMode = false;
-            Debug.Log("BUILDCITYMODE IS OFF");
-        }
-        else
-        {
-            if (!buildVillageMode && !buildStreetMode)
-            {
-                buildCityMode = true;
-                Debug.Log("BUILDCITYMODE IS ON");
-            }
-        }
+        buildVillageMode = true;
+        buildStreetMode = false;
+        buildCityMode = false;
+        Debug.Log("BUILDVILLAGEMODE IS ON");
+
+    }
+    
+    private static void startBuildCityMode()
+    {
+        buildCityMode = true;
+        buildVillageMode = false;
+        buildStreetMode = false;
+        Debug.Log("BUILDCITYMODE IS ON");
+        
     }
 }
