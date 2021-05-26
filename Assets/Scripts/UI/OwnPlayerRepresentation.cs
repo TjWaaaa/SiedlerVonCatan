@@ -19,26 +19,26 @@ namespace UI
         private TextMeshProUGUI ownPlayerLeftVillages;
         private TextMeshProUGUI ownPlayerLeftCitys;
 
-       
+
         public void represent(OwnClientPlayer ownClientPlayer)
         {
             // find labels in UI
-                        
-                        ownPlayerSheep = GameObject.Find("OwnPlayerSheep").GetComponent<TextMeshProUGUI>();
-                        ownPlayerWood = GameObject.Find("OwnPlayerWood").GetComponent<TextMeshProUGUI>();
-                        ownPlayerBrick = GameObject.Find("OwnPlayerBrick").GetComponent<TextMeshProUGUI>();
-                        ownPlayerOre = GameObject.Find("OwnPlayerOre").GetComponent<TextMeshProUGUI>();
-                        ownPlayerWheat = GameObject.Find("OwnPlayerWheat").GetComponent<TextMeshProUGUI>();
-                        
-                        ownPlayerLeftStreets = GameObject.Find("OwnPlayerLeftStreets").GetComponent<TextMeshProUGUI>();
-                        ownPlayerLeftVillages = GameObject.Find("OwnPlayerLeftVillages").GetComponent<TextMeshProUGUI>();
-                        ownPlayerLeftCitys = GameObject.Find("OwnPlayerLeftCitys").GetComponent<TextMeshProUGUI>();
-            
-                        
-                        // connect labels to ownClientPlayer
-                        updaetOwnPlayerUI(ownClientPlayer);
+
+            ownPlayerSheep = GameObject.Find("OwnPlayerSheep").GetComponent<TextMeshProUGUI>();
+            ownPlayerWood = GameObject.Find("OwnPlayerWood").GetComponent<TextMeshProUGUI>();
+            ownPlayerBrick = GameObject.Find("OwnPlayerBrick").GetComponent<TextMeshProUGUI>();
+            ownPlayerOre = GameObject.Find("OwnPlayerOre").GetComponent<TextMeshProUGUI>();
+            ownPlayerWheat = GameObject.Find("OwnPlayerWheat").GetComponent<TextMeshProUGUI>();
+
+            ownPlayerLeftStreets = GameObject.Find("OwnPlayerLeftStreets").GetComponent<TextMeshProUGUI>();
+            ownPlayerLeftVillages = GameObject.Find("OwnPlayerLeftVillages").GetComponent<TextMeshProUGUI>();
+            ownPlayerLeftCitys = GameObject.Find("OwnPlayerLeftCitys").GetComponent<TextMeshProUGUI>();
+
+
+            // connect labels to ownClientPlayer
+            updaetOwnPlayerUI(ownClientPlayer);
         }
-        
+
         public void updaetOwnPlayerUI(OwnClientPlayer ownClientPlayer)
         {
             ownPlayerLeftStreets.text = ownClientPlayer.getLeftStreets().ToString();

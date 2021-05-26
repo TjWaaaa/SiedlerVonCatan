@@ -214,7 +214,7 @@ namespace Player
             return new int[] {leftStreets,leftVillages,leftCitys};
         }
 
-        public Dictionary<RESOURCETYPE, int> convertSPToCPResources()
+        public Dictionary<RESOURCETYPE, int> convertSPToOPResources()
         {
             return resources;
         }
