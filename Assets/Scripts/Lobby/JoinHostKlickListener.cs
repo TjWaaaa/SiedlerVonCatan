@@ -20,10 +20,10 @@ public class JoinHostKlickListener : MonoBehaviour
     /// </summary>
     public void joinListener()
     {
-        string playerName = GameObject.Find("Canvas/joinPanel/join_PlayerName").GetComponent<InputField>().text;
-        string hostIp = GameObject.Find("Canvas/joinPanel/join_IP_Address").GetComponent<InputField>().text == ""
+        string playerName = GameObject.Find("Canvas/InputField_playerName").GetComponent<InputField>().text;
+        string hostIp = GameObject.Find("Canvas/InputField_hostIP").GetComponent<InputField>().text == ""
             ? "127.0.0.1"
-            : GameObject.Find("Canvas/joinPanel/join_IP_Address").GetComponent<InputField>().text;
+            : GameObject.Find("Canvas/InputField_hostIP").GetComponent<InputField>().text;
 
         Debug.Log("joining game...");
         Debug.Log("playerName: " + playerName);
@@ -54,7 +54,7 @@ public class JoinHostKlickListener : MonoBehaviour
     public void hostListener()
     {
         bool isRunning = Server.setupServer(); //host server
-        string playerName = GameObject.Find("Canvas/hostPanel/host_PlayerName").GetComponent<InputField>().text;
+        string playerName = GameObject.Find("Canvas/InputField_playerName").GetComponent<InputField>().text;
         
         // Packet gameInformation = new Packet();
         // gameInformation.playerName = "Simon";
