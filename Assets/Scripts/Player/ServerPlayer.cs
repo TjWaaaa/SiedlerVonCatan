@@ -198,7 +198,17 @@ namespace Player
 
         public int[] convertFromSPToRP()
         {
-            return new int[] { playerID, victoryPoints, devCardAmount };
+            return new int[] {victoryPoints, getTotalResourceAmount(), devCardAmount };
+        }
+
+        public int[] convertFromSPToOP()
+        {
+            return new int[] {leftStreets,leftVillages,leftCitys};
+        }
+
+        public Dictionary<RESOURCETYPE, int> convertSPToCPResources()
+        {
+            return resources;
         }
     }
 }

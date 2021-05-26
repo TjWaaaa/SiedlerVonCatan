@@ -13,12 +13,13 @@ namespace Networking.Communication
 {
     public class ServerRequest : ServerToClientCommunication
     {
-        public void notifyClientJoined(ArrayList playerInformation)
+        public void notifyClientJoined(ArrayList playerInformation, string lobbyIP)
         {
             Packet packet = new Packet();
             packet.type = (int) COMMUNICATION_METHODS.HANDLE_CLIENT_JOINED;
             packet.lobbyContent = playerInformation;
-
+            packet.lobbyIP = lobbyIP;
+            
             // send to all
             Server.sendDataToAll(packet);
         }
@@ -151,6 +152,19 @@ namespace Networking.Communication
             packet.developmentCard = (int) developmentCard;
             packet.playerName = playerName;
             
+            // send to all
+            Server.sendDataToAll(packet);
+        }
+
+        public void updateRepPlayers(int[][] updateNumbers, int[] updateLeftBuildings,Dictionary<RESOURCETYPE, int> updateResources)
+        {
+            Debug.Log("ServerRequest updateRPPacket");
+            Packet packet = new Packet();
+            packet.type = (int) COMMUNICATION_METHODS.HANDLE_UPDATE_RP;
+            packet.updateRP = updateNumbers;
+            packet.updateOP = updateLeftBuildings;
+            packet.updateResourcesOnOP = updateResources;
+
             // send to all
             Server.sendDataToAll(packet);
         }

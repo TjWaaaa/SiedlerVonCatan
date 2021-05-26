@@ -55,7 +55,7 @@ namespace Networking.ServerSide
                 
             }
             
-            serverRequest.notifyClientJoined(allPlayerInformation);
+            serverRequest.notifyClientJoined(allPlayerInformation, Server.serverIP.ToString());
         }
  
         public void handleRequestPlayerReady(Packet clientPacket, int currentClientID)
@@ -152,7 +152,8 @@ namespace Networking.ServerSide
             {
                 currentPlayer++;
             }
-            //serverRequest.;
+            // Updating Representative Players
+            serverRequest.updateRepPlayers(convertSPAToRPA(),allPlayer.ElementAt(currentPlayer).Value.convertFromSPToOP(),allPlayer.ElementAt(currentPlayer).Value.convertSPToCPResources());
             
             // TODO change method call => handleBeginRound should only be called after the new player is already set and all have been notified
             Debug.Log("handleEndTurn has been called");
@@ -176,28 +177,22 @@ namespace Networking.ServerSide
             return diceNumbers;
         }
 
-        // public int[][] convertSPAToRPA() // ServerPlayerArray / RepPlayerArray
-        // {
-        //     int i = 0;
-        //     foreach (ServerPlayer player in allPlayer.Values)
-        //     {
-        //         player.convertFromSPToRP();
-        //         i++;
-        //     }
-        // }
-        
-        public void generatePlayer(int playerID)
+        public int[][] convertSPAToRPA() // ServerPlayerArray / RepPlayerArray
         {
-            ServerPlayer newPlayer = new ServerPlayer(playerID);
-            
-            // only for testing
-            newPlayer.setResourceAmount(RESOURCETYPE.SHEEP,3);
-            newPlayer.setResourceAmount(RESOURCETYPE.WOOD,10);
-            newPlayer.setResourceAmount(RESOURCETYPE.BRICK,10);
-            newPlayer.setResourceAmount(RESOURCETYPE.ORE,10);
-            newPlayer.setResourceAmount(RESOURCETYPE.WHEAT,10);
-            
-            allPlayer.Add(playerID,newPlayer);
+            int i = 0;
+            int[][] cache = new int[playerAmount][];
+            foreach (ServerPlayer player in allPlayer.Values) // Goes though 0 1 2 3 in allPlayer
+            {
+                cache[i] = player.convertFromSPToRP();
+                i++;
+            }
+            return cache;
+        }
+
+        public void generatePlayer(int playerId)
+        {
+            ServerPlayer newPlayer = new ServerPlayer(playerId);
+            allPlayer.Add(playerId,newPlayer);
             playerAmount++;
         }
     }

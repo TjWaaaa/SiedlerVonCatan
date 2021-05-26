@@ -21,10 +21,12 @@ namespace Networking.ClientSide
 
         private PrefabFactory prefabFactory;
         private GameObject scrollViewContent;
+        private PlayerRepresentation playerRepresentation = new PlayerRepresentation();
+        private OwnPlayerRepresentation ownPlayerRepresentation = new OwnPlayerRepresentation();
 
         //private RepresentativePlayer[] representativePlayerArray;
-        public static List<RepresentativePlayer> representativePlayers = new List<RepresentativePlayer>();
-        public static OwnClientPlayer ownClientPlayer;
+        public List<RepresentativePlayer> representativePlayers = new List<RepresentativePlayer>();
+        public OwnClientPlayer ownClientPlayer;
         private int playerNumber = 1;
 
         private int currentPlayer = 0;
@@ -43,7 +45,7 @@ namespace Networking.ClientSide
         {
             prefabFactory = GameObject.Find("PrefabFactory").GetComponent<PrefabFactory>();
             DontDestroyOnLoad(this);
-
+        
             currentScene = SceneManager.GetActiveScene();
             boardGenerator = GetComponent<BoardGenerator>();
         }
@@ -65,6 +67,8 @@ namespace Networking.ClientSide
                 if (currentScene.name == "2_GameScene")
                 {
                     boardGenerator.instantiateGameBoard(gameBoard);
+                    playerRepresentation.represent(representativePlayers.ToArray());
+                    ownPlayerRepresentation.represent(ownClientPlayer);
                     runFixedUpdate = false;
                 }
             }
@@ -141,6 +145,9 @@ namespace Networking.ClientSide
         
         public void handleClientJoined(Packet serverPacket)
         {
+            //set Loby IP
+            GameObject.Find("Canvas/LobbyIP").GetComponent<Text>().text = serverPacket.lobbyIP;
+            
             // for each player:
             // initiialize prefab with data
             Debug.Log("Client recieved new package: " + PacketSerializer.objectToJsonString(serverPacket));
@@ -218,7 +225,7 @@ namespace Networking.ClientSide
 
         public void handleAccpetBeginRound(Packet serverPacket)
         {
-            Debug.Log("New Round iniciated");
+            Debug.Log("New Round initiated");
             // Show new currentPlayer
             int cache = currentPlayer;
             if (currentPlayer == representativePlayers.Count - 1)
@@ -230,7 +237,7 @@ namespace Networking.ClientSide
                 currentPlayer++;
             }
 
-            PlayerRepresentation.showNextPlayer(cache,currentPlayer);
+            playerRepresentation.showNextPlayer(cache,currentPlayer);
             // Render dice rolling
             GameObject.FindGameObjectWithTag("diceHolder").GetComponent<RenderRollDices>().renderRollDices(serverPacket.diceResult);
             // Render gained ressources
@@ -261,6 +268,19 @@ namespace Networking.ClientSide
             throw new System.NotImplementedException();
         }
 
+        public void handleUpdateRPandOP(Packet serverPacket)
+        {   
+            Debug.Log("handleUpdateRP in Client has been called");
+            int i = 0;
+            foreach(RepresentativePlayer rp in representativePlayers)
+            {
+                rp.updateNumbers(serverPacket.updateRP[i]);
+                playerRepresentation.updateUiPR(i,rp);
+                i++;   
+            }
+            ownClientPlayer.updateOP(serverPacket.updateOP,serverPacket.updateResourcesOnOP);
+            ownPlayerRepresentation.updaetOwnPlayerUI(ownClientPlayer);
+        }
         
     }
 }

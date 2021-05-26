@@ -1,6 +1,8 @@
 using System.Collections;
 using Player;
 using PlayerColor;
+using System.Collections.Generic;
+using Enums;
 
 namespace Networking.Package
 {
@@ -14,6 +16,8 @@ namespace Networking.Package
         public int currentPlayerID { get; set; } // ID of the current player
         
         public bool isReady { get; set; } // is a player ready or not (lobby only)
+        
+        public string lobbyIP { get; set; }
         
         public ArrayList lobbyContent { get; set; } // {{PlayerName, PlayerColor, isReady}}
         
@@ -37,6 +41,10 @@ namespace Networking.Package
         
         public string errorMessage { get; set; } // when client request is rejected
 
-        public RepresentativePlayer[] representativePlayerArray{get; set;}
+        public int[][] updateRP { get; set; }
+
+        public int[] updateOP {get; set; }
+
+        public Dictionary<RESOURCETYPE, int> updateResourcesOnOP {get; set;}
     }
 }

@@ -19,53 +19,37 @@ namespace UI
         private TextMeshProUGUI ownPlayerLeftVillages;
         private TextMeshProUGUI ownPlayerLeftCitys;
 
-        public void Start()
+       
+        public void represent(OwnClientPlayer ownClientPlayer)
         {
             // find labels in UI
+                        
+                        ownPlayerSheep = GameObject.Find("OwnPlayerSheep").GetComponent<TextMeshProUGUI>();
+                        ownPlayerWood = GameObject.Find("OwnPlayerWood").GetComponent<TextMeshProUGUI>();
+                        ownPlayerBrick = GameObject.Find("OwnPlayerBrick").GetComponent<TextMeshProUGUI>();
+                        ownPlayerOre = GameObject.Find("OwnPlayerOre").GetComponent<TextMeshProUGUI>();
+                        ownPlayerWheat = GameObject.Find("OwnPlayerWheat").GetComponent<TextMeshProUGUI>();
+                        
+                        ownPlayerLeftStreets = GameObject.Find("OwnPlayerLeftStreets").GetComponent<TextMeshProUGUI>();
+                        ownPlayerLeftVillages = GameObject.Find("OwnPlayerLeftVillages").GetComponent<TextMeshProUGUI>();
+                        ownPlayerLeftCitys = GameObject.Find("OwnPlayerLeftCitys").GetComponent<TextMeshProUGUI>();
             
-            ownPlayerSheep = GameObject.Find("OwnPlayerSheep").GetComponent<TextMeshProUGUI>();
-            ownPlayerWood = GameObject.Find("OwnPlayerWood").GetComponent<TextMeshProUGUI>();
-            ownPlayerBrick = GameObject.Find("OwnPlayerBrick").GetComponent<TextMeshProUGUI>();
-            ownPlayerOre = GameObject.Find("OwnPlayerOre").GetComponent<TextMeshProUGUI>();
-            ownPlayerWheat = GameObject.Find("OwnPlayerWheat").GetComponent<TextMeshProUGUI>();
-            
-            ownPlayerLeftStreets = GameObject.Find("OwnPlayerLeftStreets").GetComponent<TextMeshProUGUI>();
-            ownPlayerLeftVillages = GameObject.Find("OwnPlayerLeftVillages").GetComponent<TextMeshProUGUI>();
-            ownPlayerLeftCitys = GameObject.Find("OwnPlayerLeftCitys").GetComponent<TextMeshProUGUI>();
-
-            
-            // connect labels to ownClientPlayer
-            
-            updateOwnPlayerResources();
-            updateOwnPlayerLeftStreets();
-            updateOwnPlayerLeftVillages();
-            updateOwnPlayerLeftCitys();
-
-        }
-
-        public void updateOwnPlayerResources()
-        {
-            ownPlayerSheep.text = ClientGameLogic.ownClientPlayer.getResourceAmount(RESOURCETYPE.SHEEP).ToString();
-            ownPlayerWood.text = ClientGameLogic.ownClientPlayer.getResourceAmount(RESOURCETYPE.WOOD).ToString();
-            ownPlayerBrick.text = ClientGameLogic.ownClientPlayer.getResourceAmount(RESOURCETYPE.BRICK).ToString();
-            ownPlayerOre.text = ClientGameLogic.ownClientPlayer.getResourceAmount(RESOURCETYPE.ORE).ToString();
-            ownPlayerWheat.text = ClientGameLogic.ownClientPlayer.getResourceAmount(RESOURCETYPE.WHEAT).ToString();
-        }
-
-        public void updateOwnPlayerLeftStreets()
-        {
-            ownPlayerLeftStreets.text = ClientGameLogic.ownClientPlayer.getLeftStreets().ToString();
-        }
-
-        public void updateOwnPlayerLeftVillages()
-        {
-            ownPlayerLeftVillages.text = ClientGameLogic.ownClientPlayer.getLeftVillages().ToString();
-        }
-
-        public void updateOwnPlayerLeftCitys()
-        {
-            ownPlayerLeftCitys.text = ClientGameLogic.ownClientPlayer.getLeftCitys().ToString();
+                        
+                        // connect labels to ownClientPlayer
+                        updaetOwnPlayerUI(ownClientPlayer);
         }
         
+        public void updaetOwnPlayerUI(OwnClientPlayer ownClientPlayer)
+        {
+            ownPlayerLeftStreets.text = ownClientPlayer.getLeftStreets().ToString();
+            ownPlayerLeftVillages.text = ownClientPlayer.getLeftVillages().ToString();
+            ownPlayerLeftCitys.text = ownClientPlayer.getLeftCitys().ToString();
+
+            ownPlayerSheep.text = ownClientPlayer.getResourceAmount(RESOURCETYPE.SHEEP).ToString();
+            ownPlayerWood.text = ownClientPlayer.getResourceAmount(RESOURCETYPE.WOOD).ToString();
+            ownPlayerBrick.text = ownClientPlayer.getResourceAmount(RESOURCETYPE.BRICK).ToString();
+            ownPlayerOre.text = ownClientPlayer.getResourceAmount(RESOURCETYPE.ORE).ToString();
+            ownPlayerWheat.text = ownClientPlayer.getResourceAmount(RESOURCETYPE.WHEAT).ToString();
+        }
     }
 }
