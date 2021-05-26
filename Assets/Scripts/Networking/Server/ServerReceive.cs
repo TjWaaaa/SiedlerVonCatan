@@ -54,7 +54,7 @@ namespace Networking.ServerSide
                 }
             }
             
-            serverRequest.notifyClientJoined(allPlayerInformation);
+            serverRequest.notifyClientJoined(allPlayerInformation, Server.serverIP.ToString());
         }
  
         public void handleRequestPlayerReady(Packet clientPacket, int currentClientID)
