@@ -156,17 +156,28 @@ namespace Networking.Communication
             Server.sendDataToAll(packet);
         }
 
-        public void updateRepPlayers(int[][] updateNumbers, int[] updateLeftBuildings,Dictionary<RESOURCETYPE, int> updateResources)
+        public void updateRepPlayers(int[][] updateNumbers)
         {
             Debug.Log("ServerRequest updateRPPacket");
             Packet packet = new Packet();
             packet.type = (int) COMMUNICATION_METHODS.HANDLE_UPDATE_RP;
             packet.updateRP = updateNumbers;
-            packet.updateOP = updateLeftBuildings;
-            packet.updateResourcesOnOP = updateResources;
+            
 
             // send to all
             Server.sendDataToAll(packet);
+        }
+
+        public void updateOwnPlayer(int[] updateLeftBuildings,Dictionary<RESOURCETYPE, int> updateResources, int playerID)
+        {
+            Debug.Log("ServerRequest updateOwnPlayer");
+            Packet packet = new Packet();
+            packet.type = (int) COMMUNICATION_METHODS.HANDLE_UPDATE_OP;
+            packet.updateOP = updateLeftBuildings;
+            packet.updateResourcesOnOP = updateResources;
+
+            // send to the current player
+            Server.sendDataToOne(playerID,packet);
         }
     }
 }

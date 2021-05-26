@@ -272,13 +272,20 @@ namespace Networking.ClientSide
                     case (int) COMMUNICATION_METHODS.HANDLE_UPDATE_RP:
                         ThreadManager.executeOnMainThread(() =>
                         {  
-                            clientGameLogic.handleUpdateRPandOP(incomingData);
+                            clientGameLogic.handleUpdateRP(incomingData);
+                        });
+                        break;
+
+                    case (int) COMMUNICATION_METHODS.HANDLE_UPDATE_OP:
+                        ThreadManager.executeOnMainThread(() =>
+                        {  
+                            clientGameLogic.handleUpdateOP(incomingData);
                         });
                         break;
 
                     default:
                         Debug.LogWarning($"there was no target method send, invalid data packet. Packet Type: {incomingData.type}");
-                        // TODO: trow exception!!!
+                        // TODO: throw exception!!!
                         break;
                 }
             }
