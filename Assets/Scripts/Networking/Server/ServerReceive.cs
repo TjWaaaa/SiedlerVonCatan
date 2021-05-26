@@ -158,10 +158,10 @@ namespace Networking.ServerSide
 
         public void handleEndTurn(Packet clientPacket)
         {
-            serverRequest.updateOwnPlayer(
-                allPlayer.ElementAt(currentPlayer).Value.convertFromSPToOP(), // int[] with left buildings
-                allPlayer.ElementAt(currentPlayer).Value.convertSPToOPResources(), // Resource Dictionary
-                allPlayer.ElementAt(currentPlayer).Key);
+            //serverRequest.updateOwnPlayer(
+            //    allPlayer.ElementAt(currentPlayer).Value.convertFromSPToOP(), // int[] with left buildings
+            //    allPlayer.ElementAt(currentPlayer).Value.convertSPToOPResources(), // Resource Dictionary
+             //   allPlayer.ElementAt(currentPlayer).Key);
             // Change currentPlayer
             if (currentPlayer == playerAmount - 1)
             {

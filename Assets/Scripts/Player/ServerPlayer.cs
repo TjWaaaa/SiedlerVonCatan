@@ -189,17 +189,20 @@ namespace Player
                     resources[RESOURCETYPE.SHEEP] -= 1;
                     resources[RESOURCETYPE.WHEAT] -= 1;
                     leftVillages -= 1;
+                    victoryPoints += 1;
                     break;
                 case BUYABLES.CITY:
                     resources[RESOURCETYPE.ORE] -= 3;
                     resources[RESOURCETYPE.WHEAT] -= 2;
                     leftVillages += 1;
                     leftCitys -= 1;
+                    victoryPoints += 1;
                     break;
                 case BUYABLES.DEVELOPMENT_CARDS:
                     resources[RESOURCETYPE.ORE] -= 1;
                     resources[RESOURCETYPE.WHEAT] -= 1;
                     resources[RESOURCETYPE.SHEEP] -= 1;
+                    devCardAmount += 1;
                     break;
             }
         }
