@@ -137,13 +137,16 @@ namespace Player
             switch (buyable)
             {
               case BUYABLES.ROAD:
-                  if (resources[RESOURCETYPE.BRICK] >= 1 && resources[RESOURCETYPE.WOOD] >= 1)
+                  if (leftStreets >= 1
+                      && resources[RESOURCETYPE.WOOD] >= 1
+                      && resources[RESOURCETYPE.BRICK] >= 1 )
                   {
                       return true;
                   }
                   else return false;
               case BUYABLES.VILLAGE:
-                  if (resources[RESOURCETYPE.BRICK] >= 1
+                  if (leftVillages >=1
+                      && resources[RESOURCETYPE.BRICK] >= 1
                       && resources[RESOURCETYPE.WOOD] >= 1
                       && resources[RESOURCETYPE.SHEEP] >= 1
                       && resources[RESOURCETYPE.WHEAT] >= 1)
@@ -152,7 +155,8 @@ namespace Player
                   }
                   else return false;
               case BUYABLES.CITY:
-                  if (resources[RESOURCETYPE.ORE] >= 3
+                  if (leftCitys >= 1
+                      && resources[RESOURCETYPE.ORE] >= 3
                       && resources[RESOURCETYPE.WHEAT] >= 2)
                   {
                       return true;
@@ -177,16 +181,20 @@ namespace Player
                 case BUYABLES.ROAD:
                     resources[RESOURCETYPE.BRICK] -= 1;
                     resources[RESOURCETYPE.WOOD] -= 1;
+                    leftStreets -= 1;
                     break;
                 case BUYABLES.VILLAGE:
                     resources[RESOURCETYPE.BRICK] -= 1;
                     resources[RESOURCETYPE.WOOD] -= 1;
                     resources[RESOURCETYPE.SHEEP] -= 1;
                     resources[RESOURCETYPE.WHEAT] -= 1;
+                    leftVillages -= 1;
                     break;
                 case BUYABLES.CITY:
                     resources[RESOURCETYPE.ORE] -= 3;
                     resources[RESOURCETYPE.WHEAT] -= 2;
+                    leftVillages += 1;
+                    leftCitys -= 1;
                     break;
                 case BUYABLES.DEVELOPMENT_CARDS:
                     resources[RESOURCETYPE.ORE] -= 1;
