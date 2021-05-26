@@ -92,7 +92,7 @@ public class GameController : MonoBehaviour
                     //         //Color color = players[currentPlayer].GetColor();
                     //         BuildVillage(hit.transform.position + new Vector3(0, 0.065f, 0));
                     //         Destroy(hit.transform.gameObject);
-                    //         players[currentPlayer].buyVillage();
+                    //         players[currentPlayer].buyBuyable(BUYABLES.VILLAGE);
                     //         ChangeRessourcesOutput(players[currentPlayer]);
                     //     }
                     //     else Debug.Log("Not enough ressources");
@@ -108,7 +108,7 @@ public class GameController : MonoBehaviour
                             //Color color = players[currentPlayer].GetColor();
                             BuildCity(hit.transform.position);
                             Destroy(hit.transform.gameObject);
-                            players[currentPlayer].buyCity();
+                            players[currentPlayer].buyBuyable(BUYABLES.CITY);
                             ChangeRessourcesOutput(players[currentPlayer]);
                         }
                         else Debug.Log("Not enough ressources");
@@ -124,7 +124,7 @@ public class GameController : MonoBehaviour
                             //Color color = players[currentPlayer].GetColor();
                             BuildRoad(hit.transform.position + new Vector3(0, 0.065f, 0), hit.transform.rotation);
                             Destroy(hit.transform.gameObject);
-                            players[currentPlayer].buyStreet();
+                            players[currentPlayer].buyBuyable(BUYABLES.ROAD);
                             ChangeRessourcesOutput(players[currentPlayer]);
                         }
                         else Debug.Log("Not enough resources");

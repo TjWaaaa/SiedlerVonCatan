@@ -170,31 +170,30 @@ namespace Player
             }
         }
 
-        public void buyStreet()
+        public void buyBuyable(BUYABLES buyable)
         {
-            resources[RESOURCETYPE.BRICK] -= 1;
-            resources[RESOURCETYPE.WOOD] -= 1;
-        }
-
-        public void buyVillage()
-        {
-            resources[RESOURCETYPE.BRICK] -= 1;
-            resources[RESOURCETYPE.WOOD] -= 1;
-            resources[RESOURCETYPE.SHEEP] -= 1;
-            resources[RESOURCETYPE.WHEAT] -= 1;
-        }
-
-        public void buyCity()
-        {
-            resources[RESOURCETYPE.ORE] -= 3;
-            resources[RESOURCETYPE.WHEAT] -= 2;
-        }
-
-        public void buyDevCard()
-        {
-            resources[RESOURCETYPE.ORE] -= 1;
-            resources[RESOURCETYPE.WHEAT] -= 1;
-            resources[RESOURCETYPE.SHEEP] -= 1;
+            switch (buyable)
+            {
+                case BUYABLES.ROAD:
+                    resources[RESOURCETYPE.BRICK] -= 1;
+                    resources[RESOURCETYPE.WOOD] -= 1;
+                    break;
+                case BUYABLES.VILLAGE:
+                    resources[RESOURCETYPE.BRICK] -= 1;
+                    resources[RESOURCETYPE.WOOD] -= 1;
+                    resources[RESOURCETYPE.SHEEP] -= 1;
+                    resources[RESOURCETYPE.WHEAT] -= 1;
+                    break;
+                case BUYABLES.CITY:
+                    resources[RESOURCETYPE.ORE] -= 3;
+                    resources[RESOURCETYPE.WHEAT] -= 2;
+                    break;
+                case BUYABLES.DEVELOPMENT_CARDS:
+                    resources[RESOURCETYPE.ORE] -= 1;
+                    resources[RESOURCETYPE.WHEAT] -= 1;
+                    resources[RESOURCETYPE.SHEEP] -= 1;
+                    break;
+            }
         }
 
         public int[] convertFromSPToRP()
