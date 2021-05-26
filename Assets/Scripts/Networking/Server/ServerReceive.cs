@@ -14,7 +14,7 @@ namespace Networking.ServerSide
 {
     public class ServerGameLogic : INetworkableServer
     {
-        private readonly Dictionary<int,ServerPlayer> allPlayer = new Dictionary<int, ServerPlayer>();
+        private Dictionary<int,ServerPlayer> allPlayer = new Dictionary<int, ServerPlayer>();
         
         private int playerAmount = 0;
         private int currentPlayer = 0;
@@ -53,12 +53,6 @@ namespace Networking.ServerSide
                     allPlayerInformation.Add(new object[] {player.getPlayerID(), player.getPlayerName(), player.getPlayerColor()});
                 }
                 
-                // TODO can be deleted later
-                player.setResourceAmount(RESOURCETYPE.ORE, 10);
-                player.setResourceAmount(RESOURCETYPE.WOOD, 10);
-                player.setResourceAmount(RESOURCETYPE.BRICK, 10);
-                player.setResourceAmount(RESOURCETYPE.SHEEP, 10);
-                player.setResourceAmount(RESOURCETYPE.WHEAT, 10);
             }
             
             serverRequest.notifyClientJoined(allPlayerInformation);
@@ -123,10 +117,11 @@ namespace Networking.ServerSide
                 if (gameBoard.placeBuilding(posInArray, playerColor))
                 {
                     serverRequest.notifyObjectPlacement(buildingType, posInArray, playerColor);
+                    currentServerPlayer.buyBuyable(buildingType); 
                 }
                 else
                 {
-                    serverRequest.notifyRejection(allPlayer.ElementAt(currentPlayer).Value.getPlayerID(), "Building cant be built");
+                    serverRequest.notifyRejection(currentServerPlayer.getPlayerID(), "Building cant be built");
                 }
             }
             else
@@ -196,7 +191,7 @@ namespace Networking.ServerSide
             ServerPlayer newPlayer = new ServerPlayer(playerID);
             
             // only for testing
-            newPlayer.setResourceAmount(RESOURCETYPE.SHEEP,10);
+            newPlayer.setResourceAmount(RESOURCETYPE.SHEEP,3);
             newPlayer.setResourceAmount(RESOURCETYPE.WOOD,10);
             newPlayer.setResourceAmount(RESOURCETYPE.BRICK,10);
             newPlayer.setResourceAmount(RESOURCETYPE.ORE,10);
