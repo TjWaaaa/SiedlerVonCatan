@@ -14,23 +14,23 @@ namespace Networking.ServerSide
 {
     public class ServerGameLogic : INetworkableServer
     {
-        private Dictionary<int,ServerPlayer> allPlayer = new Dictionary<int, ServerPlayer>();
-        
+        private Dictionary<int, ServerPlayer> allPlayer = new Dictionary<int, ServerPlayer>();
+
         private int playerAmount = 0;
         private int currentPlayer = 0;
         private readonly Stack<PLAYERCOLOR> possibleColors = new Stack<PLAYERCOLOR>();
         private readonly ServerRequest serverRequest = new ServerRequest();
 
         private Board gameBoard = new Board();
-        
+
         public ServerGameLogic()
         {
             possibleColors.Push(PLAYERCOLOR.YELLOW);
             possibleColors.Push(PLAYERCOLOR.WHITE);
             possibleColors.Push(PLAYERCOLOR.BLUE);
             possibleColors.Push(PLAYERCOLOR.RED);
-        }    
-    
+        }
+
         // Here come all handling methods
         public void handleRequestJoinLobby(Packet clientPacket, int currentClientID)
         {
@@ -50,18 +50,18 @@ namespace Networking.ServerSide
                 if (player.getPlayerName() != null)
                 {
                     PLAYERCOLOR playerColor = player.getPlayerColor(); // needs to be done, because Color is not serializable ¯\_(ツ)_/¯
-                    allPlayerInformation.Add(new object[] {player.getPlayerID(), player.getPlayerName(), player.getPlayerColor()});
+                    allPlayerInformation.Add(new object[] { player.getPlayerID(), player.getPlayerName(), player.getPlayerColor() });
                 }
             }
-            
+
             serverRequest.notifyClientJoined(allPlayerInformation, Server.serverIP.ToString());
         }
- 
+
         public void handleRequestPlayerReady(Packet clientPacket, int currentClientID)
         {
-        
+
             bool runGame = true;
-        
+
             foreach (ServerPlayer player in allPlayer.Values)
             {
                 if (player.getPlayerID() == currentClientID)
@@ -69,14 +69,14 @@ namespace Networking.ServerSide
                     player.setIsReady(clientPacket.isReady);
                     serverRequest.notifyPlayerReady(currentClientID, player.getPlayerName(), clientPacket.isReady);
                 }
-                
+
                 // check if all players are ready
                 if (!player.getIsReady())
                 {
                     runGame = false;
                 }
             }
-            
+
             // start game if all player are ready
             //todo: Boardgenerator!
             if (runGame)
@@ -106,9 +106,9 @@ namespace Networking.ServerSide
         public void handleBuild(Packet clientPacket)
         {
             ServerPlayer currentServerPlayer = allPlayer.ElementAt(currentPlayer).Value;
-            BUYABLES buildingType = (BUYABLES) clientPacket.buildType;
+            BUYABLES buildingType = (BUYABLES)clientPacket.buildType;
             int posInArray = clientPacket.buildID;
-            
+
             PLAYERCOLOR playerColor = allPlayer.ElementAt(currentPlayer).Value.getPlayerColor();
 
             if (currentServerPlayer.canBuyBuyable(buildingType))
@@ -117,8 +117,6 @@ namespace Networking.ServerSide
                 {
                     case BUYABLES.VILLAGE:
                     case BUYABLES.CITY:
-                    {
-                        if (gameBoard.placeBuilding(posInArray, playerColor))
                         {
                             currentServerPlayer.buyBuyable(buildingType);
                             serverRequest.notifyObjectPlacement(buildingType, posInArray, playerColor);
@@ -126,8 +124,6 @@ namespace Networking.ServerSide
                             //serverRequest.updateOwnPlayer(currentServerPlayer.convertFromSPToOP(),currentServerPlayer.convertSPToCPResources(), currentServerPlayer.getPlayerID());
                             return;
                         }
-                        break;
-                    }
                     case BUYABLES.ROAD:
                         if (gameBoard.placeRoad(posInArray, playerColor))
                         {
@@ -140,12 +136,12 @@ namespace Networking.ServerSide
                         break;
                     default: Debug.Log("handleBuild(): wrong BUYABLES"); break;
                 }
-                
+
                 serverRequest.notifyRejection(currentServerPlayer.getPlayerID(), "Building cant be built");
             }
             else
             {
-                serverRequest.notifyRejection(currentServerPlayer.getPlayerID(),"You don't have enough resources");
+                serverRequest.notifyRejection(currentServerPlayer.getPlayerID(), "You don't have enough resources");
                 Debug.Log("not enough resources");
             }
         }
@@ -162,8 +158,12 @@ namespace Networking.ServerSide
 
         public void handleEndTurn(Packet clientPacket)
         {
+            serverRequest.updateOwnPlayer(
+                allPlayer.ElementAt(currentPlayer).Value.convertFromSPToOP(), // int[] with left buildings
+                allPlayer.ElementAt(currentPlayer).Value.convertSPToOPResources(), // Resource Dictionary
+                allPlayer.ElementAt(currentPlayer).Key);
             // Change currentPlayer
-            if (currentPlayer == playerAmount-1)
+            if (currentPlayer == playerAmount - 1)
             {
                 currentPlayer = 0;
             }
@@ -173,7 +173,6 @@ namespace Networking.ServerSide
             }
             // Updating Representative Players
             serverRequest.updateRepPlayers(convertSPAToRPA());
-            serverRequest.updateOwnPlayer(allPlayer.ElementAt(currentPlayer).Value.convertFromSPToOP(),allPlayer.ElementAt(currentPlayer).Value.convertSPToCPResources(), allPlayer.ElementAt(currentPlayer).Key);
             // TODO change method call => handleBeginRound should only be called after the new player is already set and all have been notified
             Debug.Log("handleEndTurn has been called");
             handleBeginRound(clientPacket);
@@ -184,14 +183,14 @@ namespace Networking.ServerSide
             throw new System.NotImplementedException();
         }
 
-    // Here come all the Logical methods
+        // Here come all the Logical methods
         public int[] rollDices()
         {
             Debug.Log("Dices are being rolled");
             System.Random r = new System.Random();
             int[] diceNumbers = new int[2];
-            diceNumbers[0] = r.Next(1,7);
-            diceNumbers[1] = r.Next(1,7);
+            diceNumbers[0] = r.Next(1, 7);
+            diceNumbers[1] = r.Next(1, 7);
             Debug.Log($"Dice value 1: {diceNumbers[0]} // Dice value 2: {diceNumbers[1]}");
             return diceNumbers;
         }
@@ -216,7 +215,7 @@ namespace Networking.ServerSide
             newPlayer.setResourceAmount(RESOURCETYPE.BRICK, 15);
             newPlayer.setResourceAmount(RESOURCETYPE.ORE, 15);
             newPlayer.setResourceAmount(RESOURCETYPE.WHEAT, 15);
-            allPlayer.Add(playerId,newPlayer);
+            allPlayer.Add(playerId, newPlayer);
             playerAmount++;
         }
     }
