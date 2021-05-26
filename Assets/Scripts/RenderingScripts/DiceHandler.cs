@@ -32,7 +32,7 @@ public class DiceHandler : MonoBehaviour
             {
                 diceAnimator.enabled = false;
                 diceNumber = "";
-                Debug.Log("Animating: " + diceAnimator.enabled);
+                Debug.Log("SERVER: Animating: " + diceAnimator.enabled);
             }
         }
     }

@@ -21,7 +21,7 @@ namespace UI
         {
             if (!isVisible)
             {
-                Debug.Log("set visible");
+                Debug.Log("CLIENT: set visible");
                 gameObject.SetActive(true);
                 isVisible = true;
             }
@@ -31,7 +31,7 @@ namespace UI
         {
             if (isVisible)
             {
-                Debug.Log("set hidden");
+                Debug.Log("CLIENT: set hidden");
                 gameObject.SetActive(false);
                 isVisible = false;
             }

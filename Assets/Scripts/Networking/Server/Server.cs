@@ -42,20 +42,20 @@ namespace Networking.ServerSide
             playerColors.Push(Color.yellow);
             
             //Console.Title = "Game Server";
-            Debug.Log("Server: Setting up Server...");
+            Debug.Log("SERVER: Setting up Server...");
             try
             {
                 serverSocket.Bind(new IPEndPoint(IPAddress.Any, PORT)); //Bind endpoint with ip address and port to socket
                 serverIP = getServerEndpoint().Address;
                 serverSocket.Listen(4); //maximum pending connection attempts at one time
                 serverSocket.BeginAccept(AcceptCallback, null); //begins waiting for client connection attempts
-                Debug.Log("Server: Server setup complete, let's go!");
+                Debug.Log("SERVER: Server setup complete, let's go!");
                 isRunning = true;
             }
             catch (Exception e)
             {
-                Debug.LogError(e);
-                Debug.LogWarning("Closing all Sockets");
+                Debug.LogError("SERVER: " + e);
+                Debug.LogWarning("SERVER: Closing all Sockets");
                 
                 closeAllSockets();
             }
@@ -82,7 +82,7 @@ namespace Networking.ServerSide
                 }
                 catch (ObjectDisposedException e) 
                 {
-                    Debug.LogError("Server: ObjectDisposedException. Client disconnected?" + e.Message);
+                    Debug.LogError("SERVER: ObjectDisposedException. Client disconnected?" + e.Message);
                     return;
                 }
                 
@@ -99,18 +99,18 @@ namespace Networking.ServerSide
                 //todo: tell server logic the clients ID
                 serverGameLogic.generatePlayer(newClientID);
                 socketPlayerData.Add(newClientID, clientSocket); //save client to socket list
-                Debug.Log($"Server: client (id: {newClientID}) stored in dictionary");
+                Debug.Log($"SERVER: client (id: {newClientID}) stored in dictionary");
                 
                 
                 clientSocket.BeginReceive(buffer, 0, BUFFER_SIZE, SocketFlags.None, ReceiveCallback, new object[] {clientSocket, newClientID}); // open "chanel" to recieve data from the connected socket
-                Debug.Log($"Server: Client {clientSocket.RemoteEndPoint} connected, waiting for request...");
+                Debug.Log($"SERVER: Client {clientSocket.RemoteEndPoint} connected, waiting for request...");
 
                 //RepresentJoinigClients.representNewPlayer();
                 serverSocket.BeginAccept(AcceptCallback, null); //begins waiting for client connection attempts
             }
             catch (Exception e)
             {
-                Debug.Log(e);
+                Debug.Log("SERVER: " + e);
                 throw;
             }
         }
@@ -122,7 +122,7 @@ namespace Networking.ServerSide
         /// <param name="AR">IAsyncResult</param>
         private static void sendCallback(IAsyncResult AR)
         {
-            Debug.Log("IAsyncResult: " + AR);
+            Debug.Log("SERVER: IAsyncResult: " + AR);
             serverSocket.EndSend(AR);
         }
 
@@ -145,7 +145,7 @@ namespace Networking.ServerSide
             }
             catch (SocketException)
             {
-                Debug.Log("Server: Client forcefully disconnected");
+                Debug.Log("SERVER: Client forcefully disconnected");
                 currentClientSocket.Close();
                 
                 // ominous solution to get to the key via the value
@@ -158,7 +158,7 @@ namespace Networking.ServerSide
             Array.Copy(buffer, currentBuffer, recievedByteLengh); //to remove the protruding zeros from buffer
             string incomingDataString = Encoding.ASCII.GetString(currentBuffer);
             Packet incomingPacket = PacketSerializer.jsonToObject(incomingDataString);
-            Debug.Log($"Server: Received Text (from {currentClientSocket.LocalEndPoint}): " + incomingDataString);
+            Debug.Log($"SERVER: Received Text (from {currentClientSocket.LocalEndPoint}): " + incomingDataString);
             
             // map socket to id and send id to method call
             
@@ -234,7 +234,7 @@ namespace Networking.ServerSide
             // get ipv4 address of host computer. hostIPs contains the IPv4 and IPv6 therefore it needs to be filtered.
             foreach (IPAddress address in hostIPs.Where(ip => ip.AddressFamily == AddressFamily.InterNetwork))
             {
-                Debug.Log(address);
+                Debug.Log("SERVER: " + address);
                 endpoint = new IPEndPoint(address, PORT);
             }
             
@@ -255,7 +255,7 @@ namespace Networking.ServerSide
                 }
                 catch (Exception e)
                 {
-                    Debug.LogWarning("Server: Socket could not be shut down. Closing..." + e);
+                    Debug.LogWarning("SERVER: Socket could not be shut down. Closing..." + e);
                 }
                 finally
                 {
@@ -313,7 +313,7 @@ namespace Networking.ServerSide
                     break;
                 
                 default:
-                    Debug.LogWarning($"there was no target method send, invalid data packet. Packet Type: {incomingData.type}");
+                    Debug.LogWarning($"SERVER: there was no target method send, invalid data packet. Packet Type: {incomingData.type}");
                     // TODO: trow exception!!!
                     break;
             }

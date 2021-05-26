@@ -95,9 +95,9 @@ namespace Trade
                     currentPlayer.trade(TradeButton.getGiveResource(), TradeButton.getGetResource());
                     Debug.Log(currentPlayer + " traded 4 " + TradeButton.getGiveResource() + " against 1 " + TradeButton.getGetResource());
                 }
-                else Debug.Log("For any reason, you can't trade.");
+                else Debug.Log("CLIENT: For any reason, you can't trade.");
             }
-            else Debug.Log("You have to chose a resource on each side.");
+            else Debug.Log("CLIENT: You have to chose a resource on each side.");
             setInactive();
         }
 
@@ -116,7 +116,7 @@ namespace Trade
         //Todo: sending this request to server
         Boolean requestTradeBank(RESOURCETYPE giveResourcetype, RESOURCETYPE getResourcetype)
         {
-            Debug.Log(currentPlayer + " wants to trade 4 " + giveResourcetype + " against 1 " + getResourcetype);
+            Debug.Log("CLIENT: " + currentPlayer + " wants to trade 4 " + giveResourcetype + " against 1 " + getResourcetype);
             return true;
         }
 

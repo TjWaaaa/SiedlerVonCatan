@@ -25,9 +25,9 @@ public class JoinHostKlickListener : MonoBehaviour
             ? "127.0.0.1"
             : GameObject.Find("Canvas/joinPanel/join_IP_Address").GetComponent<InputField>().text;
 
-        Debug.Log("joining game...");
-        Debug.Log("playerName: " + playerName);
-        Debug.Log("hostIp: " + hostIp);
+        Debug.Log("SERVER: joining game...");
+        Debug.Log("SERVER: playerName: " + playerName);
+        Debug.Log("SERVER: hostIp: " + hostIp);
 
         bool initComplete = Client.initClient(hostIp);
 
@@ -40,7 +40,7 @@ public class JoinHostKlickListener : MonoBehaviour
         }
         else
         {
-            Debug.Log("Client init failed!");
+            Debug.Log("SERVER: Client init failed!");
         }
     }
 
@@ -59,7 +59,7 @@ public class JoinHostKlickListener : MonoBehaviour
         // Packet gameInformation = new Packet();
         // gameInformation.playerName = "Simon";
         
-        Debug.Log("hosting game...");
+        Debug.Log("SERVER: hosting game...");
 
         if (isRunning)
         {
@@ -80,7 +80,7 @@ public class JoinHostKlickListener : MonoBehaviour
                 // Client.sendRequest(PacketSerializer.objectToJsonString(gameInformation)); //send playerName to host
             }
 
-            Debug.Log("Client: hostIp: " + serverIPEndpoint.Address);
+            Debug.Log("SERVER: Client: hostIp: " + serverIPEndpoint.Address);
             SceneManager.LoadScene("Scenes/1_LobbyScene");
         }
     }

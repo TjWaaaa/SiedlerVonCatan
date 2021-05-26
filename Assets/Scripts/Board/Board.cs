@@ -189,7 +189,7 @@ public class Board
                 }
                 catch (Exception e)
                 {
-                    Debug.Log(e);
+                    Debug.Log("SERVER: "+ e);
                 }
 
                 Hexagon currentHexagon = hexagonsArray[row][col];
@@ -303,14 +303,14 @@ public class Board
 
         if (currentNode.getBuildingType() == BUILDING_TYPE.NONE)
         {
-            Debug.Log("place village");
+            Debug.Log("SERVER: place village");
             currentNode.setBuildingType(BUILDING_TYPE.VILLAGE);
             currentNode.setOccupant(player);
             return true;
         }
         if (currentNode.getBuildingType() == BUILDING_TYPE.VILLAGE)
         {
-            Debug.Log("place city");
+            Debug.Log("SERVER: place city");
             currentNode.setBuildingType(BUILDING_TYPE.CITY);
             currentNode.setOccupant(player);
             return true;
@@ -332,7 +332,7 @@ public class Board
             && currentNode.getOccupant() != player
             || currentNode.getBuildingType() == BUILDING_TYPE.CITY)
         {
-            Debug.Log("occupied by enemy or city");
+            Debug.Log("SERVER: occupied by enemy or city");
             return false;
         }
 
@@ -374,7 +374,7 @@ public class Board
         
         if (currentEdge.getOccupant() == PLAYERCOLOR.NONE)
         {
-            Debug.Log("place road");
+            Debug.Log("SERVER: place road");
             currentEdge.setOccupant(player);
             return true;
         }

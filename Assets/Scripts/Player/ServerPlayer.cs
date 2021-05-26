@@ -116,7 +116,7 @@ namespace Player
             }
             else
             {
-                Debug.Log("only " + resources[resourcetype] + " of " + resourcetype);
+                Debug.Log("SERVER: only " + resources[resourcetype] + " of " + resourcetype);
                 return false;
             }
 

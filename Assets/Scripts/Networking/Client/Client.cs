@@ -49,7 +49,7 @@ namespace Networking.ClientSide
             }
             catch (Exception e)
             {
-                Debug.Log("Client could not start");
+                Debug.Log("SERVER: Client could not start");
                 throw e;
             }
 
@@ -72,22 +72,22 @@ namespace Networking.ClientSide
                 try
                 {
                     attempts++;
-                    Debug.Log("Client: Connection attempts: " + attempts);
+                    Debug.Log("CLIENT: Client: Connection attempts: " + attempts);
                     clientSocket.Connect(IPAddress.Parse(ipAddress), PORT);
                 }
                 catch (SocketException)
                 {
-                    Debug.Log("Client: Connection Error");
+                    Debug.Log("CLIENT: Client: Connection Error");
                 }
             }
 
             if (attempts >= 5)
             {
-                Debug.Log("Client: Failed connecting to Server!");
+                Debug.Log("CLIENT: Failed connecting to Server!");
                 return false;
             }
 
-            Debug.Log("Client: Connected");
+            Debug.Log("CLIENT: Connected");
             return true;
         }
 
@@ -98,7 +98,7 @@ namespace Networking.ClientSide
         /// <param name="request">Data to send</param>
         public static void sendRequest(string request)
         {
-            Debug.Log("Client: Sending a request" + request);
+            Debug.Log("CLIENT: Sending a request" + request);
 
             byte[] buffer = Encoding.ASCII.GetBytes(request);
             clientSocket.BeginSend(buffer, 0, buffer.Length, SocketFlags.None, sendCallback, clientSocket);
@@ -133,7 +133,7 @@ namespace Networking.ClientSide
                 }
                 catch (SocketException)
                 {
-                    Debug.Log("Client: Server forcefully disconnected");
+                    Debug.Log("CLIENT: Server forcefully disconnected");
                     //TODO handle connection loss
                     return;
                 }
@@ -143,14 +143,14 @@ namespace Networking.ClientSide
                 var jsonString = Encoding.ASCII.GetString(receievedBuffer);
                 Packet serverData = PacketSerializer.jsonToObject(jsonString);
                 
-                Debug.Log("Client received Data: " + jsonString);
+                Debug.Log("CLIENT: received Data: " + jsonString);
                 delegateIncomingDataToMethods(serverData);
 
                 clientSocket.BeginReceive(buffer, 0, BUFFER_SIZE, SocketFlags.None, receiveCallback, clientSocket); // start listening again
             }
             catch (Exception e)
             {
-                Debug.Log(e);
+                Debug.Log("CLIENT: " + e);
                 throw e;
             }
         }
@@ -227,7 +227,7 @@ namespace Networking.ClientSide
                         break;
 
                     case (int) COMMUNICATION_METHODS.HANDLE_ACCEPT_BEGIN_ROUND:
-                        Debug.Log("before calling Threadmanager");
+                        Debug.Log("CLIENT: before calling Threadmanager");
                         ThreadManager.executeOnMainThread(() =>
                         {
                             clientGameLogic.handleAccpetBeginRound(incomingData);
@@ -284,7 +284,7 @@ namespace Networking.ClientSide
                         break;
 
                     default:
-                        Debug.LogWarning($"there was no target method send, invalid data packet. Packet Type: {incomingData.type}");
+                        Debug.LogWarning($"CLIENT: there was no target method send, invalid data packet. Packet Type: {incomingData.type}");
                         // TODO: throw exception!!!
                         break;
                 }
@@ -295,7 +295,7 @@ namespace Networking.ClientSide
             }
             
             string receievedText = PacketSerializer.objectToJsonString(incomingData);
-            Debug.Log("Client: Incoming Data: " + receievedText);
+            Debug.Log("CLIENT: Incoming Data: " + receievedText);
         }
     }
 }

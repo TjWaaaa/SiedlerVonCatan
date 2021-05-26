@@ -12,7 +12,7 @@ public class RenderRollDices : MonoBehaviour
     void Start()
     {
         DiceHandler[] diceDiceHandlers = GetComponentsInChildren<DiceHandler>();
-        Debug.Log(diceDiceHandlers.Length);
+        Debug.Log("CLIENT:" + diceDiceHandlers.Length);
         Dice1 = diceDiceHandlers[0];
         Dice2 = diceDiceHandlers[1];
     }
@@ -22,7 +22,7 @@ public class RenderRollDices : MonoBehaviour
     {
         if (Input.GetKeyDown("space"))
         {
-            Debug.Log("space pressed");
+            Debug.Log("CLIENT: space pressed");
             renderRollDices(new int[] {6,6});
         }
     }
@@ -32,16 +32,16 @@ public class RenderRollDices : MonoBehaviour
         Dice1.GetComponent<Animator>().enabled = true;
         Dice2.GetComponent<Animator>().enabled = true;
         diceNumbers = numbers;
-        Debug.Log(diceNumbers[0] + " " + diceNumbers[1]);
+        Debug.Log("CLIENT: " + diceNumbers[0] + " " + diceNumbers[1]);
         StartCoroutine(TimeYield());
         TimeYield();
     }
     
     public IEnumerator TimeYield()
     {
-        Debug.Log("TimeYield Function is called");
+        Debug.Log("CLIENT: TimeYield Function is called");
         yield return new WaitForSeconds(2);
-        Debug.Log("Waited 2 Seconds");
+        Debug.Log("CLIENT: Waited 2 Seconds");
         Dice1.updateDiceNumber(diceNumbers[0]);
         yield return new WaitForSeconds(1);
         Dice2.updateDiceNumber(diceNumbers[1]);
