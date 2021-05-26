@@ -19,7 +19,6 @@ namespace Networking.ServerSide
         private const int BUFFER_SIZE = 64000;
         private const int PORT = 50042; //freely selectable
         private static byte[] buffer;
-        public static IPAddress serverIP { get; private set; }
         
         private static Stack<Color> playerColors = new Stack<Color>();
         private static ServerGameLogic serverGameLogic = new ServerGameLogic();
@@ -46,7 +45,6 @@ namespace Networking.ServerSide
             try
             {
                 serverSocket.Bind(new IPEndPoint(IPAddress.Any, PORT)); //Bind endpoint with ip address and port to socket
-                serverIP = getServerEndpoint().Address;
                 serverSocket.Listen(4); //maximum pending connection attempts at one time
                 serverSocket.BeginAccept(AcceptCallback, null); //begins waiting for client connection attempts
                 Debug.Log("Server: Server setup complete, let's go!");

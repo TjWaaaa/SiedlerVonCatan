@@ -26,12 +26,14 @@ public class DiceHandler : MonoBehaviour
 
     void FixedUpdate()
     {
-        
-        if (diceNumber == diceImage.sprite.ToString())
+        if(diceAnimator.enabled)
         {
-            diceAnimator.enabled = false;
-            diceNumber = "";
-            Debug.Log("Animating: " + diceAnimator.enabled);
+            if (diceNumber == diceImage.sprite.ToString())
+            {
+                diceAnimator.enabled = false;
+                diceNumber = "";
+                Debug.Log("Animating: " + diceAnimator.enabled);
+            }
         }
     }
 }

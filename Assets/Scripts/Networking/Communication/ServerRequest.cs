@@ -12,12 +12,11 @@ namespace Networking.Communication
 {
     public class ServerRequest : ServerToClientCommunication
     {
-        public void notifyClientJoined(ArrayList playerInformation, string lobbyIP)
+        public void notifyClientJoined(ArrayList playerInformation)
         {
             Packet packet = new Packet();
             packet.type = (int) COMMUNICATION_METHODS.HANDLE_CLIENT_JOINED;
             packet.lobbyContent = playerInformation;
-            packet.lobbyIP = lobbyIP;
             
             // send to all
             Server.sendDataToAll(packet);
