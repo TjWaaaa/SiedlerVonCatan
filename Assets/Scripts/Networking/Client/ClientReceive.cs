@@ -20,10 +20,12 @@ namespace Networking.ClientSide
 
         private PrefabFactory prefabFactory;
         private GameObject scrollViewContent;
+        private PlayerRepresentation playerRepresentation = new PlayerRepresentation();
+        private OwnPlayerRepresentation ownPlayerRepresentation = new OwnPlayerRepresentation();
 
         //private RepresentativePlayer[] representativePlayerArray;
-        public static List<RepresentativePlayer> representativePlayers = new List<RepresentativePlayer>();
-        public static OwnClientPlayer ownClientPlayer;
+        public List<RepresentativePlayer> representativePlayers = new List<RepresentativePlayer>();
+        public OwnClientPlayer ownClientPlayer;
         private int playerNumber = 1;
 
         private int currentPlayer = 0;
@@ -66,6 +68,8 @@ namespace Networking.ClientSide
                     // BoardGenerator boardGenerator = new BoardGenerator();
                     // boardGenerator.instantiateGameBoard(gameBoard);
                     boardGenerator.instantiateGameBoard(gameBoard);
+                    playerRepresentation.represent(representativePlayers.ToArray());
+                    ownPlayerRepresentation.represent(ownClientPlayer);
                     runFixedUpdate = false;
                 }
             }
@@ -216,7 +220,7 @@ namespace Networking.ClientSide
                 currentPlayer++;
             }
 
-            PlayerRepresentation.showNextPlayer(cache,currentPlayer);
+            playerRepresentation.showNextPlayer(cache,currentPlayer);
             // Render dice rolling
             GameObject.FindGameObjectWithTag("diceHolder").GetComponent<RenderRollDices>().renderRollDices(serverPacket.diceResult);
             // Render gained ressources
@@ -254,7 +258,7 @@ namespace Networking.ClientSide
             foreach(RepresentativePlayer rp in representativePlayers)
             {
                 rp.updateNumbers(serverPacket.updateRP[i]);
-                PlayerRepresentation.updateUiPR(i);
+                playerRepresentation.updateUiPR(i,rp);
                 i++;   
             }
         }
