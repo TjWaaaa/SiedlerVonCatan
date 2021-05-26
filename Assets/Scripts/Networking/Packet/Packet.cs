@@ -1,5 +1,6 @@
 using System.Collections;
 using Player;
+using PlayerColor;
 
 namespace Networking.Package
 {
@@ -7,7 +8,7 @@ namespace Networking.Package
     {
         public int type { get; set; } // what method needs to be called? -> set default to -1 to prevent wrong messages
         public string playerName { get; set; }
-        public float[] playerColor { get; set; } // [r,g,b,a]
+        public PLAYERCOLOR playerColor { get; set; } // [r,g,b,a]
         public int myPlayerID { get; set; } // player ID of the client who receives the packet
         
         public int currentPlayerID { get; set; } // ID of the current player

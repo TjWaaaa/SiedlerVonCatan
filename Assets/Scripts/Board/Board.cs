@@ -295,20 +295,24 @@ public class Board
     /// </summary>
     /// <param name="nodeId">position of a node in the nodes[] array</param>
     /// <param name="player">color of the player who tries to build</param>
-    public void placeBuilding(int nodeId, PLAYERCOLOR player)
+    public bool placeBuilding(int nodeId, PLAYERCOLOR player)
     {
         Node currentNode = nodesArray[nodeId];
 
-        if (!allowedToBuildOnNode(currentNode, player)) return;
+        if (!allowedToBuildOnNode(currentNode, player)) return false;
 
         if (currentNode.getBuildingType() == BUILDING_TYPE.NONE)
         {
             currentNode.setBuildingType(BUILDING_TYPE.VILLAGE);
+            return true;
         }
-        else if (currentNode.getBuildingType() == BUILDING_TYPE.VILLAGE)
+        if (currentNode.getBuildingType() == BUILDING_TYPE.VILLAGE)
         {
             currentNode.setBuildingType(BUILDING_TYPE.CITY);
+            return true;
         }
+
+        return false;
     }
 
     /// <summary>

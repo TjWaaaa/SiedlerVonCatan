@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Data;
 using Enums;
+using PlayerColor;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -11,7 +12,7 @@ namespace Player
     public class ServerPlayer
     {
         private string playerName;
-        private Color playerColor;
+        private PLAYERCOLOR playerColor;
         private int playerID;
         private bool isReady;
         private int victoryPoints;
@@ -36,7 +37,7 @@ namespace Player
         }
 
         // TODO: remove this one, only use the upper one with the id!!!
-        public ServerPlayer(string playerName, Color color)
+        public ServerPlayer(string playerName, PLAYERCOLOR color)
         {
             this.playerName = playerName;
             this.playerColor = color;
@@ -50,7 +51,7 @@ namespace Player
             return playerID;
         }
 
-        public Color getPlayerColor()
+        public PLAYERCOLOR getPlayerColor()
         {
             return playerColor;
         }
@@ -83,7 +84,7 @@ namespace Player
 
         // Setter
 
-        public void setPlayerColor(Color color)
+        public void setPlayerColor(PLAYERCOLOR color)
         {
             this.playerColor = color;
         }

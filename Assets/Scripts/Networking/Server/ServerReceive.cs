@@ -8,6 +8,7 @@ using UnityEngine;
 using Networking.Interfaces;
 using Networking.Package;
 using Player;
+using PlayerColor;
 
 namespace Networking.ServerSide
 {
@@ -17,20 +18,20 @@ namespace Networking.ServerSide
         
         private int playerAmount = 0;
         private int currentPlayer = 0;
-        private readonly Stack<Color> possibleColors = new Stack<Color>();
+        private readonly Stack<PLAYERCOLOR> possibleColors = new Stack<PLAYERCOLOR>();
         private readonly ServerRequest serverRequest = new ServerRequest();
 
         private Board gameBoard = new Board();
-
+        
         public ServerGameLogic()
         {
-            possibleColors.Push(Color.yellow);
-            possibleColors.Push(Color.white);
-            possibleColors.Push(Color.blue);
-            possibleColors.Push(Color.red);
+            possibleColors.Push(PLAYERCOLOR.YELLOW);
+            possibleColors.Push(PLAYERCOLOR.WHITE);
+            possibleColors.Push(PLAYERCOLOR.BLUE);
+            possibleColors.Push(PLAYERCOLOR.RED);
         }    
     
-    // Here come all handling methods
+        // Here come all handling methods
         public void handleRequestJoinLobby(Packet clientPacket, int currentClientID)
         {
             // ankommender spieler: name setzen + farbe zuweisen
@@ -48,9 +49,8 @@ namespace Networking.ServerSide
                 // look for all Players that are fully initialized and add it to ArrayList that updates client lobbies. 
                 if (player.getPlayerName() != null)
                 {
-                    Color playerColor = player.getPlayerColor(); // needs to be done, because Color is not serializable ¯\_(ツ)_/¯
-                    allPlayerInformation.Add(new object[]
-                        {player.getPlayerID(), player.getPlayerName(), new float[] {playerColor.r, playerColor.g, playerColor.b, playerColor.a}});
+                    PLAYERCOLOR playerColor = player.getPlayerColor(); // needs to be done, because Color is not serializable ¯\_(ツ)_/¯
+                    allPlayerInformation.Add(new object[] {player.getPlayerID(), player.getPlayerName(), player.getPlayerColor()});
                 }
             }
             
@@ -110,9 +110,12 @@ namespace Networking.ServerSide
             int posInArray = clientPacket.buildID;
             
             
-            if (currentServerPlayer.canBuyBuyable((BUYABLES)clientPacket.buildType))
+            if (currentServerPlayer.canBuyBuyable(buildingType))
             {
-                
+                if (gameBoard.placeBuilding(posInArray, allPlayer.ElementAt(currentPlayer).Value.getPlayerColor()))
+                {
+                    
+                }
             }
             else
             {

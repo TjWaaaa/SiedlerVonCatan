@@ -64,7 +64,6 @@ namespace UI
         public static void updateDevCardAmount(int player)
         {
             GameObject.Find("Player" + (player +1)+ "/PlayerRepresentation/DevCards").GetComponent<TextMeshProUGUI>().text = ClientGameLogic.representativePlayers[player].getDevCardAmount().ToString();
-
         }
 
         public static void showNextPlayer(int player, int nextPlayer)

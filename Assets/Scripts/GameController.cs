@@ -9,20 +9,19 @@ using UnityEngine;
 using UnityEngine.UI;
 using Networking.Communication;
 using Player;
+using PlayerColor;
 using UI;
 
 public class GameController : MonoBehaviour
 {
+    private Camera mainCamera;
     private GameObject clientGameLogic;
     public GameObject showCurrentPlayer;
     
-    
+
     // only for testing
     private static ServerPlayer[] players;
     private static int currentPlayer;
-
-    private Builder builder;
-
 
     //only for testing
     public TextMeshProUGUI bricksText;
@@ -51,18 +50,15 @@ public class GameController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        //builder = new Builder();
+        mainCamera = Camera.main;
 
         // All this stuff has to go.
         players = new ServerPlayer[]
         {
-            new ServerPlayer("Player1", Color.red),
-            new ServerPlayer("Player2", Color.blue)
+            new ServerPlayer("Player1", PLAYERCOLOR.RED),
+            new ServerPlayer("Player2", PLAYERCOLOR.BLUE)
         };
         
-       
-        
-
         currentPlayer = 0;
 
         // test
@@ -72,7 +68,7 @@ public class GameController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
         RaycastHit hit;
 
         if (!TradeMenu.isActive()) //that nobody can build cities by accident (while trading)
@@ -143,21 +139,21 @@ public class GameController : MonoBehaviour
     public void BuildVillage(Vector3 position)
     {
 
-        Color c = players[currentPlayer].getPlayerColor();
+        PLAYERCOLOR c = players[currentPlayer].getPlayerColor();
 
-        if (c.Equals(Color.blue))
+        if (c.Equals(PLAYERCOLOR.BLUE))
         {
             Instantiate(villageBlue, position, Quaternion.identity);
         }
-        else if (c.Equals(Color.red))
+        else if (c.Equals(PLAYERCOLOR.RED))
         {
             Instantiate(villageRed, position, Quaternion.identity);
         }
-        else if (c.Equals(Color.white))
+        else if (c.Equals(PLAYERCOLOR.WHITE))
         {
             Instantiate(villageWhite, position, Quaternion.identity);
         }
-        else if (c.Equals(Color.yellow))
+        else if (c.Equals(PLAYERCOLOR.YELLOW))
         {
             Instantiate(villageYellow, position, Quaternion.identity);
         }
@@ -166,21 +162,21 @@ public class GameController : MonoBehaviour
     public void BuildCity(Vector3 position)
     {
 
-        Color c = players[currentPlayer].getPlayerColor();
+        PLAYERCOLOR c = players[currentPlayer].getPlayerColor();
 
-        if (c.Equals(Color.blue))
+        if (c.Equals(PLAYERCOLOR.BLUE))
         {
             Instantiate(cityBlue, position, Quaternion.identity);
         }
-        else if (c.Equals(Color.red))
+        else if (c.Equals(PLAYERCOLOR.RED))
         {
             Instantiate(cityRed, position, Quaternion.identity);
         }
-        else if (c.Equals(Color.white))
+        else if (c.Equals(PLAYERCOLOR.WHITE))
         {
             Instantiate(cityWhite, position, Quaternion.identity);
         }
-        else if (c.Equals(Color.yellow))
+        else if (c.Equals(PLAYERCOLOR.YELLOW))
         {
             Instantiate(cityYellow, position, Quaternion.identity);
         }
@@ -189,21 +185,21 @@ public class GameController : MonoBehaviour
     public void BuildRoad(Vector3 position, Quaternion rotation)
     {
 
-        Color c = players[currentPlayer].getPlayerColor();
+        PLAYERCOLOR c = players[currentPlayer].getPlayerColor();
 
-        if (c.Equals(Color.blue))
+        if (c.Equals(PLAYERCOLOR.BLUE))
         {
             Instantiate(roadBlue, position, rotation);
         }
-        else if (c.Equals(Color.red))
+        else if (c.Equals(PLAYERCOLOR.RED))
         {
             Instantiate(roadRed, position, rotation);
         }
-        else if (c.Equals(Color.white))
+        else if (c.Equals(PLAYERCOLOR.WHITE))
         {
             Instantiate(roadWhite, position, rotation);
         }
-        else if (c.Equals(Color.yellow))
+        else if (c.Equals(PLAYERCOLOR.YELLOW))
         {
             Instantiate(roadYellow, position, rotation);
         }

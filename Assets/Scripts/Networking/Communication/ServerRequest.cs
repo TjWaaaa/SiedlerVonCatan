@@ -7,6 +7,7 @@ using Enums;
 using System;
 using System.Collections.Generic;
 using Player;
+using PlayerColor;
 
 namespace Networking.Communication
 {
@@ -17,7 +18,7 @@ namespace Networking.Communication
             Packet packet = new Packet();
             packet.type = (int) COMMUNICATION_METHODS.HANDLE_CLIENT_JOINED;
             packet.lobbyContent = playerInformation;
-            
+
             // send to all
             Server.sendDataToAll(packet);
         }
@@ -69,24 +70,25 @@ namespace Networking.Communication
         }
 
 
-        public void notifyVictory(string playerName, Color color)
+        public void notifyVictory(string playerName, PLAYERCOLOR playerColor)
         {
             Packet packet = new Packet();
             packet.type = (int) COMMUNICATION_METHODS.HANDLE_VICTORY;
             packet.playerName = playerName;
-            packet.playerColor = new float[] {color.r, color.g, color.b, color.a};
+            packet.playerColor = playerColor;
+            Debug.Log(playerColor);
             
             // send to all
             Server.sendDataToAll(packet);
         }
 
 
-        public void notifyClientDisconnect(string playerName, Color color)
+        public void notifyClientDisconnect(string playerName, PLAYERCOLOR playerColor)
         {
             Packet packet = new Packet();
             packet.type = (int) COMMUNICATION_METHODS.HANDLE_CLIENT_DISCONNECT;
             packet.playerName = playerName;
-            packet.playerColor = new float[] {color.r, color.g, color.b, color.a};
+            packet.playerColor = playerColor;
             
             // send to all
             Server.sendDataToAll(packet);

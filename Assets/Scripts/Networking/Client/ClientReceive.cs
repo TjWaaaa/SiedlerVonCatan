@@ -10,6 +10,7 @@ using UnityEngine.UI;
 using Networking.Package;
 using Networking.Communication;
 using Player;
+using PlayerColor;
 using UI;
 
 namespace Networking.ClientSide
@@ -63,8 +64,6 @@ namespace Networking.ClientSide
 
                 if (currentScene.name == "2_GameScene")
                 {
-                    // BoardGenerator boardGenerator = new BoardGenerator();
-                    // boardGenerator.instantiateGameBoard(gameBoard);
                     boardGenerator.instantiateGameBoard(gameBoard);
                     runFixedUpdate = false;
                 }
@@ -76,10 +75,17 @@ namespace Networking.ClientSide
         /// </summary>
         /// <param name="values">r,g,b,a float values</param>
         /// <returns>Color object</returns>
-        private Color decodeColor(float[] values)
+        private Color decodeColor(PLAYERCOLOR playerColor)
         {
-            Color color = new Color(values[0], values[1], values[2], values[3]);
-            return color;
+            switch (playerColor)
+            {
+                case PLAYERCOLOR.RED: return Color.red;
+                case PLAYERCOLOR.BLUE: return Color.blue;
+                case PLAYERCOLOR.WHITE: return Color.white;
+                case PLAYERCOLOR.YELLOW: return Color.yellow;
+                case PLAYERCOLOR.NONE:
+                default: return Color.magenta;
+            }
         }
 
         
@@ -90,7 +96,7 @@ namespace Networking.ClientSide
         /// <param name="playerName">Name of the player</param>
         /// <param name="playerColor">Color of the player</param>
         /// <param name="currentPlayerID">ID of the player</param>
-        public void representNewPlayer(int currentPlayerID, string playerName, Color playerColor)
+        public void representNewPlayer(int currentPlayerID, string playerName, PLAYERCOLOR playerColor)
         {
             try
             {
@@ -103,7 +109,7 @@ namespace Networking.ClientSide
                     listItem = prefabFactory.getPrefab(PREFABS.PLAYER_LIST_ITEM, scrollViewContent.transform);
                     listItem.transform.Find("No.").GetComponent<Text>().text = playerNumber.ToString();
                     playerNumber++;
-                    listItem.transform.Find("No.").GetComponent<Text>().color = playerColor;
+                    listItem.transform.Find("No.").GetComponent<Text>().color = decodeColor(playerColor);
                     listItem.transform.Find("Player").GetComponent<Text>().text = playerName;
 
                     if (currentPlayerID != myID) // Disable all toggle components which don't belong to the local client
@@ -117,7 +123,7 @@ namespace Networking.ClientSide
                         Debug.Log("Created OwnClientPlayer with ID" + currentPlayerID);
                     }
                     listItem.name = currentPlayerID.ToString();
-                    representativePlayers.Add( new RepresentativePlayer(currentPlayerID, playerName, playerColor));
+                    representativePlayers.Add( new RepresentativePlayer(currentPlayerID, playerName, decodeColor(playerColor)));
                     Debug.Log("client: "+ playerName + " created. Player Number " + representativePlayers.Count);
                 }
                 else // List entry does already exist --> update name and color 
@@ -146,11 +152,10 @@ namespace Networking.ClientSide
                 {
                     int currentPlayerID = item[0].ToObject<int>();
                     string playerName = item[1].ToObject<string>();
-                    Color playerColor = decodeColor(item[2].ToObject<float[]>());
+                    PLAYERCOLOR playerColor = item[2].ToObject<PLAYERCOLOR>();
 
                     Debug.Log($"Client joined: Name: {playerName}, Color: {playerColor}, ID: {currentPlayerID}");
                     representNewPlayer(currentPlayerID, playerName, playerColor);
-                    
                 }
                 catch (Exception e)
                 {
