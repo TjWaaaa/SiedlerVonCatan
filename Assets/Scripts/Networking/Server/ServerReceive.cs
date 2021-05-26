@@ -113,15 +113,31 @@ namespace Networking.ServerSide
 
             if (currentServerPlayer.canBuyBuyable(buildingType))
             {
-                if (gameBoard.placeBuilding(posInArray, playerColor))
+                switch (buildingType)
                 {
-                    serverRequest.notifyObjectPlacement(buildingType, posInArray, playerColor);
-                    currentServerPlayer.buyBuyable(buildingType); 
+                    case BUYABLES.VILLAGE:
+                    case BUYABLES.CITY:
+                    {
+                        if (gameBoard.placeBuilding(posInArray, playerColor))
+                        {
+                            currentServerPlayer.buyBuyable(buildingType);
+                            serverRequest.notifyObjectPlacement(buildingType, posInArray, playerColor);
+                            return;
+                        }
+                        break;
+                    }
+                    case BUYABLES.ROAD:
+                        if (gameBoard.placeRoad(posInArray, playerColor))
+                        {
+                            currentServerPlayer.buyBuyable(buildingType);
+                            serverRequest.notifyObjectPlacement(buildingType, posInArray, playerColor);
+                            return;
+                        }
+                        break;
+                    default: Debug.Log("handleBuild(): wrong BUYABLES"); break;
                 }
-                else
-                {
-                    serverRequest.notifyRejection(currentServerPlayer.getPlayerID(), "Building cant be built");
-                }
+                
+                serverRequest.notifyRejection(currentServerPlayer.getPlayerID(), "Building cant be built");
             }
             else
             {

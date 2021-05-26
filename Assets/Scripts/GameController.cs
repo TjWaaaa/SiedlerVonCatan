@@ -91,7 +91,7 @@ public class GameController : MonoBehaviour
                     }
                     else if (hit.collider.tag == "RoadSlot")
                     {
-                        int posInArray = Int32.Parse(hit.transform.name);
+                        int posInArray = Int32.Parse(hit.transform.name.Substring(1));
                         clientRequest.requestBuild(BUYABLES.ROAD, posInArray);
                     }
                 }

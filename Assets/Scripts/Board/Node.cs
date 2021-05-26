@@ -53,7 +53,7 @@ public class Node
         return adjacentEdgesPos;
     }
     
-    protected void setOccupant(PLAYERCOLOR occupant)
+    public void setOccupant(PLAYERCOLOR occupant)
     {
         this.occupant = occupant;
     }

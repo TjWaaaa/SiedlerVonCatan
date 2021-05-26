@@ -298,20 +298,21 @@ public class Board
     public bool placeBuilding(int nodeId, PLAYERCOLOR player)
     {
         Node currentNode = nodesArray[nodeId];
-
-        Debug.Log("placeBuilding() called");
-        if (!allowedToBuildOnNode(currentNode, player)) return false;
+        
+        // if (!allowedToBuildOnNode(currentNode, player)) return false;
 
         if (currentNode.getBuildingType() == BUILDING_TYPE.NONE)
         {
             Debug.Log("place village");
             currentNode.setBuildingType(BUILDING_TYPE.VILLAGE);
+            currentNode.setOccupant(player);
             return true;
         }
         if (currentNode.getBuildingType() == BUILDING_TYPE.VILLAGE)
         {
             Debug.Log("place city");
             currentNode.setBuildingType(BUILDING_TYPE.CITY);
+            currentNode.setOccupant(player);
             return true;
         }
 
@@ -365,13 +366,20 @@ public class Board
     /// </summary>
     /// <param name="edgeId">position of an edge in the edges[] array</param>
     /// <param name="player">color of the player who tries to build</param>
-    public void placeRoad(int edgeId, PLAYERCOLOR player)
+    public bool placeRoad(int edgeId, PLAYERCOLOR player)
     {
         Edge currentEdge = edgesArray[edgeId];
+        
+        // if (!allowedToBuildOnEdge(currentEdge, player)) return false;
+        
+        if (currentEdge.getOccupant() == PLAYERCOLOR.NONE)
+        {
+            Debug.Log("place road");
+            currentEdge.setOccupant(player);
+            return true;
+        }
 
-        if (!allowedToBuildOnEdge(currentEdge, player)) return;
-
-        currentEdge.setOccupant(player);
+        return false;
     }
 
     /// <summary>

@@ -128,7 +128,7 @@ public class BoardGenerator : MonoBehaviour
         else if (buildType == BUYABLES.ROAD)
         {
             Debug.Log("Buyable: Road");
-            GameObject edge = GameObject.Find(buildId.ToString());
+            GameObject edge = GameObject.Find("R" + buildId.ToString());
             Vector3 edgePos = edge.transform.position;
             Quaternion edgeRotation = edge.transform.rotation;
 
@@ -151,7 +151,7 @@ public class BoardGenerator : MonoBehaviour
             default: Debug.Log("buildVillage: wrong player color"); return false;
         }
 
-        position = new Vector3 (position.x, position.y += 0.06f, position.z);
+        position = new Vector3 (position.x, 0.06f, position.z);
         GameObject newVillage = Instantiate(prefab, position, Quaternion.identity);
         newVillage.transform.name = "C" + buildId.ToString();
         return true;
@@ -169,7 +169,7 @@ public class BoardGenerator : MonoBehaviour
             default: Debug.Log("buildCity: wrong player color"); return false;
         }
         
-        Debug.Log("buildCity(): City built");
+        position = new Vector3 (position.x, 0.09f, position.z);
         Instantiate(prefab, position, Quaternion.identity);
         return true;
     }
@@ -186,7 +186,8 @@ public class BoardGenerator : MonoBehaviour
             default: Debug.Log("buildCity: wrong player color"); return false;
         }
         
-        Instantiate(prefab, position, Quaternion.identity);
+        position = new Vector3 (position.x, 0.08f, position.z);
+        Instantiate(prefab, position, rotation);
         return true;
     }
 }

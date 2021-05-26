@@ -219,8 +219,8 @@ namespace Networking.ClientSide
 
         public void handleRejection(Packet serverPacket)
         {
-            Debug.Log("Place building rejected");
-            //throw new System.NotImplementedException();
+            string errorMessage = serverPacket.errorMessage;
+            Debug.Log(errorMessage);
         }
 
         public void handleAccpetBeginRound(Packet serverPacket)
