@@ -194,7 +194,7 @@ namespace Networking.ServerSide
             newPlayer.setResourceAmount(RESOURCETYPE.SHEEP, 15);
             newPlayer.setResourceAmount(RESOURCETYPE.WOOD, 15);
             newPlayer.setResourceAmount(RESOURCETYPE.BRICK, 15);
-            newPlayer.setResourceAmount(RESOURCETYPE.BRICK, 15);
+            newPlayer.setResourceAmount(RESOURCETYPE.ORE, 15);
             newPlayer.setResourceAmount(RESOURCETYPE.WHEAT, 15);
             allPlayer.Add(playerId,newPlayer);
             playerAmount++;
