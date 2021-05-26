@@ -66,6 +66,7 @@ public class Board
         initializeNodes();
         initializeEdges();
         initializeHexagons();
+        checkPlacementConstraints();
         assignNeighborsToHexagons();
         assignNeighborsToNodes();
         assignNeighborsToEdges();
@@ -421,17 +422,14 @@ public class Board
                 {
                     int yOffset = row + neighborOffsetY[offsetIndex];
                     int xOffset = col + neighborOffsetX[offsetIndex];
-                    Hexagon neighbor;
 
-                    try
+                    //if index is out of range there is no adjacent hexagon, therefore the constraint for this neighbor is met
+                    if (yOffset > hexagonsArray.Length-1 || xOffset > hexagonsArray[yOffset].Length-1)
                     {
-                        neighbor = hexagonsArray[yOffset][xOffset];
-                    }
-                    catch (IndexOutOfRangeException e)
-                    {
-                        //if index is out of range there is no adjacent hexagon, therefore the constraint for this neighbor is met
                         continue;
                     }
+
+                    Hexagon neighbor= hexagonsArray[yOffset][xOffset];
 
                     //if one of the neighbors fieldnumber is 6 or 8 the hexagon needs to be moved
                     if (neighbor.getFieldNumber() != 6 && neighbor.getFieldNumber() != 8)
@@ -477,9 +475,14 @@ public class Board
                     {
                         int yOffset = row + neighborOffsetY[offsetIndex];
                         int xOffset = col + neighborOffsetX[offsetIndex];
-                        int neighborFieldnumber = 0;
-                        
-                        neighborFieldnumber = hexagonsArray[yOffset][xOffset].getFieldNumber();
+                       
+                        //if index is out of range there is no adjacent hexagon, therefore the constraint for this neighbor is met
+                        if (yOffset > hexagonsArray.Length - 1 || xOffset > hexagonsArray[yOffset].Length-1)
+                        {
+                            continue;
+                        }
+
+                        int neighborFieldnumber = hexagonsArray[yOffset][xOffset].getFieldNumber();
 
                         //if one of the neighbors is 6 || 8 position is mot suitable
                         if (neighborFieldnumber == 6 || neighborFieldnumber == 8)
@@ -496,7 +499,7 @@ public class Board
                 }
             }
         }
-        //
+
         return new int[] { };
     }
 
