@@ -122,6 +122,8 @@ namespace Networking.ServerSide
                         {
                             currentServerPlayer.buyBuyable(buildingType);
                             serverRequest.notifyObjectPlacement(buildingType, posInArray, playerColor);
+                            serverRequest.updateRepPlayers(convertSPAToRPA());
+                            //serverRequest.updateOwnPlayer(currentServerPlayer.convertFromSPToOP(),currentServerPlayer.convertSPToCPResources(), currentServerPlayer.getPlayerID());
                             return;
                         }
                         break;
@@ -131,6 +133,8 @@ namespace Networking.ServerSide
                         {
                             currentServerPlayer.buyBuyable(buildingType);
                             serverRequest.notifyObjectPlacement(buildingType, posInArray, playerColor);
+                            serverRequest.updateRepPlayers(convertSPAToRPA());
+                            //serverRequest.updateOwnPlayer(allPlayer.ElementAt(currentPlayer).Value.convertFromSPToOP(),allPlayer.ElementAt(currentPlayer).Value.convertSPToCPResources(), allPlayer.ElementAt(currentPlayer).Key);
                             return;
                         }
                         break;

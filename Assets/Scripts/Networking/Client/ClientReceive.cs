@@ -284,6 +284,7 @@ namespace Networking.ClientSide
         {
             ownClientPlayer.updateOP(serverPacket.updateOP,serverPacket.updateResourcesOnOP);
             ownPlayerRepresentation.updaetOwnPlayerUI(ownClientPlayer);
+            Debug.Log("UPDATE OP");
         }
     }
 }
