@@ -103,6 +103,13 @@ namespace Networking.ServerSide
             throw new System.NotImplementedException();
         }
 
+        public void handleTradeOffer(Packet clientPacket)
+        {
+            RESOURCETYPE resourcetype = (RESOURCETYPE) clientPacket.resourceType;
+            ServerPlayer currentServerPlayer = allPlayer.ElementAt(currentPlayer).Value;
+            currentServerPlayer.canTrade(resourcetype);
+        }
+
         public void handleBuild(Packet clientPacket)
         {
             ServerPlayer currentServerPlayer = allPlayer.ElementAt(currentPlayer).Value;
@@ -120,8 +127,8 @@ namespace Networking.ServerSide
                         {
                             currentServerPlayer.buyBuyable(buildingType);
                             serverRequest.notifyObjectPlacement(buildingType, posInArray, playerColor);
+                            
                             serverRequest.updateRepPlayers(convertSPAToRPA());
-                            //serverRequest.updateOwnPlayer(currentServerPlayer.convertFromSPToOP(),currentServerPlayer.convertSPToCPResources(), currentServerPlayer.getPlayerID());
                             return;
                         }
                     case BUYABLES.ROAD:
@@ -158,10 +165,7 @@ namespace Networking.ServerSide
 
         public void handleEndTurn(Packet clientPacket)
         {
-            //serverRequest.updateOwnPlayer(
-            //    allPlayer.ElementAt(currentPlayer).Value.convertFromSPToOP(), // int[] with left buildings
-            //    allPlayer.ElementAt(currentPlayer).Value.convertSPToOPResources(), // Resource Dictionary
-             //   allPlayer.ElementAt(currentPlayer).Key);
+            
             // Change currentPlayer
             if (currentPlayer == playerAmount - 1)
             {
@@ -176,6 +180,10 @@ namespace Networking.ServerSide
             // TODO change method call => handleBeginRound should only be called after the new player is already set and all have been notified
             Debug.Log("handleEndTurn has been called");
             handleBeginRound(clientPacket);
+            serverRequest.updateOwnPlayer(
+                           allPlayer.ElementAt(currentPlayer).Value.convertFromSPToOP(), // int[] with left buildings
+                            allPlayer.ElementAt(currentPlayer).Value.convertSPToOPResources(), // Resource Dictionary
+                          allPlayer.ElementAt(currentPlayer).Key);
         }
 
         public void handleClientDisconnectServerCall()

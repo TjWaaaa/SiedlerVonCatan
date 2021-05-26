@@ -43,6 +43,15 @@ namespace Networking.Communication
             Client.sendRequest(PacketSerializer.objectToJsonString(packet));
         }
 
+        public void requestTradeOffer(RESOURCETYPE offerResource)
+        {
+            Packet packet = new Packet();               
+            packet.type = (int) COMMUNICATION_METHODS.HANDLE_TRADE_OFFER;
+            packet.resourceType = (int) offerResource;
+            
+            Client.sendRequest(PacketSerializer.objectToJsonString(packet));
+        }
+
         public void requestBuild(BUYABLES type, int buildID)
         {
             Packet packet = new Packet();

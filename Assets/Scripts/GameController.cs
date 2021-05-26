@@ -71,7 +71,7 @@ public class GameController : MonoBehaviour
         Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
         RaycastHit hit;
 
-        if (!TradeMenu.isActive()) //that nobody can build cities by accident (while trading)
+        if (true) //that nobody can build cities by accident (while trading)!TradeMenu.isActive()
         {
             if (Physics.Raycast(ray, out hit, 100f))
             {
