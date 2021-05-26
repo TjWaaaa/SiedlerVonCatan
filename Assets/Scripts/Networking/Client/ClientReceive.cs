@@ -268,7 +268,7 @@ namespace Networking.ClientSide
             throw new System.NotImplementedException();
         }
 
-        public void handleUpdateRPandOP(Packet serverPacket)
+        public void handleUpdateRP(Packet serverPacket)
         {   
             Debug.Log("handleUpdateRP in Client has been called");
             int i = 0;
@@ -278,9 +278,12 @@ namespace Networking.ClientSide
                 playerRepresentation.updateUiPR(i,rp);
                 i++;   
             }
+        }
+        
+        public void handleUpdateOP(Packet serverPacket)
+        {
             ownClientPlayer.updateOP(serverPacket.updateOP,serverPacket.updateResourcesOnOP);
             ownPlayerRepresentation.updaetOwnPlayerUI(ownClientPlayer);
         }
-        
     }
 }
