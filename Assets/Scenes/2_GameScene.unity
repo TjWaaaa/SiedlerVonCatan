@@ -1563,6 +1563,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   robber: {fileID: 3788127331573154054, guid: 2e1533a3b472ba44ca1de86e28cd87b1, type: 3}
+  villageBlue: {fileID: 1473430204017719237, guid: 06b2b5d8f93919149a47c3914917dd9d, type: 3}
+  villageRed: {fileID: 1866053306598989734, guid: 92b6d5734317208419595df81af13528, type: 3}
+  villageWhite: {fileID: 8846029281639864893, guid: 14264cbe6a9e0f8429eec1745c8ecc27, type: 3}
+  villageYellow: {fileID: 6556314139959314210, guid: 0c5644bb1be42f04f8037189e9bda360, type: 3}
+  cityBlue: {fileID: 2176914337095495632, guid: d330560e48e1b0e45b01b2f8c3b39561, type: 3}
+  cityRed: {fileID: 3552176500700860784, guid: eccb6e89d0407a14a97b5d0c44af3b1e, type: 3}
+  cityWhite: {fileID: 7532268434397492872, guid: 60f8ebd340c1c4844bb13c1c687206f7, type: 3}
+  cityYellow: {fileID: 1263915188082681082, guid: 68239779616515f44be30061105bb60c, type: 3}
+  roadBlue: {fileID: 8340757790129642905, guid: e56b7453d7e170240b12669f24b262ae, type: 3}
+  roadRed: {fileID: 2739458748758786287, guid: d108855e67b985447b90c1dd46d631bd, type: 3}
+  roadWhite: {fileID: 1051114755748909797, guid: 5ab0f20020add774787c9431f1cdeec5, type: 3}
+  roadYellow: {fileID: 316076876585621947, guid: 0f97f4339df0ef048b6d6067eb0c01ac, type: 3}
 --- !u!114 &153015446
 MonoBehaviour:
   m_ObjectHideFlags: 0

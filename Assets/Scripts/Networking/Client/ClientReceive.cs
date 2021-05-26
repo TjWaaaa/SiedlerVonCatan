@@ -179,10 +179,18 @@ namespace Networking.ClientSide
 
         public void handleObjectPlacement(Packet serverPacket)
         {
+            Debug.Log("Place building " + serverPacket.buildType + " on " + serverPacket.buildID);
+            BUYABLES buildType = (BUYABLES) serverPacket.buildType;
+            int buildId = serverPacket.buildID;
+            PLAYERCOLOR buildColor = serverPacket.buildColor;
+            Debug.Log("client recieved color: " + buildColor);
+
+            boardGenerator.placeBuilding(buildType, buildId, buildColor);
+
             // Render the new Object
             // Update Resources displayed for own player if you are the one who placed it
             // Update the currentPlayers amount of cards
-            throw new System.NotImplementedException();
+            //throw new System.NotImplementedException();
         }
 
         public void handleNextPlayer(Packet serverPacket)
@@ -204,7 +212,8 @@ namespace Networking.ClientSide
 
         public void handleRejection(Packet serverPacket)
         {
-            throw new System.NotImplementedException();
+            Debug.Log("Place building rejected");
+            //throw new System.NotImplementedException();
         }
 
         public void handleAccpetBeginRound(Packet serverPacket)

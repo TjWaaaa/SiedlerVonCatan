@@ -30,7 +30,7 @@ namespace Networking.Package
         
         public int buildID { get; set; }
         public int buildType { get; set; } // building i want to build
-        public string buildColor { get; set; } // color of building
+        public PLAYERCOLOR buildColor { get; set; } // color of building
         
         
         public int victoryPoint { get; set; }

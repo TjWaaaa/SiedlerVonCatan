@@ -52,6 +52,13 @@ namespace Networking.ServerSide
                     PLAYERCOLOR playerColor = player.getPlayerColor(); // needs to be done, because Color is not serializable ¯\_(ツ)_/¯
                     allPlayerInformation.Add(new object[] {player.getPlayerID(), player.getPlayerName(), player.getPlayerColor()});
                 }
+                
+                // TODO can be deleted later
+                player.setResourceAmount(RESOURCETYPE.ORE, 10);
+                player.setResourceAmount(RESOURCETYPE.WOOD, 10);
+                player.setResourceAmount(RESOURCETYPE.BRICK, 10);
+                player.setResourceAmount(RESOURCETYPE.SHEEP, 10);
+                player.setResourceAmount(RESOURCETYPE.WHEAT, 10);
             }
             
             serverRequest.notifyClientJoined(allPlayerInformation);
@@ -109,12 +116,17 @@ namespace Networking.ServerSide
             BUYABLES buildingType = (BUYABLES) clientPacket.buildType;
             int posInArray = clientPacket.buildID;
             
-            
+            PLAYERCOLOR playerColor = allPlayer.ElementAt(currentPlayer).Value.getPlayerColor();
+
             if (currentServerPlayer.canBuyBuyable(buildingType))
             {
-                if (gameBoard.placeBuilding(posInArray, allPlayer.ElementAt(currentPlayer).Value.getPlayerColor()))
+                if (gameBoard.placeBuilding(posInArray, playerColor))
                 {
-                    
+                    serverRequest.notifyObjectPlacement(buildingType, posInArray, playerColor);
+                }
+                else
+                {
+                    serverRequest.notifyRejection(allPlayer.ElementAt(currentPlayer).Value.getPlayerID(), "Building cant be built");
                 }
             }
             else

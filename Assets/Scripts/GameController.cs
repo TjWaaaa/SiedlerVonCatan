@@ -138,9 +138,9 @@ public class GameController : MonoBehaviour
     
     public void BuildVillage(Vector3 position)
     {
-
+    
         PLAYERCOLOR c = players[currentPlayer].getPlayerColor();
-
+    
         if (c.Equals(PLAYERCOLOR.BLUE))
         {
             Instantiate(villageBlue, position, Quaternion.identity);
@@ -158,12 +158,12 @@ public class GameController : MonoBehaviour
             Instantiate(villageYellow, position, Quaternion.identity);
         }
     }
-
+    
     public void BuildCity(Vector3 position)
     {
-
+    
         PLAYERCOLOR c = players[currentPlayer].getPlayerColor();
-
+    
         if (c.Equals(PLAYERCOLOR.BLUE))
         {
             Instantiate(cityBlue, position, Quaternion.identity);
@@ -181,12 +181,12 @@ public class GameController : MonoBehaviour
             Instantiate(cityYellow, position, Quaternion.identity);
         }
     }
-
+    
     public void BuildRoad(Vector3 position, Quaternion rotation)
     {
-
+    
         PLAYERCOLOR c = players[currentPlayer].getPlayerColor();
-
+    
         if (c.Equals(PLAYERCOLOR.BLUE))
         {
             Instantiate(roadBlue, position, rotation);

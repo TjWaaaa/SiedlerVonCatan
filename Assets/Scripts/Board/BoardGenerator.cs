@@ -1,4 +1,5 @@
 using Enums;
+using PlayerColor;
 using UnityEngine;
 
 public class BoardGenerator : MonoBehaviour
@@ -98,5 +99,76 @@ public class BoardGenerator : MonoBehaviour
             default: //Debug.LogError("BoardGenerator: no HexagonType set in current Hexagon");
                 return null;
         }
+    }
+
+    public void placeBuilding(BUYABLES buildType, int buildId, PLAYERCOLOR buildColor)
+    {
+        if (buildType == BUYABLES.VILLAGE)
+        {
+            GameObject node = GameObject.Find(buildId.ToString());
+            Vector3 nodePos = node.transform.position;
+            
+            buildVillage(nodePos, buildColor);
+        }
+        else if (buildType == BUYABLES.CITY)
+        {
+            GameObject node = GameObject.Find(buildId.ToString());
+            Vector3 nodePos = node.transform.position;
+            
+            buildCity(nodePos, buildColor);
+        }
+        else if (buildType == BUYABLES.ROAD)
+        {
+            GameObject edge = GameObject.Find(buildId.ToString());
+            Vector3 edgePos = edge.transform.position;
+            Quaternion edgeRotation = edge.transform.rotation;
+            
+            BuildRoad(edgePos, edgeRotation, buildColor);
+        }
+    }
+    
+    public void buildVillage(Vector3 position, PLAYERCOLOR buildColor)
+    {
+        GameObject prefab;
+        switch (buildColor)
+        {
+            case PLAYERCOLOR.RED: prefab = (GameObject) Resources.Load("PlayerObjects3D/redVillagePrefab"); break;
+            case PLAYERCOLOR.BLUE: prefab = (GameObject) Resources.Load("PlayerObjects3D/blueVillagePrefab"); break;
+            case PLAYERCOLOR.WHITE: prefab = (GameObject) Resources.Load("PlayerObjects3D/whiteVillagePrefab"); break;
+            case PLAYERCOLOR.YELLOW: prefab = (GameObject) Resources.Load("PlayerObjects3D/yellowVillagePrefab"); break;
+            default: Debug.Log("buildVillage: wrong player color"); return;
+        }
+        
+        Instantiate(prefab, position, Quaternion.identity);
+    }
+
+    public void buildCity(Vector3 position, PLAYERCOLOR buildColor)
+    {
+        GameObject prefab;
+        switch (buildColor)
+        {
+            case PLAYERCOLOR.RED: prefab = (GameObject) Resources.Load("PlayerObjects3D/redCityPrefab"); break;
+            case PLAYERCOLOR.BLUE: prefab = (GameObject) Resources.Load("PlayerObjects3D/blueCityPrefab"); break;
+            case PLAYERCOLOR.WHITE: prefab = (GameObject) Resources.Load("PlayerObjects3D/whiteCityPrefab"); break;
+            case PLAYERCOLOR.YELLOW: prefab = (GameObject) Resources.Load("PlayerObjects3D/yellowCityPrefab"); break;
+            default: Debug.Log("buildCity: wrong player color"); return;
+        }
+        
+        Instantiate(prefab, position, Quaternion.identity);
+    }
+
+    public void BuildRoad(Vector3 position, Quaternion rotation, PLAYERCOLOR buildColor)
+    {
+        GameObject prefab;
+        switch (buildColor)
+        {
+            case PLAYERCOLOR.RED: prefab = (GameObject) Resources.Load("PlayerObjects3D/redStreetPrefab"); break;
+            case PLAYERCOLOR.BLUE: prefab = (GameObject) Resources.Load("PlayerObjects3D/blueStreetPrefab"); break;
+            case PLAYERCOLOR.WHITE: prefab = (GameObject) Resources.Load("PlayerObjects3D/whiteStreetPrefab"); break;
+            case PLAYERCOLOR.YELLOW: prefab = (GameObject) Resources.Load("PlayerObjects3D/yellowStreetPrefab"); break;
+            default: Debug.Log("buildCity: wrong player color"); return;
+        }
+        
+        Instantiate(prefab, position, Quaternion.identity);
     }
 }

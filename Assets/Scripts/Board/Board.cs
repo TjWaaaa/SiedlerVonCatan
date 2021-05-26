@@ -299,15 +299,18 @@ public class Board
     {
         Node currentNode = nodesArray[nodeId];
 
+        Debug.Log("placeBuilding() called");
         if (!allowedToBuildOnNode(currentNode, player)) return false;
 
         if (currentNode.getBuildingType() == BUILDING_TYPE.NONE)
         {
+            Debug.Log("place village");
             currentNode.setBuildingType(BUILDING_TYPE.VILLAGE);
             return true;
         }
         if (currentNode.getBuildingType() == BUILDING_TYPE.VILLAGE)
         {
+            Debug.Log("place city");
             currentNode.setBuildingType(BUILDING_TYPE.CITY);
             return true;
         }
@@ -328,6 +331,7 @@ public class Board
             && currentNode.getOccupant() != player
             || currentNode.getBuildingType() == BUILDING_TYPE.CITY)
         {
+            Debug.Log("occupied by enemy or city");
             return false;
         }
 
@@ -342,14 +346,16 @@ public class Board
             if (node.getBuildingType() != BUILDING_TYPE.NONE) return false;
         }
 
-        foreach (int edgePos in neighborEdgesPos)
-        {
-            Edge edge = edgesArray[edgePos];
-            // true if at least 1 edge is occupied by player
-            if (edge.getOccupant() == player) return true;
-        }
-
-        return false;
+        // TODO uncomment later as soon as first buildings can be placed at game start
+        // foreach (int edgePos in neighborEdgesPos)
+        // {
+        //     Edge edge = edgesArray[edgePos];
+        //     // true if at least 1 edge is occupied by player
+        //     if (edge.getOccupant() == player) return true;
+        // }
+        
+        return true;
+        //return false;
     }
 
     /// <summary>

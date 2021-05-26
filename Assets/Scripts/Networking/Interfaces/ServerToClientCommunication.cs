@@ -37,7 +37,7 @@ namespace Networking.Interfaces
         /// <param name="buildType">type of building</param>
         /// <param name="buildID">ID of position on the board</param>
         /// <param name="color">color of building owner</param>
-        public void notifyObjectPlacement(BUYABLES buildType, int buildID, Color color);
+        public void notifyObjectPlacement(BUYABLES buildType, int buildID, PLAYERCOLOR color);
 
         
         /// <summary>
