@@ -8,7 +8,7 @@ using Player;
 
 namespace UI
 {
-    public class PlayerRepresentation : MonoBehaviour
+    public class PlayerRepresentation
     {
         
         private List<GameObject> playerRepresentations = new List<GameObject>();
@@ -32,7 +32,7 @@ namespace UI
                             playerRepresentations[player].SetActive(true);
                             playerRepresentations[player].transform.GetChild(0).transform.GetChild(2).GetComponent<TextMeshProUGUI>().text = representativePlayers[player].getPlayerName();
                             playerRepresentations[player].transform.GetChild(0).transform.GetChild(2).GetComponent<TextMeshProUGUI>().color = representativePlayers[player].getPlayerColor();
-                            Debug.Log(representativePlayers[player] + " writed on board number "+ (player+1));
+                            Debug.Log("CLIENT: " + representativePlayers[player] + " wrote on board number "+ (player+1));
                             updateUiPR(player, representativePlayers[player]);
                         }
                         
@@ -42,14 +42,14 @@ namespace UI
                         {
                             playerRepresentations.RemoveAt(playerboards - 1);
                         }
-                        Debug.Log("There are "+ playerRepresentations.Count + " Players ingame");
+                        Debug.Log("CLIENT/SERVER: There are "+ playerRepresentations.Count + " Players ingame");
         }
         
         // player = index in representativePlayers
 
         public void updateUiPR(int player, RepresentativePlayer representativePlayer)
         {   
-            Debug.Log("RPUi has been updated via PlayerRepresentation.cs");
+            Debug.Log("CLIENT: RPUi has been updated via PlayerRepresentation.cs");
             playerRepresentations[player].transform.GetChild(0).transform.GetChild(3).GetComponent<TextMeshProUGUI>().text = representativePlayer.getVictoryPoints().ToString();
             playerRepresentations[player].transform.GetChild(0).transform.GetChild(4).GetComponent<TextMeshProUGUI>().text = representativePlayer.getTotalResourceAmount().ToString();
             playerRepresentations[player].transform.GetChild(0).transform.GetChild(5).GetComponent<TextMeshProUGUI>().text = representativePlayer.getDevCardAmount().ToString();

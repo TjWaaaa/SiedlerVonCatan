@@ -66,6 +66,7 @@ public class Board
         initializeNodes();
         initializeEdges();
         initializeHexagons();
+        checkPlacementConstraints();
         assignNeighborsToHexagons();
         assignNeighborsToNodes();
         assignNeighborsToEdges();
@@ -189,7 +190,7 @@ public class Board
                 }
                 catch (Exception e)
                 {
-                    Debug.Log(e);
+                    Debug.Log("SERVER: "+ e);
                 }
 
                 Hexagon currentHexagon = hexagonsArray[row][col];
@@ -303,14 +304,14 @@ public class Board
 
         if (currentNode.getBuildingType() == BUILDING_TYPE.NONE)
         {
-            Debug.Log("place village");
+            Debug.Log("SERVER: place village");
             currentNode.setBuildingType(BUILDING_TYPE.VILLAGE);
             currentNode.setOccupant(player);
             return true;
         }
         if (currentNode.getBuildingType() == BUILDING_TYPE.VILLAGE)
         {
-            Debug.Log("place city");
+            Debug.Log("SERVER: place city");
             currentNode.setBuildingType(BUILDING_TYPE.CITY);
             currentNode.setOccupant(player);
             return true;
@@ -332,7 +333,7 @@ public class Board
             && currentNode.getOccupant() != player
             || currentNode.getBuildingType() == BUILDING_TYPE.CITY)
         {
-            Debug.Log("occupied by enemy or city");
+            Debug.Log("SERVER: occupied by enemy or city");
             return false;
         }
 
@@ -374,7 +375,7 @@ public class Board
         
         if (currentEdge.getOccupant() == PLAYERCOLOR.NONE)
         {
-            Debug.Log("place road");
+            Debug.Log("SERVER: place road");
             currentEdge.setOccupant(player);
             return true;
         }
@@ -440,15 +441,12 @@ public class Board
                     int yOffset = row + neighborOffsetY[offsetIndex];
                     int xOffset = col + neighborOffsetX[offsetIndex];
                     Hexagon neighbor;
-
-                    try
+                    
+                    neighbor = hexagonsArray[yOffset][xOffset];
+                    //if index is out of range there is no adjacent hexagon, therefore the constraint for this neighbor is met
+                    if (neighbor == null)
                     {
-                        neighbor = hexagonsArray[yOffset][xOffset];
-                    }
-                    catch (IndexOutOfRangeException e)
-                    {
-                        //if index is out of range there is no adjacent hexagon, therefore the constraint for this neighbor is met
-                        continue;
+                        continue;   
                     }
 
                     //if one of the neighbors fieldnumber is 6 or 8 the hexagon needs to be moved

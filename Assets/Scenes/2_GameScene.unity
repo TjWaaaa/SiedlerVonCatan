@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.44572085, g: 0.49542773, b: 0.57424843, a: 1}
+  m_IndirectSpecularColor: {r: 0.44572103, g: 0.4954281, b: 0.5742485, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -1536,6 +1536,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a682fd7bce9ab9346ad2f345d418fd4f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  buildStreetMode: 0
+  buildVillageMode: 0
+  buildCityMode: 0
 --- !u!4 &153015444
 Transform:
   m_ObjectHideFlags: 0
@@ -2993,7 +2996,7 @@ GameObject:
   - component: {fileID: 307384584}
   - component: {fileID: 307384583}
   m_Layer: 5
-  m_Name: buildvillage
+  m_Name: buildVillage
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

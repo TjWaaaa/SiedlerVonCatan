@@ -1,16 +1,9 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
+
 using TMPro;
-using Enums;
-using Networking.ClientSide;
-using Trade;
 using UnityEngine;
-using UnityEngine.UI;
 using Networking.Communication;
 using Player;
 using PlayerColor;
-using UI;
 
 public class GameController : MonoBehaviour
 {
@@ -66,125 +59,59 @@ public class GameController : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
-    {
-        Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
-        RaycastHit hit;
-
-        if (true) //that nobody can build cities by accident (while trading)!TradeMenu.isActive()
-        {
-            if (Physics.Raycast(ray, out hit, 100f))
-            {
-                if (Input.GetMouseButtonDown(0))
-                {
-
-                    if (hit.collider.tag == "VillageSlot")
-                    {
-                        int posInArray = Int32.Parse(hit.transform.name.Substring(1));
-                        clientRequest.requestBuild(BUYABLES.VILLAGE, posInArray);
-                    }
-                    else if (hit.collider.tag == "Village")
-                    {
-                        int posInArray = Int32.Parse(hit.transform.name.Substring(1));
-                        Debug.Log(posInArray);
-                        clientRequest.requestBuild(BUYABLES.CITY, posInArray);
-                    }
-                    else if (hit.collider.tag == "RoadSlot")
-                    {
-                        int posInArray = Int32.Parse(hit.transform.name.Substring(1));
-                        clientRequest.requestBuild(BUYABLES.ROAD, posInArray);
-                    }
-                }
-            }
-        }
-        else ChangeRessourcesOutput(players[currentPlayer]);
-    }
     
+    // void Update()
+    // {
+    //     Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
+    //     RaycastHit hit;
+    //     
+    //     if (Physics.Raycast(ray, out hit, 100f))
+    //     {
+    //         if (Input.GetMouseButtonDown(0))
+    //         {
+    //             if (InputController.buildVillageMode)
+    //             {
+    //                 if (hit.collider.tag == "VillageSlot")
+    //                 {
+    //                     Debug.Log("want to build a village");
+    //                     int posInArray = Int32.Parse(hit.transform.name.Substring(1));
+    //                     clientRequest.requestBuild(BUYABLES.VILLAGE, posInArray);
+    //                 }
+    //             }
+    //
+    //             else if (InputController.buildCityMode)
+    //             {
+    //                 if (hit.collider.tag == "Village")
+    //                 {
+    //                     int posInArray = Int32.Parse(hit.transform.name.Substring(1));
+    //                     Debug.Log("CLIENT: " + posInArray);
+    //                     clientRequest.requestBuild(BUYABLES.CITY, posInArray);
+    //                 }
+    //             }
+    //
+    //             else if (InputController.buildStreetMode)
+    //             {
+    //                 if (hit.collider.tag == "RoadSlot")
+    //                 {
+    //                     int posInArray = Int32.Parse(hit.transform.name.Substring(1));
+    //                     clientRequest.requestBuild(BUYABLES.ROAD, posInArray);
+    //                 }
+    //             }
+    //                 
+    //         }
+    //     }
+    //     
+    // }
     
-    public void BuildVillage(Vector3 position)
-    {
-    
-        PLAYERCOLOR c = players[currentPlayer].getPlayerColor();
-    
-        if (c.Equals(PLAYERCOLOR.BLUE))
-        {
-            Instantiate(villageBlue, position, Quaternion.identity);
-        }
-        else if (c.Equals(PLAYERCOLOR.RED))
-        {
-            Instantiate(villageRed, position, Quaternion.identity);
-        }
-        else if (c.Equals(PLAYERCOLOR.WHITE))
-        {
-            Instantiate(villageWhite, position, Quaternion.identity);
-        }
-        else if (c.Equals(PLAYERCOLOR.YELLOW))
-        {
-            Instantiate(villageYellow, position, Quaternion.identity);
-        }
-    }
-    
-    public void BuildCity(Vector3 position)
-    {
-    
-        PLAYERCOLOR c = players[currentPlayer].getPlayerColor();
-    
-        if (c.Equals(PLAYERCOLOR.BLUE))
-        {
-            Instantiate(cityBlue, position, Quaternion.identity);
-        }
-        else if (c.Equals(PLAYERCOLOR.RED))
-        {
-            Instantiate(cityRed, position, Quaternion.identity);
-        }
-        else if (c.Equals(PLAYERCOLOR.WHITE))
-        {
-            Instantiate(cityWhite, position, Quaternion.identity);
-        }
-        else if (c.Equals(PLAYERCOLOR.YELLOW))
-        {
-            Instantiate(cityYellow, position, Quaternion.identity);
-        }
-    }
-    
-    public void BuildRoad(Vector3 position, Quaternion rotation)
-    {
-    
-        PLAYERCOLOR c = players[currentPlayer].getPlayerColor();
-    
-        if (c.Equals(PLAYERCOLOR.BLUE))
-        {
-            Instantiate(roadBlue, position, rotation);
-        }
-        else if (c.Equals(PLAYERCOLOR.RED))
-        {
-            Instantiate(roadRed, position, rotation);
-        }
-        else if (c.Equals(PLAYERCOLOR.WHITE))
-        {
-            Instantiate(roadWhite, position, rotation);
-        }
-        else if (c.Equals(PLAYERCOLOR.YELLOW))
-        {
-            Instantiate(roadYellow, position, rotation);
-        }
-    }
 
 
     public void NextPlayer()
     {
-        Debug.Log("NextPlayer in GameController is called");
+        Debug.Log("CLIENT: NextPlayer in GameController is called");
         clientRequest.requestEndTurn();
     }
 
-    private void ChangeRessourcesOutput(ServerPlayer player)
-    {
-        bricksText.text = player.getResourceAmount(RESOURCETYPE.BRICK).ToString();
-        oreText.text = player.getResourceAmount(RESOURCETYPE.ORE).ToString();
-        sheepText.text = player.getResourceAmount(RESOURCETYPE.SHEEP).ToString();
-        wheatText.text = player.getResourceAmount(RESOURCETYPE.WHEAT).ToString();
-        woodText.text = player.getResourceAmount(RESOURCETYPE.WOOD).ToString();
-    }
+    
 
     public static int getCurrentPlayer()
     {
