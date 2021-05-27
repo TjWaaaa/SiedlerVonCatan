@@ -1536,9 +1536,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a682fd7bce9ab9346ad2f345d418fd4f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  buildStreetMode: 0
-  buildVillageMode: 0
-  buildCityMode: 0
 --- !u!4 &153015444
 Transform:
   m_ObjectHideFlags: 0
@@ -21760,8 +21757,6 @@ GameObject:
   - component: {fileID: 1934553799}
   - component: {fileID: 1934553798}
   - component: {fileID: 1934553797}
-  - component: {fileID: 1934553801}
-  - component: {fileID: 1934553802}
   m_Layer: 5
   m_Name: _Standard Overlay
   m_TagString: Untagged
@@ -21854,30 +21849,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
---- !u!114 &1934553801
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1934553796}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e15facd2936b4a6c98f9fd25d3a99a85, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &1934553802
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1934553796}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3ac3848670934242a894c18a1a33588d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &1946550779
 GameObject:
   m_ObjectHideFlags: 0
