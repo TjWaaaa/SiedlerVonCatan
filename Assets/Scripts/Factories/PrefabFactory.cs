@@ -8,7 +8,7 @@ public class PrefabFactory : MonoBehaviour
     // Board stuff
     
     // other stuff
-    
+    public GameObject PlayerRepresentation;
     // Lobby stuff
     public GameObject PlayerListItem;
     
@@ -23,7 +23,8 @@ public class PrefabFactory : MonoBehaviour
         {
             case(PREFABS.PLAYER_LIST_ITEM):
                 return Instantiate(PlayerListItem, location);
-
+            case(PREFABS.PLAYER_REPRESENTATION):
+                return Instantiate(PlayerRepresentation, location);
             default: 
                 return null;
         }

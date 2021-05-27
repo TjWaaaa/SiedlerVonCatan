@@ -19,7 +19,7 @@ namespace Networking
         {
             if (action == null)
             {
-                Debug.LogWarning("Action to execute on main thread is null!");
+                Debug.LogWarning("CLIENT: Action to execute on main thread is null!");
                 return;
             }
 

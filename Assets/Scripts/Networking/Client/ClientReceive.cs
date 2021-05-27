@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using Enums;
 using Newtonsoft.Json.Linq;
 using Networking.Interfaces;
@@ -7,17 +9,27 @@ using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using Networking.Package;
 using Networking.Communication;
+using Player;
+using PlayerColor;
+using UI;
 
 namespace Networking.ClientSide
 {
-    public class ClientGameLogic : MonoBehaviour, INetworkableClient
+    public class ClientReceive : MonoBehaviour, INetworkableClient
     {
         public int myID { get; private set; }
 
         private PrefabFactory prefabFactory;
         private GameObject scrollViewContent;
+        private PlayerRepresentation playerRepresentation = new PlayerRepresentation();
+        private OwnPlayerRepresentation ownPlayerRepresentation = new OwnPlayerRepresentation();
+
+        //private RepresentativePlayer[] representativePlayerArray;
+        public List<RepresentativePlayer> representativePlayers = new List<RepresentativePlayer>();
+        public OwnClientPlayer ownClientPlayer;
         private int playerNumber = 1;
-        private readonly ClientRequest clientRequest = new ClientRequest();
+
+        private int currentPlayer = 0;
         private Hexagon[][] gameBoard;
 
         private Scene currentScene;
@@ -54,9 +66,9 @@ namespace Networking.ClientSide
 
                 if (currentScene.name == "2_GameScene")
                 {
-                    // BoardGenerator boardGenerator = new BoardGenerator();
-                    // boardGenerator.instantiateGameBoard(gameBoard);
                     boardGenerator.instantiateGameBoard(gameBoard);
+                    playerRepresentation.represent(representativePlayers.ToArray());
+                    ownPlayerRepresentation.represent(ownClientPlayer);
                     runFixedUpdate = false;
                 }
             }
@@ -67,10 +79,17 @@ namespace Networking.ClientSide
         /// </summary>
         /// <param name="values">r,g,b,a float values</param>
         /// <returns>Color object</returns>
-        private Color decodeColor(float[] values)
+        private Color decodeColor(PLAYERCOLOR playerColor)
         {
-            Color color = new Color(values[0], values[1], values[2], values[3]);
-            return color;
+            switch (playerColor)
+            {
+                case PLAYERCOLOR.RED: return Color.red;
+                case PLAYERCOLOR.BLUE: return Color.blue;
+                case PLAYERCOLOR.WHITE: return Color.white;
+                case PLAYERCOLOR.YELLOW: return Color.yellow;
+                case PLAYERCOLOR.NONE:
+                default: return Color.magenta;
+            }
         }
 
         
@@ -81,7 +100,7 @@ namespace Networking.ClientSide
         /// <param name="playerName">Name of the player</param>
         /// <param name="playerColor">Color of the player</param>
         /// <param name="currentPlayerID">ID of the player</param>
-        public void representNewPlayer(int currentPlayerID, string playerName, Color playerColor)
+        public void representNewPlayer(int currentPlayerID, string playerName, PLAYERCOLOR playerColor)
         {
             try
             {
@@ -94,26 +113,31 @@ namespace Networking.ClientSide
                     listItem = prefabFactory.getPrefab(PREFABS.PLAYER_LIST_ITEM, scrollViewContent.transform);
                     listItem.transform.Find("No.").GetComponent<Text>().text = playerNumber.ToString();
                     playerNumber++;
-                    listItem.transform.Find("No.").GetComponent<Text>().color = playerColor;
+                    listItem.transform.Find("No.").GetComponent<Text>().color = decodeColor(playerColor);
                     listItem.transform.Find("Player").GetComponent<Text>().text = playerName;
-                    //listItem.transform.Find("Color").GetComponent<Image>().color = playerColor;
 
                     if (currentPlayerID != myID) // Disable all toggle components which don't belong to the local client
                     {
                         listItem.transform.Find("IsReady").GetComponent<Toggle>().enabled = false;
                         listItem.transform.Find("IsReady").GetComponent<PlayerReady>().enabled = false;
                     }
+                    else
+                    {
+                        ownClientPlayer = new OwnClientPlayer(currentPlayerID);
+                        Debug.Log("CLIENT: Created OwnClientPlayer with ID" + currentPlayerID);
+                    }
                     listItem.name = currentPlayerID.ToString();
+                    representativePlayers.Add( new RepresentativePlayer(currentPlayerID, playerName, decodeColor(playerColor)));
+                    Debug.Log("CLIENT: "+ playerName + " created. Player Number " + representativePlayers.Count);
                 }
                 else // List entry does already exist --> update name and color 
                 {
                     listItem.transform.Find("Player").GetComponent<Text>().text = playerName;
-                    listItem.transform.Find("Player").GetComponent<Text>().color = playerColor;
                 }
             }
             catch (Exception e)
             {
-                Debug.LogError(e);
+                Debug.LogError("CLIENT: " + e);
             }
         }
         
@@ -126,7 +150,7 @@ namespace Networking.ClientSide
             
             // for each player:
             // initiialize prefab with data
-            Debug.Log("Client recieved new package: " + PacketSerializer.objectToJsonString(serverPacket));
+            Debug.Log("CLIENT: Client recieved new package: " + PacketSerializer.objectToJsonString(serverPacket));
 
             myID = serverPacket.myPlayerID;
             foreach (JArray item in serverPacket.lobbyContent)
@@ -135,14 +159,14 @@ namespace Networking.ClientSide
                 {
                     int currentPlayerID = item[0].ToObject<int>();
                     string playerName = item[1].ToObject<string>();
-                    Color playerColor = decodeColor(item[2].ToObject<float[]>());
+                    PLAYERCOLOR playerColor = item[2].ToObject<PLAYERCOLOR>();
 
-                    Debug.Log($"Client joined: Name: {playerName}, Color: {playerColor}, ID: {currentPlayerID}");
+                    Debug.Log($"CLIENT: Client joined: Name: {playerName}, Color: {playerColor}, ID: {currentPlayerID}");
                     representNewPlayer(currentPlayerID, playerName, playerColor);
                 }
                 catch (Exception e)
                 {
-                    Debug.LogError(e.Message);
+                    Debug.LogError("CLIENT: " + e.Message);
                 }
             }
         }
@@ -157,13 +181,24 @@ namespace Networking.ClientSide
         {
             AsyncOperation asyncLoadLevel = SceneManager.LoadSceneAsync("2_GameScene");
             gameBoard = serverPacket.gameBoard;
-
-            Debug.Log("Client: Sie haben ein Spielbrett erhalten :)");
+            Debug.Log("CLIENT: Sie haben ein Spielbrett erhalten :)");
         }
 
         public void handleObjectPlacement(Packet serverPacket)
         {
-            throw new System.NotImplementedException();
+            Debug.Log("CLIENT: Place building " + serverPacket.buildType + " on " + serverPacket.buildID);
+            BUYABLES buildType = (BUYABLES) serverPacket.buildType;
+            int buildId = serverPacket.buildID;
+            PLAYERCOLOR buildColor = serverPacket.buildColor;
+            Debug.Log("CLIENT: client recieved color: " + buildColor);
+
+            boardGenerator.placeBuilding(buildType, buildId, buildColor);
+            InputController.stopBuildMode();
+
+            // Render the new Object
+            // Update Resources displayed for own player if you are the one who placed it
+            // Update the currentPlayers amount of cards
+            //throw new System.NotImplementedException();
         }
 
         public void handleNextPlayer(Packet serverPacket)
@@ -173,6 +208,8 @@ namespace Networking.ClientSide
 
         public void handleVictory(Packet serverPacket)
         {
+            // Show victorious Player
+            // Load the post game Scene or Lobby so a new game can be started
             throw new System.NotImplementedException();
         }
 
@@ -183,16 +220,22 @@ namespace Networking.ClientSide
 
         public void handleRejection(Packet serverPacket)
         {
-            throw new System.NotImplementedException();
+            string errorMessage = serverPacket.errorMessage;
+            Debug.Log("CLIENT: " + errorMessage);
         }
 
         public void handleAccpetBeginRound(Packet serverPacket)
         {
-            Debug.Log("handleAcceptBeginRound has been called");
-            diceHolder = GameObject.FindGameObjectWithTag("diceHolder");
-            Debug.Log(diceHolder.name + " diceHolder object");
-            diceHolder.GetComponent<RenderRollDices>().renderRollDices(serverPacket.diceResult);
-            Debug.Log(serverPacket.diceResult);
+            Debug.Log("CLIENT: New Round initiated");
+            // Show new currentPlayer
+            int cache = currentPlayer;
+            currentPlayer = currentPlayer == representativePlayers.Count - 1 ?  0 : ++currentPlayer;
+            Debug.Log("CLIENT: Current Player index: " + currentPlayer);
+
+            playerRepresentation.showNextPlayer(cache,currentPlayer);
+            // Render dice rolling
+            GameObject.FindGameObjectWithTag("diceHolder").GetComponent<RenderRollDices>().renderRollDices(serverPacket.diceResult);
+            // Render gained ressources
         }
 
         public void handleAcceptTradeBank(Packet serverPacket)
@@ -220,6 +263,23 @@ namespace Networking.ClientSide
             throw new System.NotImplementedException();
         }
 
+        public void handleUpdateRP(Packet serverPacket)
+        {   
+            Debug.Log("CLIENT: handleUpdateRP in Client has been called");
+            int i = 0;
+            foreach(RepresentativePlayer rp in representativePlayers)
+            {
+                rp.updateNumbers(serverPacket.updateRP[i]);
+                playerRepresentation.updateUiPR(i,rp);
+                i++;   
+            }
+        }
         
+        public void handleUpdateOP(Packet serverPacket)
+        {
+            ownClientPlayer.updateOP(serverPacket.updateOP,serverPacket.updateResourcesOnOP);
+            ownPlayerRepresentation.updaetOwnPlayerUI(ownClientPlayer);
+            Debug.Log("CLIENT: UPDATE OP");
+        }
     }
 }

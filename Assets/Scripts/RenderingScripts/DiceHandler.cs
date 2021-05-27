@@ -1,74 +1,39 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class DiceHandler : MonoBehaviour
 {
-    private int diceNumber;
+    private String diceNumber = "";
 
-    private Animator dice;
+    private Animator diceAnimator;
+    private Image diceImage;
 
-    void Awake()
-    {
-        
-    }
+    private String[] diceNumberStrings = {"0001 (UnityEngine.Sprite)","0020 (UnityEngine.Sprite)","0040 (UnityEngine.Sprite)","0060 (UnityEngine.Sprite)","0080 (UnityEngine.Sprite)","0100 (UnityEngine.Sprite)"};
+
     void Start()
     {
-        dice = gameObject.GetComponent<Animator>();
-        dice.enabled = false;
+        diceAnimator = gameObject.GetComponent<Animator>();
+        diceAnimator.enabled = false;
+        diceImage = gameObject.GetComponent<Image>();
     }
     public void updateDiceNumber(int number)
     {
-        diceNumber = number;
+        diceNumber = diceNumberStrings[number-1];
     }
 
-    public void checkForOne()
+    void FixedUpdate()
     {
-        if (diceNumber == 1)
+        if(diceAnimator.enabled)
         {
-            checkedCorrect();
+            if (diceNumber == diceImage.sprite.ToString())
+            {
+                diceAnimator.enabled = false;
+                diceNumber = "";
+                Debug.Log("SERVER: Animating: " + diceAnimator.enabled);
+            }
         }
-    }
-    public void checkForTwo()
-    {
-        if (diceNumber == 2)
-        {
-            checkedCorrect();
-        }
-    }
-    public void checkForThree()
-    {
-        if (diceNumber == 3)
-        {
-            checkedCorrect();
-        }
-    }
-    public void checkForFour()
-    {
-        if (diceNumber == 4)
-        {
-            checkedCorrect();
-        }
-    }
-    public void checkForFive()
-    {
-        if (diceNumber == 5)
-        {
-            checkedCorrect();
-        }
-    }
-    public void checkForSix()
-    {
-        if (diceNumber == 6)
-        {
-            checkedCorrect();
-        }
-    }
-
-    private void checkedCorrect()
-    {
-        dice.enabled = false;
-        diceNumber = -1;
-        Debug.Log(dice.enabled + "   " +  diceNumber);
     }
 }

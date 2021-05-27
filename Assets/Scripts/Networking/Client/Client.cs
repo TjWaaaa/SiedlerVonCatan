@@ -16,7 +16,7 @@ namespace Networking.ClientSide
 
         private static Socket clientSocket;
 
-        private static ClientGameLogic clientGameLogic;
+        private static ClientReceive _clientReceive;
 
 
         /// <summary>
@@ -30,9 +30,9 @@ namespace Networking.ClientSide
         {
             // instantiate a ClientGameLogic object
             var gameLogicObject = new GameObject();
-            gameLogicObject.AddComponent<ClientGameLogic>();
+            gameLogicObject.AddComponent<ClientReceive>();
             gameLogicObject.AddComponent<BoardGenerator>();
-            clientGameLogic = gameLogicObject.GetComponent<ClientGameLogic>();
+            _clientReceive = gameLogicObject.GetComponent<ClientReceive>();
                         
             buffer = new byte[BUFFER_SIZE];
             clientSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
@@ -49,7 +49,7 @@ namespace Networking.ClientSide
             }
             catch (Exception e)
             {
-                Debug.Log("Client could not start");
+                Debug.Log("SERVER: Client could not start");
                 throw e;
             }
 
@@ -72,22 +72,22 @@ namespace Networking.ClientSide
                 try
                 {
                     attempts++;
-                    Debug.Log("Client: Connection attempts: " + attempts);
+                    Debug.Log("CLIENT: Client: Connection attempts: " + attempts);
                     clientSocket.Connect(IPAddress.Parse(ipAddress), PORT);
                 }
                 catch (SocketException)
                 {
-                    Debug.Log("Client: Connection Error");
+                    Debug.Log("CLIENT: Client: Connection Error");
                 }
             }
 
             if (attempts >= 5)
             {
-                Debug.Log("Client: Failed connecting to Server!");
+                Debug.Log("CLIENT: Failed connecting to Server!");
                 return false;
             }
 
-            Debug.Log("Client: Connected");
+            Debug.Log("CLIENT: Connected");
             return true;
         }
 
@@ -98,7 +98,7 @@ namespace Networking.ClientSide
         /// <param name="request">Data to send</param>
         public static void sendRequest(string request)
         {
-            Debug.Log("Client: Sending a request" + request);
+            Debug.Log("CLIENT: Sending a request" + request);
 
             byte[] buffer = Encoding.ASCII.GetBytes(request);
             clientSocket.BeginSend(buffer, 0, buffer.Length, SocketFlags.None, sendCallback, clientSocket);
@@ -130,10 +130,11 @@ namespace Networking.ClientSide
                 try
                 {
                     receivedBufferSize = currentServerSocket.EndReceive(AR);
+                    Debug.Log("CLIENT: " + receivedBufferSize);
                 }
                 catch (SocketException)
                 {
-                    Debug.Log("Client: Server forcefully disconnected");
+                    Debug.Log("CLIENT: Server forcefully disconnected");
                     //TODO handle connection loss
                     return;
                 }
@@ -143,14 +144,14 @@ namespace Networking.ClientSide
                 var jsonString = Encoding.ASCII.GetString(receievedBuffer);
                 Packet serverData = PacketSerializer.jsonToObject(jsonString);
                 
-                Debug.Log("Client received Data: " + jsonString);
+                Debug.Log("CLIENT: received Data: " + jsonString);
                 delegateIncomingDataToMethods(serverData);
 
                 clientSocket.BeginReceive(buffer, 0, BUFFER_SIZE, SocketFlags.None, receiveCallback, clientSocket); // start listening again
             }
             catch (Exception e)
             {
-                Debug.Log(e);
+                Debug.Log("CLIENT: " + e.HelpLink + e);
                 throw e;
             }
         }
@@ -172,49 +173,49 @@ namespace Networking.ClientSide
                         
                         ThreadManager.executeOnMainThread(() =>
                         {
-                            clientGameLogic.handleClientJoined(incomingData);
+                            _clientReceive.handleClientJoined(incomingData);
                         });
                         break;
 
                     case (int) COMMUNICATION_METHODS.HANDLE_GAMESTART_INITIALIZE:
                         ThreadManager.executeOnMainThread(() =>
                         {
-                            clientGameLogic.handleGameStartInitialize(incomingData);
+                            _clientReceive.handleGameStartInitialize(incomingData);
                         });
                         break;
 
                     case (int) COMMUNICATION_METHODS.HANDLE_PLAYER_READY_NOTIFICATION:
                         ThreadManager.executeOnMainThread(() =>
                         {
-                            clientGameLogic.handlePlayerReadyNotification(incomingData);
+                            _clientReceive.handlePlayerReadyNotification(incomingData);
                         });
                         break;
 
                     case (int) COMMUNICATION_METHODS.HANDLE_OBJECT_PLACEMENT:
                         ThreadManager.executeOnMainThread(() =>
                         {
-                            clientGameLogic.handleObjectPlacement(incomingData);
+                            _clientReceive.handleObjectPlacement(incomingData);
                         });
                         break;
 
                     case (int) COMMUNICATION_METHODS.HANDLE_NEXT_PLAYER:
                         ThreadManager.executeOnMainThread(() =>
                         {
-                            clientGameLogic.handleNextPlayer(incomingData);
+                            _clientReceive.handleNextPlayer(incomingData);
                         });
                         break;
 
                     case (int) COMMUNICATION_METHODS.HANDLE_VICTORY:
                         ThreadManager.executeOnMainThread(() =>
                         {
-                            clientGameLogic.handleVictory(incomingData);
+                            _clientReceive.handleVictory(incomingData);
                         });
                         break;
 
                     case (int) COMMUNICATION_METHODS.HANDLE_CLIENT_DISCONNECT:
                         ThreadManager.executeOnMainThread(() =>
                         {
-                            clientGameLogic.handleClientDisconnect(incomingData);
+                            _clientReceive.handleClientDisconnect(incomingData);
                         });
                         break;
 
@@ -222,56 +223,70 @@ namespace Networking.ClientSide
                     case (int) COMMUNICATION_METHODS.HANDLE_REJECTION:
                         ThreadManager.executeOnMainThread(() =>
                         {
-                            clientGameLogic.handleRejection(incomingData);
+                            _clientReceive.handleRejection(incomingData);
                         });
                         break;
 
                     case (int) COMMUNICATION_METHODS.HANDLE_ACCEPT_BEGIN_ROUND:
-                        Debug.Log("before calling Threadmanager");
+                        Debug.Log("CLIENT: calling handleAcceptBeginRound in ClientReceive");
                         ThreadManager.executeOnMainThread(() =>
                         {
-                            clientGameLogic.handleAccpetBeginRound(incomingData);
+                            _clientReceive.handleAccpetBeginRound(incomingData);
                         });
                         break;
 
                     case (int) COMMUNICATION_METHODS.HANDLE_ACCEPT_TRADE_BANK:
                         ThreadManager.executeOnMainThread(() =>
                         {
-                            clientGameLogic.handleAcceptTradeBank(incomingData);
+                            _clientReceive.handleAcceptTradeBank(incomingData);
                         });
                         break;
 
                     case (int) COMMUNICATION_METHODS.HANDLE_ACCEPT_BUILD:
                         ThreadManager.executeOnMainThread(() =>
                         {
-                            clientGameLogic.handleAcceptBuild(incomingData);
+                            _clientReceive.handleAcceptBuild(incomingData);
                         });
                         break;
 
                     case (int) COMMUNICATION_METHODS.HANDLE_GET_RESOURCES:
                         ThreadManager.executeOnMainThread(() =>
                         {
-                            clientGameLogic.handleGetResources(incomingData);
+                            _clientReceive.handleGetResources(incomingData);
                         });
                         break;
 
                     case (int) COMMUNICATION_METHODS.HANDLE_ACCEPT_BUY_DEVELOPMENT_CARD:
                         ThreadManager.executeOnMainThread(() =>
                         {
-                            clientGameLogic.handleAcceptBuyDevelopement(incomingData);
+                            _clientReceive.handleAcceptBuyDevelopement(incomingData);
                         });
                         break;
 
                     case (int) COMMUNICATION_METHODS.HANDLE_ACCEPT_PLAY_DEVELOPMENT_CARD:
                         ThreadManager.executeOnMainThread(() =>
                         {  
-                            clientGameLogic.handleAcceptPlayDevelopement(incomingData);
+                            _clientReceive.handleAcceptPlayDevelopement(incomingData);
+                        });
+                        break;
+
+                    case (int) COMMUNICATION_METHODS.HANDLE_UPDATE_RP:
+                        ThreadManager.executeOnMainThread(() =>
+                        {  
+                            _clientReceive.handleUpdateRP(incomingData);
+                        });
+                        break;
+
+                    case (int) COMMUNICATION_METHODS.HANDLE_UPDATE_OP:
+                        ThreadManager.executeOnMainThread(() =>
+                        {  
+                            _clientReceive.handleUpdateOP(incomingData);
                         });
                         break;
 
                     default:
-                        Debug.LogWarning($"there was no target method send, invalid data packet. Packet Type: {incomingData.type}");
-                        // TODO: trow exception!!!
+                        Debug.LogWarning($"CLIENT: there was no target method send, invalid data packet. Packet Type: {incomingData.type}");
+                        // TODO: throw exception!!!
                         break;
                 }
             }
@@ -281,7 +296,7 @@ namespace Networking.ClientSide
             }
             
             string receievedText = PacketSerializer.objectToJsonString(incomingData);
-            Debug.Log("Client: Incoming Data: " + receievedText);
+            Debug.Log("CLIENT: Incoming Data: " + receievedText);
         }
     }
 }
