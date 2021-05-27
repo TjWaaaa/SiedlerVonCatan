@@ -22,6 +22,7 @@ namespace Networking.Communication
             
             // send to all
             Server.sendDataToAll(packet);
+            Debug.Log("SERVER: Client should expect a NotifyClientJoined package Type 10");
         }
 
         public void gamestartInitialize(Hexagon[][] gameBoard)
@@ -32,6 +33,7 @@ namespace Networking.Communication
 
             // send to all
             Server.sendDataToAll(packet);
+            Debug.Log("SERVER: Client should expect a gameStartInitialize package Type 11");
         }
 
         public void distributeResources(int playerID, int[] resources, int victoryPoints)
@@ -44,6 +46,7 @@ namespace Networking.Communication
             
             // send to one
             Server.sendDataToOne(playerID, packet);
+            Debug.Log("SERVER: Client should expect a distributeResources package Type 24");
         }
 
 
@@ -57,6 +60,7 @@ namespace Networking.Communication
 
             // send to all
             Server.sendDataToAll(packet);
+            Debug.Log("SERVER: Client should expect a NotifyObjectPlacement package Type 13");
             
         }
 
@@ -69,6 +73,7 @@ namespace Networking.Communication
             
             // send to all
             Server.sendDataToAll(packet);
+            Debug.Log("SERVER: Client should expect a NotifyNextPlayer package Type 14");
         }
 
 
@@ -82,6 +87,7 @@ namespace Networking.Communication
             
             // send to all
             Server.sendDataToAll(packet);
+            Debug.Log("SERVER: Client should expect a NotifyVictory package Type 15");
         }
 
 
@@ -94,6 +100,7 @@ namespace Networking.Communication
             
             // send to all
             Server.sendDataToAll(packet);
+            Debug.Log("SERVER: Client should expect a NotifyClientDisconnect package Type 17");
         }
 
 
@@ -107,6 +114,7 @@ namespace Networking.Communication
             
             // send to active
             Server.sendDataToOne(playerID, packet);
+            Debug.Log("SERVER: Client should expect a NotifyRejection package Type 18");
         }
 
         public void notifyPlayerReady(int currentClientID, string playerName, bool readyStatus)
@@ -119,6 +127,7 @@ namespace Networking.Communication
             
             // send to all but the player that changed its status
             Server.sendDataToAllButOne(currentClientID, packet);
+            Debug.Log("SERVER: Client should expect a NotifyPlayerReady package Type 19");
         }
 
 
@@ -131,7 +140,7 @@ namespace Networking.Communication
             
             // send to all
             Server.sendDataToAll(packet);
-            Debug.Log("SERVER: Client should expect a Dice package");
+            Debug.Log("SERVER: Client should expect a Dice package Type 20");
         }
 
         public void acceptBuyDevelopement(int playerID, DEVELOPMENT_TYPE developmentCard)
@@ -143,6 +152,7 @@ namespace Networking.Communication
             
             // send to active
             Server.sendDataToOne(playerID, packet);
+            Debug.Log("SERVER: Client should expect an AcceptBuyDevelopement package Type 25");
         }
 
 
@@ -155,6 +165,7 @@ namespace Networking.Communication
             
             // send to all
             Server.sendDataToAll(packet);
+            Debug.Log("SERVER: Client should expect an AcceptPlayDevolopement package Type 26");
         }
 
         public void updateRepPlayers(int[][] updateNumbers)
@@ -167,7 +178,7 @@ namespace Networking.Communication
 
             // send to all
             Server.sendDataToAll(packet);
-            Debug.Log("SERVER: Client should expect an UpdateRP package");
+            Debug.Log("SERVER: Client should expect an UpdateRP package Type 27");
         }
 
         public void updateOwnPlayer(int[] updateLeftBuildings,Dictionary<RESOURCETYPE, int> updateResources, int playerID)
@@ -180,7 +191,7 @@ namespace Networking.Communication
 
             // send to the current player
             Server.sendDataToOne(playerID,packet);
-            Debug.Log("SERVER: Current Client should expect an UpdateOP package");
+            Debug.Log("SERVER: Current Client should expect an UpdateOP package Type 28");
         }
     }
 }
