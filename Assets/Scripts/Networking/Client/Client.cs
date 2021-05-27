@@ -2,6 +2,7 @@ using System;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
+using System.Timers;
 using Enums;
 using UnityEngine;
 using Networking.Package;
@@ -17,6 +18,10 @@ namespace Networking.ClientSide
         private static Socket clientSocket;
 
         private static ClientReceive _clientReceive;
+        
+        private static long timeOfLastPing;
+        private static Timer keepAliveTimer;
+        private const int disconnetThreshold = 50000000; // in .net Ticks
 
 
         /// <summary>
@@ -28,12 +33,18 @@ namespace Networking.ClientSide
         /// <exception cref="Exception"></exception>
         public static bool initClient(string ipAddress)
         {
+            timeOfLastPing = DateTime.Now.Ticks;
+            keepAliveTimer = new Timer(1000); // Check every second for disconnect
+            keepAliveTimer.AutoReset = true;
+            keepAliveTimer.Elapsed += checkReceivedPing;
+            keepAliveTimer.Start();
+            
             // instantiate a ClientGameLogic object
             var gameLogicObject = new GameObject();
             gameLogicObject.AddComponent<ClientReceive>();
             gameLogicObject.AddComponent<BoardGenerator>();
             _clientReceive = gameLogicObject.GetComponent<ClientReceive>();
-                        
+
             buffer = new byte[BUFFER_SIZE];
             clientSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
             
@@ -98,10 +109,20 @@ namespace Networking.ClientSide
         /// <param name="request">Data to send</param>
         public static void sendRequest(string request)
         {
-            Debug.Log("CLIENT: Sending a request" + request);
+            Debug.Log("CLIENT: Sending a request: " + request);
 
             byte[] buffer = Encoding.ASCII.GetBytes(request);
             clientSocket.BeginSend(buffer, 0, buffer.Length, SocketFlags.None, sendCallback, clientSocket);
+        }
+
+
+        private static void checkReceivedPing(object source, ElapsedEventArgs elapsedEventArgs)
+        {
+            if (elapsedEventArgs.SignalTime.Ticks - timeOfLastPing > disconnetThreshold)
+            {
+                //todo: Reconnect and/or display in lobby
+                Debug.LogError("CLIENT: Lost connection to server");
+            }
         }
 
 
@@ -130,7 +151,7 @@ namespace Networking.ClientSide
                 try
                 {
                     receivedBufferSize = currentServerSocket.EndReceive(AR);
-                    Debug.Log("CLIENT: " + receivedBufferSize);
+                    Debug.Log("CLIENT: receivedBufferSize: " + receivedBufferSize);
                 }
                 catch (SocketException)
                 {
@@ -142,10 +163,20 @@ namespace Networking.ClientSide
                 byte[] receievedBuffer = new byte[receivedBufferSize];
                 Array.Copy(buffer, receievedBuffer, receivedBufferSize);
                 var jsonString = Encoding.ASCII.GetString(receievedBuffer);
-                Packet serverData = PacketSerializer.jsonToObject(jsonString);
                 
-                Debug.Log("CLIENT: received Data: " + jsonString);
-                delegateIncomingDataToMethods(serverData);
+                //Keep alive Ping
+                if (jsonString == "ping")
+                {
+                    timeOfLastPing = DateTime.Now.Ticks;
+                    sendRequest("pong");
+                }
+                else
+                {
+                    Packet serverData = PacketSerializer.jsonToObject(jsonString);
+                
+                    Debug.Log("CLIENT: received Data: " + jsonString);
+                    delegateIncomingDataToMethods(serverData);
+                }
 
                 clientSocket.BeginReceive(buffer, 0, BUFFER_SIZE, SocketFlags.None, receiveCallback, clientSocket); // start listening again
             }

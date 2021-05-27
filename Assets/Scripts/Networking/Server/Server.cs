@@ -1,13 +1,17 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
+using System.Timers;
 using Networking.Package;
 using UnityEngine;
 using Random = System.Random;
 using Enums;
+using Debug = UnityEngine.Debug;
+using Object = UnityEngine.Object;
 
 namespace Networking.ServerSide
 {
@@ -20,6 +24,10 @@ namespace Networking.ServerSide
         private const int PORT = 50042; //freely selectable
         private static byte[] buffer;
         public static IPAddress serverIP { get; private set; }
+        
+        private static Timer keepAliveTimer;
+        private const int KEEP_ALIVE_DURATION = 4000;
+        private static Dictionary<int, long> timeOfPing;
         
         private static Stack<Color> playerColors = new Stack<Color>();
         private static ServerReceive _serverReceive = new ServerReceive();
@@ -59,8 +67,15 @@ namespace Networking.ServerSide
                 
                 closeAllSockets();
             }
+
+            //Start keepAliveTimer
+            timeOfPing = new Dictionary<int, long>();
+            keepAliveTimer = new Timer(KEEP_ALIVE_DURATION);
+            keepAliveTimer.Elapsed += sendKeepAlive;
+            keepAliveTimer.AutoReset = true;
+            keepAliveTimer.Start();
             
-            //todo: Close server after the end of the game.
+            //todo: Close server after the end of the game, stop keepalive timer.
             return isRunning;
         }
         
@@ -95,9 +110,9 @@ namespace Networking.ServerSide
                     newClientID = random.Next(100);
                     validClientID = !socketPlayerData.ContainsKey(newClientID);  
                 } while (!validClientID);
-
-                //todo: tell server logic the clients ID
-                _serverReceive.generatePlayer(newClientID);
+                
+                timeOfPing.Add(newClientID, DateTime.Now.Ticks);
+                _serverReceive.generatePlayer(newClientID); //tell server logic the clients ID
                 socketPlayerData.Add(newClientID, clientSocket); //save client to socket list
                 Debug.Log($"SERVER: client (id: {newClientID}) stored in dictionary");
                 
@@ -157,16 +172,51 @@ namespace Networking.ServerSide
             byte[] currentBuffer = new byte[recievedByteLengh];
             Array.Copy(buffer, currentBuffer, recievedByteLengh); //to remove the protruding zeros from buffer
             string incomingDataString = Encoding.ASCII.GetString(currentBuffer);
-            Packet incomingPacket = PacketSerializer.jsonToObject(incomingDataString);
-            Debug.Log($"SERVER: Received Text (from {currentClientSocket.LocalEndPoint}): " + incomingDataString);
-            
-            // map socket to id and send id to method call
             
             
-            delegateIncomingDataToMethods(incomingPacket, currentClientID);
-
+            if (incomingDataString == "pong") // Keep alive ping
+            {
+                timeOfPing[currentClientID] = DateTime.Now.Ticks;
+                Debug.Log("SERVER: recieved pong");
+            }
+            else // Normal packet
+            {
+                Packet incomingPacket = PacketSerializer.jsonToObject(incomingDataString);
+                Debug.Log($"SERVER: Received Text (from {currentClientSocket.LocalEndPoint}): " + incomingDataString);
+            
+                // map socket to id and send id to method call
+            
+                delegateIncomingDataToMethods(incomingPacket, currentClientID);
+            }
+            
             currentClientSocket.BeginReceive(buffer, 0, BUFFER_SIZE, SocketFlags.None, ReceiveCallback,
                 socketIDArray); // Begins waiting for incoming traffic again. Overwrites buffer.
+        }
+
+        /// <summary>
+        /// Call this method from a Timer regularly
+        /// Sends a message "ping" to all connected clients
+        /// and tests if an answer was received between the method calls.
+        /// </summary>
+        /// <param name="source"></param>
+        /// <param name="elapsedEventArgs"></param>
+        private static void sendKeepAlive(object source, ElapsedEventArgs elapsedEventArgs)
+        {
+            byte[] message = Encoding.ASCII.GetBytes("ping");
+            foreach (int clientID in socketPlayerData.Keys)
+            {
+                // Test if an answer was received in the meantime
+                if (DateTime.Now.Ticks - timeOfPing[clientID] > (KEEP_ALIVE_DURATION+1000) * 10000)
+                {
+                    //todo Reconnect
+                    Debug.LogError($"SERVER: Client with ID {clientID} has disconnected!");
+                    _serverReceive.handleClientDisconnectServerCall(clientID);
+                }
+                
+                var socket = socketPlayerData[clientID];
+                timeOfPing[clientID] = DateTime.Now.Ticks;
+                socket.BeginSend(message, 0, message.Length, SocketFlags.None, sendCallback, socket);
+            }
         }
 
 

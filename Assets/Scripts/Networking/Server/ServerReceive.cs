@@ -173,9 +173,10 @@ namespace Networking.ServerSide
                 allPlayer.ElementAt(currentPlayer).Key);
         }
 
-        public void handleClientDisconnectServerCall()
+        public void handleClientDisconnectServerCall(int disconnectedClientID)
         {
-            throw new System.NotImplementedException();
+            var player = allPlayer[disconnectedClientID];
+            serverRequest.notifyClientDisconnect(player.getPlayerName(), player.getPlayerColor());
         }
 
         // Here come all the Logical methods
