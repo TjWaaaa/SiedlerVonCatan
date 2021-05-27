@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using Enums;
 using TMPro;
+using Player;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -11,7 +12,7 @@ namespace Trade
     public class TradeMenu : MonoBehaviour
     {
         //is needed right now, there should be a better solution later
-        private Player currentPlayer;
+        private ServerPlayer currentPlayer;
 
         private GameObject startTradeButton;
         private GameObject closeTradeButton;
@@ -29,7 +30,8 @@ namespace Trade
         void Start()
         {
 
-            //Find all buttons and add EventListener
+            // find all buttons and add EventListener
+            
             startTradeButton = GameObject.Find("startTrade");
             closeTradeButton = GameObject.Find("closeTrade");
             trade = GameObject.Find("trade");
@@ -42,7 +44,8 @@ namespace Trade
             foreach (GameObject button in offerResources) { button.GetComponent<Button>().onClick.AddListener(delegate { offerResource(button); }); }
             foreach (GameObject button in expectResources) { button.GetComponent<Button>().onClick.AddListener(delegate { expectResource(button); }); }
 
-            //Inactive by default
+            // inactive by default
+            
             gameObject.SetActive(false);
             active = false;
 
@@ -50,7 +53,7 @@ namespace Trade
 
         private void Update()
         {
-            //only for now. Later there should be a better way to get the currentPlayer
+            // only for now. Later there should be a better way to get the currentPlayer
             currentPlayer = GameController.getPlayers()[GameController.getCurrentPlayer()];
         }
 
@@ -92,9 +95,9 @@ namespace Trade
                     currentPlayer.trade(TradeButton.getGiveResource(), TradeButton.getGetResource());
                     Debug.Log(currentPlayer + " traded 4 " + TradeButton.getGiveResource() + " against 1 " + TradeButton.getGetResource());
                 }
-                else Debug.Log("For any reason, you can't trade.");
+                else Debug.Log("CLIENT: For any reason, you can't trade.");
             }
-            else Debug.Log("You have to chose a resource on each side.");
+            else Debug.Log("CLIENT: You have to chose a resource on each side.");
             setInactive();
         }
 
@@ -113,7 +116,7 @@ namespace Trade
         //Todo: sending this request to server
         Boolean requestTradeBank(RESOURCETYPE giveResourcetype, RESOURCETYPE getResourcetype)
         {
-            Debug.Log(currentPlayer + " wants to trade 4 " + giveResourcetype + " against 1 " + getResourcetype);
+            Debug.Log("CLIENT: " + currentPlayer + " wants to trade 4 " + giveResourcetype + " against 1 " + getResourcetype);
             return true;
         }
 

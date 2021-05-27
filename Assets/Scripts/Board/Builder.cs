@@ -28,7 +28,7 @@ public class Builder : MonoBehaviour
             Instantiate(villageBlue, position, Quaternion.identity);
         }
         else if (playerColor.Equals(Color.red)) {
-            Debug.Log(villageRed.name);
+            Debug.Log("CLIENT" + villageRed.name);
             Instantiate(villageRed, position, Quaternion.identity);
         }
         else if (playerColor.Equals(Color.white)) {

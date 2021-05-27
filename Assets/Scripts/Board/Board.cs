@@ -159,7 +159,7 @@ public class Board
     {
         for (int i = 0; i < 54; i++)
         {
-            nodesArray[i] = new Node();
+            nodesArray[i] = new Node(i);
         }
     }
 
@@ -167,7 +167,7 @@ public class Board
     {
         for (int i = 0; i < 72; i++)
         {
-            edgesArray[i] = new Edge();
+            edgesArray[i] = new Edge(i);
         }
     }
 
@@ -189,7 +189,7 @@ public class Board
                 }
                 catch (Exception e)
                 {
-                    Debug.Log(e);
+                    Debug.Log("SERVER: "+ e);
                 }
 
                 Hexagon currentHexagon = hexagonsArray[row][col];
@@ -295,20 +295,28 @@ public class Board
     /// </summary>
     /// <param name="nodeId">position of a node in the nodes[] array</param>
     /// <param name="player">color of the player who tries to build</param>
-    public void placeBuilding(int nodeId, PLAYERCOLOR player)
+    public bool placeBuilding(int nodeId, PLAYERCOLOR player)
     {
         Node currentNode = nodesArray[nodeId];
-
-        if (!allowedToBuildOnNode(currentNode, player)) return;
+        
+        // if (!allowedToBuildOnNode(currentNode, player)) return false;
 
         if (currentNode.getBuildingType() == BUILDING_TYPE.NONE)
         {
+            Debug.Log("SERVER: place village");
             currentNode.setBuildingType(BUILDING_TYPE.VILLAGE);
+            currentNode.setOccupant(player);
+            return true;
         }
-        else if (currentNode.getBuildingType() == BUILDING_TYPE.VILLAGE)
+        if (currentNode.getBuildingType() == BUILDING_TYPE.VILLAGE)
         {
+            Debug.Log("SERVER: place city");
             currentNode.setBuildingType(BUILDING_TYPE.CITY);
+            currentNode.setOccupant(player);
+            return true;
         }
+
+        return false;
     }
 
     /// <summary>
@@ -324,6 +332,7 @@ public class Board
             && currentNode.getOccupant() != player
             || currentNode.getBuildingType() == BUILDING_TYPE.CITY)
         {
+            Debug.Log("SERVER: occupied by enemy or city");
             return false;
         }
 
@@ -338,14 +347,16 @@ public class Board
             if (node.getBuildingType() != BUILDING_TYPE.NONE) return false;
         }
 
-        foreach (int edgePos in neighborEdgesPos)
-        {
-            Edge edge = edgesArray[edgePos];
-            // true if at least 1 edge is occupied by player
-            if (edge.getOccupant() == player) return true;
-        }
-
-        return false;
+        // TODO uncomment later as soon as first buildings can be placed at game start
+        // foreach (int edgePos in neighborEdgesPos)
+        // {
+        //     Edge edge = edgesArray[edgePos];
+        //     // true if at least 1 edge is occupied by player
+        //     if (edge.getOccupant() == player) return true;
+        // }
+        
+        return true;
+        //return false;
     }
 
     /// <summary>
@@ -355,13 +366,20 @@ public class Board
     /// </summary>
     /// <param name="edgeId">position of an edge in the edges[] array</param>
     /// <param name="player">color of the player who tries to build</param>
-    public void placeRoad(int edgeId, PLAYERCOLOR player)
+    public bool placeRoad(int edgeId, PLAYERCOLOR player)
     {
         Edge currentEdge = edgesArray[edgeId];
+        
+        // if (!allowedToBuildOnEdge(currentEdge, player)) return false;
+        
+        if (currentEdge.getOccupant() == PLAYERCOLOR.NONE)
+        {
+            Debug.Log("SERVER: place road");
+            currentEdge.setOccupant(player);
+            return true;
+        }
 
-        if (!allowedToBuildOnEdge(currentEdge, player)) return;
-
-        currentEdge.setOccupant(player);
+        return false;
     }
 
     /// <summary>

@@ -1,4 +1,8 @@
 using System.Collections;
+using Player;
+using PlayerColor;
+using System.Collections.Generic;
+using Enums;
 
 namespace Networking.Package
 {
@@ -6,7 +10,7 @@ namespace Networking.Package
     {
         public int type { get; set; } // what method needs to be called? -> set default to -1 to prevent wrong messages
         public string playerName { get; set; }
-        public float[] playerColor { get; set; } // [r,g,b,a]
+        public PLAYERCOLOR playerColor { get; set; } // [r,g,b,a]
         public int myPlayerID { get; set; } // player ID of the client who receives the packet
         
         public int currentPlayerID { get; set; } // ID of the current player
@@ -30,11 +34,17 @@ namespace Networking.Package
         
         public int buildID { get; set; }
         public int buildType { get; set; } // building i want to build
-        public string buildColor { get; set; } // color of building
+        public PLAYERCOLOR buildColor { get; set; } // color of building
         
         
         public int victoryPoint { get; set; }
         
         public string errorMessage { get; set; } // when client request is rejected
+
+        public int[][] updateRP { get; set; }
+
+        public int[] updateOP {get; set; }
+
+        public Dictionary<RESOURCETYPE, int> updateResourcesOnOP {get; set;}
     }
 }
