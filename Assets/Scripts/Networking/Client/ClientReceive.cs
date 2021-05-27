@@ -193,7 +193,7 @@ namespace Networking.ClientSide
             Debug.Log("CLIENT: client recieved color: " + buildColor);
 
             boardGenerator.placeBuilding(buildType, buildId, buildColor);
-            InputController.stopBuildMode();
+            //InputController.stopBuildMode(); //TODO WHY HIER?
 
             // Render the new Object
             // Update Resources displayed for own player if you are the one who placed it
