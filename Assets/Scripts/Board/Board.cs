@@ -98,7 +98,7 @@ public class Board
     {
         Stack<HEXAGON_TYPE> landStack = createRandomHexagonStackFromArray(landHexagons);
         Stack<HEXAGON_TYPE> portStack = createRandomHexagonStackFromArray(portHexagons);
-        numberStack = createRandomHexagonNumberStack(availableNumbers);
+       numberStack = createRandomHexagonNumberStack(availableNumbers);
 
         hexagonsArray = new Hexagon[7][];
 
@@ -429,7 +429,7 @@ public class Board
                         continue;
                     }
 
-                    Hexagon neighbor= hexagonsArray[yOffset][xOffset];
+                    Hexagon neighbor = hexagonsArray[yOffset][xOffset];
 
                     //if one of the neighbors fieldnumber is 6 or 8 the hexagon needs to be moved
                     if (neighbor.getFieldNumber() != 6 && neighbor.getFieldNumber() != 8)
@@ -452,6 +452,7 @@ public class Board
     /// <returns>an int array with the first occouring coordinates of a suitable position or empty array if no suitable position is found</returns>
     private int[] findSuitablePos()
     {
+
         for (int row = 1; row < hexagonsArray.Length - 1; row++)
         {
             for (int col = 1; col < hexagonsArray[row].Length - 1; col++)
