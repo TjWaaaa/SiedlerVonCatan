@@ -6,6 +6,10 @@ using Enums;
 using PlayerColor;
 using UnityEngine;
 
+//TODO: assignNeighborsToHexagons(); prüfen ob die Methode mit de neuen Array klar kommt
+//TODO: assignNeighborsToNodes();    prüfen ob die Methode mit de neuen Array klar kommt
+//TODO: assignNeighborsToEdges();    prüfen ob die Methode mit de neuen Array klar kommt
+
 public class Board
 {
     private Hexagon[][] hexagonsArray;
@@ -29,17 +33,17 @@ public class Board
     };
 
     private readonly int[][] boardConfig = {
-        new[]    {4, 1, 4, 1},
-        new[]   {1, 2, 2, 2, 4},
-        new[]  {4, 2, 2, 2, 2, 1},
-        new[] {1, 2, 2, 3, 2, 2, 4},
-        new[]  {4, 2, 2, 2, 2, 1},
-        new[]   {1, 2, 2, 2, 4},
-        new[]    {4, 1, 4, 1}
+        new[] {0,0,0,4,1,4,1},
+        new[] {0,0,1,2,2,2,4},
+        new[] {0,4,2,2,2,2,1},
+        new[] {1,2,2,3,2,2,4},
+        new[] {4,2,2,2,2,1,0},
+        new[] {1,2,2,2,4,0,0},
+        new[] {4,1,4,1,0,0,0}
     };
 
-    private int[] neighborOffsetX = new int[] { 0, -1, -1, 0, 1, 1 }; //specifies the position of adjacent hexagons in horizontal direction
-    private int[] neighborOffsetY = new int[] { -1, -1, 0, 1, 1, 0 }; //specifies the position of adjacent hexagons in vertical direction
+    private int[] neighborOffsetX = new int[] {  1, 0,-1,-1, 0, 1 }; //specifies the position of adjacent hexagons in horizontal direction
+    private int[] neighborOffsetY = new int[] { -1,-1, 0, 1, 1, 0 }; //specifies the position of adjacent hexagons in vertical direction
     private int[] availableNumbers = new int[] { 2, 3, 3, 4, 4, 5, 5, 6, 6, 8, 8, 9, 9, 10, 10, 11, 11, 12 };
 
     private readonly HEXAGON_TYPE[] landHexagons = {
@@ -66,6 +70,7 @@ public class Board
         initializeNodes();
         initializeEdges();
         initializeHexagons();
+        checkPlacementConstraints();
         assignNeighborsToHexagons();
         assignNeighborsToNodes();
         assignNeighborsToEdges();
@@ -110,6 +115,8 @@ public class Board
 
                 switch (currentConfig)
                 {
+                    case 0:
+                        break;
                     case 1:
                         hexagonsArray[row][col] = new Hexagon(HEXAGON_TYPE.WATER);
                         break;
@@ -440,8 +447,8 @@ public class Board
                     int yOffset = row + neighborOffsetY[offsetIndex];
                     int xOffset = col + neighborOffsetX[offsetIndex];
 
-                    //if index is out of range there is no adjacent hexagon, therefore the constraint for this neighbor is met
-                    if (yOffset > hexagonsArray.Length-1 || xOffset > hexagonsArray[yOffset].Length-1)
+                    //when index is out of range or at the index is no object there is no adjacent hexagon, therefore the constraint for this neighbor is met
+                    if (hexagonsArray[yOffset][xOffset]==null || yOffset > hexagonsArray.Length-1 || xOffset > hexagonsArray[yOffset].Length-1)
                     {
                         continue;
                     }
@@ -495,7 +502,7 @@ public class Board
                         int xOffset = col + neighborOffsetX[offsetIndex];
                        
                         //if index is out of range there is no adjacent hexagon, therefore the constraint for this neighbor is met
-                        if (yOffset > hexagonsArray.Length - 1 || xOffset > hexagonsArray[yOffset].Length-1)
+                        if (hexagonsArray[yOffset][xOffset] == null || yOffset > hexagonsArray.Length - 1 || xOffset > hexagonsArray[yOffset].Length-1)
                         {
                             continue;
                         }
