@@ -117,11 +117,11 @@ namespace Player
             }
             else
             {
-                Debug.Log("SERVER: only " + resources[resourcetype] + " of " + resourcetype);
+                Debug.Log("CLIENT: You only have " + resources[resourcetype] + resourcetype.ToString().ToLower() + ". Trade something else.");
                 return false;
             }
 
-            //should only return true if there are at least 4
+            
         }
 
         public void trade(int[] offer, int[] expect)

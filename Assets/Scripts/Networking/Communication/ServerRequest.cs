@@ -176,7 +176,7 @@ namespace Networking.Communication
             
             // send to active
             Server.sendDataToOne(playerID, packet);
-            Debug.Log("Server: accept trade offer");
+            Debug.Log("SERVER: trade offer accepted");
         }
 
         public void updateRepPlayers(int[][] updateNumbers)

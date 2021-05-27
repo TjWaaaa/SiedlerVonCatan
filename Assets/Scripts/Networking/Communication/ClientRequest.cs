@@ -52,7 +52,6 @@ namespace Networking.Communication
             packet.buttonNumber = buttonNumber;
             
             Client.sendRequest(PacketSerializer.objectToJsonString(packet));
-            Debug.Log("CLIENT: sending request to server");
         }
 
         public void requestBuild(BUYABLES type, int buildID)

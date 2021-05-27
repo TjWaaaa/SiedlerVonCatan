@@ -247,9 +247,7 @@ namespace Networking.ClientSide
         public void handleAcceptTradeOffer(Packet serverPacket)
         {
             int buttonNumber = serverPacket.buttonNumber;
-            Debug.Log("BUTTONNUMBER " + buttonNumber);
             TradeMenu.markOfferResource(buttonNumber);
-            Debug.Log("JEJJJJ YOU CAN TRADE NOW!");
         }
 
         public void handleAcceptBuild(Packet serverPacket)

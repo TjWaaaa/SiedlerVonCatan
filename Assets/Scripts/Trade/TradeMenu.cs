@@ -1,10 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using Enums;
 using Networking.Communication;
 using TMPro;
-using Player;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -14,124 +10,97 @@ namespace Trade
     {
         private ClientRequest clientRequest = new ClientRequest();
         
-        //is needed right now, there should be a better solution later
-        private ServerPlayer currentPlayer;
-
+        // UI Interaction
         private GameObject startTradeButton;
         private GameObject closeTradeButton;
-        private GameObject trade;
-
+        private GameObject tradeButton;
         private static GameObject[] offerResources = new GameObject[5];
         private GameObject[] expectResources = new GameObject[5];
-
         private static TextMeshProUGUI resourceOffer;
         private TextMeshProUGUI resourceExpect;
         private TextMeshProUGUI amountOffer;
-
-        private static Boolean active;
+        
 
         void Start()
         {
-
-            // find all buttons and add EventListener
-            
+            // Find all buttons 
             startTradeButton = GameObject.Find("startTrade");
             closeTradeButton = GameObject.Find("closeTrade");
-            trade = GameObject.Find("trade");
+            tradeButton = GameObject.Find("trade");
             resourceOffer = GameObject.Find("resourceOffer").GetComponent<TextMeshProUGUI>();
             resourceExpect = GameObject.Find("resourceExpect").GetComponent<TextMeshProUGUI>();
             amountOffer = GameObject.Find("amountOffer").GetComponent<TextMeshProUGUI>();
+            
+            // Add EventListener
             startTradeButton.GetComponent<Button>().onClick.AddListener(startTrade);
             closeTradeButton.GetComponent<Button>().onClick.AddListener(closeTrade);
-            trade.GetComponent<Button>().onClick.AddListener(tryTrade);
-
+            tradeButton.GetComponent<Button>().onClick.AddListener(trade);
             offerResources = GameObject.FindGameObjectsWithTag("giveResource");
             expectResources = GameObject.FindGameObjectsWithTag("getResource");
-            foreach (GameObject button in offerResources) { button.GetComponent<Button>().onClick.AddListener(delegate { offerResource(button); }); }
-            foreach (GameObject button in expectResources) { button.GetComponent<Button>().onClick.AddListener(delegate { expectResource(button); }); }
+            foreach (GameObject button in offerResources) { button.GetComponent<Button>().onClick.AddListener(delegate { checkOfferResource(button); }); }
+            foreach (GameObject button in expectResources) { button.GetComponent<Button>().onClick.AddListener(delegate { markExpectResource(button); }); }
 
-            // inactive by default
-            
+            // Inactive by default
             gameObject.SetActive(false);
-            active = false;
-
-        }
-
-        private void Update()
-        {
-            // only for now. Later there should be a better way to get the currentPlayer
-            currentPlayer = GameController.getPlayers()[GameController.getCurrentPlayer()];
-        }
-
-        //When the buttons on the left side are clicked -> the resource the player wants to give away
-        void offerResource(GameObject button)
-        {
-            Debug.Log("Trade offer: " + button.GetComponent<TradeButton>().resourcetype + " button number "+ Array.IndexOf(offerResources, button));
-            clientRequest.requestTradeOffer(button.GetComponent<TradeButton>().resourcetype, Array.IndexOf(offerResources, button) );
             
-            
-
         }
-
-        public static void markOfferResource(int buttonNumber)
+        
+        
+        /// <summary>
+        /// OfferResource buttons can only be clicked if the player has enough resources.
+        /// To check if this is the case, sending a clientRequest
+        /// </summary>
+        /// <param name="button">resourceOfferButton which is clicked</param>
+        void checkOfferResource(GameObject button)
         {
-            resourceOffer.text = offerResources[buttonNumber].GetComponent<TradeButton>().clickButton();
+            clientRequest.requestTradeOffer(button.GetComponent<TradeButton>().getResourcetype(), Array.IndexOf(offerResources, button) );
+            
+        }
+        
+        /// <summary>
+        /// Try to click the offerResourceButton and write the according resource to the UI.
+        /// Called by ClientReceive
+        /// </summary>
+        /// <param name="buttonIndex">index in offerResources</param>
+        public static void markOfferResource(int buttonIndex)
+        {
+            resourceOffer.text = offerResources[buttonIndex].GetComponent<TradeButton>().clickButton();
         }
 
-        //When the buttons on the right side are clicked -> th resource the player wants to get
-        void expectResource(GameObject button)
+        /// <summary>
+        /// Try to click the expectResourceButton and write the according resource to the UI.
+        /// </summary>
+        /// <param name="button">resourceExpectButton which is clicked</param>
+        void markExpectResource(GameObject button)
         {
             resourceExpect.text = button.GetComponent<TradeButton>().clickButton();
         }
-
-        void startTrade()
-        {
-            gameObject.SetActive(true);
-            active = true;
-        }
-
-        void closeTrade()
-        {
-            setInactive();
-        }
-
-        //this method works, but it isn't instantly visible in the UI
-        void tryTrade()
+        
+        /// <summary>
+        /// Sends tradeRequest, if the input is valid
+        /// </summary>
+        void trade()
         {
             if (TradeButton.isValidTradeRequest())
             {
 
-                int[] offer = new int[5];
-                foreach (GameObject button in offerResources) 
-                {
-                    if (button.GetComponent<TradeButton>().resourcetype == TradeButton.getOfferResourcetype())
-                    {
-                        offer[Array.IndexOf(offerResources, button)] = 4;
-                    }
-                    else
-                    {
-                        offer[Array.IndexOf(offerResources, button)] = 0;
-                    }
-                }
-                int[] expect = new int[5];
-                foreach (GameObject button in expectResources) 
-                {
-                    if (button.GetComponent<TradeButton>().resourcetype == TradeButton.getExpectResourcetype())
-                    {
-                        expect[Array.IndexOf(expectResources, button)] = 1;
-                    }
-                    else
-                    {
-                        expect[Array.IndexOf(expectResources, button)] = 0;
-                    }
-                }
+                int[] offer = convertOfferResourcesToArray();
+                int[] expect = convertExpectResourcesToArray();
+                
                 clientRequest.requestTradeBank(offer,expect);
                 
             }
-            else Debug.Log("CLIENT: You have to chose a resource on each side.");
+            else Debug.Log("CLIENT: You have to choose a resource on each side");
             setInactive();
         }
+        
+        void startTrade() { gameObject.SetActive(true); }
 
+        void closeTrade() { setInactive(); }
+        
+        /// <summary>
+        /// Before closing the tradeMenu, everything needs to be reseted
+        /// </summary>
         void setInactive()
         {
             foreach (GameObject button in offerResources) { button.GetComponent<TradeButton>().reset(); }
@@ -140,20 +109,51 @@ namespace Trade
             resourceExpect.text = "";
             resourceOffer.text = "";
             gameObject.SetActive(false);
-            active = false;
 
         }
+        
+        /// <summary>
+        /// Convert offerResource to a sendable Array
+        /// </summary>
+        /// <returns>offer</returns>
+        private int[] convertOfferResourcesToArray()
+                {
+                    int[] offer = new int[5];
+                    foreach (GameObject button in offerResources) 
+                    {
+                        if (button.GetComponent<TradeButton>().getResourcetype() == TradeButton.getOfferResourcetype())
+                        {
+                            offer[Array.IndexOf(offerResources, button)] = 4;
+                        }
+                        else
+                        {
+                            offer[Array.IndexOf(offerResources, button)] = 0;
+                        }
+                    }
+                    
+                    return offer;
+                }
 
-        //Todo: sending this request to server
-        Boolean requestTradeBank(RESOURCETYPE giveResourcetype, RESOURCETYPE getResourcetype)
+        /// <summary>
+        /// Convert expectResource to a sendable Array
+        /// </summary>
+        /// <returns>expect</returns>
+        private int[] convertExpectResourcesToArray()
         {
-            Debug.Log("CLIENT: " + currentPlayer + " wants to trade 4 " + giveResourcetype + " against 1 " + getResourcetype);
-            return true;
-        }
+            int[] expect = new int[5];
+            foreach (GameObject button in expectResources)
+            {
+                if (button.GetComponent<TradeButton>().getResourcetype() == TradeButton.getExpectResourcetype())
+                {
+                    expect[Array.IndexOf(expectResources, button)] = 1;
+                }
+                else
+                {
+                    expect[Array.IndexOf(expectResources, button)] = 0;
+                }
+            }
 
-        public static Boolean isActive()
-        {
-            return active;
+            return expect;
         }
     }
 }

@@ -1,90 +1,111 @@
-using System.Collections;
-using System.Collections.Generic;
+
 using UnityEngine;
 using System;
 using Enums;
-using UnityEngine.Serialization;
-using UnityEngine.UI;
 
-public class TradeButton : MonoBehaviour
+namespace Trade
 {
-    
-    [FormerlySerializedAs("resource")] public RESOURCETYPE resourcetype;
-    private Boolean isClicked = false;
-
-    //which resources are selected -> only one on each side!
-    private static RESOURCETYPE offerResourcetype = RESOURCETYPE.NONE;
-    private static RESOURCETYPE expectResourcetype = RESOURCETYPE.NONE;
-
-    void Start()
+    public class TradeButton : MonoBehaviour
     {
-        
-        // get the resource of each button individually
-        resourcetype = (RESOURCETYPE)Enum.Parse(typeof(RESOURCETYPE), gameObject.name, true);
-        
-    }
+        private RESOURCETYPE resourcetype;
+        private Boolean isClicked;
 
-    public String clickButton()
-    {
-        if (!isClicked)
+        // Selected resources
+        private static RESOURCETYPE offerResourcetype = RESOURCETYPE.NONE;
+        private static RESOURCETYPE expectResourcetype = RESOURCETYPE.NONE;
+
+
+        void Start()
         {
-            if (gameObject.CompareTag("giveResource"))
-            {
-                if (offerResourcetype == RESOURCETYPE.NONE)
-                {
-                    offerResourcetype = resourcetype;
-                    gameObject.transform.GetChild(1).SetAsFirstSibling();
-                    isClicked = true;
-                }
-                return offerResourcetype.ToString().ToLower();
-            }
-            else //if (gameObject.CompareTag("getResource"))
-            {
-                if (expectResourcetype == RESOURCETYPE.NONE)
-                {
-                    expectResourcetype = resourcetype;
-                                    gameObject.transform.GetChild(1).SetAsFirstSibling();
-                                    isClicked = true;
-                }
-                return expectResourcetype.ToString().ToLower();
-            }
-            
+            // Get the resource of each button individually
+            resourcetype = (RESOURCETYPE) Enum.Parse(typeof(RESOURCETYPE), gameObject.name, true);
+
         }
-        else
+
+        /// <summary>
+        /// Select/Deselect tradeButtons. Only one button of each type can be clicked.
+        /// </summary>
+        /// <returns>resource of button which is clicked</returns>
+        public String clickButton()
         {
-            gameObject.transform.GetChild(1).SetAsFirstSibling();
+            if (!isClicked)
+            {
+                if (gameObject.CompareTag("giveResource"))
+                {
+                    if (offerResourcetype == RESOURCETYPE.NONE)
+                    {
+                        offerResourcetype = resourcetype;
+                        gameObject.transform.GetChild(1).SetAsFirstSibling();
+                        isClicked = true;
+                    }
+
+                    return offerResourcetype.ToString().ToLower();
+                }
+                else
+                {
+                    if (expectResourcetype == RESOURCETYPE.NONE)
+                    {
+                        expectResourcetype = resourcetype;
+                        gameObject.transform.GetChild(1).SetAsFirstSibling();
+                        isClicked = true;
+                    }
+
+                    return expectResourcetype.ToString().ToLower();
+                }
+            }
+            else
+            {
+                gameObject.transform.GetChild(1).SetAsFirstSibling();
+                isClicked = false;
+                if (gameObject.CompareTag("giveResource")) offerResourcetype = RESOURCETYPE.NONE;
+                else expectResourcetype = RESOURCETYPE.NONE;
+                return "";
+            }
+        }
+
+        /// <summary>
+        /// Reset if the tradeMenu is closed
+        /// </summary>
+        public void reset()
+        {
+            if (isClicked)
+            {
+                gameObject.transform.GetChild(1).SetAsFirstSibling();
+            }
+
             isClicked = false;
-            if (gameObject.CompareTag("giveResource")) offerResourcetype = RESOURCETYPE.NONE;
-            else expectResourcetype = RESOURCETYPE.NONE;
-            return "";
+            offerResourcetype = RESOURCETYPE.NONE;
+            expectResourcetype = RESOURCETYPE.NONE;
         }
-    }
+        
+        /// <summary>
+        /// Check if selected buttons are valid. There has to be a offerResource and a expectResource
+        /// </summary>
+        /// <returns>isValidTradeRequest</returns>
+        public static Boolean isValidTradeRequest()
+                {
+                    if (expectResourcetype != RESOURCETYPE.NONE && offerResourcetype != RESOURCETYPE.NONE) return true;
+                    else return false;
+                }
+        
+        
+        // Getter
 
-    public void reset()
-    {
-        if (isClicked)
+        public RESOURCETYPE getResourcetype()
         {
-            gameObject.transform.GetChild(1).SetAsFirstSibling();
+            return resourcetype;
         }
-        isClicked = false;
-        offerResourcetype = RESOURCETYPE.NONE;
-        expectResourcetype = RESOURCETYPE.NONE;
-    }
 
-    public static RESOURCETYPE getExpectResourcetype()
-    {
-        return expectResourcetype;
-    }
-    public static RESOURCETYPE getOfferResourcetype()
-    {
-        return offerResourcetype;
-    }
+        public static RESOURCETYPE getExpectResourcetype()
+        {
+            return expectResourcetype;
+        }
 
-    public static Boolean isValidTradeRequest()
-    {
-        if (expectResourcetype != RESOURCETYPE.NONE && offerResourcetype != RESOURCETYPE.NONE) return true;
-        else return false;
+        public static RESOURCETYPE getOfferResourcetype()
+        {
+            return offerResourcetype;
+        }
+        
     }
-
 }
 
