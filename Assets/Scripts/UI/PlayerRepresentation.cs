@@ -8,7 +8,7 @@ using Player;
 
 namespace UI
 {
-    public class PlayerRepresentation : MonoBehaviour
+    public class PlayerRepresentation
     {
         
         private List<GameObject> playerRepresentations = new List<GameObject>();

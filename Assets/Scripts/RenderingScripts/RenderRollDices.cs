@@ -12,7 +12,7 @@ public class RenderRollDices : MonoBehaviour
     void Start()
     {
         DiceHandler[] diceDiceHandlers = GetComponentsInChildren<DiceHandler>();
-        Debug.Log("CLIENT:" + diceDiceHandlers.Length);
+        Debug.Log("CLIENT: diceDiceHandlers " + diceDiceHandlers.Length);
         Dice1 = diceDiceHandlers[0];
         Dice2 = diceDiceHandlers[1];
     }

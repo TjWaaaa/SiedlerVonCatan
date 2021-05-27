@@ -66,6 +66,7 @@ public class Board
         initializeNodes();
         initializeEdges();
         initializeHexagons();
+        checkPlacementConstraints();
         assignNeighborsToHexagons();
         assignNeighborsToNodes();
         assignNeighborsToEdges();
@@ -441,15 +442,14 @@ public class Board
                     int xOffset = col + neighborOffsetX[offsetIndex];
                     Hexagon neighbor;
 
-                    try
+                    //if index is out of range there is no adjacent hexagon, therefore the constraint for this neighbor is met
+                    if (yOffset < 0 || yOffset > 4 || xOffset < 0 || xOffset >= boardConfig[yOffset].Length || xOffset > 3)
                     {
-                        neighbor = hexagonsArray[yOffset][xOffset];
-                    }
-                    catch (IndexOutOfRangeException e)
-                    {
-                        //if index is out of range there is no adjacent hexagon, therefore the constraint for this neighbor is met
+                        Debug.Log("Server: Board :" + yOffset + " - " + xOffset + " outOfBounds");
                         continue;
                     }
+                    
+                    neighbor = hexagonsArray[yOffset][xOffset];
 
                     //if one of the neighbors fieldnumber is 6 or 8 the hexagon needs to be moved
                     if (neighbor.getFieldNumber() != 6 && neighbor.getFieldNumber() != 8)
