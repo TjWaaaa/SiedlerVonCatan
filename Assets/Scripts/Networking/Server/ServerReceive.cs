@@ -12,7 +12,7 @@ using PlayerColor;
 
 namespace Networking.ServerSide
 {
-    public class ServerGameLogic : INetworkableServer
+    public class ServerReceive : INetworkableServer
     {
         private Dictionary<int, ServerPlayer> allPlayer = new Dictionary<int, ServerPlayer>();
 
@@ -23,7 +23,7 @@ namespace Networking.ServerSide
 
         private Board gameBoard = new Board();
 
-        public ServerGameLogic()
+        public ServerReceive()
         {
             possibleColors.Push(PLAYERCOLOR.YELLOW);
             possibleColors.Push(PLAYERCOLOR.WHITE);

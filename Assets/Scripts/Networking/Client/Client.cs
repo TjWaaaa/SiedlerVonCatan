@@ -16,7 +16,7 @@ namespace Networking.ClientSide
 
         private static Socket clientSocket;
 
-        private static ClientGameLogic clientGameLogic;
+        private static ClientReceive _clientReceive;
 
 
         /// <summary>
@@ -30,9 +30,9 @@ namespace Networking.ClientSide
         {
             // instantiate a ClientGameLogic object
             var gameLogicObject = new GameObject();
-            gameLogicObject.AddComponent<ClientGameLogic>();
+            gameLogicObject.AddComponent<ClientReceive>();
             gameLogicObject.AddComponent<BoardGenerator>();
-            clientGameLogic = gameLogicObject.GetComponent<ClientGameLogic>();
+            _clientReceive = gameLogicObject.GetComponent<ClientReceive>();
                         
             buffer = new byte[BUFFER_SIZE];
             clientSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
@@ -172,49 +172,49 @@ namespace Networking.ClientSide
                         
                         ThreadManager.executeOnMainThread(() =>
                         {
-                            clientGameLogic.handleClientJoined(incomingData);
+                            _clientReceive.handleClientJoined(incomingData);
                         });
                         break;
 
                     case (int) COMMUNICATION_METHODS.HANDLE_GAMESTART_INITIALIZE:
                         ThreadManager.executeOnMainThread(() =>
                         {
-                            clientGameLogic.handleGameStartInitialize(incomingData);
+                            _clientReceive.handleGameStartInitialize(incomingData);
                         });
                         break;
 
                     case (int) COMMUNICATION_METHODS.HANDLE_PLAYER_READY_NOTIFICATION:
                         ThreadManager.executeOnMainThread(() =>
                         {
-                            clientGameLogic.handlePlayerReadyNotification(incomingData);
+                            _clientReceive.handlePlayerReadyNotification(incomingData);
                         });
                         break;
 
                     case (int) COMMUNICATION_METHODS.HANDLE_OBJECT_PLACEMENT:
                         ThreadManager.executeOnMainThread(() =>
                         {
-                            clientGameLogic.handleObjectPlacement(incomingData);
+                            _clientReceive.handleObjectPlacement(incomingData);
                         });
                         break;
 
                     case (int) COMMUNICATION_METHODS.HANDLE_NEXT_PLAYER:
                         ThreadManager.executeOnMainThread(() =>
                         {
-                            clientGameLogic.handleNextPlayer(incomingData);
+                            _clientReceive.handleNextPlayer(incomingData);
                         });
                         break;
 
                     case (int) COMMUNICATION_METHODS.HANDLE_VICTORY:
                         ThreadManager.executeOnMainThread(() =>
                         {
-                            clientGameLogic.handleVictory(incomingData);
+                            _clientReceive.handleVictory(incomingData);
                         });
                         break;
 
                     case (int) COMMUNICATION_METHODS.HANDLE_CLIENT_DISCONNECT:
                         ThreadManager.executeOnMainThread(() =>
                         {
-                            clientGameLogic.handleClientDisconnect(incomingData);
+                            _clientReceive.handleClientDisconnect(incomingData);
                         });
                         break;
 
@@ -222,7 +222,7 @@ namespace Networking.ClientSide
                     case (int) COMMUNICATION_METHODS.HANDLE_REJECTION:
                         ThreadManager.executeOnMainThread(() =>
                         {
-                            clientGameLogic.handleRejection(incomingData);
+                            _clientReceive.handleRejection(incomingData);
                         });
                         break;
 
@@ -230,56 +230,56 @@ namespace Networking.ClientSide
                         Debug.Log("CLIENT: calling handleAcceptBeginRound in ClientReceive");
                         ThreadManager.executeOnMainThread(() =>
                         {
-                            clientGameLogic.handleAccpetBeginRound(incomingData);
+                            _clientReceive.handleAccpetBeginRound(incomingData);
                         });
                         break;
 
                     case (int) COMMUNICATION_METHODS.HANDLE_ACCEPT_TRADE_BANK:
                         ThreadManager.executeOnMainThread(() =>
                         {
-                            clientGameLogic.handleAcceptTradeBank(incomingData);
+                            _clientReceive.handleAcceptTradeBank(incomingData);
                         });
                         break;
 
                     case (int) COMMUNICATION_METHODS.HANDLE_ACCEPT_BUILD:
                         ThreadManager.executeOnMainThread(() =>
                         {
-                            clientGameLogic.handleAcceptBuild(incomingData);
+                            _clientReceive.handleAcceptBuild(incomingData);
                         });
                         break;
 
                     case (int) COMMUNICATION_METHODS.HANDLE_GET_RESOURCES:
                         ThreadManager.executeOnMainThread(() =>
                         {
-                            clientGameLogic.handleGetResources(incomingData);
+                            _clientReceive.handleGetResources(incomingData);
                         });
                         break;
 
                     case (int) COMMUNICATION_METHODS.HANDLE_ACCEPT_BUY_DEVELOPMENT_CARD:
                         ThreadManager.executeOnMainThread(() =>
                         {
-                            clientGameLogic.handleAcceptBuyDevelopement(incomingData);
+                            _clientReceive.handleAcceptBuyDevelopement(incomingData);
                         });
                         break;
 
                     case (int) COMMUNICATION_METHODS.HANDLE_ACCEPT_PLAY_DEVELOPMENT_CARD:
                         ThreadManager.executeOnMainThread(() =>
                         {  
-                            clientGameLogic.handleAcceptPlayDevelopement(incomingData);
+                            _clientReceive.handleAcceptPlayDevelopement(incomingData);
                         });
                         break;
 
                     case (int) COMMUNICATION_METHODS.HANDLE_UPDATE_RP:
                         ThreadManager.executeOnMainThread(() =>
                         {  
-                            clientGameLogic.handleUpdateRP(incomingData);
+                            _clientReceive.handleUpdateRP(incomingData);
                         });
                         break;
 
                     case (int) COMMUNICATION_METHODS.HANDLE_UPDATE_OP:
                         ThreadManager.executeOnMainThread(() =>
                         {  
-                            clientGameLogic.handleUpdateOP(incomingData);
+                            _clientReceive.handleUpdateOP(incomingData);
                         });
                         break;
 
