@@ -1,5 +1,7 @@
 ﻿using System.Collections;
 using Enums;
+using Player;
+using PlayerColor;
 using UnityEngine;
 
 namespace Networking.Interfaces
@@ -35,7 +37,7 @@ namespace Networking.Interfaces
         /// <param name="buildType">type of building</param>
         /// <param name="buildID">ID of position on the board</param>
         /// <param name="color">color of building owner</param>
-        public void notifyObjectPlacement(BUYABLES buildType, int buildID, Color color);
+        public void notifyObjectPlacement(BUYABLES buildType, int buildID, PLAYERCOLOR color);
 
         
         /// <summary>
@@ -48,8 +50,8 @@ namespace Networking.Interfaces
         /// Tell all clients the winner of the game.
         /// </summary>
         /// <param name="playerName">winner name</param>
-        /// <param name="color">winner color</param>
-        public void notifyVictory(string playerName, Color color);
+        /// <param name="playerColor">winner color</param>
+        public void notifyVictory(string playerName, PLAYERCOLOR playerColor);
 
         
         // /// <summary>
@@ -66,8 +68,8 @@ namespace Networking.Interfaces
         /// notify all clients that a nother client has disconnected
         /// </summary>
         /// <param name="playerName">disconnected player name</param>
-        /// <param name="color">disconnected player color</param>
-        public void notifyClientDisconnect(string playerName, Color color);
+        /// <param name="playerColor">disconnected player color</param>
+        public void notifyClientDisconnect(string playerName, PLAYERCOLOR playerColor);
         
 
         // return requested information/resources ------------------------

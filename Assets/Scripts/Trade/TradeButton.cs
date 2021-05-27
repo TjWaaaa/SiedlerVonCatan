@@ -13,13 +13,13 @@ public class TradeButton : MonoBehaviour
     private Boolean isClicked = false;
 
     //which resources are selected -> only one on each side!
-    private static RESOURCETYPE _giveResourcetype = RESOURCETYPE.NONE;
-    private static RESOURCETYPE _getResourcetype = RESOURCETYPE.NONE;
+    private static RESOURCETYPE offerResourcetype = RESOURCETYPE.NONE;
+    private static RESOURCETYPE expectResourcetype = RESOURCETYPE.NONE;
 
     void Start()
     {
         
-        //get the resource of each button individually
+        // get the resource of each button individually
         resourcetype = (RESOURCETYPE)Enum.Parse(typeof(RESOURCETYPE), gameObject.name, true);
         
     }
@@ -30,23 +30,23 @@ public class TradeButton : MonoBehaviour
         {
             if (gameObject.CompareTag("giveResource"))
             {
-                if (_giveResourcetype == RESOURCETYPE.NONE)
+                if (offerResourcetype == RESOURCETYPE.NONE)
                 {
-                    _giveResourcetype = resourcetype;
+                    offerResourcetype = resourcetype;
                     gameObject.transform.GetChild(1).SetAsFirstSibling();
                     isClicked = true;
                 }
-                return _giveResourcetype.ToString().ToLower();
+                return offerResourcetype.ToString().ToLower();
             }
             else //if (gameObject.CompareTag("getResource"))
             {
-                if (_getResourcetype == RESOURCETYPE.NONE)
+                if (expectResourcetype == RESOURCETYPE.NONE)
                 {
-                    _getResourcetype = resourcetype;
+                    expectResourcetype = resourcetype;
                                     gameObject.transform.GetChild(1).SetAsFirstSibling();
                                     isClicked = true;
                 }
-                return _getResourcetype.ToString().ToLower();
+                return expectResourcetype.ToString().ToLower();
             }
             
         }
@@ -54,8 +54,8 @@ public class TradeButton : MonoBehaviour
         {
             gameObject.transform.GetChild(1).SetAsFirstSibling();
             isClicked = false;
-            if (gameObject.CompareTag("giveResource")) _giveResourcetype = RESOURCETYPE.NONE;
-            else _getResourcetype = RESOURCETYPE.NONE;
+            if (gameObject.CompareTag("giveResource")) offerResourcetype = RESOURCETYPE.NONE;
+            else expectResourcetype = RESOURCETYPE.NONE;
             return "";
         }
     }
@@ -67,22 +67,22 @@ public class TradeButton : MonoBehaviour
             gameObject.transform.GetChild(1).SetAsFirstSibling();
         }
         isClicked = false;
-        _giveResourcetype = RESOURCETYPE.NONE;
-        _getResourcetype = RESOURCETYPE.NONE;
+        offerResourcetype = RESOURCETYPE.NONE;
+        expectResourcetype = RESOURCETYPE.NONE;
     }
 
     public static RESOURCETYPE getGetResource()
     {
-        return _getResourcetype;
+        return expectResourcetype;
     }
     public static RESOURCETYPE getGiveResource()
     {
-        return _giveResourcetype;
+        return offerResourcetype;
     }
 
     public static Boolean isValidTradeRequest()
     {
-        if (_getResourcetype != RESOURCETYPE.NONE && _giveResourcetype != RESOURCETYPE.NONE) return true;
+        if (expectResourcetype != RESOURCETYPE.NONE && offerResourcetype != RESOURCETYPE.NONE) return true;
         else return false;
     }
 

@@ -6,8 +6,8 @@ using Networking.ServerSide;
 using Enums;
 using System;
 using System.Collections.Generic;
-
-
+using Player;
+using PlayerColor;
 
 namespace Networking.Communication
 {
@@ -22,6 +22,7 @@ namespace Networking.Communication
             
             // send to all
             Server.sendDataToAll(packet);
+            Debug.Log("SERVER: Client should expect a NotifyClientJoined package Type 10");
         }
 
         public void gamestartInitialize(Hexagon[][] gameBoard)
@@ -29,9 +30,10 @@ namespace Networking.Communication
             Packet packet = new Packet();
             packet.type = (int) COMMUNICATION_METHODS.HANDLE_GAMESTART_INITIALIZE;
             packet.gameBoard = gameBoard;
-            
+
             // send to all
             Server.sendDataToAll(packet);
+            Debug.Log("SERVER: Client should expect a gameStartInitialize package Type 11");
         }
 
         public void distributeResources(int playerID, int[] resources, int victoryPoints)
@@ -44,19 +46,22 @@ namespace Networking.Communication
             
             // send to one
             Server.sendDataToOne(playerID, packet);
+            Debug.Log("SERVER: Client should expect a distributeResources package Type 24");
         }
 
 
-        public void notifyObjectPlacement(BUYABLES buildType, int buildID, Color color)
+        public void notifyObjectPlacement(BUYABLES buildType, int buildID, PLAYERCOLOR playerColor)
         {
             Packet packet = new Packet();
             packet.type = (int) COMMUNICATION_METHODS.HANDLE_OBJECT_PLACEMENT;
             packet.buildID = buildID;
             packet.buildType = (int) buildType;
-            packet.buildColor = color.ToString();
-            
+            packet.buildColor = playerColor;
+
             // send to all
             Server.sendDataToAll(packet);
+            Debug.Log("SERVER: Client should expect a NotifyObjectPlacement package Type 13");
+            
         }
 
 
@@ -68,30 +73,34 @@ namespace Networking.Communication
             
             // send to all
             Server.sendDataToAll(packet);
+            Debug.Log("SERVER: Client should expect a NotifyNextPlayer package Type 14");
         }
 
 
-        public void notifyVictory(string playerName, Color color)
+        public void notifyVictory(string playerName, PLAYERCOLOR playerColor)
         {
             Packet packet = new Packet();
             packet.type = (int) COMMUNICATION_METHODS.HANDLE_VICTORY;
             packet.playerName = playerName;
-            packet.playerColor = new float[] {color.r, color.g, color.b, color.a};
+            packet.playerColor = playerColor;
+            Debug.Log("SERVER: " + playerColor);
             
             // send to all
             Server.sendDataToAll(packet);
+            Debug.Log("SERVER: Client should expect a NotifyVictory package Type 15");
         }
 
 
-        public void notifyClientDisconnect(string playerName, Color color)
+        public void notifyClientDisconnect(string playerName, PLAYERCOLOR playerColor)
         {
             Packet packet = new Packet();
             packet.type = (int) COMMUNICATION_METHODS.HANDLE_CLIENT_DISCONNECT;
             packet.playerName = playerName;
-            packet.playerColor = new float[] {color.r, color.g, color.b, color.a};
+            packet.playerColor = playerColor;
             
             // send to all
             Server.sendDataToAll(packet);
+            Debug.Log("SERVER: Client should expect a NotifyClientDisconnect package Type 17");
         }
 
 
@@ -105,6 +114,7 @@ namespace Networking.Communication
             
             // send to active
             Server.sendDataToOne(playerID, packet);
+            Debug.Log("SERVER: Client should expect a NotifyRejection package Type 18");
         }
 
         public void notifyPlayerReady(int currentClientID, string playerName, bool readyStatus)
@@ -117,18 +127,20 @@ namespace Networking.Communication
             
             // send to all but the player that changed its status
             Server.sendDataToAllButOne(currentClientID, packet);
+            Debug.Log("SERVER: Client should expect a NotifyPlayerReady package Type 19");
         }
 
 
         public void notifyRollDice(int[] diceResult)
         {
-            Debug.Log("notifyRollDice has been called");
+            Debug.Log("SERVER: notifyRollDice has been called");
             Packet packet = new Packet();
             packet.type = (int) COMMUNICATION_METHODS.HANDLE_ACCEPT_BEGIN_ROUND;
             packet.diceResult = diceResult;
             
             // send to all
             Server.sendDataToAll(packet);
+            Debug.Log("SERVER: Client should expect a Dice package Type 20");
         }
 
         public void acceptBuyDevelopement(int playerID, DEVELOPMENT_TYPE developmentCard)
@@ -140,6 +152,7 @@ namespace Networking.Communication
             
             // send to active
             Server.sendDataToOne(playerID, packet);
+            Debug.Log("SERVER: Client should expect an AcceptBuyDevelopement package Type 25");
         }
 
 
@@ -152,6 +165,33 @@ namespace Networking.Communication
             
             // send to all
             Server.sendDataToAll(packet);
+            Debug.Log("SERVER: Client should expect an AcceptPlayDevolopement package Type 26");
+        }
+
+        public void updateRepPlayers(int[][] updateNumbers)
+        {
+            Debug.Log("SERVER: ServerRequest updateRPPacket");
+            Packet packet = new Packet();
+            packet.type = (int) COMMUNICATION_METHODS.HANDLE_UPDATE_RP;
+            packet.updateRP = updateNumbers;
+            
+
+            // send to all
+            Server.sendDataToAll(packet);
+            Debug.Log("SERVER: Client should expect an UpdateRP package Type 27");
+        }
+
+        public void updateOwnPlayer(int[] updateLeftBuildings,Dictionary<RESOURCETYPE, int> updateResources, int playerID)
+        {
+            Debug.Log("SERVER: ServerRequest updateOwnPlayer");
+            Packet packet = new Packet();
+            packet.type = (int) COMMUNICATION_METHODS.HANDLE_UPDATE_OP;
+            packet.updateOP = updateLeftBuildings;
+            packet.updateResourcesOnOP = updateResources;
+
+            // send to the current player
+            Server.sendDataToOne(playerID,packet);
+            Debug.Log("SERVER: Current Client should expect an UpdateOP package Type 28");
         }
     }
 }

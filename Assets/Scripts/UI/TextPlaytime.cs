@@ -14,7 +14,7 @@ public class TextPlaytime : MonoBehaviour
     void Start()
     {
         dt = System.DateTime.Now;
-        Debug.Log("Current DateTime.Now: " + dt);
+        Debug.Log("CLIENT: Current DateTime.Now: " + dt);
     }
 
     
