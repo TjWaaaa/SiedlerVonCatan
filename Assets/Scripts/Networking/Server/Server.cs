@@ -22,7 +22,7 @@ namespace Networking.ServerSide
         public static IPAddress serverIP { get; private set; }
         
         private static Stack<Color> playerColors = new Stack<Color>();
-        private static ServerGameLogic serverGameLogic = new ServerGameLogic();
+        private static ServerReceive _serverReceive = new ServerReceive();
 
 
         /// <summary>
@@ -97,7 +97,7 @@ namespace Networking.ServerSide
                 } while (!validClientID);
 
                 //todo: tell server logic the clients ID
-                serverGameLogic.generatePlayer(newClientID);
+                _serverReceive.generatePlayer(newClientID);
                 socketPlayerData.Add(newClientID, clientSocket); //save client to socket list
                 Debug.Log($"SERVER: client (id: {newClientID}) stored in dictionary");
                 
@@ -277,35 +277,35 @@ namespace Networking.ServerSide
             switch (incomingData.type)
             {
                 case (int) COMMUNICATION_METHODS.HANDLE_REQUEST_JOIN_LOBBY:
-                    serverGameLogic.handleRequestJoinLobby(incomingData, currentClientID);
+                    _serverReceive.handleRequestJoinLobby(incomingData, currentClientID);
                     break;
                 
                 case (int) COMMUNICATION_METHODS.HANDLE_PLAYER_READY:
-                    serverGameLogic.handleRequestPlayerReady(incomingData, currentClientID);
+                    _serverReceive.handleRequestPlayerReady(incomingData, currentClientID);
                     break;
                 
                 case (int) COMMUNICATION_METHODS.HANDLE_BEGIN_ROUND:
-                    serverGameLogic.handleBeginRound(incomingData);
+                    _serverReceive.handleBeginRound(incomingData);
                     break;
                 
                 case (int) COMMUNICATION_METHODS.HANDLE_TRADE_BANK:
-                    serverGameLogic.handleTradeBank(incomingData);
+                    _serverReceive.handleTradeBank(incomingData);
                     break;
                 
                 case (int) COMMUNICATION_METHODS.HANDLE_BUILD:
-                    serverGameLogic.handleBuild(incomingData);
+                    _serverReceive.handleBuild(incomingData);
                     break;
                 
                 case (int) COMMUNICATION_METHODS.HANDLE_BUY_DEVELOPMENT:
-                    serverGameLogic.handleBuyDevelopement(incomingData);
+                    _serverReceive.handleBuyDevelopement(incomingData);
                     break;
                 
                 case (int) COMMUNICATION_METHODS.HANDLE_PLAY_DEVELOPMENT:
-                    serverGameLogic.handlePlayDevelopement(incomingData);
+                    _serverReceive.handlePlayDevelopement(incomingData);
                     break;
                 
                 case (int) COMMUNICATION_METHODS.HANDLE_END_TURN:
-                    serverGameLogic.handleEndTurn(incomingData);
+                    _serverReceive.handleEndTurn(incomingData);
                     break;
                 
                 case (int) COMMUNICATION_METHODS.HANDLE_CLIENT_DISCONNECT_SERVER_CALL:
