@@ -15,7 +15,7 @@ using UI;
 
 namespace Networking.ClientSide
 {
-    public class ClientGameLogic : MonoBehaviour, INetworkableClient
+    public class ClientReceive : MonoBehaviour, INetworkableClient
     {
         public int myID { get; private set; }
 
@@ -229,14 +229,8 @@ namespace Networking.ClientSide
             Debug.Log("CLIENT: New Round initiated");
             // Show new currentPlayer
             int cache = currentPlayer;
-            if (currentPlayer == representativePlayers.Count - 1)
-            {
-                currentPlayer = 0;
-            }
-            else
-            {
-                currentPlayer++;
-            }
+            currentPlayer = currentPlayer == representativePlayers.Count - 1 ?  0 : ++currentPlayer;
+            Debug.Log("CLIENT: Current Player index: " + currentPlayer);
 
             playerRepresentation.showNextPlayer(cache,currentPlayer);
             // Render dice rolling
