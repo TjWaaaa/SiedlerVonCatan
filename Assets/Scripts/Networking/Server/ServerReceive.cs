@@ -160,14 +160,8 @@ namespace Networking.ServerSide
         {
             
             // Change currentPlayer
-            if (currentPlayer == playerAmount - 1)
-            {
-                currentPlayer = 0;
-            }
-            else
-            {
-                currentPlayer++;
-            }
+            currentPlayer = currentPlayer == playerAmount - 1 ?  0 : ++currentPlayer;
+            Debug.Log("SERVER: Current Player index: " + currentPlayer);
             // Updating Representative Players
             serverRequest.updateRepPlayers(convertSPAToRPA());
             // TODO change method call => handleBeginRound should only be called after the new player is already set and all have been notified

@@ -130,6 +130,7 @@ namespace Networking.ClientSide
                 try
                 {
                     receivedBufferSize = currentServerSocket.EndReceive(AR);
+                    Debug.Log("CLIENT: " + receivedBufferSize);
                 }
                 catch (SocketException)
                 {
@@ -150,7 +151,7 @@ namespace Networking.ClientSide
             }
             catch (Exception e)
             {
-                Debug.Log("CLIENT: " + e);
+                Debug.Log("CLIENT: " + e.HelpLink + e);
                 throw e;
             }
         }
