@@ -445,7 +445,7 @@ public class Board
                     //if index is out of range there is no adjacent hexagon, therefore the constraint for this neighbor is met
                     if (yOffset < 0 || yOffset > 4 || xOffset < 0 || xOffset >= boardConfig[yOffset].Length || xOffset > 3)
                     {
-                        Debug.LogWarning("Server: Board :" + yOffset + " - " + xOffset + " outOfBounds");
+                        Debug.Log("Server: Board :" + yOffset + " - " + xOffset + " outOfBounds");
                         continue;
                     }
                     
