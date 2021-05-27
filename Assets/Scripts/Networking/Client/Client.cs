@@ -115,7 +115,14 @@ namespace Networking.ClientSide
             clientSocket.BeginSend(buffer, 0, buffer.Length, SocketFlags.None, sendCallback, clientSocket);
         }
 
-
+        /// <summary>
+        /// Call this method regularly
+        /// Compares time between receiving of last keepAlivePing and current time.
+        /// If time is longer than disconnectThreshold try to reconnect.
+        /// todo: this Method is probably not needet due to TCPs own timers.
+        /// </summary>
+        /// <param name="source"></param>
+        /// <param name="elapsedEventArgs"></param>
         private static void checkReceivedPing(object source, ElapsedEventArgs elapsedEventArgs)
         {
             if (elapsedEventArgs.SignalTime.Ticks - timeOfLastPing > disconnetThreshold)

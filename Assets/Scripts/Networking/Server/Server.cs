@@ -206,6 +206,7 @@ namespace Networking.ServerSide
             foreach (int clientID in socketPlayerData.Keys)
             {
                 // Test if an answer was received in the meantime
+                //todo: this Method is probably not needet due to TCPs own timers.
                 if (DateTime.Now.Ticks - timeOfPing[clientID] > (KEEP_ALIVE_DURATION+1000) * 10000)
                 {
                     //todo Reconnect
