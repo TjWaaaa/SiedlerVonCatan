@@ -71,11 +71,11 @@ public class TradeButton : MonoBehaviour
         expectResourcetype = RESOURCETYPE.NONE;
     }
 
-    public static RESOURCETYPE getGetResource()
+    public static RESOURCETYPE getExpectResourcetype()
     {
         return expectResourcetype;
     }
-    public static RESOURCETYPE getGiveResource()
+    public static RESOURCETYPE getOfferResourcetype()
     {
         return offerResourcetype;
     }

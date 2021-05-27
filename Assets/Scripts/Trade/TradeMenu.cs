@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using Enums;
+using Networking.Communication;
 using TMPro;
 using Player;
 using UnityEngine;
@@ -11,6 +12,8 @@ namespace Trade
 {
     public class TradeMenu : MonoBehaviour
     {
+        private ClientRequest clientRequest = new ClientRequest();
+        
         //is needed right now, there should be a better solution later
         private ServerPlayer currentPlayer;
 
@@ -18,12 +21,12 @@ namespace Trade
         private GameObject closeTradeButton;
         private GameObject trade;
 
-        private GameObject[] offerResources = new GameObject[5];
+        private static GameObject[] offerResources = new GameObject[5];
         private GameObject[] expectResources = new GameObject[5];
 
-        public TextMeshProUGUI resourceOffer;
-        public TextMeshProUGUI resourceExpect;
-        public TextMeshProUGUI amountOffer;
+        private static TextMeshProUGUI resourceOffer;
+        private TextMeshProUGUI resourceExpect;
+        private TextMeshProUGUI amountOffer;
 
         private static Boolean active;
 
@@ -35,6 +38,9 @@ namespace Trade
             startTradeButton = GameObject.Find("startTrade");
             closeTradeButton = GameObject.Find("closeTrade");
             trade = GameObject.Find("trade");
+            resourceOffer = GameObject.Find("resourceOffer").GetComponent<TextMeshProUGUI>();
+            resourceExpect = GameObject.Find("resourceExpect").GetComponent<TextMeshProUGUI>();
+            amountOffer = GameObject.Find("amountOffer").GetComponent<TextMeshProUGUI>();
             startTradeButton.GetComponent<Button>().onClick.AddListener(startTrade);
             closeTradeButton.GetComponent<Button>().onClick.AddListener(closeTrade);
             trade.GetComponent<Button>().onClick.AddListener(tryTrade);
@@ -60,12 +66,16 @@ namespace Trade
         //When the buttons on the left side are clicked -> the resource the player wants to give away
         void offerResource(GameObject button)
         {
+            Debug.Log("Trade offer: " + button.GetComponent<TradeButton>().resourcetype + " button number "+ Array.IndexOf(offerResources, button));
+            clientRequest.requestTradeOffer(button.GetComponent<TradeButton>().resourcetype, Array.IndexOf(offerResources, button) );
+            
+            
 
-            if (currentPlayer.canTrade(button.GetComponent<TradeButton>().resourcetype))
-            {
-                resourceOffer.text = button.GetComponent<TradeButton>().clickButton();
-            }
+        }
 
+        public static void markOfferResource(int buttonNumber)
+        {
+            resourceOffer.text = offerResources[buttonNumber].GetComponent<TradeButton>().clickButton();
         }
 
         //When the buttons on the right side are clicked -> th resource the player wants to get
@@ -90,12 +100,33 @@ namespace Trade
         {
             if (TradeButton.isValidTradeRequest())
             {
-                if (requestTradeBank(TradeButton.getGiveResource(), TradeButton.getGetResource()))
+
+                int[] offer = new int[5];
+                foreach (GameObject button in offerResources) 
                 {
-                    currentPlayer.trade(TradeButton.getGiveResource(), TradeButton.getGetResource());
-                    Debug.Log(currentPlayer + " traded 4 " + TradeButton.getGiveResource() + " against 1 " + TradeButton.getGetResource());
+                    if (button.GetComponent<TradeButton>().resourcetype == TradeButton.getOfferResourcetype())
+                    {
+                        offer[Array.IndexOf(offerResources, button)] = 4;
+                    }
+                    else
+                    {
+                        offer[Array.IndexOf(offerResources, button)] = 0;
+                    }
                 }
-                else Debug.Log("CLIENT: For any reason, you can't trade.");
+                int[] expect = new int[5];
+                foreach (GameObject button in expectResources) 
+                {
+                    if (button.GetComponent<TradeButton>().resourcetype == TradeButton.getExpectResourcetype())
+                    {
+                        expect[Array.IndexOf(expectResources, button)] = 1;
+                    }
+                    else
+                    {
+                        expect[Array.IndexOf(expectResources, button)] = 0;
+                    }
+                }
+                clientRequest.requestTradeBank(offer,expect);
+                
             }
             else Debug.Log("CLIENT: You have to chose a resource on each side.");
             setInactive();

@@ -2,6 +2,7 @@
 using Networking.Interfaces;
 using Networking.Package;
 using Networking.ClientSide;
+using UnityEngine;
 
 namespace Networking.Communication
 {
@@ -43,13 +44,15 @@ namespace Networking.Communication
             Client.sendRequest(PacketSerializer.objectToJsonString(packet));
         }
 
-        public void requestTradeOffer(RESOURCETYPE offerResource)
+        public void requestTradeOffer(RESOURCETYPE offerResource, int buttonNumber)
         {
             Packet packet = new Packet();               
             packet.type = (int) COMMUNICATION_METHODS.HANDLE_TRADE_OFFER;
             packet.resourceType = (int) offerResource;
+            packet.buttonNumber = buttonNumber;
             
             Client.sendRequest(PacketSerializer.objectToJsonString(packet));
+            Debug.Log("CLIENT: sending request to server");
         }
 
         public void requestBuild(BUYABLES type, int buildID)

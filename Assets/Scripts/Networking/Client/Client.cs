@@ -241,6 +241,13 @@ namespace Networking.ClientSide
                             _clientReceive.handleAcceptTradeBank(incomingData);
                         });
                         break;
+                    
+                    case (int) COMMUNICATION_METHODS.HANDLE_ACCEPT_TRADE_OFFER:
+                        ThreadManager.executeOnMainThread(() =>
+                        {
+                            _clientReceive.handleAcceptTradeOffer(incomingData);
+                        });
+                        break;
 
                     case (int) COMMUNICATION_METHODS.HANDLE_ACCEPT_BUILD:
                         ThreadManager.executeOnMainThread(() =>

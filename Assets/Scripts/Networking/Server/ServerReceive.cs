@@ -100,14 +100,25 @@ namespace Networking.ServerSide
 
         public void handleTradeBank(Packet clientPacket)
         {
-            throw new System.NotImplementedException();
+            allPlayer.ElementAt(currentPlayer).Value.trade(clientPacket.tradeResourcesOffer, clientPacket.tradeResourcesExpect);
+            Debug.Log("SERVER: TRADED");
         }
 
         public void handleTradeOffer(Packet clientPacket)
         {
             RESOURCETYPE resourcetype = (RESOURCETYPE) clientPacket.resourceType;
             ServerPlayer currentServerPlayer = allPlayer.ElementAt(currentPlayer).Value;
-            currentServerPlayer.canTrade(resourcetype);
+            int buttonNumber = clientPacket.buttonNumber;
+            if (currentServerPlayer.canTrade(resourcetype))
+            {
+                serverRequest.notifyAcceptTradeOffer(currentServerPlayer.getPlayerID(), buttonNumber);
+                Debug.Log("lets do a server request");
+            }
+            else
+            {
+                serverRequest.notifyRejection(allPlayer.ElementAt(currentPlayer).Value.getPlayerID(),"Not enough resources to offer");
+                Debug.Log("Not enough resources to offer");
+            }
         }
 
         public void handleBuild(Packet clientPacket)
