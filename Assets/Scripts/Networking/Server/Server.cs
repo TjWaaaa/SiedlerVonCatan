@@ -12,6 +12,7 @@ using Random = System.Random;
 using Enums;
 using Debug = UnityEngine.Debug;
 using Object = UnityEngine.Object;
+using System.Threading;
 
 namespace Networking.ServerSide
 {
@@ -25,7 +26,7 @@ namespace Networking.ServerSide
         private static byte[] buffer;
         public static IPAddress serverIP { get; private set; }
         
-        private static Timer keepAliveTimer;
+        private static System.Timers.Timer keepAliveTimer;
         private const int KEEP_ALIVE_DURATION = 4000;
         private static Dictionary<int, long> timeOfPing;
         
@@ -70,7 +71,7 @@ namespace Networking.ServerSide
 
             //Start keepAliveTimer
             timeOfPing = new Dictionary<int, long>();
-            keepAliveTimer = new Timer(KEEP_ALIVE_DURATION);
+            keepAliveTimer = new System.Timers.Timer(KEEP_ALIVE_DURATION);
             keepAliveTimer.Elapsed += sendKeepAlive;
             keepAliveTimer.AutoReset = true;
             keepAliveTimer.Start();
@@ -233,7 +234,7 @@ namespace Networking.ServerSide
             string dataString = PacketSerializer.objectToJsonString(data);
             byte[] dataToSend = Encoding.ASCII.GetBytes(dataString);
             socketPlayerData[playerID].BeginSend(dataToSend, 0, dataToSend.Length, SocketFlags.None, sendCallback, serverSocket);
-            
+            Thread.Sleep(50);
         }
         
         
@@ -254,6 +255,7 @@ namespace Networking.ServerSide
                     socketPlayerData[id].BeginSend(dataToSend, 0, dataToSend.Length, SocketFlags.None, sendCallback, serverSocket);
                 }
             }
+            Thread.Sleep(50);
         }
         
         
@@ -270,6 +272,7 @@ namespace Networking.ServerSide
                 byte[] dataToSend = Encoding.ASCII.GetBytes(dataString);
                 socketPlayerData[id].BeginSend(dataToSend, 0, dataToSend.Length, SocketFlags.None, sendCallback, serverSocket);
             }
+            Thread.Sleep(50);
         }
 
 
