@@ -33,7 +33,8 @@ namespace Networking.ServerSide
             possibleColors.Push(PLAYERCOLOR.RED);
         }
 
-        // Here come all handling methods
+        //---------------------------------------------- Interface INetworkableServer implementation ----------------------------------------------
+
         public void handleRequestJoinLobby(Packet clientPacket, int currentClientID)
         {
             // ankommender spieler: name setzen + farbe zuweisen
@@ -95,6 +96,13 @@ namespace Networking.ServerSide
 
         public void handleBeginRound(Packet clientPacket)
         {
+            // if (isCurrentPlayer(clientPacket.myPlayerID))
+            // {
+            //     Debug.LogWarning($"SERVER: Client request rejected from client {clientPacket.myPlayerID}");
+            //     serverRequest.notifyRejection(clientPacket.myPlayerID, "You are not allowed to begin round!");
+            //     return;
+            // }
+            
             // Roll dices
             int[] diceNumbers = rollDices();
             serverRequest.notifyRollDice(diceNumbers);
@@ -103,6 +111,13 @@ namespace Networking.ServerSide
 
         public void handleTradeBank(Packet clientPacket)
         {
+            if (isNotCurrentPlayer(clientPacket.myPlayerID))
+            {
+                Debug.LogWarning($"SERVER: Client request rejected from client {clientPacket.myPlayerID}");
+                serverRequest.notifyRejection(clientPacket.myPlayerID, "You are not allowed to trade with bank!");
+                return;
+            }
+            
             allPlayer.ElementAt(currentPlayer).Value.trade(clientPacket.tradeResourcesOffer, clientPacket.tradeResourcesExpect);
 
             serverRequest.updateRepPlayers(convertSPAToRPA());
@@ -116,6 +131,13 @@ namespace Networking.ServerSide
 
         public void handleTradeOffer(Packet clientPacket)
         {
+            if (isNotCurrentPlayer(clientPacket.myPlayerID))
+            {
+                Debug.LogWarning($"SERVER: Client request rejected from client {clientPacket.myPlayerID}");
+                serverRequest.notifyRejection(clientPacket.myPlayerID, "You are not allowed to offer a trade!");
+                return;
+            }
+            
             ServerPlayer currentServerPlayer = allPlayer.ElementAt(currentPlayer).Value;
             RESOURCETYPE resourcetype = (RESOURCETYPE)clientPacket.resourceType;
             int buttonNumber = clientPacket.buttonNumber;
@@ -133,6 +155,13 @@ namespace Networking.ServerSide
 
         public void handleBuild(Packet clientPacket)
         {
+            if (isNotCurrentPlayer(clientPacket.myPlayerID))
+            {
+                Debug.LogWarning($"SERVER: Client request rejected from client {clientPacket.myPlayerID}");
+                serverRequest.notifyRejection(clientPacket.myPlayerID, "You are not allowed to build!");
+                return;
+            }
+            
             ServerPlayer currentServerPlayer = allPlayer.ElementAt(currentPlayer).Value;
             BUYABLES buildingType = (BUYABLES)clientPacket.buildType;
             int posInArray = clientPacket.buildID;
@@ -184,11 +213,23 @@ namespace Networking.ServerSide
 
         public void handleBuyDevelopement(Packet clientPacket)
         {
+            if (isNotCurrentPlayer(clientPacket.myPlayerID))
+            {
+                Debug.LogWarning($"SERVER: Client request rejected from client {clientPacket.myPlayerID}");
+                serverRequest.notifyRejection(clientPacket.myPlayerID, "You are not allowed to buy a developmentcard!");
+                return;
+            }
             throw new System.NotImplementedException();
         }
 
         public void handlePlayDevelopement(Packet clientPacket)
         {
+            if (isNotCurrentPlayer(clientPacket.myPlayerID))
+            {
+                Debug.LogWarning($"SERVER: Client request rejected from client {clientPacket.myPlayerID}");
+                serverRequest.notifyRejection(clientPacket.myPlayerID, "You are not allowed to play a developmentcard!");
+                return;
+            }
             throw new System.NotImplementedException();
         }
 
@@ -196,6 +237,13 @@ namespace Networking.ServerSide
         {
             Debug.Log("SERVER: handleEndTurn has been called");
 
+            if (isNotCurrentPlayer(clientPacket.myPlayerID))
+            {
+                Debug.LogWarning($"SERVER: Client request rejected from client {clientPacket.myPlayerID}");
+                serverRequest.notifyRejection(clientPacket.myPlayerID, "You are not allowed to end someone elses turn");
+                return;
+            }
+            
             // Change currentPlayer
             if (!firstRound)
             {
@@ -236,7 +284,20 @@ namespace Networking.ServerSide
             serverRequest.notifyClientDisconnect(player.getPlayerName(), player.getPlayerColor());
         }
 
-        // Here come all the Logical methods
+        //---------------------------------------------- All logical methods ----------------------------------------------
+
+        public bool isNotCurrentPlayer(int clientID)
+        {
+            var currentPlayerObject = allPlayer.ElementAt(currentPlayer).Value;
+            Debug.LogWarning($"comparing clientID: {clientID} and currentID: {currentPlayerObject.getPlayerID()}");
+            if (currentPlayerObject.getPlayerID() == clientID)
+            {
+                return false;
+            }
+
+            return true;
+        }
+        
         public int[] rollDices()
         {
             Debug.Log("SERVER: Dices are being rolled");
