@@ -122,5 +122,12 @@ namespace Networking.Interfaces
         /// <param name="developmentCard">played development card type</param>
         /// <param name="playerName">Player who played the developement card</param>
         public void notifyAcceptPlayDevelopement(DEVELOPMENT_TYPE developmentCard, string playerName);
+
+        /// <summary>
+        /// Notify current player that the trade offer is accepted
+        /// </summary>
+        /// <param name="playerID"></param>
+        /// <param name="buttonNumber"></param>
+        public void notifyAcceptTradeOffer(int playerID, int buttonNumber);
     }
 }

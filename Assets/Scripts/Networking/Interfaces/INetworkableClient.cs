@@ -80,6 +80,12 @@ namespace Networking.Interfaces
         /// </summary>
         /// <param name="serverPacket">Packet from server</param>
         public void handleAcceptTradeBank(Packet serverPacket);
+
+        /// <summary>
+        /// The trade offer request was approved.
+        /// </summary>
+        /// <param name="clientPacket"></param>
+        public void handleAcceptTradeOffer(Packet clientPacket);
         
         
         // /// <summary>

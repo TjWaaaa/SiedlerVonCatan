@@ -75,5 +75,12 @@ namespace Networking.Interfaces
         /// If server noticed a client disconnect this method is called.
         /// </summary>
         public void handleClientDisconnectServerCall();
+
+        
+        /// <summary>
+        /// Checks if player has enough resources to offer
+        /// </summary>
+        /// <param name="clientPacket"></param>
+        public void handleTradeOffer(Packet clientPacket);
     }
 }

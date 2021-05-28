@@ -11,6 +11,7 @@ using Networking.Package;
 using Networking.Communication;
 using Player;
 using PlayerColor;
+using Trade;
 using UI;
 
 namespace Networking.ClientSide
@@ -241,6 +242,12 @@ namespace Networking.ClientSide
         public void handleAcceptTradeBank(Packet serverPacket)
         {
             throw new System.NotImplementedException();
+        }
+        
+        public void handleAcceptTradeOffer(Packet serverPacket)
+        {
+            int buttonNumber = serverPacket.buttonNumber;
+            TradeMenu.markOfferResource(buttonNumber);
         }
 
         public void handleAcceptBuild(Packet serverPacket)
