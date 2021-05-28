@@ -188,9 +188,9 @@ namespace Networking.ClientSide
                 } 
                 else
                 {
+                    Debug.Log("CLIENT: received Data: " + jsonString);
                     Packet serverData = PacketSerializer.jsonToObject(jsonString);
                 
-                    Debug.Log("CLIENT: received Data: " + jsonString);
                     delegateIncomingDataToMethods(serverData);
                 }
 
