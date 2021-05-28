@@ -18,8 +18,10 @@ namespace Networking.ServerSide
 
         private int playerAmount = 0;
         private int currentPlayer = 0;
+        private int mandatoryNodeID;
         private bool firstRound = true;
         private bool inGameStartupPhase = true;
+        private bool villageBuild = false;
         private readonly Stack<PLAYERCOLOR> possibleColors = new Stack<PLAYERCOLOR>();
         private readonly ServerRequest serverRequest = new ServerRequest();
 
@@ -175,47 +177,8 @@ namespace Networking.ServerSide
 
             PLAYERCOLOR playerColor = allPlayer.ElementAt(currentPlayer).Value.getPlayerColor();
 
-            if ((inGameStartupPhase && buildingType != BUYABLES.CITY) || currentServerPlayer.canBuyBuyable(buildingType))
-            {
-                switch (buildingType)
-                {
-                    case BUYABLES.VILLAGE:
-                    case BUYABLES.CITY:
-                        {
-                            // Missing restrictions!
-                            if (!inGameStartupPhase) { currentServerPlayer.buyBuyable(buildingType); }
-                            serverRequest.notifyObjectPlacement(buildingType, posInArray, playerColor);
-                            serverRequest.updateRepPlayers(convertSPAToRPA());
-                            serverRequest.updateOwnPlayer(
-                                allPlayer.ElementAt(currentPlayer).Value.convertFromSPToOP(), // int[] with left buildings
-                                allPlayer.ElementAt(currentPlayer).Value.convertSPToOPResources(), // Resource Dictionary
-                                allPlayer.ElementAt(currentPlayer).Key);
-                            return;
-                        }
-                    case BUYABLES.ROAD:
-                        if (gameBoard.placeRoad(posInArray, playerColor))
-                        {
-                            // Missing restrictions!
-                            if (!inGameStartupPhase) { currentServerPlayer.buyBuyable(buildingType); }
-                            serverRequest.notifyObjectPlacement(buildingType, posInArray, playerColor);
-                            serverRequest.updateRepPlayers(convertSPAToRPA());
-                            serverRequest.updateOwnPlayer(
-                                allPlayer.ElementAt(currentPlayer).Value.convertFromSPToOP(), // int[] with left buildings
-                                allPlayer.ElementAt(currentPlayer).Value.convertSPToOPResources(), // Resource Dictionary
-                                allPlayer.ElementAt(currentPlayer).Key);
-                            return;
-                        }
-                        break;
-                    default: Debug.Log("SERVER: handleBuild(): wrong BUYABLES"); break;
-                }
+            buildStructure(currentServerPlayer, buildingType, posInArray, playerColor);
 
-                serverRequest.notifyRejection(currentServerPlayer.getPlayerID(), "Building cant be built");
-            }
-            else
-            {
-                serverRequest.notifyRejection(currentServerPlayer.getPlayerID(), "You don't have enough resources");
-                Debug.Log("SERVER: not enough resources");
-            }
         }
 
         public void handleBuyDevelopement(Packet clientPacket)
@@ -279,25 +242,7 @@ namespace Networking.ServerSide
                 serverRequest.notifyVictory(allPlayer.ElementAt(currentPlayer).Value.getPlayerName(), allPlayer.ElementAt(currentPlayer).Value.getPlayerColor());
             }
 
-            // Change currentPlayer
-            if (!firstRound)
-            {
-                if (currentPlayer == playerAmount - 1 && inGameStartupPhase) { inGameStartupPhase = false; Debug.Log("SERVER: StartupPhase is over now"); }
-                currentPlayer = currentPlayer == playerAmount - 1 ? 0 : ++currentPlayer;
-            }
-            else
-            {
-                if (currentPlayer == 0)
-                {
-                    firstRound = false;
-                    currentPlayer = currentPlayer == playerAmount - 1 ? 0 : ++currentPlayer;
-                }
-                else
-                {
-                    currentPlayer--;
-                }
-
-            }
+            changeCurrentPlayer();
             Debug.Log("SERVER: Current Player index: " + currentPlayer);
 
             // Updating Representative Players
@@ -395,6 +340,96 @@ namespace Networking.ServerSide
                 return true;
             }
             return false;
+        }
+
+        public void changeCurrentPlayer()
+        {
+            if (!firstRound)
+            {
+                if (currentPlayer == playerAmount - 1 && inGameStartupPhase)
+                {
+                    inGameStartupPhase = false; Debug.Log("SERVER: StartupPhase is over now");
+                }
+                currentPlayer = currentPlayer == playerAmount - 1 ? 0 : ++currentPlayer;
+            }
+            else
+            {
+                if (currentPlayer == 0)
+                {
+                    firstRound = false;
+                    currentPlayer = currentPlayer == playerAmount - 1 ? 0 : ++currentPlayer;
+                }
+                else
+                {
+                    currentPlayer--;
+                }
+            }
+        }
+
+        private void buildStructure(ServerPlayer currentServerPlayer, BUYABLES buildingType, int posInArray, PLAYERCOLOR playerColor)
+        {
+            if (currentServerPlayer.canBuyBuyable(buildingType))
+            {
+                switch (buildingType)
+                {
+                    case BUYABLES.VILLAGE:
+                    case BUYABLES.CITY:
+                        bool buildSuccessfull = gameBoard.placeBuilding(posInArray, playerColor, inGameStartupPhase);
+                        if (inGameStartupPhase && buildSuccessfull && buildingType == BUYABLES.VILLAGE && !villageBuild && currentServerPlayer.getLeftVillages() > 3)
+                        {
+                            currentServerPlayer.buildVillage();
+                            mandatoryNodeID = posInArray;
+                            villageBuild = true;
+                            serverRequest.notifyObjectPlacement(buildingType, posInArray, playerColor);
+                            updateOwnPlayer(currentPlayer);
+                            updateRepPlayers();
+                            return;
+                        }
+
+                        if (!inGameStartupPhase && buildSuccessfull)
+                        {
+                            // Missing restrictions!
+                            currentServerPlayer.buyBuyable(buildingType);
+                            serverRequest.notifyObjectPlacement(buildingType, posInArray, playerColor);
+                            updateOwnPlayer(currentPlayer);
+                            updateRepPlayers();
+                            return;
+                        }
+                        break;
+
+                    case BUYABLES.ROAD:
+                        Debug.LogWarning($"Startphase: {inGameStartupPhase} leftStreets:{currentServerPlayer.getLeftStreets()}");
+                        if (inGameStartupPhase && gameBoard.placeRoad(posInArray, mandatoryNodeID, playerColor) && currentServerPlayer.getLeftStreets()>13)
+                        {
+                            currentServerPlayer.buildStreet();
+                            mandatoryNodeID = -1;
+                            villageBuild = false;
+                            serverRequest.notifyObjectPlacement(buildingType, posInArray, playerColor);
+                            updateOwnPlayer(currentPlayer);
+                            updateRepPlayers();
+                            changeCurrentPlayer();
+                            return;
+                        }
+
+                        if (!inGameStartupPhase && gameBoard.placeRoad(posInArray, playerColor))
+                        {
+                            currentServerPlayer.buyBuyable(buildingType);
+                            serverRequest.notifyObjectPlacement(buildingType, posInArray, playerColor);
+                            updateOwnPlayer(currentPlayer);
+                            updateRepPlayers();
+                            return;
+                        }
+                        break;
+                    default: Debug.Log("SERVER: handleBuild(): wrong BUYABLES"); break;
+                }
+
+                serverRequest.notifyRejection(currentServerPlayer.getPlayerID(), "Building cant be built");
+            }
+            else
+            {
+                serverRequest.notifyRejection(currentServerPlayer.getPlayerID(), "You don't have enough resources");
+                Debug.Log("SERVER: not enough resources");
+            }
         }
     }
 }

@@ -83,6 +83,16 @@ namespace Player
             return amount;
         }
 
+        public int getLeftStreets()
+        {
+            return this.leftStreets;
+        }
+
+        public int getLeftVillages()
+        {
+            return this.leftVillages;
+        }
+
         // Setter
 
         public void setPlayerColor(PLAYERCOLOR color)
@@ -110,6 +120,24 @@ namespace Player
             return victoryPoints + devCardAmount;
         }
 
+        //Start phase
+
+        public void buildStreet()
+        {
+            if (leftStreets > 13)
+            {
+                this.leftStreets--;
+            }
+        }
+        public void buildVillage()
+        {
+            if (leftVillages > 3)
+            {
+                this.leftVillages--;
+            }
+        }
+
+
         // Trade
 
         public Boolean canTrade(RESOURCETYPE resourcetype)
@@ -124,7 +152,7 @@ namespace Player
                 return false;
             }
 
-            
+
         }
 
         public void trade(int[] offer, int[] expect)
@@ -138,7 +166,7 @@ namespace Player
             {
                 resources[resources.ElementAt(i).Key] += expect[i];
             }
-            
+
         }
 
 
@@ -148,41 +176,41 @@ namespace Player
         {
             switch (buyable)
             {
-              case BUYABLES.ROAD:
-                  if (leftStreets >= 1
-                      && resources[RESOURCETYPE.WOOD] >= 1
-                      && resources[RESOURCETYPE.BRICK] >= 1 )
-                  {
-                      return true;
-                  }
-                  else return false;
-              case BUYABLES.VILLAGE:
-                  if (leftVillages >=1
-                      && resources[RESOURCETYPE.BRICK] >= 1
-                      && resources[RESOURCETYPE.WOOD] >= 1
-                      && resources[RESOURCETYPE.SHEEP] >= 1
-                      && resources[RESOURCETYPE.WHEAT] >= 1)
-                  {
-                      return true;
-                  }
-                  else return false;
-              case BUYABLES.CITY:
-                  if (leftCitys >= 1
-                      && resources[RESOURCETYPE.ORE] >= 3
-                      && resources[RESOURCETYPE.WHEAT] >= 2)
-                  {
-                      return true;
-                  }
-                  else return false;
-              case BUYABLES.DEVELOPMENT_CARDS:
-                  if (resources[RESOURCETYPE.ORE] >= 1
-                      && resources[RESOURCETYPE.WHEAT] >= 1
-                      && resources[RESOURCETYPE.SHEEP] >= 1)
-                  {
-                      return true;
-                  }
-                  else return false;
-              default: return false;
+                case BUYABLES.ROAD:
+                    if (leftStreets >= 1
+                        && resources[RESOURCETYPE.WOOD] >= 1
+                        && resources[RESOURCETYPE.BRICK] >= 1)
+                    {
+                        return true;
+                    }
+                    else return false;
+                case BUYABLES.VILLAGE:
+                    if (leftVillages >= 1
+                        && resources[RESOURCETYPE.BRICK] >= 1
+                        && resources[RESOURCETYPE.WOOD] >= 1
+                        && resources[RESOURCETYPE.SHEEP] >= 1
+                        && resources[RESOURCETYPE.WHEAT] >= 1)
+                    {
+                        return true;
+                    }
+                    else return false;
+                case BUYABLES.CITY:
+                    if (leftCitys >= 1
+                        && resources[RESOURCETYPE.ORE] >= 3
+                        && resources[RESOURCETYPE.WHEAT] >= 2)
+                    {
+                        return true;
+                    }
+                    else return false;
+                case BUYABLES.DEVELOPMENT_CARDS:
+                    if (resources[RESOURCETYPE.ORE] >= 1
+                        && resources[RESOURCETYPE.WHEAT] >= 1
+                        && resources[RESOURCETYPE.SHEEP] >= 1)
+                    {
+                        return true;
+                    }
+                    else return false;
+                default: return false;
             }
         }
 
@@ -221,12 +249,12 @@ namespace Player
 
         public int[] convertFromSPToRP()
         {
-            return new int[] {victoryPoints, getTotalResourceAmount(), devCardAmount };
+            return new int[] { victoryPoints, getTotalResourceAmount(), devCardAmount };
         }
 
         public int[] convertFromSPToOP()
         {
-            return new int[] {leftStreets,leftVillages,leftCitys};
+            return new int[] { leftStreets, leftVillages, leftCitys };
         }
 
         public Dictionary<RESOURCETYPE, int> convertSPToOPResources()
