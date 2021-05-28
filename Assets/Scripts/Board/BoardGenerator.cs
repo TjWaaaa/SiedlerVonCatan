@@ -18,15 +18,19 @@ public class BoardGenerator : MonoBehaviour
         {
             for (int col = 0; col < gameBoard[row].Length; col++)
             {
+                if (gameBoard[row][col]==null) //zeile von Marco eingefügt, keine ahnung ob sinnvoll aber wirft sonst NullReferenceErrororororo, pls prüfen thx :*
+                {
+                    continue;
+                }
                 Hexagon hexagon = gameBoard[row][col];
                 string hexagonPath = "Tiles3D/" + findPrefabByHexagonType(hexagon.getType()) + "Prefab";
                 GameObject prefab = (GameObject) Resources.Load(hexagonPath);
 
                 int offsetX = row switch
                 {
-                    0 => 2,
-                    1 => 1,
-                    2 => 1,
+                    0 => -1,
+                    1 => -1,
+                    2 => 0,
                     3 => 0,
                     4 => 1,
                     5 => 1,
