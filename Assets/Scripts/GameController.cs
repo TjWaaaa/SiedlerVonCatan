@@ -1,16 +1,9 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
+
 using TMPro;
-using Enums;
-using Networking.ClientSide;
-using Trade;
 using UnityEngine;
-using UnityEngine.UI;
 using Networking.Communication;
 using Player;
 using PlayerColor;
-using UI;
 
 public class GameController : MonoBehaviour
 {
@@ -66,48 +59,49 @@ public class GameController : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
-    {
-        Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
-        RaycastHit hit;
-        
-        if (Physics.Raycast(ray, out hit, 100f))
-        {
-            if (Input.GetMouseButtonDown(0))
-            {
-                if (InputController.buildVillageMode)
-                {
-                    if (hit.collider.tag == "VillageSlot")
-                    {
-                        Debug.Log("want to build a village");
-                        int posInArray = Int32.Parse(hit.transform.name.Substring(1));
-                        clientRequest.requestBuild(BUYABLES.VILLAGE, posInArray);
-                    }
-                }
-
-                else if (InputController.buildCityMode)
-                {
-                    if (hit.collider.tag == "Village")
-                    {
-                        int posInArray = Int32.Parse(hit.transform.name.Substring(1));
-                        Debug.Log("CLIENT: " + posInArray);
-                        clientRequest.requestBuild(BUYABLES.CITY, posInArray);
-                    }
-                }
-
-                else if (InputController.buildStreetMode)
-                {
-                    if (hit.collider.tag == "RoadSlot")
-                    {
-                        int posInArray = Int32.Parse(hit.transform.name.Substring(1));
-                        clientRequest.requestBuild(BUYABLES.ROAD, posInArray);
-                    }
-                }
-                    
-            }
-        }
-        
-    }
+    
+    // void Update()
+    // {
+    //     Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
+    //     RaycastHit hit;
+    //     
+    //     if (Physics.Raycast(ray, out hit, 100f))
+    //     {
+    //         if (Input.GetMouseButtonDown(0))
+    //         {
+    //             if (InputController.buildVillageMode)
+    //             {
+    //                 if (hit.collider.tag == "VillageSlot")
+    //                 {
+    //                     Debug.Log("want to build a village");
+    //                     int posInArray = Int32.Parse(hit.transform.name.Substring(1));
+    //                     clientRequest.requestBuild(BUYABLES.VILLAGE, posInArray);
+    //                 }
+    //             }
+    //
+    //             else if (InputController.buildCityMode)
+    //             {
+    //                 if (hit.collider.tag == "Village")
+    //                 {
+    //                     int posInArray = Int32.Parse(hit.transform.name.Substring(1));
+    //                     Debug.Log("CLIENT: " + posInArray);
+    //                     clientRequest.requestBuild(BUYABLES.CITY, posInArray);
+    //                 }
+    //             }
+    //
+    //             else if (InputController.buildStreetMode)
+    //             {
+    //                 if (hit.collider.tag == "RoadSlot")
+    //                 {
+    //                     int posInArray = Int32.Parse(hit.transform.name.Substring(1));
+    //                     clientRequest.requestBuild(BUYABLES.ROAD, posInArray);
+    //                 }
+    //             }
+    //                 
+    //         }
+    //     }
+    //     
+    // }
     
 
 

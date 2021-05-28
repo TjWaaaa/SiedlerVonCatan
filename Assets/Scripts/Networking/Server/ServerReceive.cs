@@ -100,7 +100,32 @@ namespace Networking.ServerSide
 
         public void handleTradeBank(Packet clientPacket)
         {
-            throw new System.NotImplementedException();
+            allPlayer.ElementAt(currentPlayer).Value.trade(clientPacket.tradeResourcesOffer, clientPacket.tradeResourcesExpect);
+            
+            serverRequest.updateRepPlayers(convertSPAToRPA());
+            serverRequest.updateOwnPlayer(
+                allPlayer.ElementAt(currentPlayer).Value.convertFromSPToOP(), // int[] with left buildings
+                allPlayer.ElementAt(currentPlayer).Value.convertSPToOPResources(), // Resource Dictionary
+                allPlayer.ElementAt(currentPlayer).Key);
+            
+            
+        }
+
+        public void handleTradeOffer(Packet clientPacket)
+        {
+            ServerPlayer currentServerPlayer = allPlayer.ElementAt(currentPlayer).Value;
+            RESOURCETYPE resourcetype = (RESOURCETYPE) clientPacket.resourceType;
+            int buttonNumber = clientPacket.buttonNumber;
+            if (currentServerPlayer.canTrade(resourcetype))
+            {
+                serverRequest.notifyAcceptTradeOffer(currentServerPlayer.getPlayerID(), buttonNumber);
+                
+            }
+            else
+            {
+                serverRequest.notifyRejection(allPlayer.ElementAt(currentPlayer).Value.getPlayerID(),"Not enough resources to offer");
+                
+            }
         }
 
         public void handleBuild(Packet clientPacket)
@@ -120,8 +145,8 @@ namespace Networking.ServerSide
                         {
                             currentServerPlayer.buyBuyable(buildingType);
                             serverRequest.notifyObjectPlacement(buildingType, posInArray, playerColor);
+                            
                             serverRequest.updateRepPlayers(convertSPAToRPA());
-                            //serverRequest.updateOwnPlayer(currentServerPlayer.convertFromSPToOP(),currentServerPlayer.convertSPToCPResources(), currentServerPlayer.getPlayerID());
                             return;
                         }
                     case BUYABLES.ROAD:
@@ -173,9 +198,10 @@ namespace Networking.ServerSide
                 allPlayer.ElementAt(currentPlayer).Key);
         }
 
-        public void handleClientDisconnectServerCall()
+        public void handleClientDisconnectServerCall(int disconnectedClientID)
         {
-            throw new System.NotImplementedException();
+            var player = allPlayer[disconnectedClientID];
+            serverRequest.notifyClientDisconnect(player.getPlayerName(), player.getPlayerColor());
         }
 
         // Here come all the Logical methods
