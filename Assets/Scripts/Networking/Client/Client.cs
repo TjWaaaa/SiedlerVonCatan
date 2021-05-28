@@ -11,6 +11,7 @@ namespace Networking.ClientSide
 {
     public class Client
     {
+        private static bool isRunning = false;
         private const int BUFFER_SIZE = 64000;
         private const int PORT = 50042;
         private static byte[] buffer;
@@ -53,7 +54,7 @@ namespace Networking.ClientSide
                 bool connectionSuccess = connectToServer(ipAddress);
                 if (!connectionSuccess)
                 {
-                    return false;
+                    return isRunning;
                 }
 
                 clientSocket.BeginReceive(buffer, 0, BUFFER_SIZE, SocketFlags.None, receiveCallback, clientSocket);
@@ -64,7 +65,8 @@ namespace Networking.ClientSide
                 throw e;
             }
 
-            return true;
+            isRunning = true;
+            return isRunning;
         }
 
 
@@ -160,10 +162,17 @@ namespace Networking.ClientSide
                     receivedBufferSize = currentServerSocket.EndReceive(AR);
                     Debug.Log("CLIENT: receivedBufferSize: " + receivedBufferSize);
                 }
-                catch (SocketException)
+                catch (ObjectDisposedException e)
                 {
-                    Debug.Log("CLIENT: Server forcefully disconnected");
+                    Debug.Log("CLIENT: Object disposed exception. Happens always.\n" + e.Message);
                     //TODO handle connection loss
+                    return;
+                }
+                
+                // Server Socket was shut down
+                if (receivedBufferSize <= 0)
+                {
+                    Debug.LogError("CLIENT: Received null from server.");
                     return;
                 }
                 
@@ -176,7 +185,7 @@ namespace Networking.ClientSide
                 {
                     timeOfLastPing = DateTime.Now.Ticks;
                     sendRequest("pong");
-                }
+                } 
                 else
                 {
                     Debug.Log("CLIENT: received Data: " + jsonString);
@@ -189,8 +198,41 @@ namespace Networking.ClientSide
             }
             catch (Exception e)
             {
-                Debug.Log("CLIENT: " + e.HelpLink + e);
+                Debug.LogError("CLIENT: " + e.HelpLink + e);
                 throw e;
+            }
+        }
+
+
+        /// <summary>
+        /// If the the client is running all sockets are closed and timers are stopped and disposed.
+        /// </summary>
+        public static void shutDownClient()
+        {
+            lock (keepAliveTimer)
+            {
+                if (isRunning)
+                {
+                    isRunning = false;
+                    
+                    keepAliveTimer.Stop();
+                    keepAliveTimer.Dispose();
+            
+                    // Close client Socket
+                    try
+                    {
+                        clientSocket.Shutdown(SocketShutdown.Both);
+                    }
+                    catch (Exception e)
+                    {
+                        Debug.LogError($"CLIENT: Client socket could not be closed " + e.Message);
+                    }
+                    finally
+                    {
+                        clientSocket.Close();
+                    }
+                    Debug.Log("CLIENT: Client was shut down.");
+                }
             }
         }
 
