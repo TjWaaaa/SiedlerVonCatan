@@ -207,12 +207,19 @@ namespace Networking.ServerSide
                 serverRequest.notifyRejection(clientPacket.myPlayerID, "You are not allowed to buy a developmentcard!");
                 return;
             }
-            if (allPlayer.ElementAt(currentPlayer).Value.canBuyBuyable(BUYABLES.DEVELOPMENT_CARDS))
+
+            if (allPlayer.ElementAt(currentPlayer).Value.canBuyBuyable(BUYABLES.DEVELOPMENT_CARDS) && shuffledDevCardStack.Count != 0)
             {
+                Debug.Log("SERVER: there are so many devCards left:" + shuffledDevCardStack.Count);
                 allPlayer.ElementAt(currentPlayer).Value.buyBuyable(BUYABLES.DEVELOPMENT_CARDS);
+                DEVELOPMENT_TYPE temp = shuffledDevCardStack.Peek();
+                Debug.Log("Server: A devCard has been popped out of the stack, there are only so much more: " + shuffledDevCardStack.Count);
+                allPlayer.ElementAt(currentPlayer).Value.setNewDevCard(temp);
+
+                // Sending Packages
                 updateRepPlayers(); 
                 updateOwnPlayer(currentPlayer);
-                serverRequest.acceptBuyDevelopement(allPlayer.ElementAt(currentPlayer).Key, getDevelopmentCardFromStack());
+                serverRequest.acceptBuyDevelopement(allPlayer.ElementAt(currentPlayer).Key, shuffledDevCardStack.Pop());
             }
             else
             {
@@ -229,7 +236,23 @@ namespace Networking.ServerSide
                 serverRequest.notifyRejection(clientPacket.myPlayerID, "You are not allowed to play a developmentcard!");
                 return;
             }
-            throw new System.NotImplementedException();
+            
+            Debug.Log(clientPacket.developmentCard);
+            Debug.Log("SERVER: CurrentPlayer has enough cards: " + allPlayer.ElementAt(currentPlayer).Value.enoughDevCards(clientPacket.developmentCard));
+            if(allPlayer.ElementAt(currentPlayer).Value.enoughDevCards(clientPacket.developmentCard))
+            {
+                allPlayer.ElementAt(currentPlayer).Value.playDevCard(clientPacket.developmentCard);
+                
+                // Sending Packages
+                updateRepPlayers();
+                updateOwnPlayer(currentPlayer);
+                serverRequest.notifyAcceptPlayDevelopement(allPlayer.ElementAt(currentPlayer).Key, clientPacket.developmentCard, allPlayer.ElementAt(currentPlayer).Value.getPlayerName());
+            }
+            else
+            {
+                serverRequest.notifyRejection(allPlayer.ElementAt(currentPlayer).Key, "You can't play this developement Card");
+            }
+            
         }
 
         public void handleEndTurn(Packet clientPacket)
@@ -243,6 +266,7 @@ namespace Networking.ServerSide
             if(didThisPlayerWin(currentPlayer))
             {
                 serverRequest.notifyVictory(allPlayer.ElementAt(currentPlayer).Value.getPlayerName(), allPlayer.ElementAt(currentPlayer).Value.getPlayerColor());
+                return;
             }
 
             // Change currentPlayer
@@ -309,11 +333,6 @@ namespace Networking.ServerSide
             newPlayer.setResourceAmount(RESOURCETYPE.WHEAT, 15);
             allPlayer.Add(playerId, newPlayer);
             playerAmount++;
-        }
-
-        private DEVELOPMENT_TYPE getDevelopmentCardFromStack()
-        {
-            return shuffledDevCardStack.Pop();
         }
 
         private Stack<DEVELOPMENT_TYPE> generateRandomDevCardStack(DEVELOPMENT_TYPE[] array)

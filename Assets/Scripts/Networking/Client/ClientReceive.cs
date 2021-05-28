@@ -265,12 +265,13 @@ namespace Networking.ClientSide
         public void handleAcceptBuyDevelopement(Packet serverPacket)
         {
             //idk update some shit here in UI
-            Debug.Log("CLIENT: You got a developement card:" + serverPacket.developmentCard.ToString());
+            Debug.Log("CLIENT: You got a developement card:" + serverPacket.developmentCard);
         }
 
         public void handleAcceptPlayDevelopement(Packet serverPacket)
         {
-            throw new System.NotImplementedException();
+            //idk update some shit here in UI
+            Debug.Log($"CLIENT: {serverPacket.playerName} played a devCard: {serverPacket.developmentCard}");
         }
 
         public void handleUpdateRP(Packet serverPacket)
