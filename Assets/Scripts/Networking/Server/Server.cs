@@ -182,7 +182,8 @@ namespace Networking.ServerSide
             else // Normal packet
             {
                 Packet incomingPacket = PacketSerializer.jsonToObject(incomingDataString);
-                Debug.Log($"SERVER: Received Text (from {currentClientSocket.LocalEndPoint}): " + incomingDataString);
+                incomingPacket.myPlayerID = currentClientID;
+                Debug.Log($"SERVER: Received Text (from {currentClientSocket.LocalEndPoint}, clientID: {incomingPacket.myPlayerID}): " + incomingDataString);
             
                 // map socket to id and send id to method call
             
@@ -362,11 +363,7 @@ namespace Networking.ServerSide
                 case (int) COMMUNICATION_METHODS.HANDLE_END_TURN:
                     _serverReceive.handleEndTurn(incomingData);
                     break;
-                
-                case (int) COMMUNICATION_METHODS.HANDLE_CLIENT_DISCONNECT_SERVER_CALL:
-                    //handleClientDisconnectServerCall(incomingData);
-                    break;
-                
+
                 default:
                     Debug.LogWarning($"SERVER: there was no target method send, invalid data packet. Packet Type: {incomingData.type}");
                     // TODO: trow exception!!!
