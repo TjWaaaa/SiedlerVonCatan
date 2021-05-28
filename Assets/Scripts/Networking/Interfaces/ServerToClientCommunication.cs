@@ -43,7 +43,7 @@ namespace Networking.Interfaces
         /// <summary>
         /// Notify all players who the next player is.
         /// </summary>
-        public void notifyNextPlayer(string name);
+        public void notifyNextPlayer(int playerIndex);
 
         
         /// <summary>

@@ -273,6 +273,7 @@ namespace Networking.ServerSide
             Debug.Log("SERVER: Current Player index: " + currentPlayer);
             // Updating Representative Players
             serverRequest.updateRepPlayers(convertSPAToRPA());
+            serverRequest.notifyNextPlayer(currentPlayer);
             // TODO change method call => handleBeginRound should only be called after the new player is already set and all have been notified
             Debug.Log("SERVER: handleEndTurn has been called");
             handleBeginRound(clientPacket);

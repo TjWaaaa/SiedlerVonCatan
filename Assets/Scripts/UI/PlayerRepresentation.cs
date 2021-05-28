@@ -61,13 +61,9 @@ namespace UI
             playerRepresentations[player].transform.GetChild(0).transform.GetChild(5).GetComponent<TextMeshProUGUI>().text = representativePlayer.getDevCardAmount().ToString();
         }
 
-        public void showNextPlayer(int nextPlayer)
+        public void showNextPlayer(int previousPlayer, int nextPlayer)
         {
-            playerBoardLights[0].transform.SetAsFirstSibling();
-            playerBoardLights[1].transform.SetAsFirstSibling();
-            playerBoardLights[2].transform.SetAsFirstSibling();
-            playerBoardLights[3].transform.SetAsFirstSibling();
-
+            playerBoardLights[previousPlayer].transform.SetAsFirstSibling();
             playerBoardLights[nextPlayer].transform.SetSiblingIndex(1);
             //GameObject.Find("Player" + (nextPlayer +1)+ "/PlayerRepresentation/Board_light").
         }
