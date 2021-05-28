@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using System.Security;
 using Enums;
 using PlayerColor;
 using UnityEngine;
@@ -21,6 +22,11 @@ namespace Player
         private int leftVillages = 5;
         private int leftCitys = 4;
         private int devCardAmount = 0;
+        private int devCardVP;
+        private int devCardKnight;
+        private int devCardRoadBuilding;
+        private int devCardYearOfPlenty;
+        private int devCardMonopoly;
 
         private Dictionary<RESOURCETYPE, int> resources = new Dictionary<RESOURCETYPE, int>
         {
@@ -92,6 +98,11 @@ namespace Player
         {
             return this.leftVillages;
         }
+        public int getVictoryPoints()
+        {
+            return victoryPoints;
+        }
+
 
         // Setter
 
@@ -115,10 +126,7 @@ namespace Player
             resources[resourcetype] += amount;
         }
 
-        public int getVictoryPoints()
-        {
-            return victoryPoints + devCardAmount;
-        }
+
 
         //Start phase
 
@@ -260,6 +268,46 @@ namespace Player
         public Dictionary<RESOURCETYPE, int> convertSPToOPResources()
         {
             return resources;
+        }
+
+        // DevCard
+
+        public void playDevCard(DEVELOPMENT_TYPE type)
+        {
+            devCardAmount--;
+            switch (type)
+            {
+                case DEVELOPMENT_TYPE.KNIGHT: { devCardKnight--; return; }
+                case DEVELOPMENT_TYPE.MONOPOLY: { devCardMonopoly--; return; }
+                case DEVELOPMENT_TYPE.ROAD_BUILDING: { devCardRoadBuilding--; return; }
+                case DEVELOPMENT_TYPE.VICTORY_POINT: { devCardVP--; victoryPoints++; return; }
+                case DEVELOPMENT_TYPE.YEAR_OF_PLENTY: { devCardKnight--; return; }
+            }
+        }
+
+        public void setNewDevCard(DEVELOPMENT_TYPE type)
+        {
+            switch (type)
+            {
+                case DEVELOPMENT_TYPE.KNIGHT: { devCardKnight++; return; }
+                case DEVELOPMENT_TYPE.MONOPOLY: { devCardMonopoly++; return; }
+                case DEVELOPMENT_TYPE.ROAD_BUILDING: { devCardRoadBuilding++; return; }
+                case DEVELOPMENT_TYPE.VICTORY_POINT: { devCardVP++; return; }
+                case DEVELOPMENT_TYPE.YEAR_OF_PLENTY: { devCardKnight++; return; }
+
+            }
+        }
+        public bool enoughDevCards(DEVELOPMENT_TYPE type)
+        {
+            switch (type)
+            {
+                case DEVELOPMENT_TYPE.KNIGHT: { if (devCardKnight > 0) { return true; } return false; }
+                case DEVELOPMENT_TYPE.MONOPOLY: { if (devCardMonopoly > 0) { return true; } return false; }
+                case DEVELOPMENT_TYPE.ROAD_BUILDING: { if (devCardRoadBuilding > 0) { return true; } return false; }
+                case DEVELOPMENT_TYPE.VICTORY_POINT: { if (devCardVP > 0) { return true; } return false; }
+                case DEVELOPMENT_TYPE.YEAR_OF_PLENTY: { if (devCardYearOfPlenty > 0) { return true; } return false; }
+                default: return false;
+            }
         }
     }
 }

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using Enums;
 using Newtonsoft.Json.Linq;
@@ -8,7 +7,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using Networking.Package;
-using Networking.Communication;
+using Networking.ServerSide;
 using Player;
 using PlayerColor;
 using Trade;
@@ -73,6 +72,29 @@ namespace Networking.ClientSide
                     runFixedUpdate = false;
                 }
             }
+        }
+
+
+        public void OnApplicationQuit()
+        {
+            #if UNITY_EDITOR
+                quitGame();
+                UnityEditor.EditorApplication.isPlaying = false;
+            #else
+                quitGame();
+                Application.Quit();
+            #endif
+        }
+
+
+        /// <summary>
+        /// Shuts down bowth client and server.
+        /// </summary>
+        public static void quitGame()
+        {
+            Client.shutDownClient();
+            Server.shutDownServer();
+            
         }
 
         /// <summary>
@@ -265,12 +287,13 @@ namespace Networking.ClientSide
         public void handleAcceptBuyDevelopement(Packet serverPacket)
         {
             //idk update some shit here in UI
-            Debug.Log("CLIENT: You got a developement card:" + serverPacket.developmentCard.ToString());
+            Debug.Log("CLIENT: You got a developement card:" + serverPacket.developmentCard);
         }
 
         public void handleAcceptPlayDevelopement(Packet serverPacket)
         {
-            throw new System.NotImplementedException();
+            //idk update some shit here in UI
+            Debug.Log($"CLIENT: {serverPacket.playerName} played a devCard: {serverPacket.developmentCard}");
         }
 
         public void handleUpdateRP(Packet serverPacket)

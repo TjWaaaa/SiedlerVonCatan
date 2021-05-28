@@ -51,7 +51,7 @@ public class InputController : MonoBehaviour
         leftDevCards = GameObject.Find("LeftDevCards");
         amountVP = GameObject.Find("AmountVP");
         devCardsVP = GameObject.Find("DevCardsVP");
-        devCardsVP.SetActive(false);
+        devCardsVP.SetActive(true);
 
         // Hover Arrow
         actionsHoverArrow = GameObject.Find("actionsHoverArrow");
@@ -180,7 +180,7 @@ public class InputController : MonoBehaviour
 
     public void playVP()
     {
-        // not implemented yet
+        clientRequest.requestPlayDevelopement(DEVELOPMENT_TYPE.VICTORY_POINT);
     }
     
     public void buyDevCard()

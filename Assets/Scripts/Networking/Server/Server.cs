@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
@@ -12,11 +11,13 @@ using Random = System.Random;
 using Enums;
 using Debug = UnityEngine.Debug;
 using Object = UnityEngine.Object;
+using System.Threading;
 
 namespace Networking.ServerSide
 {
     public class Server
     {
+        private static bool isRunning = false;
         private static Socket serverSocket;
         private static Dictionary<int, Socket> socketPlayerData;  //serves to store all sockets with playerID
         // private static readonly List<Socket> clientSockets = new List<Socket>(); //serves to store all sockets
@@ -25,7 +26,7 @@ namespace Networking.ServerSide
         private static byte[] buffer;
         public static IPAddress serverIP { get; private set; }
         
-        private static Timer keepAliveTimer;
+        private static System.Timers.Timer keepAliveTimer;
         private const int KEEP_ALIVE_DURATION = 4000;
         private static Dictionary<int, long> timeOfPing;
         
@@ -41,9 +42,7 @@ namespace Networking.ServerSide
             serverSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
             socketPlayerData = new Dictionary<int, Socket>();
             buffer = new byte[BUFFER_SIZE];
-            
-            bool isRunning = false;
-            
+
             playerColors.Push(Color.red);
             playerColors.Push(Color.green);
             playerColors.Push(Color.blue);
@@ -70,12 +69,12 @@ namespace Networking.ServerSide
 
             //Start keepAliveTimer
             timeOfPing = new Dictionary<int, long>();
-            keepAliveTimer = new Timer(KEEP_ALIVE_DURATION);
+            keepAliveTimer = new System.Timers.Timer(KEEP_ALIVE_DURATION);
             keepAliveTimer.Elapsed += sendKeepAlive;
             keepAliveTimer.AutoReset = true;
             keepAliveTimer.Start();
-            
-            //todo: Close server after the end of the game, stop keepalive timer.
+
+            isRunning = true;
             return isRunning;
         }
         
@@ -97,7 +96,7 @@ namespace Networking.ServerSide
                 }
                 catch (ObjectDisposedException e) 
                 {
-                    Debug.LogError("SERVER: ObjectDisposedException. Client disconnected?" + e.Message);
+                    Debug.Log("SERVER: ObjectDisposedException. Happens always if the server socket is closed.\n" + e.Message);
                     return;
                 }
                 
@@ -233,7 +232,7 @@ namespace Networking.ServerSide
             string dataString = PacketSerializer.objectToJsonString(data);
             byte[] dataToSend = Encoding.ASCII.GetBytes(dataString);
             socketPlayerData[playerID].BeginSend(dataToSend, 0, dataToSend.Length, SocketFlags.None, sendCallback, serverSocket);
-            
+            Thread.Sleep(50);
         }
         
         
@@ -254,6 +253,7 @@ namespace Networking.ServerSide
                     socketPlayerData[id].BeginSend(dataToSend, 0, dataToSend.Length, SocketFlags.None, sendCallback, serverSocket);
                 }
             }
+            Thread.Sleep(50);
         }
         
         
@@ -270,6 +270,7 @@ namespace Networking.ServerSide
                 byte[] dataToSend = Encoding.ASCII.GetBytes(dataString);
                 socketPlayerData[id].BeginSend(dataToSend, 0, dataToSend.Length, SocketFlags.None, sendCallback, serverSocket);
             }
+            Thread.Sleep(50);
         }
 
 
@@ -295,19 +296,36 @@ namespace Networking.ServerSide
 
 
         /// <summary>
-        /// needs to be called at the end of the session to close all connected Sockets and the serverSocket
+        /// If the server is running all timers are stopped and disposed.
+        /// In addition all sockets are closed.
+        /// </summary>
+        public static void shutDownServer()
+        {
+            if (isRunning)
+            {
+                keepAliveTimer.Stop();
+                keepAliveTimer.Dispose();
+                closeAllSockets();
+            }
+        }
+
+
+        /// <summary>
+        /// Needs to be called at the end of the session to close all connected Sockets and the serverSocket
         /// </summary>
         private static void closeAllSockets()
         {
-            foreach (Socket socket in socketPlayerData.Values)
+            // Close connected client sockets
+            foreach (int key in socketPlayerData.Keys)
             {
+                Socket socket = socketPlayerData[key];
                 try
                 {
                     socket.Shutdown(SocketShutdown.Both);
                 }
                 catch (Exception e)
                 {
-                    Debug.LogWarning("SERVER: Socket could not be shut down. Closing..." + e);
+                    Debug.LogError($"SERVER: Socket with number {key} could not be shut down. Closing..." + e);
                 }
                 finally
                 {
@@ -315,8 +333,17 @@ namespace Networking.ServerSide
                 }
             }
 
-            //todo: maybe serversocket.BeginDisconnect() ?
-            serverSocket.Close();
+            // Close server listening socket
+            try
+            {
+                //serverSocket.Shutdown(SocketShutdown.Both);
+                serverSocket.Close();
+            }
+            catch (Exception e)
+            {
+                Debug.LogError("SERVER: Socket could not be shut down. Closing..." + e);
+            }
+            Debug.Log("SERVER: Server was shut down.");
         }
 
         

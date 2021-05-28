@@ -191,16 +191,19 @@ namespace Networking.ServerSide
                     serverRequest.notifyRejection(clientPacket.myPlayerID, "You are not allowed to buy a developmentcard!");
                     return;
                 }
-                if (allPlayer.ElementAt(currentPlayer).Value.canBuyBuyable(BUYABLES.DEVELOPMENT_CARDS))
+
+                if (allPlayer.ElementAt(currentPlayer).Value.canBuyBuyable(BUYABLES.DEVELOPMENT_CARDS) && shuffledDevCardStack.Count != 0)
                 {
+                    Debug.Log("SERVER: there are so many devCards left:" + shuffledDevCardStack.Count);
                     allPlayer.ElementAt(currentPlayer).Value.buyBuyable(BUYABLES.DEVELOPMENT_CARDS);
+                    DEVELOPMENT_TYPE temp = shuffledDevCardStack.Peek();
+                    Debug.Log("Server: A devCard has been popped out of the stack, there are only so much more: " + shuffledDevCardStack.Count);
+                    allPlayer.ElementAt(currentPlayer).Value.setNewDevCard(temp);
+
+                    // Sending Packages
                     updateRepPlayers();
                     updateOwnPlayer(currentPlayer);
-                    serverRequest.acceptBuyDevelopement(allPlayer.ElementAt(currentPlayer).Key, getDevelopmentCardFromStack());
-                }
-                else
-                {
-                    serverRequest.notifyRejection(allPlayer.ElementAt(currentPlayer).Key, "You can't buy a developement Card");
+                    serverRequest.acceptBuyDevelopement(allPlayer.ElementAt(currentPlayer).Key, shuffledDevCardStack.Pop());
                 }
             }
             else
@@ -219,7 +222,21 @@ namespace Networking.ServerSide
                     serverRequest.notifyRejection(clientPacket.myPlayerID, "You are not allowed to play a developmentcard!");
                     return;
                 }
-                throw new System.NotImplementedException();
+                Debug.Log(clientPacket.developmentCard);
+                Debug.Log("SERVER: CurrentPlayer has enough cards: " + allPlayer.ElementAt(currentPlayer).Value.enoughDevCards(clientPacket.developmentCard));
+                if (allPlayer.ElementAt(currentPlayer).Value.enoughDevCards(clientPacket.developmentCard))
+                {
+                    allPlayer.ElementAt(currentPlayer).Value.playDevCard(clientPacket.developmentCard);
+
+                    // Sending Packages
+                    updateRepPlayers();
+                    updateOwnPlayer(currentPlayer);
+                    serverRequest.notifyAcceptPlayDevelopement(allPlayer.ElementAt(currentPlayer).Key, clientPacket.developmentCard, allPlayer.ElementAt(currentPlayer).Value.getPlayerName());
+                }
+                else
+                {
+                    serverRequest.notifyRejection(allPlayer.ElementAt(currentPlayer).Key, "You can't play this developement Card");
+                }
             }
             else
             {
@@ -240,6 +257,7 @@ namespace Networking.ServerSide
             if (didThisPlayerWin(currentPlayer))
             {
                 serverRequest.notifyVictory(allPlayer.ElementAt(currentPlayer).Value.getPlayerName(), allPlayer.ElementAt(currentPlayer).Value.getPlayerColor());
+                return;
             }
 
             changeCurrentPlayer(clientPacket);
@@ -266,7 +284,7 @@ namespace Networking.ServerSide
         private bool isNotCurrentPlayer(int clientID)
         {
             var currentPlayerObject = allPlayer.ElementAt(currentPlayer).Value;
-            Debug.LogWarning($"comparing clientID: {clientID} and currentID: {currentPlayerObject.getPlayerID()}");
+            //Debug.LogWarning($"comparing clientID: {clientID} and currentID: {currentPlayerObject.getPlayerID()}");
             if (currentPlayerObject.getPlayerID() == clientID)
             {
                 return false;
@@ -310,11 +328,6 @@ namespace Networking.ServerSide
             playerAmount++;
         }
 
-        private DEVELOPMENT_TYPE getDevelopmentCardFromStack()
-        {
-            return shuffledDevCardStack.Pop();
-        }
-
         private Stack<DEVELOPMENT_TYPE> generateRandomDevCardStack(DEVELOPMENT_TYPE[] array)
         {
             return new Stack<DEVELOPMENT_TYPE>(array.OrderBy(n => Guid.NewGuid()).ToArray());
@@ -348,11 +361,11 @@ namespace Networking.ServerSide
             {
                 if (currentPlayer == playerAmount - 1 && inGameStartupPhase)
                 {
-                    inGameStartupPhase = false; 
+                    inGameStartupPhase = false;
                     Debug.Log("SERVER: StartupPhase is over now");
                 }
-                
-                if(currentPlayer == playerAmount - 1)
+
+                if (currentPlayer == playerAmount - 1)
                 {
                     currentPlayer = 0;
                 }
@@ -368,8 +381,8 @@ namespace Networking.ServerSide
                 if (currentPlayer == 0)
                 {
                     firstRound = false;
-                    
-                    if (currentPlayer == playerAmount-1)
+
+                    if (currentPlayer == playerAmount - 1)
                     {
                         currentPlayer = 0;
                     }
@@ -417,7 +430,7 @@ namespace Networking.ServerSide
                         break;
 
                     case BUYABLES.ROAD:
-                        if (inGameStartupPhase && gameBoard.placeRoad(posInArray, mandatoryNodeID, playerColor) && currentServerPlayer.getLeftStreets()>13)
+                        if (inGameStartupPhase && gameBoard.placeRoad(posInArray, mandatoryNodeID, playerColor) && currentServerPlayer.getLeftStreets() > 13)
                         {
                             currentServerPlayer.buildStreet();
                             mandatoryNodeID = -1;

@@ -77,7 +77,7 @@ namespace Networking.Communication
         {
             Packet packet = new Packet();
             packet.type = (int) COMMUNICATION_METHODS.HANDLE_PLAY_DEVELOPMENT;
-            packet.developmentCard = (int) developmentType;
+            packet.developmentCard = developmentType;
             
             Client.sendRequest(PacketSerializer.objectToJsonString(packet));
         }
