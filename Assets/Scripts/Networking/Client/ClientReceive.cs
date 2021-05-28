@@ -216,7 +216,8 @@ namespace Networking.ClientSide
 
         public void handleClientDisconnect(Packet serverPacket)
         {
-            throw new System.NotImplementedException();
+            Debug.LogError($"CLIENT: Client named {serverPacket.playerName} lost its connection");
+            // todo: display in UI
         }
 
         public void handleRejection(Packet serverPacket)
