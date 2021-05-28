@@ -105,7 +105,10 @@ namespace Player
             resources[resourcetype] += amount;
         }
 
-
+        public int getVictoryPoints()
+        {
+            return victoryPoints + devCardAmount;
+        }
 
         // Trade
 
