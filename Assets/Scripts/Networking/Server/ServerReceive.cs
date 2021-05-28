@@ -4,11 +4,11 @@ using System.Collections.Generic;
 using System.Linq;
 using Enums;
 using Networking.Communication;
-using UnityEngine;
 using Networking.Interfaces;
 using Networking.Package;
 using Player;
 using PlayerColor;
+using UnityEngine;
 
 namespace Networking.ServerSide
 {
@@ -24,6 +24,8 @@ namespace Networking.ServerSide
         private readonly ServerRequest serverRequest = new ServerRequest();
 
         private Board gameBoard = new Board();
+        private Stack<DEVELOPMENT_TYPE> shuffledDevCardStack = new Stack<DEVELOPMENT_TYPE>();
+        private DEVELOPMENT_TYPE[] unshuffledDevCardArray = { DEVELOPMENT_TYPE.VICTORY_POINT, DEVELOPMENT_TYPE.VICTORY_POINT, DEVELOPMENT_TYPE.VICTORY_POINT, DEVELOPMENT_TYPE.VICTORY_POINT, DEVELOPMENT_TYPE.VICTORY_POINT };
 
         public ServerReceive()
         {
@@ -87,6 +89,7 @@ namespace Networking.ServerSide
                 //int[][] updateRepPlayers = convertSPAToRPA();
                 currentPlayer = playerAmount - 1;
                 serverRequest.gamestartInitialize(gameBoard.getHexagonsArray());
+                shuffledDevCardStack = generateRandomDevCardStack(unshuffledDevCardArray);
             }
 
             // send error if no player was found
@@ -104,10 +107,10 @@ namespace Networking.ServerSide
             // }
 
             // Roll dices
-            
-                int[] diceNumbers = rollDices();
-                serverRequest.notifyRollDice(diceNumbers);
-           
+
+            int[] diceNumbers = rollDices();
+            serverRequest.notifyRollDice(diceNumbers);
+
             // Distribute ressources
         }
 
@@ -134,6 +137,11 @@ namespace Networking.ServerSide
             {
                 serverRequest.notifyRejection(clientPacket.myPlayerID, "Method HANDLE_TRADE_BANK during startphase prohibited");
             }
+
+            allPlayer.ElementAt(currentPlayer).Value.trade(clientPacket.tradeResourcesOffer, clientPacket.tradeResourcesExpect);
+
+            updateRepPlayers();
+            updateOwnPlayer(currentPlayer);
         }
 
         public void handleTradeOffer(Packet clientPacket)
@@ -227,14 +235,25 @@ namespace Networking.ServerSide
 
         public void handleBuyDevelopement(Packet clientPacket)
         {
-            if(!inGameStartupPhase){
-            if (isNotCurrentPlayer(clientPacket.myPlayerID))
+            if (!inGameStartupPhase)
             {
-                Debug.LogWarning($"SERVER: Client request rejected from client {clientPacket.myPlayerID}");
-                serverRequest.notifyRejection(clientPacket.myPlayerID, "You are not allowed to buy a developmentcard!");
-                return;
-            }
-            throw new System.NotImplementedException();
+                if (isNotCurrentPlayer(clientPacket.myPlayerID))
+                {
+                    Debug.LogWarning($"SERVER: Client request rejected from client {clientPacket.myPlayerID}");
+                    serverRequest.notifyRejection(clientPacket.myPlayerID, "You are not allowed to buy a developmentcard!");
+                    return;
+                }
+                if (allPlayer.ElementAt(currentPlayer).Value.canBuyBuyable(BUYABLES.DEVELOPMENT_CARDS))
+                {
+                    allPlayer.ElementAt(currentPlayer).Value.buyBuyable(BUYABLES.DEVELOPMENT_CARDS);
+                    updateRepPlayers();
+                    updateOwnPlayer(currentPlayer);
+                    serverRequest.acceptBuyDevelopement(allPlayer.ElementAt(currentPlayer).Key, getDevelopmentCardFromStack());
+                }
+                else
+                {
+                    serverRequest.notifyRejection(allPlayer.ElementAt(currentPlayer).Key, "You can't buy a developement Card");
+                }
             }
             else
             {
@@ -271,6 +290,12 @@ namespace Networking.ServerSide
                 return;
             }
 
+
+            if (didThisPlayerWin(currentPlayer))
+            {
+                serverRequest.notifyVictory(allPlayer.ElementAt(currentPlayer).Value.getPlayerName(), allPlayer.ElementAt(currentPlayer).Value.getPlayerColor());
+            }
+
             // Change currentPlayer
             if (!firstRound)
             {
@@ -294,10 +319,7 @@ namespace Networking.ServerSide
 
             // Updating Representative Players
             serverRequest.updateRepPlayers(convertSPAToRPA());
-            serverRequest.updateOwnPlayer(
-                allPlayer.ElementAt(currentPlayer).Value.convertFromSPToOP(), // int[] with left buildings
-                allPlayer.ElementAt(currentPlayer).Value.convertSPToOPResources(), // Resource Dictionary
-                allPlayer.ElementAt(currentPlayer).Key);
+            updateOwnPlayer(currentPlayer);
 
             // Begin next round
             if (!inGameStartupPhase) { handleBeginRound(clientPacket); }
@@ -313,7 +335,7 @@ namespace Networking.ServerSide
 
         //---------------------------------------------- All logical methods ----------------------------------------------
 
-        public bool isNotCurrentPlayer(int clientID)
+        private bool isNotCurrentPlayer(int clientID)
         {
             var currentPlayerObject = allPlayer.ElementAt(currentPlayer).Value;
             Debug.LogWarning($"comparing clientID: {clientID} and currentID: {currentPlayerObject.getPlayerID()}");
@@ -325,7 +347,7 @@ namespace Networking.ServerSide
             return true;
         }
 
-        public int[] rollDices()
+        private int[] rollDices()
         {
             Debug.Log("SERVER: Dices are being rolled");
             System.Random r = new System.Random();
@@ -336,7 +358,7 @@ namespace Networking.ServerSide
             return diceNumbers;
         }
 
-        public int[][] convertSPAToRPA() // ServerPlayerArray / RepPlayerArray
+        private int[][] convertSPAToRPA() // ServerPlayerArray / RepPlayerArray
         {
             int i = 0;
             int[][] cache = new int[playerAmount][];
@@ -358,6 +380,38 @@ namespace Networking.ServerSide
             newPlayer.setResourceAmount(RESOURCETYPE.WHEAT, 15);
             allPlayer.Add(playerId, newPlayer);
             playerAmount++;
+        }
+
+        private DEVELOPMENT_TYPE getDevelopmentCardFromStack()
+        {
+            return shuffledDevCardStack.Pop();
+        }
+
+        private Stack<DEVELOPMENT_TYPE> generateRandomDevCardStack(DEVELOPMENT_TYPE[] array)
+        {
+            return new Stack<DEVELOPMENT_TYPE>(array.OrderBy(n => Guid.NewGuid()).ToArray());
+        }
+
+        private void updateOwnPlayer(int playerIndex)
+        {
+            serverRequest.updateOwnPlayer(
+                allPlayer.ElementAt(playerIndex).Value.convertFromSPToOP(), // int[] with left buildings
+                allPlayer.ElementAt(playerIndex).Value.convertSPToOPResources(), // Resource Dictionary
+                allPlayer.ElementAt(playerIndex).Key);
+        }
+
+        private void updateRepPlayers()
+        {
+            serverRequest.updateRepPlayers(convertSPAToRPA());
+        }
+
+        private bool didThisPlayerWin(int playerIndex)
+        {
+            if (allPlayer.ElementAt(playerIndex).Value.getVictoryPoints() >= 10)
+            {
+                return true;
+            }
+            return false;
         }
     }
 }

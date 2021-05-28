@@ -23,6 +23,13 @@ public class InputController : MonoBehaviour
     EventTrigger.Entry eventEntryExit = new EventTrigger.Entry();
     float actionsHoverArrowXPosition;
     private AudioSource audioSource;
+    
+    // DevCards
+    private GameObject playVPButton;
+    private GameObject buyDevCardButton;
+    private GameObject leftDevCards;
+    private GameObject amountVP;
+    private GameObject devCardsVP;
 
     // Start is called before the first frame update
     private void Start()
@@ -33,10 +40,18 @@ public class InputController : MonoBehaviour
         audioSource.volume = 0.5f;
         audioSource.clip = (AudioClip)Resources.Load("Sounds/clicksound");
 
-        // Buld Buttons
+        // Build Buttons
         buildStreetButton = GameObject.Find("buildStreet");
         buildVillageButton = GameObject.Find("buildVillage");
         buildCityButton = GameObject.Find("buildCity");
+        
+        // DevCards
+        playVPButton = GameObject.Find("PlayVP");
+        buyDevCardButton = GameObject.Find("BuyDevCard");
+        leftDevCards = GameObject.Find("LeftDevCards");
+        amountVP = GameObject.Find("AmountVP");
+        devCardsVP = GameObject.Find("DevCardsVP");
+        devCardsVP.SetActive(false);
 
         // Hover Arrow
         actionsHoverArrow = GameObject.Find("actionsHoverArrow");
@@ -64,9 +79,11 @@ public class InputController : MonoBehaviour
         buildCityButton.AddComponent<EventTrigger>();
         buildCityButton.GetComponent<EventTrigger>().triggers.Add(eventEntryEnter);
         buildCityButton.GetComponent<EventTrigger>().triggers.Add(eventEntryExit);
-
-
-
+        
+        playVPButton.GetComponent<Button>().onClick.AddListener(playVP);
+        buyDevCardButton.GetComponent<Button>().onClick.AddListener(buyDevCard);
+        
+        
     }
 
     // Update is called once per frame
@@ -159,5 +176,18 @@ public class InputController : MonoBehaviour
     {
         actionsHoverArrow.SetActive(false);
         Debug.Log("CLIENT: Pointer exit");
+    }
+
+    public void playVP()
+    {
+        // not implemented yet
+    }
+    
+    public void buyDevCard()
+    {
+        Debug.Log($"CLIENT: Player wants to buy a devCard");
+        clientRequest.requestBuyDevelopement();
+        // not implemented yet
+        // if devCardNew == devCardVP(bzw if AmountVP > 0) then devCardsVP.setActive(true);
     }
 }
