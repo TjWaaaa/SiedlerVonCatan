@@ -116,26 +116,11 @@ namespace Networking.ServerSide
 
         public void handleTradeBank(Packet clientPacket)
         {
-            if (!inGameStartupPhase)
+            if (isNotCurrentPlayer(clientPacket.myPlayerID))
             {
-                if (isNotCurrentPlayer(clientPacket.myPlayerID))
-                {
-                    Debug.LogWarning($"SERVER: Client request rejected from client {clientPacket.myPlayerID}");
-                    serverRequest.notifyRejection(clientPacket.myPlayerID, "You are not allowed to trade with bank!");
-                    return;
-                }
-
-                allPlayer.ElementAt(currentPlayer).Value.trade(clientPacket.tradeResourcesOffer, clientPacket.tradeResourcesExpect);
-
-                serverRequest.updateRepPlayers(convertSPAToRPA());
-                serverRequest.updateOwnPlayer(
-                    allPlayer.ElementAt(currentPlayer).Value.convertFromSPToOP(), // int[] with left buildings
-                    allPlayer.ElementAt(currentPlayer).Value.convertSPToOPResources(), // Resource Dictionary
-                    allPlayer.ElementAt(currentPlayer).Key);
-            }
-            else
-            {
-                serverRequest.notifyRejection(clientPacket.myPlayerID, "Method HANDLE_TRADE_BANK during startphase prohibited");
+                Debug.LogWarning($"SERVER: Client request rejected from client {clientPacket.myPlayerID}");
+                serverRequest.notifyRejection(clientPacket.myPlayerID, "You are not allowed to trade with bank!");
+                return;
             }
 
             allPlayer.ElementAt(currentPlayer).Value.trade(clientPacket.tradeResourcesOffer, clientPacket.tradeResourcesExpect);
@@ -289,8 +274,6 @@ namespace Networking.ServerSide
                 serverRequest.notifyRejection(clientPacket.myPlayerID, "You are not allowed to end someone elses turn");
                 return;
             }
-
-
             if (didThisPlayerWin(currentPlayer))
             {
                 serverRequest.notifyVictory(allPlayer.ElementAt(currentPlayer).Value.getPlayerName(), allPlayer.ElementAt(currentPlayer).Value.getPlayerColor());
