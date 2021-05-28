@@ -88,6 +88,15 @@ namespace Player
             return amount;
         }
 
+        public int getLeftStreets()
+        {
+            return this.leftStreets;
+        }
+
+        public int getLeftVillages()
+        {
+            return this.leftVillages;
+        }
         public int getVictoryPoints()
         {
             return victoryPoints;
@@ -116,7 +125,24 @@ namespace Player
             resources[resourcetype] += amount;
             Debug.Log("SERVER: set resource " + resourcetype + " to " + amount);
         }
-        
+
+        //Start phase
+        public void buildStreet()
+        {
+            if (leftStreets > 13)
+            {
+                this.leftStreets--;
+            }
+        }
+
+        public void buildVillage()
+        {
+            if (leftVillages > 3)
+            {
+                this.leftVillages--;
+            }
+        }
+
         // Trade
         public Boolean canTrade(RESOURCETYPE resourcetype)
         {
@@ -129,8 +155,6 @@ namespace Player
                 Debug.Log("CLIENT: You only have " + resources[resourcetype] + resourcetype.ToString().ToLower() + ". Trade something else.");
                 return false;
             }
-
-
         }
 
         public void trade(int[] offer, int[] expect)
@@ -144,12 +168,9 @@ namespace Player
             {
                 resources[resources.ElementAt(i).Key] += expect[i];
             }
-
         }
 
-
         // Buy
-
         public Boolean canBuyBuyable(BUYABLES buyable)
         {
             switch (buyable)
@@ -241,7 +262,6 @@ namespace Player
         }
 
         // DevCard
-
         public void playDevCard(DEVELOPMENT_TYPE type)
         {
             devCardAmount--;
@@ -267,6 +287,7 @@ namespace Player
 
             }
         }
+
         public bool enoughDevCards(DEVELOPMENT_TYPE type)
         {
             switch (type)
