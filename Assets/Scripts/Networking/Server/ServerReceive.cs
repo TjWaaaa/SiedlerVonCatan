@@ -177,7 +177,7 @@ namespace Networking.ServerSide
 
             PLAYERCOLOR playerColor = allPlayer.ElementAt(currentPlayer).Value.getPlayerColor();
 
-            buildStructure(currentServerPlayer, buildingType, posInArray, playerColor);
+            buildStructure(currentServerPlayer, buildingType, posInArray, playerColor, clientPacket);
 
         }
 
@@ -242,7 +242,7 @@ namespace Networking.ServerSide
                 serverRequest.notifyVictory(allPlayer.ElementAt(currentPlayer).Value.getPlayerName(), allPlayer.ElementAt(currentPlayer).Value.getPlayerColor());
             }
 
-            changeCurrentPlayer();
+            changeCurrentPlayer(clientPacket);
             Debug.Log("SERVER: Current Player index: " + currentPlayer);
 
             // Updating Representative Players
@@ -342,22 +342,41 @@ namespace Networking.ServerSide
             return false;
         }
 
-        public void changeCurrentPlayer()
+        public void changeCurrentPlayer(Packet clientPacket)
         {
             if (!firstRound)
             {
                 if (currentPlayer == playerAmount - 1 && inGameStartupPhase)
                 {
-                    inGameStartupPhase = false; Debug.Log("SERVER: StartupPhase is over now");
+                    inGameStartupPhase = false; 
+                    Debug.Log("SERVER: StartupPhase is over now");
                 }
-                currentPlayer = currentPlayer == playerAmount - 1 ? 0 : ++currentPlayer;
+                
+                if(currentPlayer == playerAmount - 1)
+                {
+                    currentPlayer = 0;
+                }
+                else
+                {
+                    currentPlayer++;
+                }
+
+                handleBeginRound(clientPacket);
             }
             else
             {
                 if (currentPlayer == 0)
                 {
                     firstRound = false;
-                    currentPlayer = currentPlayer == playerAmount - 1 ? 0 : ++currentPlayer;
+                    
+                    if (currentPlayer == playerAmount-1)
+                    {
+                        currentPlayer = 0;
+                    }
+                    else
+                    {
+                        currentPlayer++;
+                    }
                 }
                 else
                 {
@@ -366,7 +385,7 @@ namespace Networking.ServerSide
             }
         }
 
-        private void buildStructure(ServerPlayer currentServerPlayer, BUYABLES buildingType, int posInArray, PLAYERCOLOR playerColor)
+        private void buildStructure(ServerPlayer currentServerPlayer, BUYABLES buildingType, int posInArray, PLAYERCOLOR playerColor, Packet clientPacket)
         {
             if (currentServerPlayer.canBuyBuyable(buildingType))
             {
@@ -398,7 +417,6 @@ namespace Networking.ServerSide
                         break;
 
                     case BUYABLES.ROAD:
-                        Debug.LogWarning($"Startphase: {inGameStartupPhase} leftStreets:{currentServerPlayer.getLeftStreets()}");
                         if (inGameStartupPhase && gameBoard.placeRoad(posInArray, mandatoryNodeID, playerColor) && currentServerPlayer.getLeftStreets()>13)
                         {
                             currentServerPlayer.buildStreet();
@@ -407,7 +425,7 @@ namespace Networking.ServerSide
                             serverRequest.notifyObjectPlacement(buildingType, posInArray, playerColor);
                             updateOwnPlayer(currentPlayer);
                             updateRepPlayers();
-                            changeCurrentPlayer();
+                            changeCurrentPlayer(clientPacket);
                             return;
                         }
 

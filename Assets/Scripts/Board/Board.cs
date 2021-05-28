@@ -422,7 +422,6 @@ public class Board
             return true;
         }
 
-        Debug.LogWarning($"mandatory Node not adjacent! Node: {mandatoryAdjacentNode}");
         return false;
     }
 
