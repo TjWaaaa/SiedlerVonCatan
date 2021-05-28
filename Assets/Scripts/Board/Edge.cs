@@ -1,4 +1,4 @@
-using PlayerColor;
+using Enums;
 
 public class Edge
 {

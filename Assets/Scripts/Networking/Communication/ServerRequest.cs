@@ -4,10 +4,7 @@ using UnityEngine;
 using Networking.Package;
 using Networking.ServerSide;
 using Enums;
-using System;
 using System.Collections.Generic;
-using Player;
-using PlayerColor;
 
 namespace Networking.Communication
 {

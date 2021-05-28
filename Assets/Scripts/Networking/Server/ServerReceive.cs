@@ -7,7 +7,6 @@ using UnityEngine;
 using Networking.Interfaces;
 using Networking.Package;
 using Player;
-using PlayerColor;
 using System;
 
 namespace Networking.ServerSide
@@ -106,7 +105,20 @@ namespace Networking.ServerSide
             // Roll dices
             int[] diceNumbers = rollDices();
             serverRequest.notifyRollDice(diceNumbers);
+            
             // Distribute ressources
+            for (int playerIndex = 0; playerIndex < allPlayer.Count; playerIndex++)
+            {
+                ServerPlayer player = allPlayer.ElementAt(playerIndex).Value;
+                int[] distributedResources = gameBoard.distributeResources(diceNumbers[0] + diceNumbers[1], player.getPlayerColor());
+
+                for (int i = 0; i < distributedResources.Length; i++)
+                {
+                    player.setResourceAmount((RESOURCETYPE) i, distributedResources[i]);
+                }
+                updateOwnPlayer(currentPlayer);
+            }
+            updateRepPlayers();
         }
 
         public void handleTradeBank(Packet clientPacket)
@@ -134,7 +146,7 @@ namespace Networking.ServerSide
             }
 
             ServerPlayer currentServerPlayer = allPlayer.ElementAt(currentPlayer).Value;
-            RESOURCETYPE resourcetype = (RESOURCETYPE)clientPacket.resourceType;
+            RESOURCETYPE resourcetype = (RESOURCETYPE) clientPacket.resourceType;
             int buttonNumber = clientPacket.buttonNumber;
             if (currentServerPlayer.canTrade(resourcetype))
             {
@@ -169,13 +181,14 @@ namespace Networking.ServerSide
                 {
                     case BUYABLES.VILLAGE:
                     case BUYABLES.CITY:
+                        if (gameBoard.placeBuilding(posInArray, playerColor))
                         {
                             currentServerPlayer.buyBuyable(buildingType);
                             serverRequest.notifyObjectPlacement(buildingType, posInArray, playerColor);
-
                             serverRequest.updateRepPlayers(convertSPAToRPA());
                             return;
                         }
+                        break;
                     case BUYABLES.ROAD:
                         if (gameBoard.placeRoad(posInArray, playerColor))
                         {

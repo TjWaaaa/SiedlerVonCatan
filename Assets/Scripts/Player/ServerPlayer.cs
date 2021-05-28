@@ -5,7 +5,6 @@ using System.Data;
 using System.Linq;
 using System.Security;
 using Enums;
-using PlayerColor;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -115,12 +114,10 @@ namespace Player
         public void setResourceAmount(RESOURCETYPE resourcetype, int amount)
         {
             resources[resourcetype] += amount;
+            Debug.Log("SERVER: set resource " + resourcetype + " to " + amount);
         }
-
-
-
+        
         // Trade
-
         public Boolean canTrade(RESOURCETYPE resourcetype)
         {
             if (resources[resourcetype] >= 4)

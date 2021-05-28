@@ -1,7 +1,6 @@
 ﻿using System.Collections;
 using Enums;
 using Player;
-using PlayerColor;
 using UnityEngine;
 
 namespace Networking.Interfaces

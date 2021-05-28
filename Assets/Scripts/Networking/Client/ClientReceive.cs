@@ -9,7 +9,6 @@ using UnityEngine.UI;
 using Networking.Package;
 using Networking.ServerSide;
 using Player;
-using PlayerColor;
 using Trade;
 using UI;
 

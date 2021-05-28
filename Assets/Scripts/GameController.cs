@@ -3,7 +3,7 @@ using TMPro;
 using UnityEngine;
 using Networking.Communication;
 using Player;
-using PlayerColor;
+using Enums;
 
 public class GameController : MonoBehaviour
 {
