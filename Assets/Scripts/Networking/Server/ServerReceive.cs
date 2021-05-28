@@ -102,54 +102,68 @@ namespace Networking.ServerSide
             //     serverRequest.notifyRejection(clientPacket.myPlayerID, "You are not allowed to begin round!");
             //     return;
             // }
-            
+
             // Roll dices
-            int[] diceNumbers = rollDices();
-            serverRequest.notifyRollDice(diceNumbers);
+            
+                int[] diceNumbers = rollDices();
+                serverRequest.notifyRollDice(diceNumbers);
+           
             // Distribute ressources
         }
 
         public void handleTradeBank(Packet clientPacket)
         {
-            if (isNotCurrentPlayer(clientPacket.myPlayerID))
+            if (!inGameStartupPhase)
             {
-                Debug.LogWarning($"SERVER: Client request rejected from client {clientPacket.myPlayerID}");
-                serverRequest.notifyRejection(clientPacket.myPlayerID, "You are not allowed to trade with bank!");
-                return;
+                if (isNotCurrentPlayer(clientPacket.myPlayerID))
+                {
+                    Debug.LogWarning($"SERVER: Client request rejected from client {clientPacket.myPlayerID}");
+                    serverRequest.notifyRejection(clientPacket.myPlayerID, "You are not allowed to trade with bank!");
+                    return;
+                }
+
+                allPlayer.ElementAt(currentPlayer).Value.trade(clientPacket.tradeResourcesOffer, clientPacket.tradeResourcesExpect);
+
+                serverRequest.updateRepPlayers(convertSPAToRPA());
+                serverRequest.updateOwnPlayer(
+                    allPlayer.ElementAt(currentPlayer).Value.convertFromSPToOP(), // int[] with left buildings
+                    allPlayer.ElementAt(currentPlayer).Value.convertSPToOPResources(), // Resource Dictionary
+                    allPlayer.ElementAt(currentPlayer).Key);
             }
-            
-            allPlayer.ElementAt(currentPlayer).Value.trade(clientPacket.tradeResourcesOffer, clientPacket.tradeResourcesExpect);
-
-            serverRequest.updateRepPlayers(convertSPAToRPA());
-            serverRequest.updateOwnPlayer(
-                allPlayer.ElementAt(currentPlayer).Value.convertFromSPToOP(), // int[] with left buildings
-                allPlayer.ElementAt(currentPlayer).Value.convertSPToOPResources(), // Resource Dictionary
-                allPlayer.ElementAt(currentPlayer).Key);
-
-
+            else
+            {
+                serverRequest.notifyRejection(clientPacket.myPlayerID, "Method HANDLE_TRADE_BANK during startphase prohibited");
+            }
         }
 
         public void handleTradeOffer(Packet clientPacket)
         {
-            if (isNotCurrentPlayer(clientPacket.myPlayerID))
+            if (!inGameStartupPhase)
             {
-                Debug.LogWarning($"SERVER: Client request rejected from client {clientPacket.myPlayerID}");
-                serverRequest.notifyRejection(clientPacket.myPlayerID, "You are not allowed to offer a trade!");
-                return;
-            }
-            
-            ServerPlayer currentServerPlayer = allPlayer.ElementAt(currentPlayer).Value;
-            RESOURCETYPE resourcetype = (RESOURCETYPE)clientPacket.resourceType;
-            int buttonNumber = clientPacket.buttonNumber;
-            if (currentServerPlayer.canTrade(resourcetype))
-            {
-                serverRequest.notifyAcceptTradeOffer(currentServerPlayer.getPlayerID(), buttonNumber);
+                if (isNotCurrentPlayer(clientPacket.myPlayerID))
+                {
+                    Debug.LogWarning($"SERVER: Client request rejected from client {clientPacket.myPlayerID}");
+                    serverRequest.notifyRejection(clientPacket.myPlayerID, "You are not allowed to offer a trade!");
+                    return;
+                }
 
+                ServerPlayer currentServerPlayer = allPlayer.ElementAt(currentPlayer).Value;
+                RESOURCETYPE resourcetype = (RESOURCETYPE)clientPacket.resourceType;
+                int buttonNumber = clientPacket.buttonNumber;
+                if (currentServerPlayer.canTrade(resourcetype))
+                {
+                    serverRequest.notifyAcceptTradeOffer(currentServerPlayer.getPlayerID(), buttonNumber);
+
+                }
+                else
+                {
+                    serverRequest.notifyRejection(allPlayer.ElementAt(currentPlayer).Value.getPlayerID(), "Not enough resources to offer");
+
+                }
             }
             else
             {
-                serverRequest.notifyRejection(allPlayer.ElementAt(currentPlayer).Value.getPlayerID(), "Not enough resources to offer");
-
+                serverRequest.notifyRejection(clientPacket.myPlayerID, "Method HANDLE_TRADE_OFFER during game startphase prohibited");
             }
         }
 
@@ -161,7 +175,7 @@ namespace Networking.ServerSide
                 serverRequest.notifyRejection(clientPacket.myPlayerID, "You are not allowed to build!");
                 return;
             }
-            
+
             ServerPlayer currentServerPlayer = allPlayer.ElementAt(currentPlayer).Value;
             BUYABLES buildingType = (BUYABLES)clientPacket.buildType;
             int posInArray = clientPacket.buildID;
@@ -213,6 +227,7 @@ namespace Networking.ServerSide
 
         public void handleBuyDevelopement(Packet clientPacket)
         {
+            if(!inGameStartupPhase){
             if (isNotCurrentPlayer(clientPacket.myPlayerID))
             {
                 Debug.LogWarning($"SERVER: Client request rejected from client {clientPacket.myPlayerID}");
@@ -220,17 +235,29 @@ namespace Networking.ServerSide
                 return;
             }
             throw new System.NotImplementedException();
+            }
+            else
+            {
+                serverRequest.notifyRejection(clientPacket.myPlayerID, "Method HANDLE_BUY_DEVELOPMENT during game startphase prohibited");
+            }
         }
 
         public void handlePlayDevelopement(Packet clientPacket)
         {
-            if (isNotCurrentPlayer(clientPacket.myPlayerID))
+            if (!inGameStartupPhase)
             {
-                Debug.LogWarning($"SERVER: Client request rejected from client {clientPacket.myPlayerID}");
-                serverRequest.notifyRejection(clientPacket.myPlayerID, "You are not allowed to play a developmentcard!");
-                return;
+                if (isNotCurrentPlayer(clientPacket.myPlayerID))
+                {
+                    Debug.LogWarning($"SERVER: Client request rejected from client {clientPacket.myPlayerID}");
+                    serverRequest.notifyRejection(clientPacket.myPlayerID, "You are not allowed to play a developmentcard!");
+                    return;
+                }
+                throw new System.NotImplementedException();
             }
-            throw new System.NotImplementedException();
+            else
+            {
+                serverRequest.notifyRejection(clientPacket.myPlayerID, "Method HANDLE_PLAY_DEVELOPMENT during game startphase prohibited");
+            }
         }
 
         public void handleEndTurn(Packet clientPacket)
@@ -243,23 +270,23 @@ namespace Networking.ServerSide
                 serverRequest.notifyRejection(clientPacket.myPlayerID, "You are not allowed to end someone elses turn");
                 return;
             }
-            
+
             // Change currentPlayer
             if (!firstRound)
             {
-                if(currentPlayer == playerAmount-1 && inGameStartupPhase){inGameStartupPhase = false;Debug.Log("SERVER: StartupPhase is over now");}
+                if (currentPlayer == playerAmount - 1 && inGameStartupPhase) { inGameStartupPhase = false; Debug.Log("SERVER: StartupPhase is over now"); }
                 currentPlayer = currentPlayer == playerAmount - 1 ? 0 : ++currentPlayer;
             }
             else
             {
-                if (currentPlayer == 0) 
-                { 
-                    firstRound = false; 
-                    currentPlayer = currentPlayer == playerAmount - 1 ? 0 : ++currentPlayer; 
+                if (currentPlayer == 0)
+                {
+                    firstRound = false;
+                    currentPlayer = currentPlayer == playerAmount - 1 ? 0 : ++currentPlayer;
                 }
-                else 
-                { 
-                    currentPlayer--; 
+                else
+                {
+                    currentPlayer--;
                 }
 
             }
@@ -297,7 +324,7 @@ namespace Networking.ServerSide
 
             return true;
         }
-        
+
         public int[] rollDices()
         {
             Debug.Log("SERVER: Dices are being rolled");
