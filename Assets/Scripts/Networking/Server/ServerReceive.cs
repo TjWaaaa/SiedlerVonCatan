@@ -18,6 +18,8 @@ namespace Networking.ServerSide
 
         private int playerAmount = 0;
         private int currentPlayer = 0;
+        private bool firstRound = true;
+        private bool inGameStartupPhase = true;
         private readonly Stack<PLAYERCOLOR> possibleColors = new Stack<PLAYERCOLOR>();
         private readonly ServerRequest serverRequest = new ServerRequest();
 
@@ -82,6 +84,7 @@ namespace Networking.ServerSide
             if (runGame)
             {
                 //int[][] updateRepPlayers = convertSPAToRPA();
+                currentPlayer = playerAmount - 1;
                 serverRequest.gamestartInitialize(gameBoard.getHexagonsArray());
             }
 
@@ -101,30 +104,30 @@ namespace Networking.ServerSide
         public void handleTradeBank(Packet clientPacket)
         {
             allPlayer.ElementAt(currentPlayer).Value.trade(clientPacket.tradeResourcesOffer, clientPacket.tradeResourcesExpect);
-            
+
             serverRequest.updateRepPlayers(convertSPAToRPA());
             serverRequest.updateOwnPlayer(
                 allPlayer.ElementAt(currentPlayer).Value.convertFromSPToOP(), // int[] with left buildings
                 allPlayer.ElementAt(currentPlayer).Value.convertSPToOPResources(), // Resource Dictionary
                 allPlayer.ElementAt(currentPlayer).Key);
-            
-            
+
+
         }
 
         public void handleTradeOffer(Packet clientPacket)
         {
             ServerPlayer currentServerPlayer = allPlayer.ElementAt(currentPlayer).Value;
-            RESOURCETYPE resourcetype = (RESOURCETYPE) clientPacket.resourceType;
+            RESOURCETYPE resourcetype = (RESOURCETYPE)clientPacket.resourceType;
             int buttonNumber = clientPacket.buttonNumber;
             if (currentServerPlayer.canTrade(resourcetype))
             {
                 serverRequest.notifyAcceptTradeOffer(currentServerPlayer.getPlayerID(), buttonNumber);
-                
+
             }
             else
             {
-                serverRequest.notifyRejection(allPlayer.ElementAt(currentPlayer).Value.getPlayerID(),"Not enough resources to offer");
-                
+                serverRequest.notifyRejection(allPlayer.ElementAt(currentPlayer).Value.getPlayerID(), "Not enough resources to offer");
+
             }
         }
 
@@ -136,26 +139,34 @@ namespace Networking.ServerSide
 
             PLAYERCOLOR playerColor = allPlayer.ElementAt(currentPlayer).Value.getPlayerColor();
 
-            if (currentServerPlayer.canBuyBuyable(buildingType))
+            if ((inGameStartupPhase && buildingType != BUYABLES.CITY) || currentServerPlayer.canBuyBuyable(buildingType))
             {
                 switch (buildingType)
                 {
                     case BUYABLES.VILLAGE:
                     case BUYABLES.CITY:
                         {
-                            currentServerPlayer.buyBuyable(buildingType);
+                            // Missing restrictions!
+                            if (!inGameStartupPhase) { currentServerPlayer.buyBuyable(buildingType); }
                             serverRequest.notifyObjectPlacement(buildingType, posInArray, playerColor);
-                            
                             serverRequest.updateRepPlayers(convertSPAToRPA());
+                            serverRequest.updateOwnPlayer(
+                                allPlayer.ElementAt(currentPlayer).Value.convertFromSPToOP(), // int[] with left buildings
+                                allPlayer.ElementAt(currentPlayer).Value.convertSPToOPResources(), // Resource Dictionary
+                                allPlayer.ElementAt(currentPlayer).Key);
                             return;
                         }
                     case BUYABLES.ROAD:
                         if (gameBoard.placeRoad(posInArray, playerColor))
                         {
-                            currentServerPlayer.buyBuyable(buildingType);
+                            // Missing restrictions!
+                            if (!inGameStartupPhase) { currentServerPlayer.buyBuyable(buildingType); }
                             serverRequest.notifyObjectPlacement(buildingType, posInArray, playerColor);
                             serverRequest.updateRepPlayers(convertSPAToRPA());
-                            //serverRequest.updateOwnPlayer(allPlayer.ElementAt(currentPlayer).Value.convertFromSPToOP(),allPlayer.ElementAt(currentPlayer).Value.convertSPToCPResources(), allPlayer.ElementAt(currentPlayer).Key);
+                            serverRequest.updateOwnPlayer(
+                                allPlayer.ElementAt(currentPlayer).Value.convertFromSPToOP(), // int[] with left buildings
+                                allPlayer.ElementAt(currentPlayer).Value.convertSPToOPResources(), // Resource Dictionary
+                                allPlayer.ElementAt(currentPlayer).Key);
                             return;
                         }
                         break;
@@ -183,19 +194,40 @@ namespace Networking.ServerSide
 
         public void handleEndTurn(Packet clientPacket)
         {
-            
+            Debug.Log("SERVER: handleEndTurn has been called");
+
             // Change currentPlayer
-            currentPlayer = currentPlayer == playerAmount - 1 ?  0 : ++currentPlayer;
+            if (!firstRound)
+            {
+                if(currentPlayer == playerAmount-1 && inGameStartupPhase){inGameStartupPhase = false;Debug.Log("SERVER: StartupPhase is over now");}
+                currentPlayer = currentPlayer == playerAmount - 1 ? 0 : ++currentPlayer;
+            }
+            else
+            {
+                if (currentPlayer == 0) 
+                { 
+                    firstRound = false; 
+                    currentPlayer = currentPlayer == playerAmount - 1 ? 0 : ++currentPlayer; 
+                }
+                else 
+                { 
+                    currentPlayer--; 
+                }
+
+            }
             Debug.Log("SERVER: Current Player index: " + currentPlayer);
+
             // Updating Representative Players
             serverRequest.updateRepPlayers(convertSPAToRPA());
-            // TODO change method call => handleBeginRound should only be called after the new player is already set and all have been notified
-            Debug.Log("SERVER: handleEndTurn has been called");
-            handleBeginRound(clientPacket);
             serverRequest.updateOwnPlayer(
                 allPlayer.ElementAt(currentPlayer).Value.convertFromSPToOP(), // int[] with left buildings
                 allPlayer.ElementAt(currentPlayer).Value.convertSPToOPResources(), // Resource Dictionary
                 allPlayer.ElementAt(currentPlayer).Key);
+
+            // Begin next round
+            if (!inGameStartupPhase) { handleBeginRound(clientPacket); }
+
+
         }
 
         public void handleClientDisconnectServerCall(int disconnectedClientID)
