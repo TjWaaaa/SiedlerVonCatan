@@ -185,6 +185,8 @@ public class InputController : MonoBehaviour
     
     public void buyDevCard()
     {
+        Debug.Log($"CLIENT: Player wants to buy a devCard");
+        clientRequest.requestBuyDevelopement();
         // not implemented yet
         // if devCardNew == devCardVP(bzw if AmountVP > 0) then devCardsVP.setActive(true);
     }

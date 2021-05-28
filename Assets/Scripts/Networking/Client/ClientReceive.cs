@@ -211,6 +211,7 @@ namespace Networking.ClientSide
         {
             // Show victorious Player
             // Load the post game Scene or Lobby so a new game can be started
+            Debug.Log($"CLIENT: Yeay somebody won and it is {serverPacket.playerName} with the color {serverPacket.playerColor}");
             throw new System.NotImplementedException();
         }
 
@@ -263,7 +264,8 @@ namespace Networking.ClientSide
 
         public void handleAcceptBuyDevelopement(Packet serverPacket)
         {
-            throw new System.NotImplementedException();
+            //idk update some shit here in UI
+            Debug.Log("CLIENT: You got a developement card:" + serverPacket.developmentCard.ToString());
         }
 
         public void handleAcceptPlayDevelopement(Packet serverPacket)
