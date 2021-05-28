@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Data;
+using System.Linq;
 using Enums;
 using PlayerColor;
 using UnityEngine;
@@ -24,9 +25,9 @@ namespace Player
         private Dictionary<RESOURCETYPE, int> resources = new Dictionary<RESOURCETYPE, int>
         {
             {RESOURCETYPE.SHEEP, 0},
-            {RESOURCETYPE.WOOD, 0},
-            {RESOURCETYPE.BRICK, 0},
             {RESOURCETYPE.ORE, 0},
+            {RESOURCETYPE.BRICK, 0},
+            {RESOURCETYPE.WOOD, 0},
             {RESOURCETYPE.WHEAT, 0}
 
         };
@@ -116,17 +117,25 @@ namespace Player
             }
             else
             {
-                Debug.Log("SERVER: only " + resources[resourcetype] + " of " + resourcetype);
+                Debug.Log("CLIENT: You only have " + resources[resourcetype] + resourcetype.ToString().ToLower() + ". Trade something else.");
                 return false;
             }
 
-            //should only return true if there are at least 4
+            
         }
 
-        public void trade(RESOURCETYPE offerResourcetype, RESOURCETYPE expectResourcetype)
+        public void trade(int[] offer, int[] expect)
         {
-            resources[offerResourcetype] -= 4;
-            resources[expectResourcetype] += 1;
+
+            for (int i = 0; i < offer.Length; i++)
+            {
+                resources[resources.ElementAt(i).Key] -= offer[i];
+            }
+            for (int i = 0; i < expect.Length; i++)
+            {
+                resources[resources.ElementAt(i).Key] += expect[i];
+            }
+            
         }
 
 

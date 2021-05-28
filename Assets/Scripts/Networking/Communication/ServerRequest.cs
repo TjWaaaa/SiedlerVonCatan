@@ -168,6 +168,17 @@ namespace Networking.Communication
             Debug.Log("SERVER: Client should expect an AcceptPlayDevolopement package Type 26");
         }
 
+        public void notifyAcceptTradeOffer(int playerID, int buttonNumber)
+        {
+            Packet packet = new Packet();
+            packet.type = (int) COMMUNICATION_METHODS.HANDLE_ACCEPT_TRADE_OFFER;
+            packet.buttonNumber = buttonNumber;
+            
+            // send to active
+            Server.sendDataToOne(playerID, packet);
+            Debug.Log("SERVER: trade offer accepted");
+        }
+
         public void updateRepPlayers(int[][] updateNumbers)
         {
             Debug.Log("SERVER: ServerRequest updateRPPacket");

@@ -11,6 +11,7 @@ using Networking.Package;
 using Networking.Communication;
 using Player;
 using PlayerColor;
+using Trade;
 using UI;
 
 namespace Networking.ClientSide
@@ -193,7 +194,7 @@ namespace Networking.ClientSide
             Debug.Log("CLIENT: client recieved color: " + buildColor);
 
             boardGenerator.placeBuilding(buildType, buildId, buildColor);
-            InputController.stopBuildMode();
+            //InputController.stopBuildMode(); //TODO WHY HIER?
 
             // Render the new Object
             // Update Resources displayed for own player if you are the one who placed it
@@ -242,6 +243,12 @@ namespace Networking.ClientSide
         public void handleAcceptTradeBank(Packet serverPacket)
         {
             throw new System.NotImplementedException();
+        }
+        
+        public void handleAcceptTradeOffer(Packet serverPacket)
+        {
+            int buttonNumber = serverPacket.buttonNumber;
+            TradeMenu.markOfferResource(buttonNumber);
         }
 
         public void handleAcceptBuild(Packet serverPacket)

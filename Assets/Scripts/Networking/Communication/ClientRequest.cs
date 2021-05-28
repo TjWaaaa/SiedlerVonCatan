@@ -2,6 +2,7 @@
 using Networking.Interfaces;
 using Networking.Package;
 using Networking.ClientSide;
+using UnityEngine;
 
 namespace Networking.Communication
 {
@@ -39,6 +40,16 @@ namespace Networking.Communication
             packet.type = (int) COMMUNICATION_METHODS.HANDLE_TRADE_BANK;
             packet.tradeResourcesOffer = offer;
             packet.tradeResourcesExpect = expect;
+            
+            Client.sendRequest(PacketSerializer.objectToJsonString(packet));
+        }
+
+        public void requestTradeOffer(RESOURCETYPE offerResource, int buttonNumber)
+        {
+            Packet packet = new Packet();               
+            packet.type = (int) COMMUNICATION_METHODS.HANDLE_TRADE_OFFER;
+            packet.resourceType = (int) offerResource;
+            packet.buttonNumber = buttonNumber;
             
             Client.sendRequest(PacketSerializer.objectToJsonString(packet));
         }

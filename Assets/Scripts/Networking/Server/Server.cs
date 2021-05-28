@@ -343,6 +343,10 @@ namespace Networking.ServerSide
                     _serverReceive.handleTradeBank(incomingData);
                     break;
                 
+                case (int) COMMUNICATION_METHODS.HANDLE_TRADE_OFFER:
+                    _serverReceive.handleTradeOffer(incomingData);
+                    break;
+                
                 case (int) COMMUNICATION_METHODS.HANDLE_BUILD:
                     _serverReceive.handleBuild(incomingData);
                     break;
