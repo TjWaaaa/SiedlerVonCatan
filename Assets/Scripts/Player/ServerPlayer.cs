@@ -89,6 +89,15 @@ namespace Player
             return amount;
         }
 
+        public int getLeftStreets()
+        {
+            return this.leftStreets;
+        }
+
+        public int getLeftVillages()
+        {
+            return this.leftVillages;
+        }
         public int getVictoryPoints()
         {
             return victoryPoints;
@@ -117,6 +126,24 @@ namespace Player
             resources[resourcetype] += amount;
         }
 
+
+
+        //Start phase
+
+        public void buildStreet()
+        {
+            if (leftStreets > 13)
+            {
+                this.leftStreets--;
+            }
+        }
+        public void buildVillage()
+        {
+            if (leftVillages > 3)
+            {
+                this.leftVillages--;
+            }
+        }
 
 
         // Trade
