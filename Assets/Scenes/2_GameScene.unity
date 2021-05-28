@@ -26,7 +26,7 @@ RenderSettings:
   m_AmbientIntensity: 1
   m_AmbientMode: 0
   m_SubtractiveShadowColor: {r: 0.42, g: 0.478, b: 0.627, a: 1}
-  m_SkyboxMaterial: {fileID: 10304, guid: 0000000000000000f000000000000000, type: 0}
+  m_SkyboxMaterial: {fileID: 2100000, guid: 2a52d77ca3f086d438a5c7d210b00088, type: 2}
   m_HaloStrength: 0.5
   m_FlareStrength: 1
   m_FlareFadeSpeed: 3
@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.44804144, g: 0.49805003, b: 0.57551855, a: 1}
+  m_IndirectSpecularColor: {r: 0.4604494, g: 0.36206025, b: 0.3017574, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -1283,7 +1283,7 @@ GameObject:
   - component: {fileID: 108827148}
   - component: {fileID: 108827149}
   m_Layer: 0
-  m_Name: Area Light
+  m_Name: Second Light
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1301,7 +1301,7 @@ Transform:
   m_LocalScale: {x: 3.0088, y: 3.0088, z: 3.0088}
   m_Children: []
   m_Father: {fileID: 1536186673}
-  m_RootOrder: 3
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 145.655, y: 26.009003, z: 15.391006}
 --- !u!108 &108827149
 Light:
@@ -13073,7 +13073,7 @@ GameObject:
   - component: {fileID: 1167902298}
   - component: {fileID: 1167902297}
   m_Layer: 0
-  m_Name: Directional Light
+  m_Name: Main Light
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -14060,7 +14060,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1536186673}
-  m_RootOrder: 2
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1267457077
 GameObject:
@@ -17688,9 +17688,9 @@ Transform:
   m_Children:
   - {fileID: 1494367307}
   - {fileID: 1167902298}
-  - {fileID: 1261316743}
   - {fileID: 108827148}
   - {fileID: 2075871382}
+  - {fileID: 1261316743}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -24884,7 +24884,7 @@ GameObject:
   - component: {fileID: 2075871382}
   - component: {fileID: 2075871383}
   m_Layer: 0
-  m_Name: Area Light (1)
+  m_Name: Third Light
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -24902,7 +24902,7 @@ Transform:
   m_LocalScale: {x: 3.0088, y: 3.0088, z: 3.0088}
   m_Children: []
   m_Father: {fileID: 1536186673}
-  m_RootOrder: 4
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 129.26, y: -54.924988, z: -32.648987}
 --- !u!108 &2075871383
 Light:
