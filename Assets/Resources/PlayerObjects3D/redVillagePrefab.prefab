@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 1346115820534023452}
   - component: {fileID: 2666560483304786617}
   - component: {fileID: 208698200086363763}
-  - component: {fileID: 3595103247858657193}
+  - component: {fileID: 8204646654620215439}
   m_Layer: 0
   m_Name: redVillagePrefab
   m_TagString: Village
@@ -27,7 +27,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1866053306598989734}
   m_LocalRotation: {x: 0.000000021855694, y: -0.000000021855694, z: 4.4705525e-16, w: 1}
-  m_LocalPosition: {x: 4.8157454, y: -4.5855217, z: 6.1970468}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -83,8 +83,8 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!136 &3595103247858657193
-CapsuleCollider:
+--- !u!135 &8204646654620215439
+SphereCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -93,7 +93,6 @@ CapsuleCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_Enabled: 1
-  m_Radius: 0.5000001
-  m_Height: 2
-  m_Direction: 1
-  m_Center: {x: 0.000000059604645, y: 0, z: -0.00000008940697}
+  serializedVersion: 2
+  m_Radius: 0.2
+  m_Center: {x: 0, y: 0, z: 0}

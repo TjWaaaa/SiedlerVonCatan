@@ -18,7 +18,7 @@ public class BoardGenerator : MonoBehaviour
         {
             for (int col = 0; col < gameBoard[row].Length; col++)
             {
-                if (gameBoard[row][col]==null) //zeile von Marco eingefügt, keine ahnung ob sinnvoll aber wirft sonst NullReferenceErrororororo, pls prüfen thx :*
+                if (gameBoard[row][col]==null) //zeile von Marco eingefï¿½gt, keine ahnung ob sinnvoll aber wirft sonst NullReferenceErrororororo, pls prï¿½fen thx :*
                 {
                     continue;
                 }
@@ -65,10 +65,10 @@ public class BoardGenerator : MonoBehaviour
         {
             switch (z: row, x: col)
             {
-                case (0,0): return Quaternion.Euler(0,-120,0);
-                case (0,2): return Quaternion.Euler(0,180,0);
-                case (1,4): return Quaternion.Euler(0,180,0);
-                case (2,0): return Quaternion.Euler(0,-60,0);
+                case (0,3): return Quaternion.Euler(0,-120,0);
+                case (0,5): return Quaternion.Euler(0,180,0);
+                case (1,6): return Quaternion.Euler(0,180,0);
+                case (2,1): return Quaternion.Euler(0,-60,0);
                 case (3,6): return Quaternion.Euler(0,120,0);
                 case (4,0): return Quaternion.Euler(0,-60,0);
                 case (5,4): return Quaternion.Euler(0,60,0);
