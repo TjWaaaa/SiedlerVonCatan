@@ -129,6 +129,12 @@ public class InputController : MonoBehaviour
             }
         }
     }
+    
+    public void NextPlayer()
+    {
+        Debug.Log("CLIENT: NextPlayer in GameController is called");
+        clientRequest.requestEndTurn();
+    }
 
     private void stopBuildMode()
     {

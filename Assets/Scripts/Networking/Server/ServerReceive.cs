@@ -7,7 +7,6 @@ using Networking.Communication;
 using Networking.Interfaces;
 using Networking.Package;
 using Player;
-using PlayerColor;
 using UnityEngine;
 
 namespace Networking.ServerSide

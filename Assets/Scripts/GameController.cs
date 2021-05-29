@@ -43,16 +43,16 @@ public class GameController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        mainCamera = Camera.main;
-
-        // All this stuff has to go.
-        players = new ServerPlayer[]
-        {
-            new ServerPlayer("Player1", PLAYERCOLOR.RED),
-            new ServerPlayer("Player2", PLAYERCOLOR.BLUE)
-        };
-        
-        currentPlayer = 0;
+    //     mainCamera = Camera.main;
+    //
+    //     // All this stuff has to go.
+    //     players = new ServerPlayer[]
+    //     {
+    //         new ServerPlayer("Player1", PLAYERCOLOR.RED),
+    //         new ServerPlayer("Player2", PLAYERCOLOR.BLUE)
+    //     };
+    //     
+    //     currentPlayer = 0;
 
         // test
         // PlayerRepresentation.showNextPlayer(0,1);
@@ -104,22 +104,15 @@ public class GameController : MonoBehaviour
     // }
     
 
-
-    public void NextPlayer()
-    {
-        Debug.Log("CLIENT: NextPlayer in GameController is called");
-        clientRequest.requestEndTurn();
-    }
-
     
-
-    public static int getCurrentPlayer()
-    {
-        return currentPlayer;
-    }
-
-    public static ServerPlayer[] getPlayers()
-    {
-        return players;
-    }
+    //
+    // public static int getCurrentPlayer()
+    // {
+    //     return currentPlayer;
+    // }
+    //
+    // public static ServerPlayer[] getPlayers()
+    // {
+    //     return players;
+    // }
 }
