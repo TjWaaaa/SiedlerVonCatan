@@ -4,15 +4,20 @@ using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
+using System.Timers;
 using Networking.Package;
 using UnityEngine;
 using Random = System.Random;
 using Enums;
+using Debug = UnityEngine.Debug;
+using Object = UnityEngine.Object;
+using System.Threading;
 
 namespace Networking.ServerSide
 {
     public class Server
     {
+        private static bool isRunning = false;
         private static Socket serverSocket;
         private static Dictionary<int, Socket> socketPlayerData;  //serves to store all sockets with playerID
         // private static readonly List<Socket> clientSockets = new List<Socket>(); //serves to store all sockets
@@ -20,6 +25,10 @@ namespace Networking.ServerSide
         private const int PORT = 50042; //freely selectable
         private static byte[] buffer;
         public static IPAddress serverIP { get; private set; }
+        
+        private static System.Timers.Timer keepAliveTimer;
+        private const int KEEP_ALIVE_DURATION = 4000;
+        private static Dictionary<int, long> timeOfPing;
         
         private static Stack<Color> playerColors = new Stack<Color>();
         private static ServerReceive _serverReceive = new ServerReceive();
@@ -33,9 +42,7 @@ namespace Networking.ServerSide
             serverSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
             socketPlayerData = new Dictionary<int, Socket>();
             buffer = new byte[BUFFER_SIZE];
-            
-            bool isRunning = false;
-            
+
             playerColors.Push(Color.red);
             playerColors.Push(Color.green);
             playerColors.Push(Color.blue);
@@ -59,8 +66,15 @@ namespace Networking.ServerSide
                 
                 closeAllSockets();
             }
-            
-            //todo: Close server after the end of the game.
+
+            //Start keepAliveTimer
+            timeOfPing = new Dictionary<int, long>();
+            keepAliveTimer = new System.Timers.Timer(KEEP_ALIVE_DURATION);
+            keepAliveTimer.Elapsed += sendKeepAlive;
+            keepAliveTimer.AutoReset = true;
+            keepAliveTimer.Start();
+
+            isRunning = true;
             return isRunning;
         }
         
@@ -82,7 +96,7 @@ namespace Networking.ServerSide
                 }
                 catch (ObjectDisposedException e) 
                 {
-                    Debug.LogError("SERVER: ObjectDisposedException. Client disconnected?" + e.Message);
+                    Debug.Log("SERVER: ObjectDisposedException. Happens always if the server socket is closed.\n" + e.Message);
                     return;
                 }
                 
@@ -95,9 +109,9 @@ namespace Networking.ServerSide
                     newClientID = random.Next(100);
                     validClientID = !socketPlayerData.ContainsKey(newClientID);  
                 } while (!validClientID);
-
-                //todo: tell server logic the clients ID
-                _serverReceive.generatePlayer(newClientID);
+                
+                timeOfPing.Add(newClientID, DateTime.Now.Ticks);
+                _serverReceive.generatePlayer(newClientID); //tell server logic the clients ID
                 socketPlayerData.Add(newClientID, clientSocket); //save client to socket list
                 Debug.Log($"SERVER: client (id: {newClientID}) stored in dictionary");
                 
@@ -157,16 +171,53 @@ namespace Networking.ServerSide
             byte[] currentBuffer = new byte[recievedByteLengh];
             Array.Copy(buffer, currentBuffer, recievedByteLengh); //to remove the protruding zeros from buffer
             string incomingDataString = Encoding.ASCII.GetString(currentBuffer);
-            Packet incomingPacket = PacketSerializer.jsonToObject(incomingDataString);
-            Debug.Log($"SERVER: Received Text (from {currentClientSocket.LocalEndPoint}): " + incomingDataString);
-            
-            // map socket to id and send id to method call
             
             
-            delegateIncomingDataToMethods(incomingPacket, currentClientID);
-
+            if (incomingDataString == "pong") // Keep alive ping
+            {
+                timeOfPing[currentClientID] = DateTime.Now.Ticks;
+                Debug.Log("SERVER: recieved pong");
+            }
+            else // Normal packet
+            {
+                Packet incomingPacket = PacketSerializer.jsonToObject(incomingDataString);
+                incomingPacket.myPlayerID = currentClientID;
+                Debug.Log($"SERVER: Received Text (from {currentClientSocket.LocalEndPoint}, clientID: {incomingPacket.myPlayerID}): " + incomingDataString);
+            
+                // map socket to id and send id to method call
+            
+                delegateIncomingDataToMethods(incomingPacket, currentClientID);
+            }
+            
             currentClientSocket.BeginReceive(buffer, 0, BUFFER_SIZE, SocketFlags.None, ReceiveCallback,
                 socketIDArray); // Begins waiting for incoming traffic again. Overwrites buffer.
+        }
+
+        /// <summary>
+        /// Call this method from a Timer regularly
+        /// Sends a message "ping" to all connected clients
+        /// and tests if an answer was received between the method calls.
+        /// </summary>
+        /// <param name="source"></param>
+        /// <param name="elapsedEventArgs"></param>
+        private static void sendKeepAlive(object source, ElapsedEventArgs elapsedEventArgs)
+        {
+            byte[] message = Encoding.ASCII.GetBytes("ping");
+            foreach (int clientID in socketPlayerData.Keys)
+            {
+                // Test if an answer was received in the meantime
+                //todo: this Method is probably not needet due to TCPs own timers.
+                if (DateTime.Now.Ticks - timeOfPing[clientID] > (KEEP_ALIVE_DURATION+1000) * 10000)
+                {
+                    //todo Reconnect
+                    Debug.LogError($"SERVER: Client with ID {clientID} has disconnected!");
+                    _serverReceive.handleClientDisconnectServerCall(clientID);
+                }
+                
+                var socket = socketPlayerData[clientID];
+                timeOfPing[clientID] = DateTime.Now.Ticks;
+                socket.BeginSend(message, 0, message.Length, SocketFlags.None, sendCallback, socket);
+            }
         }
 
 
@@ -181,7 +232,7 @@ namespace Networking.ServerSide
             string dataString = PacketSerializer.objectToJsonString(data);
             byte[] dataToSend = Encoding.ASCII.GetBytes(dataString);
             socketPlayerData[playerID].BeginSend(dataToSend, 0, dataToSend.Length, SocketFlags.None, sendCallback, serverSocket);
-            
+            Thread.Sleep(50);
         }
         
         
@@ -202,6 +253,7 @@ namespace Networking.ServerSide
                     socketPlayerData[id].BeginSend(dataToSend, 0, dataToSend.Length, SocketFlags.None, sendCallback, serverSocket);
                 }
             }
+            Thread.Sleep(50);
         }
         
         
@@ -218,6 +270,7 @@ namespace Networking.ServerSide
                 byte[] dataToSend = Encoding.ASCII.GetBytes(dataString);
                 socketPlayerData[id].BeginSend(dataToSend, 0, dataToSend.Length, SocketFlags.None, sendCallback, serverSocket);
             }
+            Thread.Sleep(50);
         }
 
 
@@ -243,19 +296,36 @@ namespace Networking.ServerSide
 
 
         /// <summary>
-        /// needs to be called at the end of the session to close all connected Sockets and the serverSocket
+        /// If the server is running all timers are stopped and disposed.
+        /// In addition all sockets are closed.
+        /// </summary>
+        public static void shutDownServer()
+        {
+            if (isRunning)
+            {
+                keepAliveTimer.Stop();
+                keepAliveTimer.Dispose();
+                closeAllSockets();
+            }
+        }
+
+
+        /// <summary>
+        /// Needs to be called at the end of the session to close all connected Sockets and the serverSocket
         /// </summary>
         private static void closeAllSockets()
         {
-            foreach (Socket socket in socketPlayerData.Values)
+            // Close connected client sockets
+            foreach (int key in socketPlayerData.Keys)
             {
+                Socket socket = socketPlayerData[key];
                 try
                 {
                     socket.Shutdown(SocketShutdown.Both);
                 }
                 catch (Exception e)
                 {
-                    Debug.LogWarning("SERVER: Socket could not be shut down. Closing..." + e);
+                    Debug.LogError($"SERVER: Socket with number {key} could not be shut down. Closing..." + e);
                 }
                 finally
                 {
@@ -263,8 +333,17 @@ namespace Networking.ServerSide
                 }
             }
 
-            //todo: maybe serversocket.BeginDisconnect() ?
-            serverSocket.Close();
+            // Close server listening socket
+            try
+            {
+                //serverSocket.Shutdown(SocketShutdown.Both);
+                serverSocket.Close();
+            }
+            catch (Exception e)
+            {
+                Debug.LogError("SERVER: Socket could not be shut down. Closing..." + e);
+            }
+            Debug.Log("SERVER: Server was shut down.");
         }
 
         
@@ -311,11 +390,7 @@ namespace Networking.ServerSide
                 case (int) COMMUNICATION_METHODS.HANDLE_END_TURN:
                     _serverReceive.handleEndTurn(incomingData);
                     break;
-                
-                case (int) COMMUNICATION_METHODS.HANDLE_CLIENT_DISCONNECT_SERVER_CALL:
-                    //handleClientDisconnectServerCall(incomingData);
-                    break;
-                
+
                 default:
                     Debug.LogWarning($"SERVER: there was no target method send, invalid data packet. Packet Type: {incomingData.type}");
                     // TODO: trow exception!!!

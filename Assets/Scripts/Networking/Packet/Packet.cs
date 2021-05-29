@@ -27,7 +27,7 @@ namespace Networking.Package
         public int[] diceResult { get; set; }
         public int[] resourcesObtained { get; set; } // [+ gain resources, - spent resources]
         
-        public int developmentCard { get; set; } // ID
+        public DEVELOPMENT_TYPE developmentCard { get; set; } // ID
         
         public int[] tradeResourcesOffer { get; set; } // what i want to spent [0,0,0,0,0]
         public int[] tradeResourcesExpect { get; set; } // resources i want [0,0,0,0,0]

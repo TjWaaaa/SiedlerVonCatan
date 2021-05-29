@@ -65,11 +65,11 @@ namespace Networking.Communication
         }
 
 
-        public void notifyNextPlayer(string playerName)
+        public void notifyNextPlayer(int playerIndex)
         {
             Packet packet = new Packet();
             packet.type = (int) COMMUNICATION_METHODS.HANDLE_NEXT_PLAYER;
-            packet.playerName = playerName;
+            packet.currentPlayerID = playerIndex;
             
             // send to all
             Server.sendDataToAll(packet);
@@ -148,7 +148,7 @@ namespace Networking.Communication
             Packet packet = new Packet();
             packet.type = (int) COMMUNICATION_METHODS.HANDLE_ACCEPT_BUY_DEVELOPMENT_CARD;
             packet.myPlayerID = playerID;
-            packet.developmentCard = (int) developmentCard;
+            packet.developmentCard = developmentCard;
             
             // send to active
             Server.sendDataToOne(playerID, packet);
@@ -156,15 +156,15 @@ namespace Networking.Communication
         }
 
 
-        public void notifyAcceptPlayDevelopement(DEVELOPMENT_TYPE developmentCard, string playerName)
+        public void notifyAcceptPlayDevelopement(int playerID, DEVELOPMENT_TYPE developmentCard, string playerName)
         {
             Packet packet = new Packet();
             packet.type = (int) COMMUNICATION_METHODS.HANDLE_ACCEPT_PLAY_DEVELOPMENT_CARD;
-            packet.developmentCard = (int) developmentCard;
+            packet.developmentCard = developmentCard;
             packet.playerName = playerName;
             
             // send to all
-            Server.sendDataToAll(packet);
+            Server.sendDataToOne(playerID,packet);
             Debug.Log("SERVER: Client should expect an AcceptPlayDevolopement package Type 26");
         }
 

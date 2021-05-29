@@ -26,6 +26,7 @@ namespace Networking.Communication
             Client.sendRequest(PacketSerializer.objectToJsonString(packet));
         }
 
+        //TODO: kick this method???!?!?! its never called...
         public void requestRollDice()
         {
             Packet packet = new Packet();
@@ -76,7 +77,7 @@ namespace Networking.Communication
         {
             Packet packet = new Packet();
             packet.type = (int) COMMUNICATION_METHODS.HANDLE_PLAY_DEVELOPMENT;
-            packet.developmentCard = (int) developmentType;
+            packet.developmentCard = developmentType;
             
             Client.sendRequest(PacketSerializer.objectToJsonString(packet));
         }

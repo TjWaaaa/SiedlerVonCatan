@@ -2,6 +2,7 @@ using System;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
+using System.Timers;
 using Enums;
 using UnityEngine;
 using Networking.Package;
@@ -10,6 +11,7 @@ namespace Networking.ClientSide
 {
     public class Client
     {
+        private static bool isRunning = false;
         private const int BUFFER_SIZE = 64000;
         private const int PORT = 50042;
         private static byte[] buffer;
@@ -17,6 +19,10 @@ namespace Networking.ClientSide
         private static Socket clientSocket;
 
         private static ClientReceive _clientReceive;
+        
+        private static long timeOfLastPing;
+        private static Timer keepAliveTimer;
+        private const int disconnetThreshold = 50000000; // in .net Ticks
 
 
         /// <summary>
@@ -28,12 +34,18 @@ namespace Networking.ClientSide
         /// <exception cref="Exception"></exception>
         public static bool initClient(string ipAddress)
         {
+            timeOfLastPing = DateTime.Now.Ticks;
+            keepAliveTimer = new Timer(1000); // Check every second for disconnect
+            keepAliveTimer.AutoReset = true;
+            keepAliveTimer.Elapsed += checkReceivedPing;
+            keepAliveTimer.Start();
+            
             // instantiate a ClientGameLogic object
             var gameLogicObject = new GameObject();
             gameLogicObject.AddComponent<ClientReceive>();
             gameLogicObject.AddComponent<BoardGenerator>();
             _clientReceive = gameLogicObject.GetComponent<ClientReceive>();
-                        
+
             buffer = new byte[BUFFER_SIZE];
             clientSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
             
@@ -42,7 +54,7 @@ namespace Networking.ClientSide
                 bool connectionSuccess = connectToServer(ipAddress);
                 if (!connectionSuccess)
                 {
-                    return false;
+                    return isRunning;
                 }
 
                 clientSocket.BeginReceive(buffer, 0, BUFFER_SIZE, SocketFlags.None, receiveCallback, clientSocket);
@@ -53,7 +65,8 @@ namespace Networking.ClientSide
                 throw e;
             }
 
-            return true;
+            isRunning = true;
+            return isRunning;
         }
 
 
@@ -98,10 +111,27 @@ namespace Networking.ClientSide
         /// <param name="request">Data to send</param>
         public static void sendRequest(string request)
         {
-            Debug.Log("CLIENT: Sending a request" + request);
+            Debug.Log("CLIENT: Sending a request: " + request);
 
             byte[] buffer = Encoding.ASCII.GetBytes(request);
             clientSocket.BeginSend(buffer, 0, buffer.Length, SocketFlags.None, sendCallback, clientSocket);
+        }
+
+        /// <summary>
+        /// Call this method regularly
+        /// Compares time between receiving of last keepAlivePing and current time.
+        /// If time is longer than disconnectThreshold try to reconnect.
+        /// todo: this Method is probably not needet due to TCPs own timers.
+        /// </summary>
+        /// <param name="source"></param>
+        /// <param name="elapsedEventArgs"></param>
+        private static void checkReceivedPing(object source, ElapsedEventArgs elapsedEventArgs)
+        {
+            if (elapsedEventArgs.SignalTime.Ticks - timeOfLastPing > disconnetThreshold)
+            {
+                //todo: Reconnect and/or display in lobby
+                Debug.LogError("CLIENT: Lost connection to server");
+            }
         }
 
 
@@ -130,29 +160,79 @@ namespace Networking.ClientSide
                 try
                 {
                     receivedBufferSize = currentServerSocket.EndReceive(AR);
-                    Debug.Log("CLIENT: " + receivedBufferSize);
+                    Debug.Log("CLIENT: receivedBufferSize: " + receivedBufferSize);
                 }
-                catch (SocketException)
+                catch (ObjectDisposedException e)
                 {
-                    Debug.Log("CLIENT: Server forcefully disconnected");
+                    Debug.Log("CLIENT: Object disposed exception. Happens always.\n" + e.Message);
                     //TODO handle connection loss
+                    return;
+                }
+                
+                // Server Socket was shut down
+                if (receivedBufferSize <= 0)
+                {
+                    Debug.LogError("CLIENT: Received null from server.");
                     return;
                 }
                 
                 byte[] receievedBuffer = new byte[receivedBufferSize];
                 Array.Copy(buffer, receievedBuffer, receivedBufferSize);
                 var jsonString = Encoding.ASCII.GetString(receievedBuffer);
-                Packet serverData = PacketSerializer.jsonToObject(jsonString);
                 
-                Debug.Log("CLIENT: received Data: " + jsonString);
-                delegateIncomingDataToMethods(serverData);
+                //Keep alive Ping
+                if (jsonString == "ping")
+                {
+                    timeOfLastPing = DateTime.Now.Ticks;
+                    sendRequest("pong");
+                } 
+                else
+                {
+                    Debug.Log("CLIENT: received Data: " + jsonString);
+                    Packet serverData = PacketSerializer.jsonToObject(jsonString);
+                
+                    delegateIncomingDataToMethods(serverData);
+                }
 
                 clientSocket.BeginReceive(buffer, 0, BUFFER_SIZE, SocketFlags.None, receiveCallback, clientSocket); // start listening again
             }
             catch (Exception e)
             {
-                Debug.Log("CLIENT: " + e.HelpLink + e);
+                Debug.LogError("CLIENT: " + e.HelpLink + e);
                 throw e;
+            }
+        }
+
+
+        /// <summary>
+        /// If the the client is running all sockets are closed and timers are stopped and disposed.
+        /// </summary>
+        public static void shutDownClient()
+        {
+            lock (keepAliveTimer)
+            {
+                if (isRunning)
+                {
+                    isRunning = false;
+                    
+                    keepAliveTimer.Stop();
+                    keepAliveTimer.Dispose();
+            
+                    // Close client Socket
+                    try
+                    {
+                        clientSocket.Shutdown(SocketShutdown.Both);
+                    }
+                    catch (Exception e)
+                    {
+                        Debug.LogError($"CLIENT: Client socket could not be closed " + e.Message);
+                    }
+                    finally
+                    {
+                        clientSocket.Close();
+                    }
+                    Debug.Log("CLIENT: Client was shut down.");
+                }
             }
         }
 

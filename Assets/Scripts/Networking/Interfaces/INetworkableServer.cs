@@ -74,7 +74,7 @@ namespace Networking.Interfaces
         /// <summary>
         /// If server noticed a client disconnect this method is called.
         /// </summary>
-        public void handleClientDisconnectServerCall();
+        public void handleClientDisconnectServerCall(int disconnectedClientID);
 
         
         /// <summary>

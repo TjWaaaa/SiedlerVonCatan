@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using System.Security;
 using Enums;
 using PlayerColor;
 using UnityEngine;
@@ -21,6 +22,11 @@ namespace Player
         private int leftVillages = 5;
         private int leftCitys = 4;
         private int devCardAmount = 0;
+        private int devCardVP;
+        private int devCardKnight;
+        private int devCardRoadBuilding;
+        private int devCardYearOfPlenty;
+        private int devCardMonopoly;
 
         private Dictionary<RESOURCETYPE, int> resources = new Dictionary<RESOURCETYPE, int>
         {
@@ -83,6 +89,21 @@ namespace Player
             return amount;
         }
 
+        public int getLeftStreets()
+        {
+            return this.leftStreets;
+        }
+
+        public int getLeftVillages()
+        {
+            return this.leftVillages;
+        }
+        public int getVictoryPoints()
+        {
+            return victoryPoints;
+        }
+
+
         // Setter
 
         public void setPlayerColor(PLAYERCOLOR color)
@@ -107,6 +128,24 @@ namespace Player
 
 
 
+        //Start phase
+
+        public void buildStreet()
+        {
+            if (leftStreets > 13)
+            {
+                this.leftStreets--;
+            }
+        }
+        public void buildVillage()
+        {
+            if (leftVillages > 3)
+            {
+                this.leftVillages--;
+            }
+        }
+
+
         // Trade
 
         public Boolean canTrade(RESOURCETYPE resourcetype)
@@ -121,7 +160,7 @@ namespace Player
                 return false;
             }
 
-            
+
         }
 
         public void trade(int[] offer, int[] expect)
@@ -135,7 +174,7 @@ namespace Player
             {
                 resources[resources.ElementAt(i).Key] += expect[i];
             }
-            
+
         }
 
 
@@ -145,41 +184,41 @@ namespace Player
         {
             switch (buyable)
             {
-              case BUYABLES.ROAD:
-                  if (leftStreets >= 1
-                      && resources[RESOURCETYPE.WOOD] >= 1
-                      && resources[RESOURCETYPE.BRICK] >= 1 )
-                  {
-                      return true;
-                  }
-                  else return false;
-              case BUYABLES.VILLAGE:
-                  if (leftVillages >=1
-                      && resources[RESOURCETYPE.BRICK] >= 1
-                      && resources[RESOURCETYPE.WOOD] >= 1
-                      && resources[RESOURCETYPE.SHEEP] >= 1
-                      && resources[RESOURCETYPE.WHEAT] >= 1)
-                  {
-                      return true;
-                  }
-                  else return false;
-              case BUYABLES.CITY:
-                  if (leftCitys >= 1
-                      && resources[RESOURCETYPE.ORE] >= 3
-                      && resources[RESOURCETYPE.WHEAT] >= 2)
-                  {
-                      return true;
-                  }
-                  else return false;
-              case BUYABLES.DEVELOPMENT_CARDS:
-                  if (resources[RESOURCETYPE.ORE] >= 1
-                      && resources[RESOURCETYPE.WHEAT] >= 1
-                      && resources[RESOURCETYPE.SHEEP] >= 1)
-                  {
-                      return true;
-                  }
-                  else return false;
-              default: return false;
+                case BUYABLES.ROAD:
+                    if (leftStreets >= 1
+                        && resources[RESOURCETYPE.WOOD] >= 1
+                        && resources[RESOURCETYPE.BRICK] >= 1)
+                    {
+                        return true;
+                    }
+                    else return false;
+                case BUYABLES.VILLAGE:
+                    if (leftVillages >= 1
+                        && resources[RESOURCETYPE.BRICK] >= 1
+                        && resources[RESOURCETYPE.WOOD] >= 1
+                        && resources[RESOURCETYPE.SHEEP] >= 1
+                        && resources[RESOURCETYPE.WHEAT] >= 1)
+                    {
+                        return true;
+                    }
+                    else return false;
+                case BUYABLES.CITY:
+                    if (leftCitys >= 1
+                        && resources[RESOURCETYPE.ORE] >= 3
+                        && resources[RESOURCETYPE.WHEAT] >= 2)
+                    {
+                        return true;
+                    }
+                    else return false;
+                case BUYABLES.DEVELOPMENT_CARDS:
+                    if (resources[RESOURCETYPE.ORE] >= 1
+                        && resources[RESOURCETYPE.WHEAT] >= 1
+                        && resources[RESOURCETYPE.SHEEP] >= 1)
+                    {
+                        return true;
+                    }
+                    else return false;
+                default: return false;
             }
         }
 
@@ -218,17 +257,57 @@ namespace Player
 
         public int[] convertFromSPToRP()
         {
-            return new int[] {victoryPoints, getTotalResourceAmount(), devCardAmount };
+            return new int[] { victoryPoints, getTotalResourceAmount(), devCardAmount };
         }
 
         public int[] convertFromSPToOP()
         {
-            return new int[] {leftStreets,leftVillages,leftCitys};
+            return new int[] { leftStreets, leftVillages, leftCitys };
         }
 
         public Dictionary<RESOURCETYPE, int> convertSPToOPResources()
         {
             return resources;
+        }
+
+        // DevCard
+
+        public void playDevCard(DEVELOPMENT_TYPE type)
+        {
+            devCardAmount--;
+            switch (type)
+            {
+                case DEVELOPMENT_TYPE.KNIGHT: { devCardKnight--; return; }
+                case DEVELOPMENT_TYPE.MONOPOLY: { devCardMonopoly--; return; }
+                case DEVELOPMENT_TYPE.ROAD_BUILDING: { devCardRoadBuilding--; return; }
+                case DEVELOPMENT_TYPE.VICTORY_POINT: { devCardVP--; victoryPoints++; return; }
+                case DEVELOPMENT_TYPE.YEAR_OF_PLENTY: { devCardKnight--; return; }
+            }
+        }
+
+        public void setNewDevCard(DEVELOPMENT_TYPE type)
+        {
+            switch (type)
+            {
+                case DEVELOPMENT_TYPE.KNIGHT: { devCardKnight++; return; }
+                case DEVELOPMENT_TYPE.MONOPOLY: { devCardMonopoly++; return; }
+                case DEVELOPMENT_TYPE.ROAD_BUILDING: { devCardRoadBuilding++; return; }
+                case DEVELOPMENT_TYPE.VICTORY_POINT: { devCardVP++; return; }
+                case DEVELOPMENT_TYPE.YEAR_OF_PLENTY: { devCardKnight++; return; }
+
+            }
+        }
+        public bool enoughDevCards(DEVELOPMENT_TYPE type)
+        {
+            switch (type)
+            {
+                case DEVELOPMENT_TYPE.KNIGHT: { if (devCardKnight > 0) { return true; } return false; }
+                case DEVELOPMENT_TYPE.MONOPOLY: { if (devCardMonopoly > 0) { return true; } return false; }
+                case DEVELOPMENT_TYPE.ROAD_BUILDING: { if (devCardRoadBuilding > 0) { return true; } return false; }
+                case DEVELOPMENT_TYPE.VICTORY_POINT: { if (devCardVP > 0) { return true; } return false; }
+                case DEVELOPMENT_TYPE.YEAR_OF_PLENTY: { if (devCardYearOfPlenty > 0) { return true; } return false; }
+                default: return false;
+            }
         }
     }
 }

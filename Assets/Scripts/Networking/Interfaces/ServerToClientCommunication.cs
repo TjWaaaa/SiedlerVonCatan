@@ -43,7 +43,7 @@ namespace Networking.Interfaces
         /// <summary>
         /// Notify all players who the next player is.
         /// </summary>
-        public void notifyNextPlayer(string name);
+        public void notifyNextPlayer(int playerIndex);
 
         
         /// <summary>
@@ -119,9 +119,11 @@ namespace Networking.Interfaces
         /// <summary>
         /// Notify all players that a player played a developement card
         /// </summary>
+        /// <param name="playerID">Player who has to be told that he can play his Card</param>
         /// <param name="developmentCard">played development card type</param>
         /// <param name="playerName">Player who played the developement card</param>
-        public void notifyAcceptPlayDevelopement(DEVELOPMENT_TYPE developmentCard, string playerName);
+        
+        public void notifyAcceptPlayDevelopement(int playerID, DEVELOPMENT_TYPE developmentCard, string playerName);
 
         /// <summary>
         /// Notify current player that the trade offer is accepted
