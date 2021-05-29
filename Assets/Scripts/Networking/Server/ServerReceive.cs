@@ -270,19 +270,18 @@ namespace Networking.ServerSide
                 return;
             }
 
-            changeCurrentPlayer(clientPacket);
-            Debug.Log("SERVER: Current Player index: " + currentPlayer);
-
-            // Updating Representative Players
+            // Updating Representative Players TODO: DELETE WHEN RESOURCE DISTRIBUTION IS IMPLEMENTED
             updateRepPlayers();
             updateOwnPlayer(currentPlayer);
-            serverRequest.notifyNextPlayer(currentPlayer);
-            // TODO change method call => handleBeginRound should only be called after the new player is already set and all have been notified
-            handleBeginRound(clientPacket);
-            
 
             // Begin next round
-            if (!inGameStartupPhase) { handleBeginRound(clientPacket); }
+            if (!inGameStartupPhase) 
+            {
+                changeCurrentPlayer(clientPacket);
+                Debug.Log("SERVER: Current Player index: " + currentPlayer); 
+                serverRequest.notifyNextPlayer(currentPlayer);
+                handleBeginRound(clientPacket);
+            }
 
 
         }
@@ -376,6 +375,7 @@ namespace Networking.ServerSide
                 if (currentPlayer == playerAmount - 1 && inGameStartupPhase)
                 {
                     inGameStartupPhase = false;
+                    handleBeginRound(clientPacket);
                     Debug.Log("SERVER: StartupPhase is over now");
                 }
 
@@ -387,8 +387,6 @@ namespace Networking.ServerSide
                 {
                     currentPlayer++;
                 }
-
-                handleBeginRound(clientPacket);
             }
             else
             {
