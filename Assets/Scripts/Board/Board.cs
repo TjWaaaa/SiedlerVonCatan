@@ -361,13 +361,13 @@ public class Board
                     case BUILDING_TYPE.VILLAGE:
                         if (node.getOccupant() == playerColor)
                         {
-                            distributedResources[resourceType] = distributedResources[resourceType] + 1;
+                            distributedResources[resourceType] += 1;
                         }
                         break;
                     case BUILDING_TYPE.CITY:
                         if (node.getOccupant() == playerColor)
                         {
-                            distributedResources[resourceType] = distributedResources[resourceType] + 2;
+                            distributedResources[resourceType] += 2;
                         }
                         break;
                     default: Debug.Log("SERVER: distributeResources(): wrong BUILDING_TYPE"); break;
@@ -375,6 +375,7 @@ public class Board
             }
         }
 
+        Debug.Log("SERVER: Player " + (int) playerColor + " gets: " + distributedResources);
         return distributedResources;
     }
 

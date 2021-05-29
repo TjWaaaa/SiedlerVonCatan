@@ -111,7 +111,8 @@ namespace Networking.ServerSide
 
             int[] diceNumbers = rollDices();
             serverRequest.notifyRollDice(diceNumbers);
-
+            
+            Debug.Log("Würfel gewürfelt");
             // Distribute ressources
             for (int playerIndex = 0; playerIndex < allPlayer.Count; playerIndex++)
             {
