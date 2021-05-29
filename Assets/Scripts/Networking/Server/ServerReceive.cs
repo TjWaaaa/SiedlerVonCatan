@@ -274,8 +274,12 @@ namespace Networking.ServerSide
             Debug.Log("SERVER: Current Player index: " + currentPlayer);
 
             // Updating Representative Players
-            serverRequest.updateRepPlayers(convertSPAToRPA());
+            updateRepPlayers();
             updateOwnPlayer(currentPlayer);
+            serverRequest.notifyNextPlayer(currentPlayer);
+            // TODO change method call => handleBeginRound should only be called after the new player is already set and all have been notified
+            handleBeginRound(clientPacket);
+            
 
             // Begin next round
             if (!inGameStartupPhase) { handleBeginRound(clientPacket); }

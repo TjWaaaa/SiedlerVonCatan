@@ -65,10 +65,12 @@ namespace Networking.ClientSide
 
                 if (currentScene.name == "2_GameScene")
                 {
+                    runFixedUpdate = false;
                     boardGenerator.instantiateGameBoard(gameBoard);
                     playerRepresentation.represent(representativePlayers.ToArray());
                     ownPlayerRepresentation.represent(ownClientPlayer);
-                    runFixedUpdate = false;
+                    playerRepresentation.showNextPlayer(0,currentPlayer);
+                    
                 }
             }
         }
@@ -225,7 +227,10 @@ namespace Networking.ClientSide
 
         public void handleNextPlayer(Packet serverPacket)
         {   
-            throw new System.NotImplementedException();
+            Debug.Log("CLIENT: Current Player: " + currentPlayer);
+            if(!runFixedUpdate){playerRepresentation.showNextPlayer(currentPlayer, serverPacket.currentPlayerID);}
+            currentPlayer = serverPacket.currentPlayerID;
+            Debug.Log("CLIENT: CurrentPlayer is player {serverPacket.currentPlayerID}");
         }
 
         public void handleVictory(Packet serverPacket)
@@ -255,8 +260,6 @@ namespace Networking.ClientSide
             int cache = currentPlayer;
             currentPlayer = currentPlayer == representativePlayers.Count - 1 ?  0 : ++currentPlayer;
             Debug.Log("CLIENT: Current Player index: " + currentPlayer);
-
-            playerRepresentation.showNextPlayer(cache,currentPlayer);
             // Render dice rolling
             GameObject.FindGameObjectWithTag("diceHolder").GetComponent<RenderRollDices>().renderRollDices(serverPacket.diceResult);
             // Render gained ressources

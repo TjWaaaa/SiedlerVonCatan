@@ -62,11 +62,11 @@ namespace Networking.Communication
         }
 
 
-        public void notifyNextPlayer(string playerName)
+        public void notifyNextPlayer(int playerIndex)
         {
             Packet packet = new Packet();
             packet.type = (int) COMMUNICATION_METHODS.HANDLE_NEXT_PLAYER;
-            packet.playerName = playerName;
+            packet.currentPlayerID = playerIndex;
             
             // send to all
             Server.sendDataToAll(packet);

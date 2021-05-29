@@ -64,10 +64,10 @@ public class BoardGenerator : MonoBehaviour
         {
             switch (z: row, x: col)
             {
-                case (0,0): return Quaternion.Euler(0,-120,0);
-                case (0,2): return Quaternion.Euler(0,180,0);
-                case (1,4): return Quaternion.Euler(0,180,0);
-                case (2,0): return Quaternion.Euler(0,-60,0);
+                case (0,3): return Quaternion.Euler(0,-120,0);
+                case (0,5): return Quaternion.Euler(0,180,0);
+                case (1,6): return Quaternion.Euler(0,180,0);
+                case (2,1): return Quaternion.Euler(0,-60,0);
                 case (3,6): return Quaternion.Euler(0,120,0);
                 case (4,0): return Quaternion.Euler(0,-60,0);
                 case (5,4): return Quaternion.Euler(0,60,0);
