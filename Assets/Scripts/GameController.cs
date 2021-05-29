@@ -107,7 +107,7 @@ public class GameController : MonoBehaviour
 
     public void NextPlayer()
     {
-        Debug.Log("CLIENT: NextPlayer in GameController is called");
+        Debug.LogWarning("CLIENT: NextPlayer in GameController is called");
         clientRequest.requestEndTurn();
     }
 
