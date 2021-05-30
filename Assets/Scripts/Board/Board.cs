@@ -19,14 +19,14 @@ public class Board
 
     private Hexagon[][] hexagonDiceNumbers =
     {
-        null,           // 0
-        null,           // 1
+        new Hexagon[0], // 0
+        new Hexagon[0], // 1
         new Hexagon[1], // 2
         new Hexagon[2], // 3
         new Hexagon[2], // 4
         new Hexagon[2], // 5
         new Hexagon[2], // 6
-        null,           // 7
+        new Hexagon[0], // 7
         new Hexagon[2], // 8
         new Hexagon[2], // 9
         new Hexagon[2], // 10

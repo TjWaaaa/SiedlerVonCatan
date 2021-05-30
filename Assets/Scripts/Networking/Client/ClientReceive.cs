@@ -22,6 +22,7 @@ namespace Networking.ClientSide
         private GameObject scrollViewContent;
         private PlayerRepresentation playerRepresentation = new PlayerRepresentation();
         private OwnPlayerRepresentation ownPlayerRepresentation = new OwnPlayerRepresentation();
+        //private InputController inputController = new InputController();
 
         //private RepresentativePlayer[] representativePlayerArray;
         public List<RepresentativePlayer> representativePlayers = new List<RepresentativePlayer>();
@@ -288,8 +289,8 @@ namespace Networking.ClientSide
 
         public void handleAcceptBuyDevelopement(Packet serverPacket)
         {
-            //idk update some shit here in UI
-            Debug.Log("CLIENT: You got a developement card:" + serverPacket.developmentCard);
+            InputController.updateLeftDevCards(serverPacket.leftDevCards);
+            Debug.Log("CLIENT: One Development card was bought. There are " + serverPacket.leftDevCards + " cards left.");
         }
 
         public void handleAcceptPlayDevelopement(Packet serverPacket)
@@ -312,8 +313,9 @@ namespace Networking.ClientSide
         
         public void handleUpdateOP(Packet serverPacket)
         {
-            ownClientPlayer.updateOP(serverPacket.updateOP,serverPacket.updateResourcesOnOP);
+            ownClientPlayer.updateOP(serverPacket.updateOP,serverPacket.updateResourcesOnOP, serverPacket.updateDevCardsOnOP);
             ownPlayerRepresentation.updaetOwnPlayerUI(ownClientPlayer);
+            InputController.showDevCards(ownClientPlayer);
             Debug.Log("CLIENT: UPDATE OP");
         }
     }
