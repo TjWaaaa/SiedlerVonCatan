@@ -21,12 +21,15 @@ namespace Player
         private int leftStreets = 15;
         private int leftVillages = 5;
         private int leftCitys = 4;
-        private int devCardAmount = 0;
-        private int devCardVP;
-        private int devCardKnight;
-        private int devCardRoadBuilding;
-        private int devCardYearOfPlenty;
-        private int devCardMonopoly;
+        
+        private Dictionary<DEVELOPMENT_TYPE, int> devCards = new Dictionary<DEVELOPMENT_TYPE, int>
+        {
+            {DEVELOPMENT_TYPE.VICTORY_POINT, 0},
+            {DEVELOPMENT_TYPE.KNIGHT, 0},
+            {DEVELOPMENT_TYPE.ROAD_BUILDING, 0},
+            {DEVELOPMENT_TYPE.YEAR_OF_PLENTY, 0},
+            {DEVELOPMENT_TYPE.MONOPOLY, 0}
+        };
 
         private Dictionary<RESOURCETYPE, int> resources = new Dictionary<RESOURCETYPE, int>
         {
@@ -43,12 +46,7 @@ namespace Player
             this.playerID = playerID;
         }
 
-        // TODO: remove this one, only use the upper one with the id!!!
-        public ServerPlayer(string playerName, PLAYERCOLOR color)
-        {
-            this.playerName = playerName;
-            this.playerColor = color;
-        }
+        
 
 
         // Getter
@@ -84,6 +82,18 @@ namespace Player
             foreach (var res in resources)
             {
                 amount += res.Value;
+            }
+
+            return amount;
+        }
+
+        public int getTotalDevCardAmount()
+        {
+            int amount = 0;
+            
+            foreach (var card in devCards)
+            {
+                amount += card.Value;
             }
 
             return amount;
@@ -250,14 +260,13 @@ namespace Player
                     resources[RESOURCETYPE.ORE] -= 1;
                     resources[RESOURCETYPE.WHEAT] -= 1;
                     resources[RESOURCETYPE.SHEEP] -= 1;
-                    devCardAmount += 1;
                     break;
             }
         }
 
         public int[] convertFromSPToRP()
         {
-            return new int[] { victoryPoints, getTotalResourceAmount(), devCardAmount };
+            return new int[] { victoryPoints, getTotalResourceAmount(), getTotalDevCardAmount() };
         }
 
         public int[] convertFromSPToOP()
@@ -269,45 +278,30 @@ namespace Player
         {
             return resources;
         }
+        
+        public Dictionary<DEVELOPMENT_TYPE, int> convertSPToOPDevCards()
+        {
+            return devCards;
+        }
 
         // DevCard
 
         public void playDevCard(DEVELOPMENT_TYPE type)
         {
-            devCardAmount--;
-            switch (type)
+            devCards[type]--;
+            if (type == DEVELOPMENT_TYPE.VICTORY_POINT)
             {
-                case DEVELOPMENT_TYPE.KNIGHT: { devCardKnight--; return; }
-                case DEVELOPMENT_TYPE.MONOPOLY: { devCardMonopoly--; return; }
-                case DEVELOPMENT_TYPE.ROAD_BUILDING: { devCardRoadBuilding--; return; }
-                case DEVELOPMENT_TYPE.VICTORY_POINT: { devCardVP--; victoryPoints++; return; }
-                case DEVELOPMENT_TYPE.YEAR_OF_PLENTY: { devCardKnight--; return; }
+                victoryPoints++;
             }
         }
 
         public void setNewDevCard(DEVELOPMENT_TYPE type)
         {
-            switch (type)
-            {
-                case DEVELOPMENT_TYPE.KNIGHT: { devCardKnight++; return; }
-                case DEVELOPMENT_TYPE.MONOPOLY: { devCardMonopoly++; return; }
-                case DEVELOPMENT_TYPE.ROAD_BUILDING: { devCardRoadBuilding++; return; }
-                case DEVELOPMENT_TYPE.VICTORY_POINT: { devCardVP++; return; }
-                case DEVELOPMENT_TYPE.YEAR_OF_PLENTY: { devCardKnight++; return; }
-
-            }
+            devCards[type]++;
         }
-        public bool enoughDevCards(DEVELOPMENT_TYPE type)
+        public int getDevCardAmount(DEVELOPMENT_TYPE type)
         {
-            switch (type)
-            {
-                case DEVELOPMENT_TYPE.KNIGHT: { if (devCardKnight > 0) { return true; } return false; }
-                case DEVELOPMENT_TYPE.MONOPOLY: { if (devCardMonopoly > 0) { return true; } return false; }
-                case DEVELOPMENT_TYPE.ROAD_BUILDING: { if (devCardRoadBuilding > 0) { return true; } return false; }
-                case DEVELOPMENT_TYPE.VICTORY_POINT: { if (devCardVP > 0) { return true; } return false; }
-                case DEVELOPMENT_TYPE.YEAR_OF_PLENTY: { if (devCardYearOfPlenty > 0) { return true; } return false; }
-                default: return false;
-            }
+            return devCards[type];
         }
     }
 }

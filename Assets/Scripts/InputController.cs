@@ -2,6 +2,7 @@ using System;
 using Enums;
 using Networking.ClientSide;
 using Networking.Communication;
+using Player;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -11,6 +12,7 @@ public class InputController : MonoBehaviour
 {
     private Camera mainCamera;
     private ClientRequest clientRequest = new ClientRequest();
+    private GameObject nextPlayerButton;
 
     // Build
     private bool buildStreetMode;
@@ -23,22 +25,22 @@ public class InputController : MonoBehaviour
     // DevCards
     private GameObject playVPButton;
     private GameObject buyDevCardButton;
-    private GameObject leftDevCards;
-    private GameObject amountVP;
-    private GameObject devCardsVP;
+    private static TextMeshProUGUI leftDevCards;
+    private static TextMeshProUGUI amountVP;
+    private static GameObject devCardsVP;
 
     // Start is called before the first frame update
     private void Start()
     {
         // Camera
         mainCamera = Camera.main;
+        nextPlayerButton = GameObject.Find("nextPlayer");
+        nextPlayerButton.GetComponent<Button>().onClick.AddListener(nextPlayer);
 
         // Find Build Buttons and add event listener
         buildStreetButton = GameObject.Find("buildStreet");
         buildVillageButton = GameObject.Find("buildVillage");
         buildCityButton = GameObject.Find("buildCity");
-        
-        // Adding the EventTrigger and onclick Listener
         buildStreetButton.GetComponent<Button>().onClick.AddListener(startBuildStreetMode);
         buildVillageButton.GetComponent<Button>().onClick.AddListener(startBuildVillageMode);
         buildCityButton.GetComponent<Button>().onClick.AddListener(startBuildCityMode);
@@ -46,10 +48,10 @@ public class InputController : MonoBehaviour
         // DevCards
         playVPButton = GameObject.Find("PlayVP");
         buyDevCardButton = GameObject.Find("BuyDevCard");
-        leftDevCards = GameObject.Find("LeftDevCards");
-        amountVP = GameObject.Find("AmountVP");
+        leftDevCards = GameObject.Find("LeftDevCards").GetComponent<TextMeshProUGUI>();
+        amountVP = GameObject.Find("AmountVP").GetComponent<TextMeshProUGUI>();
         devCardsVP = GameObject.Find("DevCardsVP");
-        devCardsVP.SetActive(true);
+        devCardsVP.SetActive(false);
         playVPButton.GetComponent<Button>().onClick.AddListener(playVP);
         buyDevCardButton.GetComponent<Button>().onClick.AddListener(buyDevCard);
 
@@ -131,6 +133,12 @@ public class InputController : MonoBehaviour
         Debug.Log("BUILDCITYMODE IS ON");
     }
     
+    public void nextPlayer()
+    {
+        Debug.LogWarning("CLIENT: NextPlayer in GameController is called");
+        clientRequest.requestEndTurn();
+    }
+    
     public void playVP()
     {
         clientRequest.requestPlayDevelopement(DEVELOPMENT_TYPE.VICTORY_POINT);
@@ -140,7 +148,25 @@ public class InputController : MonoBehaviour
     {
         Debug.Log($"CLIENT: Player wants to buy a devCard");
         clientRequest.requestBuyDevelopement();
-        // not implemented yet
-        // if devCardNew == devCardVP(bzw if AmountVP > 0) then devCardsVP.setActive(true);
+    }
+
+    public static void showDevCards(OwnClientPlayer ownClientPlayer)
+    {
+        int cacheAmountVP = ownClientPlayer.getDevCardAmount(DEVELOPMENT_TYPE.VICTORY_POINT);
+        
+        if (cacheAmountVP > 0)
+        {
+            devCardsVP.SetActive(true);
+            amountVP.text = cacheAmountVP.ToString();
+        }
+        else
+        {
+            devCardsVP.SetActive(false);
+        }
+    }
+
+    public static void updateLeftDevCards(int updateLD)
+    {
+        leftDevCards.text = updateLD.ToString();
     }
 }
