@@ -34,12 +34,12 @@ public class Board
 
     private readonly int[][] boardConfig = {
         new[] {0,0,0,4,1,4,1},
-        new[] {0,0,1,2,2,2,4},
-        new[] {0,4,2,2,2,2,1},
-        new[] {1,2,2,3,2,2,4},
-        new[] {4,2,2,2,2,1,0},
-        new[] {1,2,2,2,4,0,0},
-        new[] {4,1,4,1,0,0,0}
+        new[]  {0,0,1,2,2,2,4},
+        new[]   {0,4,2,2,2,2,1},
+        new[]     {1,2,2,3,2,2,4},
+        new[]     {4,2,2,2,2,1,0},
+        new[]      {1,2,2,2,4,0,0},
+        new[]       {4,1,4,1,0,0,0}
     };
 
     private int[] neighborOffsetX = new int[] {  1, 0,-1,-1, 0, 1 }; //specifies the position of adjacent hexagons in horizontal direction
@@ -554,7 +554,7 @@ public class Board
                             break;
                         }
                     }
-                    // loop didn�t break, therefore the position is suitable
+                    // loop didnt break, therefore the position is suitable
                     if (suitable)
                     {
                         return new int[] { row, col };

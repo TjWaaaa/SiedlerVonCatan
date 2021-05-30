@@ -18,7 +18,7 @@ public class BoardGenerator : MonoBehaviour
         {
             for (int col = 0; col < gameBoard[row].Length; col++)
             {
-                if (gameBoard[row][col]==null) //zeile von Marco eingefügt, keine ahnung ob sinnvoll aber wirft sonst NullReferenceErrororororo, pls prüfen thx :*
+                if (gameBoard[row][col]==null) //zeile von Marco eingefï¿½gt, keine ahnung ob sinnvoll aber wirft sonst NullReferenceErrororororo, pls prï¿½fen thx :*
                 {
                     continue;
                 }
@@ -41,11 +41,11 @@ public class BoardGenerator : MonoBehaviour
                 GameObject newHexagon;
                 if (row % 2 == 0)
                 {
-                    newHexagon = Instantiate(prefab, new Vector3(col * s + offsetX * s, 0, row / 2f * (d + a)), Rotation(hexagon, row, col));
+                    newHexagon = Instantiate(prefab, new Vector3(col * s + offsetX * s, 0, -(row / 2f * (d + a)) + 9), Rotation(hexagon, row, col));
                 }
                 else
                 {
-                    newHexagon = Instantiate(prefab, new Vector3(col * s + r + offsetX * s, 0, (row - 1) / 2f * (d + a) + offset), Rotation(hexagon, row, col));
+                    newHexagon = Instantiate(prefab, new Vector3(col * s + r + offsetX * s, 0, -((row - 1) / 2f * (d + a) + offset) + 9), Rotation(hexagon, row, col));
                 }
 
                 // change hexagon numbers
@@ -65,15 +65,15 @@ public class BoardGenerator : MonoBehaviour
         {
             switch (z: row, x: col)
             {
-                case (0,0): return Quaternion.Euler(0,-120,0);
-                case (0,2): return Quaternion.Euler(0,180,0);
-                case (1,4): return Quaternion.Euler(0,180,0);
-                case (2,0): return Quaternion.Euler(0,-60,0);
+                case (0,3): return Quaternion.Euler(0,0,0);
+                case (0,5): return Quaternion.Euler(0,60,0);
+                case (1,6): return Quaternion.Euler(0,60,0);
+                case (2,1): return Quaternion.Euler(0,-60,0);
                 case (3,6): return Quaternion.Euler(0,120,0);
                 case (4,0): return Quaternion.Euler(0,-60,0);
-                case (5,4): return Quaternion.Euler(0,60,0);
-                case (6,0): return Quaternion.Euler(0,0,0);
-                case (6,2): return Quaternion.Euler(0,60,0);
+                case (5,4): return Quaternion.Euler(0,180,0);
+                case (6,0): return Quaternion.Euler(0,-120,0);
+                case (6,2): return Quaternion.Euler(0,180,0);
             }
             
         }
