@@ -45,14 +45,7 @@ public class GameController : MonoBehaviour
     {
         mainCamera = Camera.main;
 
-        // All this stuff has to go.
-        players = new ServerPlayer[]
-        {
-            new ServerPlayer("Player1", PLAYERCOLOR.RED),
-            new ServerPlayer("Player2", PLAYERCOLOR.BLUE)
-        };
-        
-        currentPlayer = 0;
+       
 
         // test
         // PlayerRepresentation.showNextPlayer(0,1);

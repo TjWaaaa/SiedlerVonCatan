@@ -143,15 +143,14 @@ namespace Networking.Communication
             Debug.Log("SERVER: Client should expect a Dice package Type 20");
         }
 
-        public void acceptBuyDevelopement(int playerID, DEVELOPMENT_TYPE developmentCard)
+        public void acceptBuyDevelopement(int leftDevCards)
         {
             Packet packet = new Packet();
             packet.type = (int) COMMUNICATION_METHODS.HANDLE_ACCEPT_BUY_DEVELOPMENT_CARD;
-            packet.myPlayerID = playerID;
-            packet.developmentCard = developmentCard;
+            packet.leftDevCards = leftDevCards;
             
             // send to active
-            Server.sendDataToOne(playerID, packet);
+            Server.sendDataToAll(packet);
             Debug.Log("SERVER: Client should expect an AcceptBuyDevelopement package Type 25");
         }
 
@@ -165,7 +164,7 @@ namespace Networking.Communication
             
             // send to all
             Server.sendDataToOne(playerID,packet);
-            Debug.Log("SERVER: Client should expect an AcceptPlayDevolopement package Type 26");
+            Debug.Log("SERVER: Client should expect an AcceptPlayDevelopement package Type 26");
         }
 
         public void notifyAcceptTradeOffer(int playerID, int buttonNumber)
@@ -192,13 +191,14 @@ namespace Networking.Communication
             Debug.Log("SERVER: Client should expect an UpdateRP package Type 27");
         }
 
-        public void updateOwnPlayer(int[] updateLeftBuildings,Dictionary<RESOURCETYPE, int> updateResources, int playerID)
+        public void updateOwnPlayer(int[] updateLeftBuildings,Dictionary<RESOURCETYPE, int> updateResources, Dictionary<DEVELOPMENT_TYPE, int> updateDevCards, int playerID)
         {
             Debug.Log("SERVER: ServerRequest updateOwnPlayer");
             Packet packet = new Packet();
             packet.type = (int) COMMUNICATION_METHODS.HANDLE_UPDATE_OP;
             packet.updateOP = updateLeftBuildings;
             packet.updateResourcesOnOP = updateResources;
+            packet.updateDevCardsOnOP = updateDevCards;
 
             // send to the current player
             Server.sendDataToOne(playerID,packet);

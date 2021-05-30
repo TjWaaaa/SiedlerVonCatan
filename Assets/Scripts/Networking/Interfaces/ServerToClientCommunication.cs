@@ -109,11 +109,10 @@ namespace Networking.Interfaces
 
 
         /// <summary>
-        /// Player is allowed to buy a development card and is notified of the type.
+        /// Player is allowed to buy a development card and everybody is notified, how many devCards are left
         /// </summary>
-        /// <param name="playerID">Target player</param>
-        /// <param name="developmentCard">Type of development card</param>
-        public void acceptBuyDevelopement(int playerID, DEVELOPMENT_TYPE developmentCard);
+        /// <param name="leftDevCards">how many devCards are left</param>
+        public void acceptBuyDevelopement(int leftDevCards);
 
 
         /// <summary>

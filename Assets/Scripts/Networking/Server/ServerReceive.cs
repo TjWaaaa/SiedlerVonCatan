@@ -27,7 +27,9 @@ namespace Networking.ServerSide
 
         private Board gameBoard = new Board();
         private Stack<DEVELOPMENT_TYPE> shuffledDevCardStack = new Stack<DEVELOPMENT_TYPE>();
-        private DEVELOPMENT_TYPE[] unshuffledDevCardArray = { DEVELOPMENT_TYPE.VICTORY_POINT, DEVELOPMENT_TYPE.VICTORY_POINT, DEVELOPMENT_TYPE.VICTORY_POINT, DEVELOPMENT_TYPE.VICTORY_POINT, DEVELOPMENT_TYPE.VICTORY_POINT };
+        private DEVELOPMENT_TYPE[] unshuffledDevCardArray = { DEVELOPMENT_TYPE.VICTORY_POINT, 
+            DEVELOPMENT_TYPE.VICTORY_POINT, DEVELOPMENT_TYPE.VICTORY_POINT, DEVELOPMENT_TYPE.VICTORY_POINT, 
+            DEVELOPMENT_TYPE.VICTORY_POINT, DEVELOPMENT_TYPE.VICTORY_POINT, DEVELOPMENT_TYPE.VICTORY_POINT };
 
         public ServerReceive()
         {
@@ -196,14 +198,14 @@ namespace Networking.ServerSide
                 {
                     Debug.Log("SERVER: there are so many devCards left:" + shuffledDevCardStack.Count);
                     allPlayer.ElementAt(currentPlayer).Value.buyBuyable(BUYABLES.DEVELOPMENT_CARDS);
-                    DEVELOPMENT_TYPE temp = shuffledDevCardStack.Peek();
+                    //DEVELOPMENT_TYPE temp = shuffledDevCardStack.Pop();
                     Debug.Log("Server: A devCard has been popped out of the stack, there are only so much more: " + shuffledDevCardStack.Count);
-                    allPlayer.ElementAt(currentPlayer).Value.setNewDevCard(temp);
+                    allPlayer.ElementAt(currentPlayer).Value.setNewDevCard(shuffledDevCardStack.Pop());
 
                     // Sending Packages
                     updateRepPlayers();
                     updateOwnPlayer(currentPlayer);
-                    serverRequest.acceptBuyDevelopement(allPlayer.ElementAt(currentPlayer).Key, shuffledDevCardStack.Pop());
+                    serverRequest.acceptBuyDevelopement(shuffledDevCardStack.Count);
                 }
             }
             else
@@ -223,8 +225,8 @@ namespace Networking.ServerSide
                     return;
                 }
                 Debug.Log(clientPacket.developmentCard);
-                Debug.Log("SERVER: CurrentPlayer has enough cards: " + allPlayer.ElementAt(currentPlayer).Value.enoughDevCards(clientPacket.developmentCard));
-                if (allPlayer.ElementAt(currentPlayer).Value.enoughDevCards(clientPacket.developmentCard))
+                Debug.Log("SERVER: CurrentPlayer has enough cards: " + allPlayer.ElementAt(currentPlayer).Value.getDevCardAmount(clientPacket.developmentCard));
+                if (allPlayer.ElementAt(currentPlayer).Value.getDevCardAmount(clientPacket.developmentCard)>0)
                 {
                     allPlayer.ElementAt(currentPlayer).Value.playDevCard(clientPacket.developmentCard);
 
@@ -341,6 +343,7 @@ namespace Networking.ServerSide
             serverRequest.updateOwnPlayer(
                 allPlayer.ElementAt(playerIndex).Value.convertFromSPToOP(), // int[] with left buildings
                 allPlayer.ElementAt(playerIndex).Value.convertSPToOPResources(), // Resource Dictionary
+                allPlayer.ElementAt(playerIndex).Value.convertSPToOPDevCards(), // DevCard Dictonary
                 allPlayer.ElementAt(playerIndex).Key);
         }
 
