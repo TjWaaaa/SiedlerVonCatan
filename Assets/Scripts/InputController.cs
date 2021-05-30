@@ -2,6 +2,7 @@ using System;
 using Enums;
 using Networking.ClientSide;
 using Networking.Communication;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
@@ -156,11 +157,12 @@ public class InputController : MonoBehaviour
 
     private void startBuildCityMode()
     {
-        buildCityMode = true;
         buildVillageMode = false;
         buildStreetMode = false;
+        buildCityMode = true;
         Debug.Log("BUILDCITYMODE IS ON");
     }
+    
 
     public void onPointerEnter(PointerEventData data)
     {
