@@ -2280,7 +2280,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1462786049}
         m_TargetAssemblyTypeName: JoinHostKlickListener, Assembly-CSharp
-        m_MethodName: hostListener
+        m_MethodName: joinListener
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
