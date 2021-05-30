@@ -118,6 +118,7 @@ namespace Networking.ServerSide
             {
                 ServerPlayer player = allPlayer.ElementAt(playerIndex).Value;
                 int[] distributedResources = gameBoard.distributeResources(diceNumbers[0] + diceNumbers[1], player.getPlayerColor());
+                Debug.Log("Player " + playerIndex + " gets: " + distributedResources[0] + distributedResources[1] + distributedResources[2] + distributedResources[3] + distributedResources[4]);
 
                 for (int i = 0; i < distributedResources.Length; i++)
                 {

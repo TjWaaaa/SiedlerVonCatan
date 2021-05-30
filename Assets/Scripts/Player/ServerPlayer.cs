@@ -123,7 +123,6 @@ namespace Player
         public void setResourceAmount(RESOURCETYPE resourcetype, int amount)
         {
             resources[resourcetype] += amount;
-            Debug.Log("SERVER: set resource " + resourcetype + " to " + amount);
         }
 
         //Start phase
