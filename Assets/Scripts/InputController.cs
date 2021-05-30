@@ -12,18 +12,13 @@ public class InputController : MonoBehaviour
     private Camera mainCamera;
     private ClientRequest clientRequest = new ClientRequest();
 
-    private bool buildStreetMode = false;
-    private bool buildVillageMode = false;
-    private bool buildCityMode = false;
-
+    // Build
+    private bool buildStreetMode;
+    private bool buildVillageMode;
+    private bool buildCityMode ;
     private GameObject buildStreetButton;
     private GameObject buildVillageButton;
     private GameObject buildCityButton;
-    private GameObject actionsHoverArrow;
-    EventTrigger.Entry eventEntryEnter = new EventTrigger.Entry();
-    EventTrigger.Entry eventEntryExit = new EventTrigger.Entry();
-    float actionsHoverArrowXPosition;
-    private AudioSource audioSource;
     
     // DevCards
     private GameObject playVPButton;
@@ -35,16 +30,18 @@ public class InputController : MonoBehaviour
     // Start is called before the first frame update
     private void Start()
     {
-        // Settings
+        // Camera
         mainCamera = Camera.main;
-        audioSource = gameObject.AddComponent<AudioSource>();
-        audioSource.volume = 0.5f;
-        audioSource.clip = (AudioClip)Resources.Load("Sounds/clicksound");
 
-        // Build Buttons
+        // Find Build Buttons and add event listener
         buildStreetButton = GameObject.Find("buildStreet");
         buildVillageButton = GameObject.Find("buildVillage");
         buildCityButton = GameObject.Find("buildCity");
+        
+        // Adding the EventTrigger and onclick Listener
+        buildStreetButton.GetComponent<Button>().onClick.AddListener(startBuildStreetMode);
+        buildVillageButton.GetComponent<Button>().onClick.AddListener(startBuildVillageMode);
+        buildCityButton.GetComponent<Button>().onClick.AddListener(startBuildCityMode);
         
         // DevCards
         playVPButton = GameObject.Find("PlayVP");
@@ -53,38 +50,9 @@ public class InputController : MonoBehaviour
         amountVP = GameObject.Find("AmountVP");
         devCardsVP = GameObject.Find("DevCardsVP");
         devCardsVP.SetActive(true);
-
-        // Hover Arrow
-        actionsHoverArrow = GameObject.Find("actionsHoverArrow");
-        actionsHoverArrow.SetActive(false);
-        actionsHoverArrowXPosition = actionsHoverArrow.transform.position.x;
-
-        // Pointer Enter/Exit events
-        eventEntryEnter.eventID = EventTriggerType.PointerEnter;
-        eventEntryEnter.callback.AddListener((data) => { onPointerEnter((PointerEventData)data); });
-        eventEntryExit.eventID = EventTriggerType.PointerExit;
-        eventEntryExit.callback.AddListener((data) => { onPointerExit((PointerEventData)data); });
-
-        // Adding the EventTrigger and onclick Listener
-        buildStreetButton.GetComponent<Button>().onClick.AddListener(startBuildStreetMode);
-        buildStreetButton.AddComponent<EventTrigger>();
-        buildStreetButton.GetComponent<EventTrigger>().triggers.Add(eventEntryEnter);
-        buildStreetButton.GetComponent<EventTrigger>().triggers.Add(eventEntryExit);
-
-        buildVillageButton.GetComponent<Button>().onClick.AddListener(startBuildVillageMode);
-        buildVillageButton.AddComponent<EventTrigger>();
-        buildVillageButton.GetComponent<EventTrigger>().triggers.Add(eventEntryEnter);
-        buildVillageButton.GetComponent<EventTrigger>().triggers.Add(eventEntryExit);
-
-        buildCityButton.GetComponent<Button>().onClick.AddListener(startBuildCityMode);
-        buildCityButton.AddComponent<EventTrigger>();
-        buildCityButton.GetComponent<EventTrigger>().triggers.Add(eventEntryEnter);
-        buildCityButton.GetComponent<EventTrigger>().triggers.Add(eventEntryExit);
-        
         playVPButton.GetComponent<Button>().onClick.AddListener(playVP);
         buyDevCardButton.GetComponent<Button>().onClick.AddListener(buyDevCard);
-        
-        
+
     }
 
     // Update is called once per frame
@@ -163,23 +131,6 @@ public class InputController : MonoBehaviour
         Debug.Log("BUILDCITYMODE IS ON");
     }
     
-
-    public void onPointerEnter(PointerEventData data)
-    {
-        actionsHoverArrow.SetActive(true);
-        audioSource.Play();
-        Vector3 temp = data.pointerCurrentRaycast.gameObject.transform.position;
-        temp.x = actionsHoverArrowXPosition;
-        actionsHoverArrow.transform.position = temp;
-        Debug.Log("CLIENT: Pointer enter");
-    }
-
-    public void onPointerExit(PointerEventData data)
-    {
-        actionsHoverArrow.SetActive(false);
-        Debug.Log("CLIENT: Pointer exit");
-    }
-
     public void playVP()
     {
         clientRequest.requestPlayDevelopement(DEVELOPMENT_TYPE.VICTORY_POINT);
