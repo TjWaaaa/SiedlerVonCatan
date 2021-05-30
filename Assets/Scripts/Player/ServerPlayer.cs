@@ -5,7 +5,6 @@ using System.Data;
 using System.Linq;
 using System.Security;
 using Enums;
-using PlayerColor;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -136,10 +135,7 @@ namespace Player
             resources[resourcetype] += amount;
         }
 
-
-
         //Start phase
-
         public void buildStreet()
         {
             if (leftStreets > 13)
@@ -147,6 +143,7 @@ namespace Player
                 this.leftStreets--;
             }
         }
+
         public void buildVillage()
         {
             if (leftVillages > 3)
@@ -155,9 +152,7 @@ namespace Player
             }
         }
 
-
         // Trade
-
         public Boolean canTrade(RESOURCETYPE resourcetype)
         {
             if (resources[resourcetype] >= 4)
@@ -169,8 +164,6 @@ namespace Player
                 Debug.Log("CLIENT: You only have " + resources[resourcetype] + resourcetype.ToString().ToLower() + ". Trade something else.");
                 return false;
             }
-
-
         }
 
         public void trade(int[] offer, int[] expect)
@@ -184,12 +177,9 @@ namespace Player
             {
                 resources[resources.ElementAt(i).Key] += expect[i];
             }
-
         }
 
-
         // Buy
-
         public Boolean canBuyBuyable(BUYABLES buyable)
         {
             switch (buyable)
@@ -285,7 +275,6 @@ namespace Player
         }
 
         // DevCard
-
         public void playDevCard(DEVELOPMENT_TYPE type)
         {
             devCards[type]--;
@@ -299,6 +288,7 @@ namespace Player
         {
             devCards[type]++;
         }
+        
         public int getDevCardAmount(DEVELOPMENT_TYPE type)
         {
             return devCards[type];

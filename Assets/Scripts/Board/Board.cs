@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Enums;
-using PlayerColor;
+using Player;
 using UnityEngine;
 
 //TODO: assignNeighborsToHexagons(); prüfen ob die Methode mit de neuen Array klar kommt
@@ -19,6 +19,8 @@ public class Board
 
     private Hexagon[][] hexagonDiceNumbers =
     {
+        new Hexagon[0], // 0
+        new Hexagon[0], // 1
         new Hexagon[1], // 2
         new Hexagon[2], // 3
         new Hexagon[2], // 4
@@ -126,9 +128,14 @@ public class Board
                         hexagonsArray[row][col] = newHexagon;
 
                         // adds Hexagon to empty slot in array
-                        for (int i = 0; i < hexagonDiceNumbers[fieldNumber - 2].Length; i++)
+
+                        if (hexagonDiceNumbers[fieldNumber][0] == null)
                         {
-                            hexagonDiceNumbers[fieldNumber - 2][i] ??= newHexagon;  // only adds Hexagon to slot if slot empty
+                            hexagonDiceNumbers[fieldNumber][0] = newHexagon;
+                        }
+                        else if (hexagonDiceNumbers[fieldNumber][1] == null)
+                        {
+                            hexagonDiceNumbers[fieldNumber][1] = newHexagon;
                         }
                         break;
                     case 3:
@@ -177,124 +184,7 @@ public class Board
             edgesArray[i] = new Edge(i);
         }
     }
-
-    /// <summary>
-    /// reads from config file and adds to all hexagons in hexagons[] the adjacent nodes 
-    /// </summary>
-    private void assignNeighborsToHexagons()
-    {
-        StreamReader file = new StreamReader(path + "AdjacentNodesToHexagons.txt");
-
-        for (int row = 0; row < boardConfig.Length; row++)
-        {
-            for (int col = 0; col < boardConfig[row].Length; col++)
-            {
-                try
-                {
-                    // continue if there is no hexagon at given index
-                    if (hexagonsArray[row][col] == null) continue;
-                }
-                catch (Exception e)
-                {
-                    Debug.Log("SERVER: "+ e);
-                }
-
-                Hexagon currentHexagon = hexagonsArray[row][col];
-
-                // give all neighbors a hexagon needs to know
-                string line = file.ReadLine();
-                string[] subStrings = line.Split(',');
-
-                for (int i = 0; i < 6; i++)
-                {
-                    if (subStrings[i] == "-") continue;
-
-                    int neighborPos = int.Parse(subStrings[i]);
-                    currentHexagon.setAdjacentNodePos(neighborPos, i);
-                }
-            }
-        }
-        file.Close();
-    }
-
-    /// <summary>
-    /// reads from config files and adds to all nodes in nodes[] the adjacent hexagons, nodes and edges 
-    /// </summary>
-    private void assignNeighborsToNodes()
-    {
-        StreamReader hexagonsFile = new StreamReader(path + "AdjacentHexagonsToNodes.txt");
-        StreamReader nodesFile = new StreamReader(path + "AdjacentNodesToNodes.txt");
-        StreamReader edgesFile = new StreamReader(path + "AdjacentEdgesToNodes.txt");
-
-        foreach (Node currentNode in nodesArray)
-        {
-            string[] nHexagons = hexagonsFile.ReadLine().Split(',');
-            string[] nNodes = nodesFile.ReadLine().Split(',');
-            string[] nEdges = edgesFile.ReadLine().Split(',');
-
-            for (int i = 0; i < 3; i++)
-            {
-                // sets adjacent hexagon
-                string[] nHexagonCoordinates = nHexagons[i].Split('.');
-                int nHexagonPosX = int.Parse(nHexagonCoordinates[0]);
-                int nHexagonPosY = int.Parse(nHexagonCoordinates[1]);
-                currentNode.setAdjacentHexagonPos(nHexagonPosX, nHexagonPosY, i);
-
-                // sets adjacent node
-                if (nNodes[i] != "-")
-                {
-                    int nNodePos = int.Parse(nNodes[i]);
-                    currentNode.setAdjacentNodePos(nNodePos, i);
-                }
-
-                // sets adjacent edge
-                if (nEdges[i] != "-")
-                {
-                    int nEdgePos = int.Parse(nEdges[i]);
-                    currentNode.setAdjacentEdgePos(nEdgePos, i);
-                }
-            }
-        }
-        hexagonsFile.Close();
-        nodesFile.Close();
-        edgesFile.Close();
-    }
-
-    /// <summary>
-    /// reads from config files and adds to all edges ind edges[] the adjacent nodes and edges
-    /// </summary>
-    private void assignNeighborsToEdges()
-    {
-        StreamReader nodesFile = new StreamReader(path + "AdjacentNodesToEdges.txt");
-        StreamReader edgesFile = new StreamReader(path + "AdjacentEdgesToEdges.txt");
-
-        foreach (Edge currentEdge in edgesArray)
-        {
-            string[] nNodes = nodesFile.ReadLine().Split(',');
-            string[] nEdges = edgesFile.ReadLine().Split(',');
-
-            for (int i = 0; i < 2; i++)
-            {
-                if (nNodes[i] != "-")
-                {
-                    int nNodePos = int.Parse(nNodes[i]);
-                    currentEdge.setAdjacentNodePos(nNodePos, i);
-                }
-            }
-
-            for (int i = 0; i < 4; i++)
-            {
-                if (nEdges[i] != "-")
-                {
-                    int nEdgePos = int.Parse(nEdges[i]);
-                    currentEdge.setAdjacentEdge(nEdgePos, i);
-                }
-            }
-        }
-        nodesFile.Close();
-        edgesFile.Close();
-    }
-
+    
     /// <summary>
     /// This function has to get called to place a village or city onto a specific node.
     /// If the player is allowed to place a building on the Node with id 'nodeId', a village
@@ -453,7 +343,159 @@ public class Board
         return false;
     }
 
+    public int[] distributeResources(int hexagonNumber, PLAYERCOLOR playerColor)
+    {
+        int[] distributedResources = new int[5];
+        
+        foreach (Hexagon hexagon in hexagonDiceNumbers[hexagonNumber])
+        {
+            int resourceType = (int) hexagon.getResourceType();
+            
+            int[] adjacentNodesPos = hexagon.getAdjacentNodesPos();
+            foreach (int nodePos in adjacentNodesPos)
+            {
+                Node node = nodesArray[nodePos];
+                switch (node.getBuildingType())
+                {
+                    case BUILDING_TYPE.NONE: break;
+                    case BUILDING_TYPE.VILLAGE:
+                        if (node.getOccupant() == playerColor)
+                        {
+                            distributedResources[resourceType] += 1;
+                        }
+                        break;
+                    case BUILDING_TYPE.CITY:
+                        if (node.getOccupant() == playerColor)
+                        {
+                            distributedResources[resourceType] += 2;
+                        }
+                        break;
+                    default: Debug.Log("SERVER: distributeResources(): wrong BUILDING_TYPE"); break;
+                }
+            }
+        }
 
+        Debug.Log("SERVER: Player " + (int) playerColor + " gets: " + distributedResources);
+        return distributedResources;
+    }
+
+    /// <summary>
+    /// reads from config file and adds to all hexagons in hexagons[] the adjacent nodes 
+    /// </summary>
+    private void assignNeighborsToHexagons()
+    {
+        StreamReader file = new StreamReader(path + "AdjacentNodesToHexagons.txt");
+
+        for (int row = 0; row < boardConfig.Length; row++)
+        {
+            for (int col = 0; col < boardConfig[row].Length; col++)
+            {
+                try
+                {
+                    // continue if there is no hexagon at given index
+                    if (hexagonsArray[row][col] == null) continue;
+                }
+                catch (Exception e)
+                {
+                    Debug.Log("SERVER: "+ e);
+                }
+
+                Hexagon currentHexagon = hexagonsArray[row][col];
+
+                // give all neighbors a hexagon needs to know
+                string line = file.ReadLine();
+                string[] subStrings = line.Split(',');
+
+                for (int i = 0; i < 6; i++)
+                {
+                    if (subStrings[i] == "-") continue;
+
+                    int neighborPos = int.Parse(subStrings[i]);
+                    currentHexagon.setAdjacentNodePos(neighborPos, i);
+                }
+            }
+        }
+        file.Close();
+    }
+
+    /// <summary>
+    /// reads from config files and adds to all nodes in nodes[] the adjacent hexagons, nodes and edges 
+    /// </summary>
+    private void assignNeighborsToNodes()
+    {
+        StreamReader hexagonsFile = new StreamReader(path + "AdjacentHexagonsToNodes.txt");
+        StreamReader nodesFile = new StreamReader(path + "AdjacentNodesToNodes.txt");
+        StreamReader edgesFile = new StreamReader(path + "AdjacentEdgesToNodes.txt");
+
+        foreach (Node currentNode in nodesArray)
+        {
+            string[] nHexagons = hexagonsFile.ReadLine().Split(',');
+            string[] nNodes = nodesFile.ReadLine().Split(',');
+            string[] nEdges = edgesFile.ReadLine().Split(',');
+
+            for (int i = 0; i < 3; i++)
+            {
+                // sets adjacent hexagon
+                string[] nHexagonCoordinates = nHexagons[i].Split('.');
+                int nHexagonPosX = int.Parse(nHexagonCoordinates[0]);
+                int nHexagonPosY = int.Parse(nHexagonCoordinates[1]);
+                currentNode.setAdjacentHexagonPos(nHexagonPosX, nHexagonPosY, i);
+
+                // sets adjacent node
+                if (nNodes[i] != "-")
+                {
+                    int nNodePos = int.Parse(nNodes[i]);
+                    currentNode.setAdjacentNodePos(nNodePos, i);
+                }
+
+                // sets adjacent edge
+                if (nEdges[i] != "-")
+                {
+                    int nEdgePos = int.Parse(nEdges[i]);
+                    currentNode.setAdjacentEdgePos(nEdgePos, i);
+                }
+            }
+        }
+        hexagonsFile.Close();
+        nodesFile.Close();
+        edgesFile.Close();
+    }
+
+    /// <summary>
+    /// reads from config files and adds to all edges ind edges[] the adjacent nodes and edges
+    /// </summary>
+    private void assignNeighborsToEdges()
+    {
+        StreamReader nodesFile = new StreamReader(path + "AdjacentNodesToEdges.txt");
+        StreamReader edgesFile = new StreamReader(path + "AdjacentEdgesToEdges.txt");
+
+        foreach (Edge currentEdge in edgesArray)
+        {
+            string[] nNodes = nodesFile.ReadLine().Split(',');
+            string[] nEdges = edgesFile.ReadLine().Split(',');
+
+            for (int i = 0; i < 2; i++)
+            {
+                if (nNodes[i] != "-")
+                {
+                    int nNodePos = int.Parse(nNodes[i]);
+                    currentEdge.setAdjacentNodePos(nNodePos, i);
+                }
+            }
+
+            for (int i = 0; i < 4; i++)
+            {
+                if (nEdges[i] != "-")
+                {
+                    int nEdgePos = int.Parse(nEdges[i]);
+                    currentEdge.setAdjacentEdge(nEdgePos, i);
+                }
+            }
+        }
+        nodesFile.Close();
+        edgesFile.Close();
+    }
+    
     /// <summary>
     /// Checks if Hexagons with a fieldnumber of 6 or 8 are adjacent
     /// </summary>

@@ -30,6 +30,29 @@ public class Hexagon
         return type;
     }
 
+    public RESOURCETYPE getResourceType()
+    {
+        switch (type)
+        {
+            case HEXAGON_TYPE.SHEEP:
+            case HEXAGON_TYPE.PORTSHEEP:
+                return RESOURCETYPE.SHEEP;
+            case HEXAGON_TYPE.ORE: 
+            case HEXAGON_TYPE.PORTORE:
+                return RESOURCETYPE.ORE;
+            case HEXAGON_TYPE.BRICK:
+            case HEXAGON_TYPE.PORTBRICK:
+                return RESOURCETYPE.BRICK;
+            case HEXAGON_TYPE.WOOD:
+            case HEXAGON_TYPE.PORTWOOD:
+                return RESOURCETYPE.WOOD;
+            case HEXAGON_TYPE.WHEAT: 
+            case HEXAGON_TYPE.PORTWHEAT:
+                return RESOURCETYPE.WHEAT;
+            default: return RESOURCETYPE.NONE;
+        }
+    }
+
     public void setAdjacentNodePos(int nodePos, int index)
     {
         adjacentNodesPos[index] = nodePos;

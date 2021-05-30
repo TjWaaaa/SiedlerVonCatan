@@ -1,5 +1,4 @@
 using Enums;
-using PlayerColor;
 using UnityEngine;
 
 public class BoardGenerator : MonoBehaviour
@@ -18,7 +17,7 @@ public class BoardGenerator : MonoBehaviour
         {
             for (int col = 0; col < gameBoard[row].Length; col++)
             {
-                if (gameBoard[row][col]==null) //zeile von Marco eingef�gt, keine ahnung ob sinnvoll aber wirft sonst NullReferenceErrororororo, pls pr�fen thx :*
+                if (gameBoard[row][col]==null) //zeile von Marco eingefügt, keine ahnung ob sinnvoll aber wirft sonst NullReferenceErrororororo, pls prüfen thx :*
                 {
                     continue;
                 }

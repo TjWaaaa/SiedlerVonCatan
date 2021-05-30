@@ -7,7 +7,6 @@ using Networking.Communication;
 using Networking.Interfaces;
 using Networking.Package;
 using Player;
-using PlayerColor;
 using UnityEngine;
 
 namespace Networking.ServerSide
@@ -114,8 +113,22 @@ namespace Networking.ServerSide
 
             int[] diceNumbers = rollDices();
             serverRequest.notifyRollDice(diceNumbers);
-
+            
+            Debug.Log("Würfel gewürfelt");
             // Distribute ressources
+            for (int playerIndex = 0; playerIndex < allPlayer.Count; playerIndex++)
+            {
+                ServerPlayer player = allPlayer.ElementAt(playerIndex).Value;
+                int[] distributedResources = gameBoard.distributeResources(diceNumbers[0] + diceNumbers[1], player.getPlayerColor());
+                Debug.Log("Player " + playerIndex + " gets: " + distributedResources[0] + distributedResources[1] + distributedResources[2] + distributedResources[3] + distributedResources[4]);
+
+                for (int i = 0; i < distributedResources.Length; i++)
+                {
+                    player.setResourceAmount((RESOURCETYPE) i, distributedResources[i]);
+                }
+                updateOwnPlayer(currentPlayer);
+            }
+            updateRepPlayers();
         }
 
         public void handleTradeBank(Packet clientPacket)
@@ -150,7 +163,6 @@ namespace Networking.ServerSide
                 if (currentServerPlayer.canTrade(resourcetype))
                 {
                     serverRequest.notifyAcceptTradeOffer(currentServerPlayer.getPlayerID(), buttonNumber);
-
                 }
                 else
                 {
@@ -180,7 +192,6 @@ namespace Networking.ServerSide
             PLAYERCOLOR playerColor = allPlayer.ElementAt(currentPlayer).Value.getPlayerColor();
 
             buildStructure(currentServerPlayer, buildingType, posInArray, playerColor, clientPacket);
-
         }
 
         public void handleBuyDevelopement(Packet clientPacket)
