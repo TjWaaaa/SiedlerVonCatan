@@ -19,16 +19,23 @@ public class BoardTestHelper
 
     public bool fieldNumberConstraintsMet(Board boardInstance)
     {
-        string test ="---------Output--------\n";
+     
         Hexagon[][] hexagonsArray = boardInstance.getHexagonsArray();
         for (int row = 1; row < hexagonsArray.Length-1; row++)
         {
             for (int col = 1; col < hexagonsArray[row].Length-1; col++)
             {
-               test +=hexagonsArray[row][col].getFieldNumber() + "|";
+                Hexagon currentHex = hexagonsArray[row][col];
+
+                //no need to check ports or dessert
+                if (currentHex == null || currentHex.getFieldNumber() == 0)
+                {
+                    continue;
+                }
+
 
                 //only fieldnumbers 6 or 8 needs to be evaluated
-                if (hexagonsArray[row][col].getFieldNumber() != 6 && hexagonsArray[row][col].getFieldNumber() != 8)
+                if (currentHex.getFieldNumber() != 6 && currentHex.getFieldNumber() != 8)
                 {
                     continue;
                 }
@@ -53,10 +60,7 @@ public class BoardTestHelper
                 }
 
             }
-            test += "\n";
         }
-        test+="----------------------";
-        Debug.Log(test);
         return true;
     }
 }

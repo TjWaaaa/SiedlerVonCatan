@@ -27,12 +27,12 @@ public class BoardTest
         {
             Stack<int> randomStack = helper.createRandomStack(availableNumbers);
             int[] delete = randomStack.ToArray();
-            string input = "Input: ";
+
             foreach (int item in randomStack)
             {
-                input += item + "|";
+
             }
-            Debug.Log(input);
+
             Board boardInstance = new Board(randomStack);
             Hexagon[][] hex = boardInstance.getHexagonsArray();
             constraintsMet = helper.fieldNumberConstraintsMet(boardInstance);
@@ -44,31 +44,4 @@ public class BoardTest
         }
         Assert.IsTrue(constraintsMet);
     }
-    [Test]
-   public void hermann()
-    {
-        test.Push(2);
-        test.Push(9);
-        test.Push(10);
-        test.Push(11);
-        test.Push(6);
-        test.Push(8);
-        test.Push(10);
-        test.Push(4);
-        test.Push(4);
-        test.Push(8);
-        test.Push(11);
-        test.Push(9);
-        test.Push(5);
-        test.Push(6);
-        test.Push(12);
-        test.Push(3);
-        test.Push(5);
-        test.Push(3);
-
-        Board boardInstance = new Board(test);
-        bool constraintsMet = helper.fieldNumberConstraintsMet(boardInstance);
-        Assert.IsTrue(constraintsMet);
-    }
-
-}
+ }
