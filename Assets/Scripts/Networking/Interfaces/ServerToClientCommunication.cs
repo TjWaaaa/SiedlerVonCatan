@@ -1,7 +1,6 @@
 ﻿using System.Collections;
 using Enums;
 using Player;
-using PlayerColor;
 using UnityEngine;
 
 namespace Networking.Interfaces
@@ -43,7 +42,7 @@ namespace Networking.Interfaces
         /// <summary>
         /// Notify all players who the next player is.
         /// </summary>
-        public void notifyNextPlayer(string name);
+        public void notifyNextPlayer(int playerIndex);
 
         
         /// <summary>
@@ -109,18 +108,26 @@ namespace Networking.Interfaces
 
 
         /// <summary>
-        /// Player is allowed to buy a development card and is notified of the type.
+        /// Player is allowed to buy a development card and everybody is notified, how many devCards are left
         /// </summary>
-        /// <param name="playerID">Target player</param>
-        /// <param name="developmentCard">Type of development card</param>
-        public void acceptBuyDevelopement(int playerID, DEVELOPMENT_TYPE developmentCard);
+        /// <param name="leftDevCards">how many devCards are left</param>
+        public void acceptBuyDevelopement(int leftDevCards);
 
 
         /// <summary>
         /// Notify all players that a player played a developement card
         /// </summary>
+        /// <param name="playerID">Player who has to be told that he can play his Card</param>
         /// <param name="developmentCard">played development card type</param>
         /// <param name="playerName">Player who played the developement card</param>
-        public void notifyAcceptPlayDevelopement(DEVELOPMENT_TYPE developmentCard, string playerName);
+        
+        public void notifyAcceptPlayDevelopement(int playerID, DEVELOPMENT_TYPE developmentCard, string playerName);
+
+        /// <summary>
+        /// Notify current player that the trade offer is accepted
+        /// </summary>
+        /// <param name="playerID"></param>
+        /// <param name="buttonNumber"></param>
+        public void notifyAcceptTradeOffer(int playerID, int buttonNumber);
     }
 }

@@ -25,10 +25,15 @@ namespace Networking.Interfaces
         
         // Phase: 2 (trade)
         /// <summary>
+        /// Request if a player has enough resources to trade.
+        /// </summary>
+        public void requestTradeOffer(RESOURCETYPE offerResource, int buttonNumber);
+        
+        /// <summary>
         /// Requests if a player is allowed to trade a certain resource with the bank.
         /// </summary>
         public void requestTradeBank(int[] offer, int[] expect);
-        
+
         
         // /// <summary>
         // /// Requests if a player is allowed to trade a certain resource with a port.

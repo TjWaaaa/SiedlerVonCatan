@@ -12,7 +12,7 @@ public class RenderRollDices : MonoBehaviour
     void Start()
     {
         DiceHandler[] diceDiceHandlers = GetComponentsInChildren<DiceHandler>();
-        Debug.Log("CLIENT:" + diceDiceHandlers.Length);
+        Debug.Log("CLIENT: diceDiceHandlers " + diceDiceHandlers.Length);
         Dice1 = diceDiceHandlers[0];
         Dice2 = diceDiceHandlers[1];
     }
@@ -40,11 +40,10 @@ public class RenderRollDices : MonoBehaviour
     public IEnumerator TimeYield()
     {
         Debug.Log("CLIENT: TimeYield Function is called");
-        yield return new WaitForSeconds(2);
+        yield return new WaitForSeconds(0.5f);
         Debug.Log("CLIENT: Waited 2 Seconds");
         Dice1.updateDiceNumber(diceNumbers[0]);
-        yield return new WaitForSeconds(1);
+        yield return new WaitForSeconds(0);
         Dice2.updateDiceNumber(diceNumbers[1]);
     }
-
 }

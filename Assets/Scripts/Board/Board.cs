@@ -3,8 +3,12 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Enums;
-using PlayerColor;
+using Player;
 using UnityEngine;
+
+//TODO: assignNeighborsToHexagons(); prüfen ob die Methode mit de neuen Array klar kommt
+//TODO: assignNeighborsToNodes();    prüfen ob die Methode mit de neuen Array klar kommt
+//TODO: assignNeighborsToEdges();    prüfen ob die Methode mit de neuen Array klar kommt
 
 public class Board
 {
@@ -15,6 +19,8 @@ public class Board
 
     private Hexagon[][] hexagonDiceNumbers =
     {
+        new Hexagon[0], // 0
+        new Hexagon[0], // 1
         new Hexagon[1], // 2
         new Hexagon[2], // 3
         new Hexagon[2], // 4
@@ -29,17 +35,17 @@ public class Board
     };
 
     private readonly int[][] boardConfig = {
-        new[]    {4, 1, 4, 1},
-        new[]   {1, 2, 2, 2, 4},
-        new[]  {4, 2, 2, 2, 2, 1},
-        new[] {1, 2, 2, 3, 2, 2, 4},
-        new[]  {4, 2, 2, 2, 2, 1},
-        new[]   {1, 2, 2, 2, 4},
-        new[]    {4, 1, 4, 1}
+        new[] {0,0,0,4,1,4,1},
+        new[]  {0,0,1,2,2,2,4},
+        new[]   {0,4,2,2,2,2,1},
+        new[]     {1,2,2,3,2,2,4},
+        new[]     {4,2,2,2,2,1,0},
+        new[]      {1,2,2,2,4,0,0},
+        new[]       {4,1,4,1,0,0,0}
     };
 
-    private int[] neighborOffsetX = new int[] { 0, -1, -1, 0, 1, 1 }; //specifies the position of adjacent hexagons in horizontal direction
-    private int[] neighborOffsetY = new int[] { -1, -1, 0, 1, 1, 0 }; //specifies the position of adjacent hexagons in vertical direction
+    private int[] neighborOffsetX = new int[] {  1, 0,-1,-1, 0, 1 }; //specifies the position of adjacent hexagons in horizontal direction
+    private int[] neighborOffsetY = new int[] { -1,-1, 0, 1, 1, 0 }; //specifies the position of adjacent hexagons in vertical direction
     private int[] availableNumbers = new int[] { 2, 3, 3, 4, 4, 5, 5, 6, 6, 8, 8, 9, 9, 10, 10, 11, 11, 12 };
 
     private readonly HEXAGON_TYPE[] landHexagons = {
@@ -111,6 +117,8 @@ public class Board
 
                 switch (currentConfig)
                 {
+                    case 0:
+                        break;
                     case 1:
                         hexagonsArray[row][col] = new Hexagon(HEXAGON_TYPE.WATER);
                         break;
@@ -120,9 +128,14 @@ public class Board
                         hexagonsArray[row][col] = newHexagon;
 
                         // adds Hexagon to empty slot in array
-                        for (int i = 0; i < hexagonDiceNumbers[fieldNumber - 2].Length; i++)
+
+                        if (hexagonDiceNumbers[fieldNumber][0] == null)
                         {
-                            hexagonDiceNumbers[fieldNumber - 2][i] ??= newHexagon;  // only adds Hexagon to slot if slot empty
+                            hexagonDiceNumbers[fieldNumber][0] = newHexagon;
+                        }
+                        else if (hexagonDiceNumbers[fieldNumber][1] == null)
+                        {
+                            hexagonDiceNumbers[fieldNumber][1] = newHexagon;
                         }
                         break;
                     case 3:
@@ -170,6 +183,200 @@ public class Board
         {
             edgesArray[i] = new Edge(i);
         }
+    }
+    
+    /// <summary>
+    /// This function has to get called to place a village or city onto a specific node.
+    /// If the player is allowed to place a building on the Node with id 'nodeId', a village
+    /// gets built, or gets upgraded into a city
+    /// </summary>
+    /// <param name="nodeId">position of a node in the nodes[] array</param>
+    /// <param name="player">color of the player who tries to build</param>
+    public bool placeBuilding(int nodeId, PLAYERCOLOR player, bool preGamePhase)
+    {
+        Node requestedNode = nodesArray[nodeId];
+        if (!allowedToBuildOnNode(requestedNode, player, preGamePhase)) return false;
+
+        if (requestedNode.getBuildingType() == BUILDING_TYPE.NONE)
+        {
+            Debug.Log("SERVER: place village");
+            requestedNode.setBuildingType(BUILDING_TYPE.VILLAGE);
+            requestedNode.setOccupant(player);
+            return true;
+        }
+        if (requestedNode.getBuildingType() == BUILDING_TYPE.VILLAGE)
+        {
+            Debug.Log("SERVER: place city");
+            requestedNode.setBuildingType(BUILDING_TYPE.CITY);
+            requestedNode.setOccupant(player);
+            return true;
+        }
+
+        return false;
+    }
+
+    /// <summary>
+    /// Checks rules whether a player is allowed to build on a given node or not 
+    /// </summary>
+    /// <param name="currentNode"></param>
+    /// <param name="player">color of the player who tries to build</param>
+    /// <returns>true if player is allowed to build on given node</returns>
+    private bool allowedToBuildOnNode(Node currentNode, PLAYERCOLOR player, bool preGamePhase)
+    {
+        // false if node is already occupied by enemy OR is city 
+        if (currentNode.getOccupant() != PLAYERCOLOR.NONE
+            && currentNode.getOccupant() != player
+            || currentNode.getBuildingType() == BUILDING_TYPE.CITY)
+        {
+            Debug.Log("SERVER: occupied by enemy or city");
+            return false;
+        }
+
+        int[] neighborNodesPos = currentNode.getAdjacentNodesPos();
+        int[] neighborEdgesPos = currentNode.getAdjacentEdgesPos();
+
+        foreach (int nodePos in neighborNodesPos)
+        {
+            Node node = nodesArray[nodePos];
+
+            // false if a neighborNode is already occupied
+            if (node.getBuildingType() != BUILDING_TYPE.NONE) return false;
+        }
+
+        //in pre game phase cities can be build without being adjacent to a node
+        if (!preGamePhase)
+        {
+            foreach (int edgePos in neighborEdgesPos)
+            {
+                Edge edge = edgesArray[edgePos];
+                // true if at least 1 edge is occupied by player
+                if (edge.getOccupant() == player) return true;
+            }
+        }
+        return true;
+        //return false;
+    }
+
+    /// <summary>
+    /// This function has to get called to place a road onto a specific edge.
+    /// If the player is allowed to place a road on the Edge with id 'edgeId',
+    /// a road gets built
+    /// </summary>
+    /// <param name="edgeId">position of an edge in the edges[] array</param>
+    /// <param name="player">color of the player who tries to build</param>
+    public bool placeRoad(int edgeId, PLAYERCOLOR player)
+    {
+        Edge currentEdge = edgesArray[edgeId];
+        
+        if (!allowedToBuildOnEdge(currentEdge, player)) return false;
+        
+        if (currentEdge.getOccupant() == PLAYERCOLOR.NONE)
+        {
+            Debug.Log("SERVER: place road");
+            currentEdge.setOccupant(player);
+            return true;
+        }
+
+        return false;
+    }
+
+    /// <summary>
+    /// This function has to get called in the pre game phase to place a road onto a specific edge.
+    /// To be allowed to build the road, a mandatory village has to be adjacent to the desired position.
+    /// If the player is allowed to place a road on the Edge with id 'edgeId',
+    /// a road gets built
+    /// </summary>
+    /// <param name="edgeId">position of an edge in the edges[] array</param>
+    /// <param name="mandatoryAdjacentNode">Position of the mandatory neighbor village</param>
+    /// <param name="player">color of the player who tries to build</param>
+    /// <returns>a bool which states, if the player is allowed to build a road at the disered positio</returns>
+    public bool placeRoad(int edgeId, int mandatoryAdjacentNode, PLAYERCOLOR player)
+    {
+        Edge currentEdge = edgesArray[edgeId];
+        bool mandatoryNodeIsNeighbor = false;
+        int[] neighborNodesPos = currentEdge.getAdjacentNodesPos();
+
+        foreach (int adjacentNodePos in neighborNodesPos)
+        {
+            if (adjacentNodePos == mandatoryAdjacentNode)
+            {
+                mandatoryNodeIsNeighbor = true;
+                break;
+            }
+        }
+
+        if (mandatoryNodeIsNeighbor && currentEdge.getOccupant() == PLAYERCOLOR.NONE)
+        {
+            Debug.Log("SERVER: place road");
+            currentEdge.setOccupant(player);
+            return true;
+        }
+
+        return false;
+    }
+
+    /// <summary>
+    /// Checks rules whether a player is allowed to build on a given edge or not 
+    /// </summary>
+    /// <param name="currentEdge"></param>
+    /// <param name="player">color of the player who tries to build</param>
+    /// <returns>true if player is allowed to build on given edge</returns>
+    private bool allowedToBuildOnEdge(Edge currentEdge, PLAYERCOLOR player)
+    {
+        if (currentEdge.getOccupant() != PLAYERCOLOR.NONE) return false;
+
+        int[] neighborNodesPos = currentEdge.getAdjacentNodesPos();
+        int[] neighborEdgesPos = currentEdge.getAdjacentEdges();
+
+        foreach (int nodePos in neighborNodesPos)
+        {
+            Node node = nodesArray[nodePos];
+            if (node.getOccupant() == player) return true;
+        }
+
+        foreach (int edgePos in neighborEdgesPos)
+        {
+            Edge edge = edgesArray[edgePos];
+            if (edge.getOccupant() == player) return true;
+        }
+
+        return false;
+    }
+
+    public int[] distributeResources(int hexagonNumber, PLAYERCOLOR playerColor)
+    {
+        int[] distributedResources = new int[5];
+        
+        foreach (Hexagon hexagon in hexagonDiceNumbers[hexagonNumber])
+        {
+            int resourceType = (int) hexagon.getResourceType();
+            
+            int[] adjacentNodesPos = hexagon.getAdjacentNodesPos();
+            foreach (int nodePos in adjacentNodesPos)
+            {
+                Node node = nodesArray[nodePos];
+                switch (node.getBuildingType())
+                {
+                    case BUILDING_TYPE.NONE: break;
+                    case BUILDING_TYPE.VILLAGE:
+                        if (node.getOccupant() == playerColor)
+                        {
+                            distributedResources[resourceType] += 1;
+                        }
+                        break;
+                    case BUILDING_TYPE.CITY:
+                        if (node.getOccupant() == playerColor)
+                        {
+                            distributedResources[resourceType] += 2;
+                        }
+                        break;
+                    default: Debug.Log("SERVER: distributeResources(): wrong BUILDING_TYPE"); break;
+                }
+            }
+        }
+
+        Debug.Log("SERVER: Player " + (int) playerColor + " gets: " + distributedResources);
+        return distributedResources;
     }
 
     /// <summary>
@@ -288,128 +495,7 @@ public class Board
         nodesFile.Close();
         edgesFile.Close();
     }
-
-    /// <summary>
-    /// This function has to get called to place a village or city onto a specific node.
-    /// If the player is allowed to place a building on the Node with id 'nodeId', a village
-    /// gets built, or gets upgraded into a city
-    /// </summary>
-    /// <param name="nodeId">position of a node in the nodes[] array</param>
-    /// <param name="player">color of the player who tries to build</param>
-    public bool placeBuilding(int nodeId, PLAYERCOLOR player)
-    {
-        Node currentNode = nodesArray[nodeId];
-        
-        // if (!allowedToBuildOnNode(currentNode, player)) return false;
-
-        if (currentNode.getBuildingType() == BUILDING_TYPE.NONE)
-        {
-            Debug.Log("SERVER: place village");
-            currentNode.setBuildingType(BUILDING_TYPE.VILLAGE);
-            currentNode.setOccupant(player);
-            return true;
-        }
-        if (currentNode.getBuildingType() == BUILDING_TYPE.VILLAGE)
-        {
-            Debug.Log("SERVER: place city");
-            currentNode.setBuildingType(BUILDING_TYPE.CITY);
-            currentNode.setOccupant(player);
-            return true;
-        }
-
-        return false;
-    }
-
-    /// <summary>
-    /// Checks rules whether a player is allowed to build on a given node or not 
-    /// </summary>
-    /// <param name="currentNode"></param>
-    /// <param name="player">color of the player who tries to build</param>
-    /// <returns>true if player is allowed to build on given node</returns>
-    private bool allowedToBuildOnNode(Node currentNode, PLAYERCOLOR player)
-    {
-        // false if node is already occupied by enemy OR is city 
-        if (currentNode.getOccupant() != PLAYERCOLOR.NONE
-            && currentNode.getOccupant() != player
-            || currentNode.getBuildingType() == BUILDING_TYPE.CITY)
-        {
-            Debug.Log("SERVER: occupied by enemy or city");
-            return false;
-        }
-
-        int[] neighborNodesPos = currentNode.getAdjacentNodesPos();
-        int[] neighborEdgesPos = currentNode.getAdjacentEdgesPos();
-
-        foreach (int nodePos in neighborNodesPos)
-        {
-            Node node = nodesArray[nodePos];
-
-            // false if a neighborNode is already occupied
-            if (node.getBuildingType() != BUILDING_TYPE.NONE) return false;
-        }
-
-        // TODO uncomment later as soon as first buildings can be placed at game start
-        // foreach (int edgePos in neighborEdgesPos)
-        // {
-        //     Edge edge = edgesArray[edgePos];
-        //     // true if at least 1 edge is occupied by player
-        //     if (edge.getOccupant() == player) return true;
-        // }
-        
-        return true;
-        //return false;
-    }
-
-    /// <summary>
-    /// This function has to get called to place a road onto a specific edge.
-    /// If the player is allowed to place a road on the Edge with id 'edgeId',
-    /// a road gets built
-    /// </summary>
-    /// <param name="edgeId">position of an edge in the edges[] array</param>
-    /// <param name="player">color of the player who tries to build</param>
-    public bool placeRoad(int edgeId, PLAYERCOLOR player)
-    {
-        Edge currentEdge = edgesArray[edgeId];
-        
-        // if (!allowedToBuildOnEdge(currentEdge, player)) return false;
-        
-        if (currentEdge.getOccupant() == PLAYERCOLOR.NONE)
-        {
-            Debug.Log("SERVER: place road");
-            currentEdge.setOccupant(player);
-            return true;
-        }
-
-        return false;
-    }
-
-    /// <summary>
-    /// Checks rules whether a player is allowed to build on a given edge or not 
-    /// </summary>
-    /// <param name="currentEdge"></param>
-    /// <param name="player">color of the player who tries to build</param>
-    /// <returns>true if player is allowed to build on given edge</returns>
-    private bool allowedToBuildOnEdge(Edge currentEdge, PLAYERCOLOR player)
-    {
-        if (currentEdge.getOccupant() != PLAYERCOLOR.NONE) return false;
-
-        int[] neighborNodesPos = currentEdge.getAdjacentNodesPos();
-        int[] neighborEdgesPos = currentEdge.getAdjacentEdges();
-
-        foreach (int nodePos in neighborNodesPos)
-        {
-            Node node = nodesArray[nodePos];
-            if (node.getOccupant() == player) return true;
-        }
-
-        foreach (int edgePos in neighborEdgesPos)
-        {
-            Edge edge = edgesArray[edgePos];
-            if (edge.getOccupant() == player) return true;
-        }
-
-        return false;
-    }
+    
     /// <summary>
     /// Checks if Hexagons with a fieldnumber of 6 or 8 are adjacent
     /// </summary>
@@ -441,8 +527,8 @@ public class Board
                     int yOffset = row + neighborOffsetY[offsetIndex];
                     int xOffset = col + neighborOffsetX[offsetIndex];
 
-                    //if index is out of range there is no adjacent hexagon, therefore the constraint for this neighbor is met
-                    if (yOffset > hexagonsArray.Length-1 || xOffset > hexagonsArray[yOffset].Length-1)
+                    //when index is out of range or at the index is no object there is no adjacent hexagon, therefore the constraint for this neighbor is met
+                    if (hexagonsArray[yOffset][xOffset]==null || yOffset > hexagonsArray.Length-1 || xOffset > hexagonsArray[yOffset].Length-1)
                     {
                         continue;
                     }
@@ -496,7 +582,7 @@ public class Board
                         int xOffset = col + neighborOffsetX[offsetIndex];
                        
                         //if index is out of range there is no adjacent hexagon, therefore the constraint for this neighbor is met
-                        if (yOffset > hexagonsArray.Length - 1 || xOffset > hexagonsArray[yOffset].Length-1)
+                        if (hexagonsArray[yOffset][xOffset] == null || yOffset > hexagonsArray.Length - 1 || xOffset > hexagonsArray[yOffset].Length-1)
                         {
                             continue;
                         }
@@ -510,7 +596,7 @@ public class Board
                             break;
                         }
                     }
-                    // loop didn�t break, therefore the position is suitable
+                    // loop didnt break, therefore the position is suitable
                     if (suitable)
                     {
                         return new int[] { row, col };

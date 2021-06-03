@@ -1,6 +1,5 @@
 using System.Collections;
 using Player;
-using PlayerColor;
 using System.Collections.Generic;
 using Enums;
 
@@ -27,7 +26,7 @@ namespace Networking.Package
         public int[] diceResult { get; set; }
         public int[] resourcesObtained { get; set; } // [+ gain resources, - spent resources]
         
-        public int developmentCard { get; set; } // ID
+        public DEVELOPMENT_TYPE developmentCard { get; set; } // ID
         
         public int[] tradeResourcesOffer { get; set; } // what i want to spent [0,0,0,0,0]
         public int[] tradeResourcesExpect { get; set; } // resources i want [0,0,0,0,0]
@@ -46,5 +45,12 @@ namespace Networking.Package
         public int[] updateOP {get; set; }
 
         public Dictionary<RESOURCETYPE, int> updateResourcesOnOP {get; set;}
+        public Dictionary<DEVELOPMENT_TYPE, int> updateDevCardsOnOP {get; set;}
+        
+        public int resourceType { get; set; }
+        
+        public int buttonNumber { get; set; }
+        
+        public int leftDevCards { get; set; }
     }
 }

@@ -7,7 +7,7 @@ using Networking.ClientSide;
 
 namespace UI
 {
-    public class OwnPlayerRepresentation : MonoBehaviour
+    public class OwnPlayerRepresentation
     {
         private TextMeshProUGUI ownPlayerSheep;
         private TextMeshProUGUI ownPlayerWood;

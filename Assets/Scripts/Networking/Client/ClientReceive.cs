@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using Enums;
 using Newtonsoft.Json.Linq;
@@ -8,9 +7,9 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using Networking.Package;
-using Networking.Communication;
+using Networking.ServerSide;
 using Player;
-using PlayerColor;
+using Trade;
 using UI;
 
 namespace Networking.ClientSide
@@ -23,6 +22,7 @@ namespace Networking.ClientSide
         private GameObject scrollViewContent;
         private PlayerRepresentation playerRepresentation = new PlayerRepresentation();
         private OwnPlayerRepresentation ownPlayerRepresentation = new OwnPlayerRepresentation();
+        //private InputController inputController = new InputController();
 
         //private RepresentativePlayer[] representativePlayerArray;
         public List<RepresentativePlayer> representativePlayers = new List<RepresentativePlayer>();
@@ -66,12 +66,37 @@ namespace Networking.ClientSide
 
                 if (currentScene.name == "2_GameScene")
                 {
+                    runFixedUpdate = false;
                     boardGenerator.instantiateGameBoard(gameBoard);
                     playerRepresentation.represent(representativePlayers.ToArray());
                     ownPlayerRepresentation.represent(ownClientPlayer);
-                    runFixedUpdate = false;
+                    playerRepresentation.showNextPlayer(0,currentPlayer);
+                    
                 }
             }
+        }
+
+
+        public void OnApplicationQuit()
+        {
+            #if UNITY_EDITOR
+                quitGame();
+                UnityEditor.EditorApplication.isPlaying = false;
+            #else
+                quitGame();
+                Application.Quit();
+            #endif
+        }
+
+
+        /// <summary>
+        /// Shuts down bowth client and server.
+        /// </summary>
+        public static void quitGame()
+        {
+            Client.shutDownClient();
+            Server.shutDownServer();
+            
         }
 
         /// <summary>
@@ -193,7 +218,7 @@ namespace Networking.ClientSide
             Debug.Log("CLIENT: client recieved color: " + buildColor);
 
             boardGenerator.placeBuilding(buildType, buildId, buildColor);
-            InputController.stopBuildMode();
+            //InputController.stopBuildMode(); //TODO WHY HIER?
 
             // Render the new Object
             // Update Resources displayed for own player if you are the one who placed it
@@ -203,19 +228,24 @@ namespace Networking.ClientSide
 
         public void handleNextPlayer(Packet serverPacket)
         {   
-            throw new System.NotImplementedException();
+            Debug.Log("CLIENT: Current Player: " + currentPlayer);
+            if(!runFixedUpdate){playerRepresentation.showNextPlayer(currentPlayer, serverPacket.currentPlayerID);}
+            currentPlayer = serverPacket.currentPlayerID;
+            Debug.Log("CLIENT: CurrentPlayer is player {serverPacket.currentPlayerID}");
         }
 
         public void handleVictory(Packet serverPacket)
         {
             // Show victorious Player
             // Load the post game Scene or Lobby so a new game can be started
+            Debug.Log($"CLIENT: Yeay somebody won and it is {serverPacket.playerName} with the color {serverPacket.playerColor}");
             throw new System.NotImplementedException();
         }
 
         public void handleClientDisconnect(Packet serverPacket)
         {
-            throw new System.NotImplementedException();
+            Debug.LogError($"CLIENT: Client named {serverPacket.playerName} lost its connection");
+            // todo: display in UI
         }
 
         public void handleRejection(Packet serverPacket)
@@ -231,8 +261,6 @@ namespace Networking.ClientSide
             int cache = currentPlayer;
             currentPlayer = currentPlayer == representativePlayers.Count - 1 ?  0 : ++currentPlayer;
             Debug.Log("CLIENT: Current Player index: " + currentPlayer);
-
-            playerRepresentation.showNextPlayer(cache,currentPlayer);
             // Render dice rolling
             GameObject.FindGameObjectWithTag("diceHolder").GetComponent<RenderRollDices>().renderRollDices(serverPacket.diceResult);
             // Render gained ressources
@@ -241,6 +269,12 @@ namespace Networking.ClientSide
         public void handleAcceptTradeBank(Packet serverPacket)
         {
             throw new System.NotImplementedException();
+        }
+        
+        public void handleAcceptTradeOffer(Packet serverPacket)
+        {
+            int buttonNumber = serverPacket.buttonNumber;
+            TradeMenu.markOfferResource(buttonNumber);
         }
 
         public void handleAcceptBuild(Packet serverPacket)
@@ -255,12 +289,14 @@ namespace Networking.ClientSide
 
         public void handleAcceptBuyDevelopement(Packet serverPacket)
         {
-            throw new System.NotImplementedException();
+            InputController.updateLeftDevCards(serverPacket.leftDevCards);
+            Debug.Log("CLIENT: One Development card was bought. There are " + serverPacket.leftDevCards + " cards left.");
         }
 
         public void handleAcceptPlayDevelopement(Packet serverPacket)
         {
-            throw new System.NotImplementedException();
+            //idk update some shit here in UI
+            Debug.Log($"CLIENT: {serverPacket.playerName} played a devCard: {serverPacket.developmentCard}");
         }
 
         public void handleUpdateRP(Packet serverPacket)
@@ -277,8 +313,9 @@ namespace Networking.ClientSide
         
         public void handleUpdateOP(Packet serverPacket)
         {
-            ownClientPlayer.updateOP(serverPacket.updateOP,serverPacket.updateResourcesOnOP);
+            ownClientPlayer.updateOP(serverPacket.updateOP,serverPacket.updateResourcesOnOP, serverPacket.updateDevCardsOnOP);
             ownPlayerRepresentation.updaetOwnPlayerUI(ownClientPlayer);
+            InputController.showDevCards(ownClientPlayer);
             Debug.Log("CLIENT: UPDATE OP");
         }
     }

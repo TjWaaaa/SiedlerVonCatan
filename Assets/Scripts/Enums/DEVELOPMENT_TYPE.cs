@@ -4,6 +4,8 @@
     {
         VICTORY_POINT,
         KNIGHT,
-        PROGRESS // there are some different progress types!!!
+        MONOPOLY,
+        YEAR_OF_PLENTY,
+        ROAD_BUILDING // there are some different progress types!!!
     }
 }
