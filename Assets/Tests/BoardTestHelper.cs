@@ -9,8 +9,8 @@ using UnityEngine.TestTools;
 
 public class BoardTestHelper
 {
-       private int[] neighborOffsetY = new int[] { -1, -1, 0, 1, 1, 0 }; //specifies the position of adjacent hexagons in vertical 
-    private int[] neighborOffsetX = new int[] { 0, -1, -1, 0, 1, 1 }; //specifies the position of adjacent hexagons in horizontal direction
+    private int[] neighborOffsetX = new int[] { 1, 0, -1, -1, 0, 1 }; //specifies the position of adjacent hexagons in horizontal direction
+    private int[] neighborOffsetY = new int[] { -1, -1, 0, 1, 1, 0 }; //specifies the position of adjacent hexagons in vertical direction
 
     public Stack<int> createRandomStack(int[] numbersToRandomize)
     {
@@ -20,30 +20,30 @@ public class BoardTestHelper
     public bool fieldNumberConstraintsMet(Board boardInstance)
     {
         string test ="---------Output--------\n";
-        Hexagon[][] hexagons = boardInstance.getHexagonsArray();
-        for (int row = 1; row < hexagons.Length-1; row++)
+        Hexagon[][] hexagonsArray = boardInstance.getHexagonsArray();
+        for (int row = 1; row < hexagonsArray.Length-1; row++)
         {
-            for (int col = 1; col < hexagons[row].Length-1; col++)
+            for (int col = 1; col < hexagonsArray[row].Length-1; col++)
             {
-               test +=hexagons[row][col].getFieldNumber() + "|";
+               test +=hexagonsArray[row][col].getFieldNumber() + "|";
 
                 //only fieldnumbers 6 or 8 needs to be evaluated
-                if (hexagons[row][col].getFieldNumber() != 6 && hexagons[row][col].getFieldNumber() != 8)
+                if (hexagonsArray[row][col].getFieldNumber() != 6 && hexagonsArray[row][col].getFieldNumber() != 8)
                 {
                     continue;
                 }
 
                 for (int i = 0; i < neighborOffsetX.Length; i++)
                 {
-                    int offsetY = row + neighborOffsetY[i];
-                    int offsetX = col + neighborOffsetX[i];
+                    int yOffset = row + neighborOffsetY[i];
+                    int xOffset = col + neighborOffsetX[i];
 
                     //if index is out of range there is no adjacent hexagon, therefore the constraint for this neighbor is met
-                    if (offsetY > hexagons.Length - 1 || offsetX > hexagons[offsetY].Length - 1)
+                    if (hexagonsArray[yOffset][xOffset] == null || yOffset > hexagonsArray.Length - 1 || xOffset > hexagonsArray[yOffset].Length - 1)
                     {
                         continue;
                     }
-                    Hexagon neighbor =  hexagons[row + neighborOffsetY[i]][col + neighborOffsetX[i]];
+                    Hexagon neighbor =  hexagonsArray[row + neighborOffsetY[i]][col + neighborOffsetX[i]];
 
                     //adjacent neighbor is 6 or 8 <=> constraint not met
                     if (neighbor != null && (neighbor.getFieldNumber() == 6 || neighbor.getFieldNumber() == 8))

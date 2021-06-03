@@ -3,9 +3,8 @@
     "rootNamespace": "",
     "references": [
         "UnityEngine.TestRunner",
-        "GameAssembly",
-        "Unity.TextMeshPro",
-        "UnityEditor.TestRunner"
+        "UnityEditor.TestRunner",
+        "Scripts"
     ],
     "includePlatforms": [
         "Editor"
