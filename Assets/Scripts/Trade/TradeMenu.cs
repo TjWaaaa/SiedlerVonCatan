@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Networking.Communication;
 using TMPro;
 using UnityEngine;

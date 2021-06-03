@@ -10,7 +10,7 @@ public class GameController : MonoBehaviour
     private Camera mainCamera;
     private GameObject clientGameLogic;
     public GameObject showCurrentPlayer;
-    
+
 
     // only for testing
     private static ServerPlayer[] players;

@@ -38,7 +38,7 @@ public class Board
         new[] {0,0,0,4,1,4,1},
         new[]  {0,0,1,2,2,2,4},
         new[]   {0,4,2,2,2,2,1},
-        new[]     {1,2,2,3,2,2,4},
+        new[]    {1,2,2,3,2,2,4},
         new[]     {4,2,2,2,2,1,0},
         new[]      {1,2,2,2,4,0,0},
         new[]       {4,1,4,1,0,0,0}
@@ -104,7 +104,7 @@ public class Board
     {
         Stack<HEXAGON_TYPE> landStack = createRandomHexagonStackFromArray(landHexagons);
         Stack<HEXAGON_TYPE> portStack = createRandomHexagonStackFromArray(portHexagons);
-        numberStack = createRandomHexagonNumberStack(availableNumbers);
+       numberStack = createRandomHexagonNumberStack(availableNumbers);
 
         hexagonsArray = new Hexagon[7][];
 
