@@ -10,7 +10,6 @@ using UnityEngine;
 using Random = System.Random;
 using Enums;
 using Debug = UnityEngine.Debug;
-using Object = UnityEngine.Object;
 using System.Threading;
 
 namespace Networking.ServerSide
@@ -39,6 +38,12 @@ namespace Networking.ServerSide
         /// </summary>
         public static bool setupServer()
         {
+            if (isRunning)
+            {
+                Debug.LogWarning("Server has already been started. Aborting setup...");
+                return true;
+            }
+            
             serverSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
             socketPlayerData = new Dictionary<int, Socket>();
             buffer = new byte[BUFFER_SIZE];

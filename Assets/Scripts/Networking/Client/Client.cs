@@ -34,6 +34,12 @@ namespace Networking.ClientSide
         /// <exception cref="Exception"></exception>
         public static bool initClient(string ipAddress)
         {
+            if (isRunning)
+            {
+                Debug.LogWarning("Client has already been started. Aborting initialisation...");
+                return true;
+            }
+            
             timeOfLastPing = DateTime.Now.Ticks;
             keepAliveTimer = new Timer(1000); // Check every second for disconnect
             keepAliveTimer.AutoReset = true;
