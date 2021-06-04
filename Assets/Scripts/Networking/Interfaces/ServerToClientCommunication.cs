@@ -1,7 +1,5 @@
 ﻿using System.Collections;
 using Enums;
-using Player;
-using UnityEngine;
 
 namespace Networking.Interfaces
 {
