@@ -29,7 +29,15 @@ public class JoinHostKlickListener : MonoBehaviour
         Debug.Log("SERVER: playerName: " + playerName);
         Debug.Log("SERVER: hostIp: " + hostIp);
 
-        bool initComplete = Client.initClient(hostIp);
+        
+        var clientReceive = new GameObject();
+        clientReceive.name = "clientReceive";
+        clientReceive = Instantiate(clientReceive);
+        clientReceive.AddComponent<ClientReceive>();
+        clientReceive.AddComponent<BoardGenerator>();
+            
+        bool initComplete = Client.initClient(hostIp, clientReceive.GetComponent<ClientReceive>());
+        // bool initComplete = Client.initClient(hostIp);
 
         if (initComplete)
         {
@@ -53,7 +61,7 @@ public class JoinHostKlickListener : MonoBehaviour
     /// To prevent this an Exception is thrown.</exception>
     public void hostListener()
     {
-        bool isRunning = Server.setupServer(); //host server
+        bool isRunning = Server.setupServer(new ServerReceive()); //host server
         string playerName = GameObject.Find("Canvas/hostPanel/host_PlayerName").GetComponent<InputField>().text;
         
         // Packet gameInformation = new Packet();
@@ -70,8 +78,13 @@ public class JoinHostKlickListener : MonoBehaviour
                 throw new Exception("serverIPEndpoint is null!");
             }
 
+            var clientReceive = new GameObject();
+            clientReceive.name = "clientReceive";
+            clientReceive = Instantiate(clientReceive);
+            clientReceive.AddComponent<ClientReceive>();
+            clientReceive.AddComponent<BoardGenerator>();
 
-            bool initComplete = Client.initClient(serverIPEndpoint.Address.ToString()); //join hosted game as client
+            bool initComplete = Client.initClient(serverIPEndpoint.Address.ToString(), clientReceive.GetComponent<ClientReceive>()); //join hosted game as client
 
             if (initComplete)
             {

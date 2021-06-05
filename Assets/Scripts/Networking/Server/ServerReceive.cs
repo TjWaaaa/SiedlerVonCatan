@@ -294,6 +294,19 @@ namespace Networking.ServerSide
             var player = allPlayer[disconnectedClientID];
             serverRequest.notifyClientDisconnect(player.getPlayerName(), player.getPlayerColor());
         }
+        
+        
+        public void generatePlayer(int playerId)
+        {
+            ServerPlayer newPlayer = new ServerPlayer(playerId);
+            newPlayer.setResourceAmount(RESOURCETYPE.SHEEP, 15);
+            newPlayer.setResourceAmount(RESOURCETYPE.WOOD, 15);
+            newPlayer.setResourceAmount(RESOURCETYPE.BRICK, 15);
+            newPlayer.setResourceAmount(RESOURCETYPE.ORE, 15);
+            newPlayer.setResourceAmount(RESOURCETYPE.WHEAT, 15);
+            allPlayer.Add(playerId, newPlayer);
+            playerAmount++;
+        }
 
         //---------------------------------------------- All logical methods ----------------------------------------------
 
@@ -332,18 +345,6 @@ namespace Networking.ServerSide
             return cache;
         }
 
-        public void generatePlayer(int playerId)
-        {
-            ServerPlayer newPlayer = new ServerPlayer(playerId);
-            newPlayer.setResourceAmount(RESOURCETYPE.SHEEP, 15);
-            newPlayer.setResourceAmount(RESOURCETYPE.WOOD, 15);
-            newPlayer.setResourceAmount(RESOURCETYPE.BRICK, 15);
-            newPlayer.setResourceAmount(RESOURCETYPE.ORE, 15);
-            newPlayer.setResourceAmount(RESOURCETYPE.WHEAT, 15);
-            allPlayer.Add(playerId, newPlayer);
-            playerAmount++;
-        }
-
         private Stack<DEVELOPMENT_TYPE> generateRandomDevCardStack(DEVELOPMENT_TYPE[] array)
         {
             return new Stack<DEVELOPMENT_TYPE>(array.OrderBy(n => Guid.NewGuid()).ToArray());
@@ -372,7 +373,7 @@ namespace Networking.ServerSide
             return false;
         }
 
-        public void changeCurrentPlayer(Packet clientPacket)
+        private void changeCurrentPlayer(Packet clientPacket)
         {
             if (!firstRound)
             {
