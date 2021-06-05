@@ -171,8 +171,17 @@ namespace Networking.ServerSide
                 currentClientSocket.Close();
                 
                 // ominous solution to get to the key via the value
-                socketPlayerData.Remove(socketPlayerData.FirstOrDefault(x => x.Value == currentClientSocket).Key);
+                socketPlayerData.Remove(currentClientID);
+                //socketPlayerData.Remove(socketPlayerData.FirstOrDefault(x => x.Value == currentClientSocket).Key);
                 //todo: reestablish connection
+                return;
+            }
+
+            // Client disconnected
+            if (recievedByteLengh <= 0)
+            {
+                Debug.LogWarning($"SERVER: Client with id: {currentClientID} has disconnected.");
+                socketPlayerData.Remove(currentClientID);
                 return;
             }
 
@@ -314,6 +323,7 @@ namespace Networking.ServerSide
                 keepAliveTimer.Stop();
                 keepAliveTimer.Dispose();
                 closeAllSockets();
+                isRunning = false;
             }
         }
 

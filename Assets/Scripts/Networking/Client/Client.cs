@@ -180,7 +180,7 @@ namespace Networking.ClientSide
                 // Server Socket was shut down
                 if (receivedBufferSize <= 0)
                 {
-                    Debug.LogError("CLIENT: Received null from server.");
+                    Debug.LogWarning("CLIENT: Received null from server.");
                     return;
                 }
                 
