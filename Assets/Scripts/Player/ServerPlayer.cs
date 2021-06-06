@@ -149,6 +149,7 @@ namespace Player
             if (leftVillages > 3)
             {
                 this.leftVillages--;
+                victoryPoints += 1;
             }
         }
 
