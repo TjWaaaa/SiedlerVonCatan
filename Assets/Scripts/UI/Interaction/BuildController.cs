@@ -8,23 +8,22 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 
-public class InputController : MonoBehaviour
+public class BuildController : MonoBehaviour
 {
-    private Camera mainCamera;
     private ClientRequest clientRequest = new ClientRequest();
-    private GameObject nextPlayerButton;
-
-    // Build
+    private Camera mainCamera;
+    
+    
     private bool buildStreetMode;
     private bool buildVillageMode;
     private bool buildCityMode ;
+    
     private GameObject buildStreetButton;
     private GameObject buildVillageButton;
     private GameObject buildCityButton;
     
-    // DevCards
-    private GameObject playVPButton;
-    private GameObject buyDevCardButton;
+    
+    
     
 
     // Start is called before the first frame update
@@ -32,8 +31,7 @@ public class InputController : MonoBehaviour
     {
         // Camera
         mainCamera = Camera.main;
-        nextPlayerButton = GameObject.Find("nextPlayer");
-        nextPlayerButton.GetComponent<Button>().onClick.AddListener(nextPlayer);
+       
 
         // Find Build Buttons and add event listener
         buildStreetButton = GameObject.Find("buildStreet");
@@ -43,11 +41,7 @@ public class InputController : MonoBehaviour
         buildVillageButton.GetComponent<Button>().onClick.AddListener(startBuildVillageMode);
         buildCityButton.GetComponent<Button>().onClick.AddListener(startBuildCityMode);
         
-        // DevCards
-        playVPButton = GameObject.Find("PlayVP");
-        buyDevCardButton = GameObject.Find("BuyDevCard");
-        playVPButton.GetComponent<Button>().onClick.AddListener(playVP);
-        buyDevCardButton.GetComponent<Button>().onClick.AddListener(buyDevCard);
+        
 
     }
 
@@ -128,22 +122,11 @@ public class InputController : MonoBehaviour
         Debug.Log("BUILDCITYMODE IS ON");
     }
     
-    public void nextPlayer()
-    {
-        Debug.LogWarning("CLIENT: NextPlayer in GameController is called");
-        clientRequest.requestEndTurn();
-    }
     
-    public void playVP()
-    {
-        clientRequest.requestPlayDevelopement(DEVELOPMENT_TYPE.VICTORY_POINT);
-    }
     
-    public void buyDevCard()
-    {
-        Debug.Log($"CLIENT: Player wants to buy a devCard");
-        clientRequest.requestBuyDevelopement();
-    }
+    
+    
+   
 
     
 }

@@ -22,7 +22,7 @@ namespace Networking.ClientSide
         private GameObject scrollViewContent;
         private PlayerRepresentation playerRepresentation = new PlayerRepresentation();
         private OwnPlayerRepresentation ownPlayerRepresentation = new OwnPlayerRepresentation();
-        private OutputController outputController; //= new OutputController();
+        private DevCardsMenu _devCardsMenu; 
 
         //private RepresentativePlayer[] representativePlayerArray;
         public List<RepresentativePlayer> representativePlayers = new List<RepresentativePlayer>();
@@ -71,7 +71,7 @@ namespace Networking.ClientSide
                     playerRepresentation.represent(representativePlayers.ToArray());
                     ownPlayerRepresentation.represent(ownClientPlayer);
                     playerRepresentation.showNextPlayer(0,currentPlayer);
-                    outputController = GameObject.Find("_UI").GetComponent<OutputController>();
+                    _devCardsMenu = GameObject.Find("_UI").GetComponent<DevCardsMenu>();
                     
                 }
             }
@@ -290,7 +290,7 @@ namespace Networking.ClientSide
 
         public void handleAcceptBuyDevelopement(Packet serverPacket)
         {
-            outputController.updateLeftDevCards(serverPacket.leftDevCards);
+            _devCardsMenu.updateLeftDevCards(serverPacket.leftDevCards);
             Debug.Log("CLIENT: One Development card was bought. There are " + serverPacket.leftDevCards + " cards left.");
         }
 
@@ -316,7 +316,7 @@ namespace Networking.ClientSide
         {
             ownClientPlayer.updateOP(serverPacket.updateOP,serverPacket.updateResourcesOnOP, serverPacket.updateDevCardsOnOP);
             ownPlayerRepresentation.updaetOwnPlayerUI(ownClientPlayer);
-            outputController.showDevCards(ownClientPlayer);
+            _devCardsMenu.showDevCards(ownClientPlayer);
             Debug.Log("CLIENT: UPDATE OP");
         }
     }

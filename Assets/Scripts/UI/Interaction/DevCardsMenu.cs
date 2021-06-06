@@ -1,15 +1,22 @@
 ﻿using Enums;
+using Networking.Communication;
 using Player;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace UI
 {
-    public class OutputController : MonoBehaviour
+    public class DevCardsMenu : MonoBehaviour
     {
+        
+        private ClientRequest clientRequest = new ClientRequest();
+        
         private TextMeshProUGUI leftDevCards;
         private TextMeshProUGUI amountVP;
         private GameObject devCardsVP;
+        private GameObject playVPButton;
+        private GameObject buyDevCardButton;
 
 
         public void Start()
@@ -18,6 +25,10 @@ namespace UI
             leftDevCards = GameObject.Find("LeftDevCards").GetComponent<TextMeshProUGUI>();
             amountVP = GameObject.Find("AmountVP").GetComponent<TextMeshProUGUI>();
             devCardsVP = GameObject.Find("DevCardsVP");
+            playVPButton = GameObject.Find("PlayVP");
+            buyDevCardButton = GameObject.Find("BuyDevCard");
+            playVPButton.GetComponent<Button>().onClick.AddListener(playVP);
+            buyDevCardButton.GetComponent<Button>().onClick.AddListener(buyDevCard);
             devCardsVP.SetActive(false);
         }
         
@@ -47,6 +58,18 @@ namespace UI
         public void updateLeftDevCards(int updateLD)
         {
             leftDevCards.text = updateLD.ToString();
+        }
+        
+        
+        public void playVP()
+        {
+            clientRequest.requestPlayDevelopement(DEVELOPMENT_TYPE.VICTORY_POINT);
+        }
+        
+        public void buyDevCard()
+        {
+            Debug.Log($"CLIENT: Player wants to buy a devCard");
+            clientRequest.requestBuyDevelopement();
         }
     }
 }

@@ -4,11 +4,11 @@ using UnityEngine.UI;
 
 namespace UI
 {
-    public class changeVisibility : MonoBehaviour
+    public class ChangeVisibility : MonoBehaviour
     {
         public GameObject showButton;
         public GameObject hideButton;
-        private Boolean isVisible = false;
+        private Boolean isVisible;
 
         void Start()
         {

@@ -1607,8 +1607,6 @@ GameObject:
   m_Component:
   - component: {fileID: 153015444}
   - component: {fileID: 153015445}
-  - component: {fileID: 153015446}
-  - component: {fileID: 153015443}
   m_Layer: 0
   m_Name: _GameController
   m_TagString: Untagged
@@ -1616,18 +1614,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &153015443
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 153015442}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a682fd7bce9ab9346ad2f345d418fd4f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!4 &153015444
 Transform:
   m_ObjectHideFlags: 0
@@ -1655,36 +1641,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   robber: {fileID: 3788127331573154054, guid: 2e1533a3b472ba44ca1de86e28cd87b1, type: 3}
---- !u!114 &153015446
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 153015442}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9c21e1123e19d0e4099b026245d07282, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  showCurrentPlayer: {fileID: 0}
-  bricksText: {fileID: 50286457}
-  oreText: {fileID: 1031716333}
-  sheepText: {fileID: 1655867595}
-  wheatText: {fileID: 1616603397}
-  woodText: {fileID: 1393319310}
-  villageBlue: {fileID: 1473430204017719237, guid: 06b2b5d8f93919149a47c3914917dd9d, type: 3}
-  villageRed: {fileID: 1866053306598989734, guid: 92b6d5734317208419595df81af13528, type: 3}
-  villageWhite: {fileID: 8846029281639864893, guid: 14264cbe6a9e0f8429eec1745c8ecc27, type: 3}
-  villageYellow: {fileID: 6556314139959314210, guid: 0c5644bb1be42f04f8037189e9bda360, type: 3}
-  cityBlue: {fileID: 2176914337095495632, guid: d330560e48e1b0e45b01b2f8c3b39561, type: 3}
-  cityRed: {fileID: 3552176500700860784, guid: eccb6e89d0407a14a97b5d0c44af3b1e, type: 3}
-  cityWhite: {fileID: 7532268434397492872, guid: 60f8ebd340c1c4844bb13c1c687206f7, type: 3}
-  cityYellow: {fileID: 1263915188082681082, guid: 68239779616515f44be30061105bb60c, type: 3}
-  roadBlue: {fileID: 8340757790129642905, guid: e56b7453d7e170240b12669f24b262ae, type: 3}
-  roadRed: {fileID: 2739458748758786287, guid: d108855e67b985447b90c1dd46d631bd, type: 3}
-  roadWhite: {fileID: 1051114755748909797, guid: 5ab0f20020add774787c9431f1cdeec5, type: 3}
-  roadYellow: {fileID: 316076876585621947, guid: 0f97f4339df0ef048b6d6067eb0c01ac, type: 3}
 --- !u!1 &161583712
 GameObject:
   m_ObjectHideFlags: 0
@@ -1802,6 +1758,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 164336688}
+  - component: {fileID: 164336692}
+  - component: {fileID: 164336691}
+  - component: {fileID: 164336690}
   - component: {fileID: 164336689}
   m_Layer: 0
   m_Name: _UI
@@ -1837,7 +1796,43 @@ MonoBehaviour:
   m_GameObject: {fileID: 164336687}
   m_Enabled: 1
   m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a682fd7bce9ab9346ad2f345d418fd4f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &164336690
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 164336687}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 007d407f35f7448e9a0cf7b9176af76e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &164336691
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 164336687}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d4ca972628b44d8e9f1fc9af8759b246, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &164336692
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 164336687}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 83147f34d90149ff8040443b94474146, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &175538939
@@ -5933,7 +5928,6 @@ GameObject:
   - component: {fileID: 506207077}
   - component: {fileID: 506207076}
   - component: {fileID: 506207075}
-  - component: {fileID: 506207074}
   m_Layer: 5
   m_Name: TradeMenu
   m_TagString: Untagged
@@ -5941,18 +5935,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &506207074
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 506207073}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 83147f34d90149ff8040443b94474146, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &506207075
 MonoBehaviour:
   m_ObjectHideFlags: 0
