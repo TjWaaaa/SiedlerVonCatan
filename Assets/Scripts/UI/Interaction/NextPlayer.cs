@@ -8,6 +8,7 @@ namespace UI
     public class NextPlayer : MonoBehaviour
     {
         private ClientRequest clientRequest = new ClientRequest();
+        
         private GameObject nextPlayerButton;
 
         private void Start()

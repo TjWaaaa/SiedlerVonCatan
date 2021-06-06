@@ -1,39 +1,33 @@
 using System;
 using Enums;
-using Networking.ClientSide;
 using Networking.Communication;
-using Player;
-using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.EventSystems;
+
 
 public class BuildController : MonoBehaviour
 {
+    
     private ClientRequest clientRequest = new ClientRequest();
+    
     private Camera mainCamera;
-    
-    
-    private bool buildStreetMode;
-    private bool buildVillageMode;
-    private bool buildCityMode ;
-    
+
     private GameObject buildStreetButton;
     private GameObject buildVillageButton;
     private GameObject buildCityButton;
     
+    private bool buildStreetMode;
+    private bool buildVillageMode;
+    private bool buildCityMode;
     
     
-    
-
     // Start is called before the first frame update
     private void Start()
     {
         // Camera
         mainCamera = Camera.main;
-       
-
-        // Find Build Buttons and add event listener
+        
+        // Find buttons and add event listener
         buildStreetButton = GameObject.Find("buildStreet");
         buildVillageButton = GameObject.Find("buildVillage");
         buildCityButton = GameObject.Find("buildCity");
@@ -41,10 +35,11 @@ public class BuildController : MonoBehaviour
         buildVillageButton.GetComponent<Button>().onClick.AddListener(startBuildVillageMode);
         buildCityButton.GetComponent<Button>().onClick.AddListener(startBuildCityMode);
         
-        
-
     }
 
+    /// <summary>
+    /// Player sends a buildrequest, if the corresponding button is clicked and the raycast hits a collider
+    /// </summary>
     // Update is called once per frame
     private void Update()
     {

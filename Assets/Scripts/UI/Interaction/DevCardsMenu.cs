@@ -14,6 +14,7 @@ namespace UI
         
         private TextMeshProUGUI leftDevCards;
         private TextMeshProUGUI amountVP;
+        
         private GameObject devCardsVP;
         private GameObject playVPButton;
         private GameObject buyDevCardButton;
@@ -21,7 +22,7 @@ namespace UI
 
         public void Start()
         {
-            // Find GameObjects
+            // Find GameObjects and add event listener
             leftDevCards = GameObject.Find("LeftDevCards").GetComponent<TextMeshProUGUI>();
             amountVP = GameObject.Find("AmountVP").GetComponent<TextMeshProUGUI>();
             devCardsVP = GameObject.Find("DevCardsVP");
@@ -29,11 +30,13 @@ namespace UI
             buyDevCardButton = GameObject.Find("BuyDevCard");
             playVPButton.GetComponent<Button>().onClick.AddListener(playVP);
             buyDevCardButton.GetComponent<Button>().onClick.AddListener(buyDevCard);
+            
+            // Devcards are inactive by default
             devCardsVP.SetActive(false);
         }
         
         /// <summary>
-        /// If the player has DevCards of type VICTORY_POINT, they are shown
+        /// If the player has DevCards of type VICTORY_POINT, they are shown. Also the amount is shown
         /// </summary>
         /// <param name="ownClientPlayer"></param>
         public void showDevCards(OwnClientPlayer ownClientPlayer)
