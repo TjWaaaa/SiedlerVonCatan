@@ -20,7 +20,7 @@ namespace Networking.ServerSide
         private int mandatoryNodeID;
         private bool firstRound = true;
         private bool inGameStartupPhase = true;
-        private bool villageBuild = false;
+        private bool villageBuilt = false;
         private readonly Stack<PLAYERCOLOR> possibleColors = new Stack<PLAYERCOLOR>();
         private readonly ServerRequest serverRequest = new ServerRequest();
 
@@ -67,7 +67,6 @@ namespace Networking.ServerSide
 
         public void handleRequestPlayerReady(Packet clientPacket, int currentClientID)
         {
-
             bool runGame = true;
 
             foreach (ServerPlayer player in allPlayer.Values)
@@ -422,21 +421,23 @@ namespace Networking.ServerSide
                 {
                     case BUYABLES.VILLAGE:
                     case BUYABLES.CITY:
-                        bool buildSuccessfull = gameBoard.placeBuilding(posInArray, playerColor, inGameStartupPhase);
-                        if (inGameStartupPhase && buildSuccessfull && buildingType == BUYABLES.VILLAGE && !villageBuild && currentServerPlayer.getLeftVillages() > 3)
+                        if (inGameStartupPhase
+                            && buildingType == BUYABLES.VILLAGE
+                            && !villageBuilt 
+                            && gameBoard.placeBuilding(posInArray, playerColor, inGameStartupPhase))
                         {
                             currentServerPlayer.buildVillage();
                             mandatoryNodeID = posInArray;
-                            villageBuild = true;
+                            villageBuilt = true;
                             serverRequest.notifyObjectPlacement(buildingType, posInArray, playerColor);
                             updateOwnPlayer(currentPlayer);
                             updateRepPlayers();
                             return;
                         }
 
-                        if (!inGameStartupPhase && buildSuccessfull)
+                        if (!inGameStartupPhase
+                            && gameBoard.placeBuilding(posInArray, playerColor, inGameStartupPhase))
                         {
-                            // Missing restrictions!
                             currentServerPlayer.buyBuyable(buildingType);
                             serverRequest.notifyObjectPlacement(buildingType, posInArray, playerColor);
                             updateOwnPlayer(currentPlayer);
@@ -450,7 +451,7 @@ namespace Networking.ServerSide
                         {
                             currentServerPlayer.buildStreet();
                             mandatoryNodeID = -1;
-                            villageBuild = false;
+                            villageBuilt = false;
                             serverRequest.notifyObjectPlacement(buildingType, posInArray, playerColor);
                             updateOwnPlayer(currentPlayer);
                             updateRepPlayers();
