@@ -9,6 +9,7 @@ using UnityEngine.UI;
 using Networking.Package;
 using Networking.ServerSide;
 using Player;
+using TMPro;
 using Trade;
 using UI;
 
@@ -239,7 +240,11 @@ namespace Networking.ClientSide
             // Show victorious Player
             // Load the post game Scene or Lobby so a new game can be started
             Debug.Log($"CLIENT: Yeay somebody won and it is {serverPacket.playerName} with the color {serverPacket.playerColor}");
-            throw new System.NotImplementedException();
+            SceneManager.LoadScene("3_EndScene");
+            
+            string win = $"Congratulations!\nPlayer {serverPacket.playerName} won the game!";
+            
+            //GameObject.Find("Canvas/victoryPanel/Congrats").GetComponent<TextMeshPro>().text = win;
         }
 
         public void handleClientDisconnect(Packet serverPacket)
