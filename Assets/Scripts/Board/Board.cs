@@ -104,7 +104,7 @@ public class Board
     {
         Stack<HEXAGON_TYPE> landStack = createRandomHexagonStackFromArray(landHexagons);
         Stack<HEXAGON_TYPE> portStack = createRandomHexagonStackFromArray(portHexagons);
-       numberStack = createRandomHexagonNumberStack(availableNumbers);
+        numberStack = createRandomHexagonNumberStack(availableNumbers);
 
         hexagonsArray = new Hexagon[7][];
 
@@ -228,7 +228,7 @@ public class Board
             && currentNode.getOccupant() != player
             || currentNode.getBuildingType() == BUILDING_TYPE.CITY)
         {
-            Debug.Log("SERVER: occupied by enemy or city");
+            Debug.Log("SERVER: node occupied by enemy or is city");
             return false;
         }
 
@@ -242,8 +242,8 @@ public class Board
             // false if a neighborNode is already occupied
             if (node.getBuildingType() != BUILDING_TYPE.NONE) return false;
         }
-
-        //in pre game phase cities can be build without being adjacent to a node
+        
+        // if not in pre game phase, adjacent edges have to get checked
         if (!preGamePhase)
         {
             foreach (int edgePos in neighborEdgesPos)
@@ -252,9 +252,12 @@ public class Board
                 // true if at least 1 edge is occupied by player
                 if (edge.getOccupant() == player) return true;
             }
+            // false if none is occupied by player
+            return false;
         }
+        // true if in pre game phase
+        // in pre game phase cities can be build without being adjacent to a node
         return true;
-        //return false;
     }
 
     /// <summary>
