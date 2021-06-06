@@ -420,15 +420,14 @@ namespace Networking.ServerSide
                 switch (buildingType)
                 {
                     case BUYABLES.VILLAGE:
-                    case BUYABLES.CITY:
                         if (inGameStartupPhase
-                            && buildingType == BUYABLES.VILLAGE
                             && !villageBuilt 
-                            && gameBoard.placeBuilding(posInArray, playerColor, inGameStartupPhase))
+                            && gameBoard.canPlaceBuilding(posInArray, playerColor, BUILDING_TYPE.VILLAGE, inGameStartupPhase))
                         {
-                            currentServerPlayer.buildVillage();
                             mandatoryNodeID = posInArray;
                             villageBuilt = true;
+                            currentServerPlayer.reduceLeftVillages();
+                            gameBoard.placeBuilding(posInArray, playerColor, BUILDING_TYPE.VILLAGE);
                             serverRequest.notifyObjectPlacement(buildingType, posInArray, playerColor);
                             updateOwnPlayer(currentPlayer);
                             updateRepPlayers();
@@ -436,22 +435,38 @@ namespace Networking.ServerSide
                         }
 
                         if (!inGameStartupPhase
-                            && gameBoard.placeBuilding(posInArray, playerColor, inGameStartupPhase))
+                            && gameBoard.canPlaceBuilding(posInArray, playerColor, BUILDING_TYPE.VILLAGE, inGameStartupPhase))
                         {
                             currentServerPlayer.buyBuyable(buildingType);
+                            currentServerPlayer.reduceLeftVillages();
+                            gameBoard.placeBuilding(posInArray, playerColor, BUILDING_TYPE.VILLAGE);
                             serverRequest.notifyObjectPlacement(buildingType, posInArray, playerColor);
                             updateOwnPlayer(currentPlayer);
                             updateRepPlayers();
                             return;
                         }
                         break;
-
-                    case BUYABLES.ROAD:
-                        if (inGameStartupPhase && gameBoard.placeRoad(posInArray, mandatoryNodeID, playerColor) && currentServerPlayer.getLeftStreets() > 13)
+                    case BUYABLES.CITY:
+                        if (!inGameStartupPhase
+                            && gameBoard.canPlaceBuilding(posInArray, playerColor, BUILDING_TYPE.CITY, inGameStartupPhase))
                         {
-                            currentServerPlayer.buildStreet();
+                            currentServerPlayer.buyBuyable(buildingType);
+                            currentServerPlayer.reduceLeftCities();
+                            gameBoard.placeBuilding(posInArray, playerColor, BUILDING_TYPE.CITY);
+                            serverRequest.notifyObjectPlacement(buildingType, posInArray, playerColor);
+                            updateOwnPlayer(currentPlayer);
+                            updateRepPlayers();
+                            return;
+                        }
+                        break;
+                    case BUYABLES.ROAD:
+                        if (inGameStartupPhase
+                            && gameBoard.canPlaceRoad(posInArray, mandatoryNodeID, playerColor))
+                        {
                             mandatoryNodeID = -1;
                             villageBuilt = false;
+                            currentServerPlayer.reduceLeftRoads();
+                            gameBoard.placeRoad(posInArray, playerColor);
                             serverRequest.notifyObjectPlacement(buildingType, posInArray, playerColor);
                             updateOwnPlayer(currentPlayer);
                             updateRepPlayers();
@@ -459,9 +474,13 @@ namespace Networking.ServerSide
                             return;
                         }
 
-                        if (!inGameStartupPhase && gameBoard.placeRoad(posInArray, playerColor))
+                        if (!inGameStartupPhase
+                            && currentServerPlayer.canBuyBuyable(buildingType)
+                            && gameBoard.canPlaceRoad(posInArray, playerColor))
                         {
                             currentServerPlayer.buyBuyable(buildingType);
+                            currentServerPlayer.reduceLeftRoads();
+                            gameBoard.placeRoad(posInArray, playerColor);
                             serverRequest.notifyObjectPlacement(buildingType, posInArray, playerColor);
                             updateOwnPlayer(currentPlayer);
                             updateRepPlayers();

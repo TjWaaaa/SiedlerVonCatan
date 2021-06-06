@@ -192,26 +192,24 @@ public class Board
     /// </summary>
     /// <param name="nodeId">position of a node in the nodes[] array</param>
     /// <param name="player">color of the player who tries to build</param>
-    public bool placeBuilding(int nodeId, PLAYERCOLOR player, bool preGamePhase)
+    public bool canPlaceBuilding(int nodeId, PLAYERCOLOR player, BUILDING_TYPE buildingType, bool preGamePhase)
     {
         Node requestedNode = nodesArray[nodeId];
         if (!allowedToBuildOnNode(requestedNode, player, preGamePhase)) return false;
 
-        if (requestedNode.getBuildingType() == BUILDING_TYPE.NONE)
+        if (buildingType == BUILDING_TYPE.VILLAGE
+            && requestedNode.getBuildingType() == BUILDING_TYPE.NONE)
         {
-            Debug.Log("SERVER: place village");
-            requestedNode.setBuildingType(BUILDING_TYPE.VILLAGE);
-            requestedNode.setOccupant(player);
+            Debug.Log("SERVER: village can be placed");
             return true;
         }
-        if (requestedNode.getBuildingType() == BUILDING_TYPE.VILLAGE)
+        if (buildingType == BUILDING_TYPE.CITY
+            && requestedNode.getBuildingType() == BUILDING_TYPE.VILLAGE)
         {
-            Debug.Log("SERVER: place city");
-            requestedNode.setBuildingType(BUILDING_TYPE.CITY);
-            requestedNode.setOccupant(player);
+            Debug.Log("SERVER: city can be placed");
             return true;
         }
-
+        Debug.Log("SERVER: canPlaceBuilding(): building of type " + buildingType + " cant be built");
         return false;
     }
 
@@ -260,6 +258,25 @@ public class Board
         return true;
     }
 
+    public void placeBuilding(int nodeId, PLAYERCOLOR player, BUILDING_TYPE buildingType)
+    {
+        Node requestedNode = nodesArray[nodeId];
+        switch (buildingType)
+        {
+            case BUILDING_TYPE.VILLAGE:
+                requestedNode.setBuildingType(BUILDING_TYPE.VILLAGE);
+                requestedNode.setOccupant(player);
+                break;
+            case BUILDING_TYPE.CITY:
+                requestedNode.setBuildingType(BUILDING_TYPE.CITY);
+                requestedNode.setOccupant(player);
+                break;
+            default:
+                Debug.Log("SERVER: buildBuilding() building of type " + buildingType + " cant be built");
+                break;
+        }
+    }
+
     /// <summary>
     /// This function has to get called to place a road onto a specific edge.
     /// If the player is allowed to place a road on the Edge with id 'edgeId',
@@ -267,7 +284,7 @@ public class Board
     /// </summary>
     /// <param name="edgeId">position of an edge in the edges[] array</param>
     /// <param name="player">color of the player who tries to build</param>
-    public bool placeRoad(int edgeId, PLAYERCOLOR player)
+    public bool canPlaceRoad(int edgeId, PLAYERCOLOR player)
     {
         Edge currentEdge = edgesArray[edgeId];
         
@@ -275,8 +292,7 @@ public class Board
         
         if (currentEdge.getOccupant() == PLAYERCOLOR.NONE)
         {
-            Debug.Log("SERVER: place road");
-            currentEdge.setOccupant(player);
+            Debug.Log("SERVER: road can be placed");
             return true;
         }
 
@@ -290,29 +306,23 @@ public class Board
     /// a road gets built
     /// </summary>
     /// <param name="edgeId">position of an edge in the edges[] array</param>
-    /// <param name="mandatoryAdjacentNode">Position of the mandatory neighbor village</param>
+    /// <param name="mandatoryAdjacentNodePos">Position of the mandatory neighbor village</param>
     /// <param name="player">color of the player who tries to build</param>
     /// <returns>a bool which states, if the player is allowed to build a road at the disered positio</returns>
-    public bool placeRoad(int edgeId, int mandatoryAdjacentNode, PLAYERCOLOR player)
+    public bool canPlaceRoad(int edgeId, int mandatoryAdjacentNodePos, PLAYERCOLOR player)
     {
         Edge currentEdge = edgesArray[edgeId];
-        bool mandatoryNodeIsNeighbor = false;
+        if (currentEdge.getOccupant() != PLAYERCOLOR.NONE) return false;
+        
         int[] neighborNodesPos = currentEdge.getAdjacentNodesPos();
-
+        
         foreach (int adjacentNodePos in neighborNodesPos)
         {
-            if (adjacentNodePos == mandatoryAdjacentNode)
+            if (adjacentNodePos == mandatoryAdjacentNodePos)
             {
-                mandatoryNodeIsNeighbor = true;
-                break;
+                Debug.Log("SERVER: road can be placed");
+                return true;
             }
-        }
-
-        if (mandatoryNodeIsNeighbor && currentEdge.getOccupant() == PLAYERCOLOR.NONE)
-        {
-            Debug.Log("SERVER: place road");
-            currentEdge.setOccupant(player);
-            return true;
         }
 
         return false;
@@ -344,6 +354,13 @@ public class Board
         }
 
         return false;
+    }
+
+    public void placeRoad(int edgeId, PLAYERCOLOR player)
+    {
+        Debug.Log("SERVER: road placed");
+        Edge currentEdge = edgesArray[edgeId];
+        currentEdge.setOccupant(player);
     }
 
     public int[] distributeResources(int hexagonNumber, PLAYERCOLOR playerColor)
