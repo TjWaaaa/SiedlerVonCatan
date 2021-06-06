@@ -25,9 +25,7 @@ public class InputController : MonoBehaviour
     // DevCards
     private GameObject playVPButton;
     private GameObject buyDevCardButton;
-    private static TextMeshProUGUI leftDevCards;
-    private static TextMeshProUGUI amountVP;
-    private static GameObject devCardsVP;
+    
 
     // Start is called before the first frame update
     private void Start()
@@ -48,10 +46,6 @@ public class InputController : MonoBehaviour
         // DevCards
         playVPButton = GameObject.Find("PlayVP");
         buyDevCardButton = GameObject.Find("BuyDevCard");
-        leftDevCards = GameObject.Find("LeftDevCards").GetComponent<TextMeshProUGUI>();
-        amountVP = GameObject.Find("AmountVP").GetComponent<TextMeshProUGUI>();
-        devCardsVP = GameObject.Find("DevCardsVP");
-        devCardsVP.SetActive(false);
         playVPButton.GetComponent<Button>().onClick.AddListener(playVP);
         buyDevCardButton.GetComponent<Button>().onClick.AddListener(buyDevCard);
 
@@ -101,11 +95,6 @@ public class InputController : MonoBehaviour
         }
     }
     
-    public void NextPlayer()
-    {
-        Debug.Log("CLIENT: NextPlayer in GameController is called");
-        clientRequest.requestEndTurn();
-    }
 
     private void stopBuildMode()
     {
@@ -156,23 +145,5 @@ public class InputController : MonoBehaviour
         clientRequest.requestBuyDevelopement();
     }
 
-    public static void showDevCards(OwnClientPlayer ownClientPlayer)
-    {
-        int cacheAmountVP = ownClientPlayer.getDevCardAmount(DEVELOPMENT_TYPE.VICTORY_POINT);
-        
-        if (cacheAmountVP > 0)
-        {
-            devCardsVP.SetActive(true);
-            amountVP.text = cacheAmountVP.ToString();
-        }
-        else
-        {
-            devCardsVP.SetActive(false);
-        }
-    }
-
-    public static void updateLeftDevCards(int updateLD)
-    {
-        leftDevCards.text = updateLD.ToString();
-    }
+    
 }

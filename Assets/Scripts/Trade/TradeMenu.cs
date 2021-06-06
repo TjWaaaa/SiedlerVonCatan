@@ -117,22 +117,22 @@ namespace Trade
         /// </summary>
         /// <returns>offer</returns>
         private int[] convertOfferResourcesToArray()
+        {
+            int[] offer = new int[5];
+            foreach (GameObject button in offerResources) 
+            {
+                if (button.GetComponent<TradeButton>().getResourcetype() == TradeButton.getOfferResourcetype())
                 {
-                    int[] offer = new int[5];
-                    foreach (GameObject button in offerResources) 
-                    {
-                        if (button.GetComponent<TradeButton>().getResourcetype() == TradeButton.getOfferResourcetype())
-                        {
-                            offer[Array.IndexOf(offerResources, button)] = 4;
-                        }
-                        else
-                        {
-                            offer[Array.IndexOf(offerResources, button)] = 0;
-                        }
-                    }
-                    
-                    return offer;
+                    offer[Array.IndexOf(offerResources, button)] = 4;
                 }
+                else
+                {
+                    offer[Array.IndexOf(offerResources, button)] = 0;
+                }
+            }
+            
+            return offer;
+        }
 
         /// <summary>
         /// Convert expectResource to a sendable Array
