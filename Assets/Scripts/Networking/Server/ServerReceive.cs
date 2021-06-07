@@ -456,12 +456,13 @@ namespace Networking.ServerSide
                     break;
                 case BUYABLES.ROAD:
                     if (inGameStartupPhase
+                        && villageBuilt
                         && gameBoard.canPlaceRoad(posInArray, mandatoryNodeID, playerColor))
                     {
-                        mandatoryNodeID = -1;
                         villageBuilt = false;
                         currentServerPlayer.reduceLeftRoads();
                         gameBoard.placeRoad(posInArray, playerColor);
+                        mandatoryNodeID = -1;
                         serverRequest.notifyObjectPlacement(buildingType, posInArray, playerColor);
                         updateOwnPlayer(currentPlayer);
                         updateRepPlayers();
@@ -486,10 +487,5 @@ namespace Networking.ServerSide
 
             serverRequest.notifyRejection(currentServerPlayer.getPlayerID(), "Building cant be built");
         }
-            // else
-            // {
-            //     serverRequest.notifyRejection(currentServerPlayer.getPlayerID(), "You don't have enough resources");
-            //     Debug.Log("SERVER: not enough resources");
-            // }
     }
 }
