@@ -10,28 +10,26 @@ namespace UI
 {
     public class PlayerRepresentation
     {
-        private GameObject[] playerBoardLights = new GameObject[4]; 
-
         
+        private GameObject[] playerBoardLights = new GameObject[4];
         private List<GameObject> playerRepresentations = new List<GameObject>();
         
 
+        /// <summary>
+        /// Represents all player on boards
+        /// </summary>
+        /// <param name="representativePlayers">array of all players, which are ingame</param>
         public void represent(RepresentativePlayer[] representativePlayers)
         {
-            
-            // find all Playerboards and set them inactive
-                     
+            // Find all Playerboards and set them inactive
             for (int playerRepresentation = 0; playerRepresentation < 4; playerRepresentation++)
             {
                 playerRepresentations.Add(GameObject.Find("Player"+(playerRepresentation+1)));
                 playerBoardLights[playerRepresentation] = GameObject.Find("Player" + (playerRepresentation+1)+ "/PlayerRepresentation/Board_light");
                 playerRepresentations[playerRepresentation].SetActive(false);
-
             }
-            
 
-            // represent all players
-                     
+            // Represent all players
             for (int player = 0; player < representativePlayers.Length; player++)
             {
                 playerRepresentations[player].SetActive(true);
@@ -41,8 +39,7 @@ namespace UI
                 updateUiPR(player, representativePlayers[player]);
             }
             
-            // delete PLayerboards which aren't ingame
-
+            // Delete PLayerboards which aren't ingame
             for (int playerboards = 4; playerboards > representativePlayers.Length; playerboards--)
             {
                 playerRepresentations.RemoveAt(playerboards - 1);
@@ -51,8 +48,12 @@ namespace UI
             Debug.Log("CLIENT/SERVER: There are "+ playerRepresentations.Count + " Players ingame");
         }
         
-        // player = index in representativePlayers
-
+        
+        /// <summary>
+        /// Update Victorypoints, resources amount and devcard amount 
+        /// </summary>
+        /// <param name="player">index in playerRepresentations (playernumber -1)</param>
+        /// <param name="representativePlayer">representativePlayer, which should be updated</param>
         public void updateUiPR(int player, RepresentativePlayer representativePlayer)
         {   
             Debug.Log("CLIENT: RPUi has been updated via PlayerRepresentation.cs");
@@ -61,11 +62,16 @@ namespace UI
             playerRepresentations[player].transform.GetChild(0).transform.GetChild(5).GetComponent<TextMeshProUGUI>().text = representativePlayer.getDevCardAmount().ToString();
         }
 
+        /// <summary>
+        /// Show current player by setting the light_board in front of the normal.
+        /// Change it back for the previous player.
+        /// </summary>
+        /// <param name="previousPlayer">board, which has to be dark</param>
+        /// <param name="nextPlayer">board, which has to be light</param>
         public void showNextPlayer(int previousPlayer, int nextPlayer)
         {
             playerBoardLights[previousPlayer].transform.SetAsFirstSibling();
             playerBoardLights[nextPlayer].transform.SetSiblingIndex(1);
-            //GameObject.Find("Player" + (nextPlayer +1)+ "/PlayerRepresentation/Board_light").
         }
     }
 }
