@@ -18,9 +18,11 @@ namespace Networking.ServerSide
         private int playerAmount = 0;
         private int currentPlayer = 0;
         private int mandatoryNodeID;
+
         private bool firstRound = true;
         private bool inGameStartupPhase = true;
         private bool villageBuilt = false;
+
         private readonly Stack<PLAYERCOLOR> possibleColors = new Stack<PLAYERCOLOR>();
         private readonly ServerRequest serverRequest = new ServerRequest();
 
@@ -375,14 +377,14 @@ namespace Networking.ServerSide
         {
             if (!firstRound)
             {
-                if (currentPlayer == playerAmount - 1 && inGameStartupPhase)
+                if (inGameStartupPhase && currentPlayer == playerAmount - 1)
                 {
                     inGameStartupPhase = false;
+                    currentPlayer = 0;
                     handleBeginRound(clientPacket);
                     Debug.Log("SERVER: StartupPhase is over now");
                 }
-
-                if (currentPlayer == playerAmount - 1)
+                else if (currentPlayer == playerAmount - 1)
                 {
                     currentPlayer = 0;
                 }
@@ -396,15 +398,6 @@ namespace Networking.ServerSide
                 if (currentPlayer == 0)
                 {
                     firstRound = false;
-
-                    if (currentPlayer == playerAmount - 1)
-                    {
-                        currentPlayer = 0;
-                    }
-                    else
-                    {
-                        currentPlayer++;
-                    }
                 }
                 else
                 {
