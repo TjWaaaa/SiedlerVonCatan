@@ -19,7 +19,7 @@ public class ButtonEvents : MonoBehaviour
     }
 
 
-    private void playAgain()
+    public void playAgain()
     {
         Client.shutDownClient();
         Server.shutDownServer();
@@ -27,7 +27,7 @@ public class ButtonEvents : MonoBehaviour
     }
 
 
-    private void quitGame()
+    public void quitGame()
     {
 #if UNITY_EDITOR
         Client.shutDownClient();

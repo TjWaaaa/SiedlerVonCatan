@@ -215,9 +215,9 @@ namespace Networking.ClientSide
         /// </summary>
         public static void shutDownClient()
         {
-            lock (keepAliveTimer)
+            if (isRunning)
             {
-                if (isRunning)
+                lock (keepAliveTimer)
                 {
                     isRunning = false;
                     

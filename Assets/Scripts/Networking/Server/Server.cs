@@ -311,6 +311,7 @@ namespace Networking.ServerSide
                 keepAliveTimer.Stop();
                 keepAliveTimer.Dispose();
                 closeAllSockets();
+                isRunning = false;
             }
         }
 
@@ -330,7 +331,7 @@ namespace Networking.ServerSide
                 }
                 catch (Exception e)
                 {
-                    Debug.LogError($"SERVER: Socket with number {key} could not be shut down. Closing..." + e);
+                    Debug.LogError($"SERVER: Socket with number {key} could not be shut down. Closing... \n" + e);
                 }
                 finally
                 {
