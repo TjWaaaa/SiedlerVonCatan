@@ -94,6 +94,7 @@ namespace Networking.ServerSide
                 currentPlayer = playerAmount - 1;
                 serverRequest.gamestartInitialize(gameBoard.getHexagonsArray());
                 shuffledDevCardStack = generateRandomDevCardStack(unshuffledDevCardArray);
+                serverRequest.notifyNextPlayer(currentPlayer);
             }
 
             // send error if no player was found
@@ -456,16 +457,18 @@ namespace Networking.ServerSide
                     break;
                 case BUYABLES.ROAD:
                     if (inGameStartupPhase
+                        && villageBuilt
                         && gameBoard.canPlaceRoad(posInArray, mandatoryNodeID, playerColor))
                     {
-                        mandatoryNodeID = -1;
                         villageBuilt = false;
                         currentServerPlayer.reduceLeftRoads();
                         gameBoard.placeRoad(posInArray, playerColor);
+                        mandatoryNodeID = -1;
                         serverRequest.notifyObjectPlacement(buildingType, posInArray, playerColor);
                         updateOwnPlayer(currentPlayer);
                         updateRepPlayers();
                         changeCurrentPlayer(clientPacket);
+                        serverRequest.notifyNextPlayer(currentPlayer);
                         return;
                     }
                     if (!inGameStartupPhase
