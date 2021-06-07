@@ -395,7 +395,7 @@ public class Board
             }
         }
 
-        Debug.Log("SERVER: Player " + (int) playerColor + " gets: " + distributedResources);
+        Debug.Log("SERVER: Player " + (int) playerColor + " gets: " + distributedResources[0] + distributedResources[1] + distributedResources[2] + distributedResources[3] + distributedResources[4]);
         return distributedResources;
     }
 
@@ -404,13 +404,11 @@ public class Board
         int[] distributedResources = new int[5];
         Node village = nodesArray[nodeId];
         int[][] adjacentHexagonsPos = village.getAdjacentHexagonsPos();
-
-        Debug.LogWarning("in distributeFirstResources");
+        
         foreach (int[] hexagonPos in adjacentHexagonsPos)
         {
             HEXAGON_TYPE hexagonType = hexagonsArray[hexagonPos[0]][hexagonPos[1]].getType();
             distributedResources[(int) hexagonType]++;
-            Debug.LogWarning("distributed resource: " + hexagonType);
         }
         return distributedResources;
     }

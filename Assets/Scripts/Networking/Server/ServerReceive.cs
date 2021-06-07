@@ -125,7 +125,7 @@ namespace Networking.ServerSide
                 {
                     player.setResourceAmount((RESOURCETYPE) i, distributedResources[i]);
                 }
-                updateOwnPlayer(currentPlayer);
+                updateOwnPlayer(playerIndex);
             }
             updateRepPlayers();
         }
@@ -138,7 +138,7 @@ namespace Networking.ServerSide
                 serverRequest.notifyRejection(clientPacket.myPlayerID, "You are not allowed to trade with bank!");
                 return;
             }
-
+            Debug.LogWarning("offer: " + clientPacket.tradeResourcesOffer + "; expect: " + clientPacket.tradeResourcesExpect);
             allPlayer.ElementAt(currentPlayer).Value.trade(clientPacket.tradeResourcesOffer, clientPacket.tradeResourcesExpect);
 
             updateRepPlayers();
@@ -422,11 +422,9 @@ namespace Networking.ServerSide
                         currentServerPlayer.reduceLeftVillages();
                         gameBoard.placeBuilding(posInArray, playerColor, BUILDING_TYPE.VILLAGE);
                         serverRequest.notifyObjectPlacement(buildingType, posInArray, playerColor);
-                        Debug.LogWarning("firstRound: " + firstRound);
-                        
+
                         // distribute ressources for first 2 villages
                         int[] distributedResources = gameBoard.distributeFirstResources(posInArray);
-                        Debug.LogWarning("Distribute first resources");
                         for (int i = 0; i < distributedResources.Length; i++)
                         {
                             currentServerPlayer.setResourceAmount((RESOURCETYPE) i, distributedResources[i]);
