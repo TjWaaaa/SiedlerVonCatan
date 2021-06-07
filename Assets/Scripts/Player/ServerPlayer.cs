@@ -171,14 +171,25 @@ namespace Player
         public void trade(int[] offer, int[] expect)
         {
 
+            RESOURCETYPE offerRes = RESOURCETYPE.NONE;
+            RESOURCETYPE expectRes = RESOURCETYPE.NONE;
             for (int i = 0; i < offer.Length; i++)
             {
                 resources[resources.ElementAt(i).Key] -= offer[i];
+                if (offer[i] > 0)
+                {
+                    offerRes = resources.ElementAt(i).Key;
+                }
             }
             for (int i = 0; i < expect.Length; i++)
             {
                 resources[resources.ElementAt(i).Key] += expect[i];
+                if (expect[i] > 0)
+                {
+                    expectRes = resources.ElementAt(i).Key;
+                }
             }
+            Debug.Log("traded " + offerRes + " against " + expectRes);
         }
 
         // Buy

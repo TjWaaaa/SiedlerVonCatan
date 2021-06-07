@@ -86,6 +86,7 @@ namespace Trade
             if (TradeButton.isValidTradeRequest())
             {
 
+                Debug.Log("Client want's to trade " + TradeButton.getOfferResourcetype() + " against " + TradeButton.getExpectResourcetype());
                 int[] offer = convertOfferResourcesToArray();
                 int[] expect = convertExpectResourcesToArray();
                 
