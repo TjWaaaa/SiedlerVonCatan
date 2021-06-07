@@ -18,16 +18,18 @@ namespace Networking.ServerSide
         private int playerAmount = 0;
         private int currentPlayer = 0;
         private int mandatoryNodeID;
+
         private bool firstRound = true;
         private bool inGameStartupPhase = true;
         private bool villageBuilt = false;
+
         private readonly Stack<PLAYERCOLOR> possibleColors = new Stack<PLAYERCOLOR>();
         private readonly ServerRequest serverRequest = new ServerRequest();
 
         private Board gameBoard = new Board();
         private Stack<DEVELOPMENT_TYPE> shuffledDevCardStack = new Stack<DEVELOPMENT_TYPE>();
-        private DEVELOPMENT_TYPE[] unshuffledDevCardArray = { DEVELOPMENT_TYPE.VICTORY_POINT, 
-            DEVELOPMENT_TYPE.VICTORY_POINT, DEVELOPMENT_TYPE.VICTORY_POINT, DEVELOPMENT_TYPE.VICTORY_POINT, 
+        private DEVELOPMENT_TYPE[] unshuffledDevCardArray = { DEVELOPMENT_TYPE.VICTORY_POINT,
+            DEVELOPMENT_TYPE.VICTORY_POINT, DEVELOPMENT_TYPE.VICTORY_POINT, DEVELOPMENT_TYPE.VICTORY_POINT,
             DEVELOPMENT_TYPE.VICTORY_POINT, DEVELOPMENT_TYPE.VICTORY_POINT, DEVELOPMENT_TYPE.VICTORY_POINT };
 
         public ServerReceive()
@@ -112,7 +114,7 @@ namespace Networking.ServerSide
 
             int[] diceNumbers = rollDices();
             serverRequest.notifyRollDice(diceNumbers);
-            
+
             Debug.Log("Würfel gewürfelt");
             // Distribute ressources
             for (int playerIndex = 0; playerIndex < allPlayer.Count; playerIndex++)
@@ -123,7 +125,7 @@ namespace Networking.ServerSide
 
                 for (int i = 0; i < distributedResources.Length; i++)
                 {
-                    player.setResourceAmount((RESOURCETYPE) i, distributedResources[i]);
+                    player.setResourceAmount((RESOURCETYPE)i, distributedResources[i]);
                 }
                 updateOwnPlayer(currentPlayer);
             }
@@ -236,7 +238,7 @@ namespace Networking.ServerSide
                 }
                 Debug.Log(clientPacket.developmentCard);
                 Debug.Log("SERVER: CurrentPlayer has enough cards: " + allPlayer.ElementAt(currentPlayer).Value.getDevCardAmount(clientPacket.developmentCard));
-                if (allPlayer.ElementAt(currentPlayer).Value.getDevCardAmount(clientPacket.developmentCard)>0)
+                if (allPlayer.ElementAt(currentPlayer).Value.getDevCardAmount(clientPacket.developmentCard) > 0)
                 {
                     allPlayer.ElementAt(currentPlayer).Value.playDevCard(clientPacket.developmentCard);
 
@@ -277,10 +279,10 @@ namespace Networking.ServerSide
             updateOwnPlayer(currentPlayer);
 
             // Begin next round
-            if (!inGameStartupPhase) 
+            if (!inGameStartupPhase)
             {
                 changeCurrentPlayer(clientPacket);
-                Debug.Log("SERVER: Current Player index: " + currentPlayer); 
+                Debug.Log("SERVER: Current Player index: " + currentPlayer);
                 serverRequest.notifyNextPlayer(currentPlayer);
                 handleBeginRound(clientPacket);
             }
@@ -375,14 +377,14 @@ namespace Networking.ServerSide
         {
             if (!firstRound)
             {
-                if (currentPlayer == playerAmount - 1 && inGameStartupPhase)
+                if (inGameStartupPhase && currentPlayer == playerAmount - 1)
                 {
                     inGameStartupPhase = false;
+                    currentPlayer = 0;
                     handleBeginRound(clientPacket);
                     Debug.Log("SERVER: StartupPhase is over now");
                 }
-
-                if (currentPlayer == playerAmount - 1)
+                else if (currentPlayer == playerAmount - 1)
                 {
                     currentPlayer = 0;
                 }
@@ -396,15 +398,6 @@ namespace Networking.ServerSide
                 if (currentPlayer == 0)
                 {
                     firstRound = false;
-
-                    if (currentPlayer == playerAmount - 1)
-                    {
-                        currentPlayer = 0;
-                    }
-                    else
-                    {
-                        currentPlayer++;
-                    }
                 }
                 else
                 {
@@ -421,7 +414,7 @@ namespace Networking.ServerSide
                 {
                     case BUYABLES.VILLAGE:
                         if (inGameStartupPhase
-                            && !villageBuilt 
+                            && !villageBuilt
                             && gameBoard.canPlaceBuilding(posInArray, playerColor, BUILDING_TYPE.VILLAGE, inGameStartupPhase))
                         {
                             mandatoryNodeID = posInArray;
