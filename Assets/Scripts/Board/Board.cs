@@ -381,7 +381,7 @@ public class Board
                     case BUILDING_TYPE.VILLAGE:
                         if (node.getOccupant() == playerColor)
                         {
-                            distributedResources[resourceType] += 1;
+                            distributedResources[resourceType]++;
                         }
                         break;
                     case BUILDING_TYPE.CITY:
@@ -396,6 +396,22 @@ public class Board
         }
 
         Debug.Log("SERVER: Player " + (int) playerColor + " gets: " + distributedResources);
+        return distributedResources;
+    }
+
+    public int[] distributeFirstResources(int nodeId)
+    {
+        int[] distributedResources = new int[5];
+        Node village = nodesArray[nodeId];
+        int[][] adjacentHexagonsPos = village.getAdjacentHexagonsPos();
+
+        Debug.LogWarning("in distributeFirstResources");
+        foreach (int[] hexagonPos in adjacentHexagonsPos)
+        {
+            HEXAGON_TYPE hexagonType = hexagonsArray[hexagonPos[0]][hexagonPos[1]].getType();
+            distributedResources[(int) hexagonType]++;
+            Debug.LogWarning("distributed resource: " + hexagonType);
+        }
         return distributedResources;
     }
 
