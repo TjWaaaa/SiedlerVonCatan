@@ -4,11 +4,15 @@ using UnityEngine.UI;
 
 namespace UI
 {
-    public class changeVisibility : MonoBehaviour
+    /// <summary>
+    /// Script for any GameObject, with one button to open and another button to close
+    /// </summary>
+    public class ChangeVisibility : MonoBehaviour
     {
         public GameObject showButton;
         public GameObject hideButton;
-        private Boolean isVisible = false;
+        
+        private Boolean isVisible;
 
         void Start()
         {

@@ -24,7 +24,7 @@ namespace Networking.ClientSide
         private GameObject scrollViewContent;
         private PlayerRepresentation playerRepresentation = new PlayerRepresentation();
         private OwnPlayerRepresentation ownPlayerRepresentation = new OwnPlayerRepresentation();
-        //private InputController inputController = new InputController();
+        private DevCardsMenu _devCardsMenu; 
 
         //private RepresentativePlayer[] representativePlayerArray;
         public List<RepresentativePlayer> representativePlayers = new List<RepresentativePlayer>();
@@ -73,6 +73,7 @@ namespace Networking.ClientSide
                     playerRepresentation.represent(representativePlayers.ToArray());
                     ownPlayerRepresentation.represent(ownClientPlayer);
                     playerRepresentation.showNextPlayer(0,currentPlayer);
+                    _devCardsMenu = GameObject.Find("_UI").GetComponent<DevCardsMenu>();
                     
                 }
             }
@@ -265,7 +266,7 @@ namespace Networking.ClientSide
             Debug.Log("CLIENT: Current Player: " + currentPlayer);
             if(!runFixedUpdate){playerRepresentation.showNextPlayer(currentPlayer, serverPacket.currentPlayerID);}
             currentPlayer = serverPacket.currentPlayerID;
-            Debug.Log("CLIENT: CurrentPlayer is player {serverPacket.currentPlayerID}");
+            Debug.Log($"CLIENT: CurrentPlayer is player {serverPacket.currentPlayerID}");
         }
 
         public void handleVictory(Packet serverPacket)
@@ -324,7 +325,7 @@ namespace Networking.ClientSide
 
         public void handleAcceptBuyDevelopement(Packet serverPacket)
         {
-            InputController.updateLeftDevCards(serverPacket.leftDevCards);
+            _devCardsMenu.updateLeftDevCards(serverPacket.leftDevCards);
             Debug.Log("CLIENT: One Development card was bought. There are " + serverPacket.leftDevCards + " cards left.");
         }
 
@@ -350,7 +351,7 @@ namespace Networking.ClientSide
         {
             ownClientPlayer.updateOP(serverPacket.updateOP,serverPacket.updateResourcesOnOP, serverPacket.updateDevCardsOnOP);
             ownPlayerRepresentation.updaetOwnPlayerUI(ownClientPlayer);
-            InputController.showDevCards(ownClientPlayer);
+            _devCardsMenu.showDevCards(ownClientPlayer);
             Debug.Log("CLIENT: UPDATE OP");
         }
     }

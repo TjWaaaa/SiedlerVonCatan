@@ -11,6 +11,7 @@ namespace Trade
         private ClientRequest clientRequest = new ClientRequest();
         
         // UI Interaction
+        private GameObject tradeMenu;
         private GameObject startTradeButton;
         private GameObject closeTradeButton;
         private GameObject tradeButton;
@@ -23,6 +24,7 @@ namespace Trade
 
         void Start()
         {
+            tradeMenu = GameObject.Find("TradeMenu");
             // Find all buttons 
             startTradeButton = GameObject.Find("startTrade");
             closeTradeButton = GameObject.Find("closeTrade");
@@ -41,7 +43,7 @@ namespace Trade
             foreach (GameObject button in expectResources) { button.GetComponent<Button>().onClick.AddListener(delegate { markExpectResource(button); }); }
 
             // Inactive by default
-            gameObject.SetActive(false);
+            tradeMenu.SetActive(false);
             
         }
         
@@ -94,7 +96,7 @@ namespace Trade
             setInactive();
         }
         
-        void startTrade() { gameObject.SetActive(true); }
+        void startTrade() { tradeMenu.SetActive(true); }
 
         void closeTrade() { setInactive(); }
         
@@ -108,7 +110,7 @@ namespace Trade
 
             resourceExpect.text = "";
             resourceOffer.text = "";
-            gameObject.SetActive(false);
+            tradeMenu.SetActive(false);
 
         }
         
@@ -117,22 +119,22 @@ namespace Trade
         /// </summary>
         /// <returns>offer</returns>
         private int[] convertOfferResourcesToArray()
+        {
+            int[] offer = new int[5];
+            foreach (GameObject button in offerResources) 
+            {
+                if (button.GetComponent<TradeButton>().getResourcetype() == TradeButton.getOfferResourcetype())
                 {
-                    int[] offer = new int[5];
-                    foreach (GameObject button in offerResources) 
-                    {
-                        if (button.GetComponent<TradeButton>().getResourcetype() == TradeButton.getOfferResourcetype())
-                        {
-                            offer[Array.IndexOf(offerResources, button)] = 4;
-                        }
-                        else
-                        {
-                            offer[Array.IndexOf(offerResources, button)] = 0;
-                        }
-                    }
-                    
-                    return offer;
+                    offer[Array.IndexOf(offerResources, button)] = 4;
                 }
+                else
+                {
+                    offer[Array.IndexOf(offerResources, button)] = 0;
+                }
+            }
+            
+            return offer;
+        }
 
         /// <summary>
         /// Convert expectResource to a sendable Array
