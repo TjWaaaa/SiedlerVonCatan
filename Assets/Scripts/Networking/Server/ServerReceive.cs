@@ -84,19 +84,18 @@ namespace Networking.ServerSide
                 }
             }
 
-            // Start game if all player are ready
-            // Todo: Boardgenerator!
+            // start game if all player are ready
+            //todo: Boardgenerator!
             if (runGame)
             {
+                //int[][] updateRepPlayers = convertSPAToRPA();
                 currentPlayer = playerAmount - 1;
                 serverRequest.gamestartInitialize(gameBoard.getHexagonsArray());
                 shuffledDevCardStack = generateRandomDevCardStack(unshuffledDevCardArray);
-                serverRequest.notifyNextPlayer(currentPlayer);
-                Debug.Log($"SERVER: Starting the game with player {currentPlayer}");
             }
 
-            // Send error if no player was found
-            // Todo: send error to all?
+            // send error if no player was found
+            // todo: send error to all?
             // serverRequest.notifyRejection(currentClientID, "You seem to be not existing...");
         }
 
@@ -126,7 +125,7 @@ namespace Networking.ServerSide
                 {
                     player.setResourceAmount((RESOURCETYPE) i, distributedResources[i]);
                 }
-                updateOwnPlayer(playerIndex);
+                updateOwnPlayer(currentPlayer);
             }
             updateRepPlayers();
         }
@@ -139,7 +138,7 @@ namespace Networking.ServerSide
                 serverRequest.notifyRejection(clientPacket.myPlayerID, "You are not allowed to trade with bank!");
                 return;
             }
-            Debug.LogWarning("offer: " + clientPacket.tradeResourcesOffer + "; expect: " + clientPacket.tradeResourcesExpect);
+
             allPlayer.ElementAt(currentPlayer).Value.trade(clientPacket.tradeResourcesOffer, clientPacket.tradeResourcesExpect);
 
             updateRepPlayers();
@@ -273,15 +272,20 @@ namespace Networking.ServerSide
                 return;
             }
 
+            // Updating Representative Players TODO: DELETE WHEN RESOURCE DISTRIBUTION IS IMPLEMENTED
+            updateRepPlayers();
+            updateOwnPlayer(currentPlayer);
+
             // Begin next round
             if (!inGameStartupPhase) 
             {
                 changeCurrentPlayer(clientPacket);
-                Debug.Log("SERVER: Current Player index: " + currentPlayer);
-                updateRepPlayers();
-                updateOwnPlayer(currentPlayer);
+                Debug.Log("SERVER: Current Player index: " + currentPlayer); 
+                serverRequest.notifyNextPlayer(currentPlayer);
                 handleBeginRound(clientPacket);
             }
+
+
         }
 
         public void handleClientDisconnectServerCall(int disconnectedClientID)
@@ -330,6 +334,11 @@ namespace Networking.ServerSide
         public void generatePlayer(int playerId)
         {
             ServerPlayer newPlayer = new ServerPlayer(playerId);
+            newPlayer.setResourceAmount(RESOURCETYPE.SHEEP, 15);
+            newPlayer.setResourceAmount(RESOURCETYPE.WOOD, 15);
+            newPlayer.setResourceAmount(RESOURCETYPE.BRICK, 15);
+            newPlayer.setResourceAmount(RESOURCETYPE.ORE, 15);
+            newPlayer.setResourceAmount(RESOURCETYPE.WHEAT, 15);
             allPlayer.Add(playerId, newPlayer);
             playerAmount++;
         }
@@ -381,7 +390,6 @@ namespace Networking.ServerSide
                 {
                     currentPlayer++;
                 }
-                serverRequest.notifyNextPlayer(currentPlayer);
             }
             else
             {
@@ -402,101 +410,93 @@ namespace Networking.ServerSide
                 {
                     currentPlayer--;
                 }
-                serverRequest.notifyNextPlayer(currentPlayer);
             }
         }
 
         private void buildStructure(ServerPlayer currentServerPlayer, BUYABLES buildingType, int posInArray, PLAYERCOLOR playerColor, Packet clientPacket)
         {
-            // if (currentServerPlayer.canBuyBuyable(buildingType))
-            // {
-            switch (buildingType)
+            if (currentServerPlayer.canBuyBuyable(buildingType))
             {
-                case BUYABLES.VILLAGE:
-                    if (inGameStartupPhase
-                        && !villageBuilt 
-                        && gameBoard.canPlaceBuilding(posInArray, playerColor, BUILDING_TYPE.VILLAGE, inGameStartupPhase))
-                    {
-                        mandatoryNodeID = posInArray;
-                        villageBuilt = true;
-                        currentServerPlayer.reduceLeftVillages();
-                        gameBoard.placeBuilding(posInArray, playerColor, BUILDING_TYPE.VILLAGE);
-                        serverRequest.notifyObjectPlacement(buildingType, posInArray, playerColor);
-
-                        // distribute ressources for first 2 villages
-                        int[] distributedResources = gameBoard.distributeFirstResources(posInArray);
-                        for (int i = 0; i < distributedResources.Length; i++)
+                switch (buildingType)
+                {
+                    case BUYABLES.VILLAGE:
+                        if (inGameStartupPhase
+                            && !villageBuilt 
+                            && gameBoard.canPlaceBuilding(posInArray, playerColor, BUILDING_TYPE.VILLAGE, inGameStartupPhase))
                         {
-                            currentServerPlayer.setResourceAmount((RESOURCETYPE) i, distributedResources[i]);
+                            mandatoryNodeID = posInArray;
+                            villageBuilt = true;
+                            currentServerPlayer.reduceLeftVillages();
+                            gameBoard.placeBuilding(posInArray, playerColor, BUILDING_TYPE.VILLAGE);
+                            serverRequest.notifyObjectPlacement(buildingType, posInArray, playerColor);
+                            updateOwnPlayer(currentPlayer);
+                            updateRepPlayers();
+                            return;
                         }
 
-                        updateOwnPlayer(currentPlayer);
-                        updateRepPlayers();
-                        return;
-                    }
-                    if (!inGameStartupPhase
-                        && currentServerPlayer.canBuyBuyable(buildingType)
-                        && gameBoard.canPlaceBuilding(posInArray, playerColor, BUILDING_TYPE.VILLAGE, inGameStartupPhase))
-                    {
-                        currentServerPlayer.buyBuyable(buildingType);
-                        currentServerPlayer.reduceLeftVillages();
-                        gameBoard.placeBuilding(posInArray, playerColor, BUILDING_TYPE.VILLAGE);
-                        serverRequest.notifyObjectPlacement(buildingType, posInArray, playerColor);
-                        updateOwnPlayer(currentPlayer);
-                        updateRepPlayers();
-                        return;
-                    }
-                    break;
-                case BUYABLES.CITY:
-                    if (!inGameStartupPhase
-                        && currentServerPlayer.canBuyBuyable(buildingType)
-                        && gameBoard.canPlaceBuilding(posInArray, playerColor, BUILDING_TYPE.CITY, inGameStartupPhase))
-                    {
-                        currentServerPlayer.buyBuyable(buildingType);
-                        currentServerPlayer.reduceLeftCities();
-                        gameBoard.placeBuilding(posInArray, playerColor, BUILDING_TYPE.CITY);
-                        serverRequest.notifyObjectPlacement(buildingType, posInArray, playerColor);
-                        updateOwnPlayer(currentPlayer);
-                        updateRepPlayers();
-                        return;
-                    }
-                    break;
-                case BUYABLES.ROAD:
-                    if (inGameStartupPhase
-                        && gameBoard.canPlaceRoad(posInArray, mandatoryNodeID, playerColor))
-                    {
-                        mandatoryNodeID = -1;
-                        villageBuilt = false;
-                        currentServerPlayer.reduceLeftRoads();
-                        gameBoard.placeRoad(posInArray, playerColor);
-                        serverRequest.notifyObjectPlacement(buildingType, posInArray, playerColor);
-                        updateOwnPlayer(currentPlayer);
-                        updateRepPlayers();
-                        changeCurrentPlayer(clientPacket);
-                        return;
-                    }
-                    if (!inGameStartupPhase
-                        && currentServerPlayer.canBuyBuyable(buildingType)
-                        && gameBoard.canPlaceRoad(posInArray, playerColor))
-                    {
-                        currentServerPlayer.buyBuyable(buildingType);
-                        currentServerPlayer.reduceLeftRoads();
-                        gameBoard.placeRoad(posInArray, playerColor);
-                        serverRequest.notifyObjectPlacement(buildingType, posInArray, playerColor);
-                        updateOwnPlayer(currentPlayer);
-                        updateRepPlayers();
-                        return;
-                    }
-                    break;
-                default: Debug.Log("SERVER: handleBuild(): wrong BUYABLES"); break;
-            }
+                        if (!inGameStartupPhase
+                            && gameBoard.canPlaceBuilding(posInArray, playerColor, BUILDING_TYPE.VILLAGE, inGameStartupPhase))
+                        {
+                            currentServerPlayer.buyBuyable(buildingType);
+                            currentServerPlayer.reduceLeftVillages();
+                            gameBoard.placeBuilding(posInArray, playerColor, BUILDING_TYPE.VILLAGE);
+                            serverRequest.notifyObjectPlacement(buildingType, posInArray, playerColor);
+                            updateOwnPlayer(currentPlayer);
+                            updateRepPlayers();
+                            return;
+                        }
+                        break;
+                    case BUYABLES.CITY:
+                        if (!inGameStartupPhase
+                            && gameBoard.canPlaceBuilding(posInArray, playerColor, BUILDING_TYPE.CITY, inGameStartupPhase))
+                        {
+                            currentServerPlayer.buyBuyable(buildingType);
+                            currentServerPlayer.reduceLeftCities();
+                            gameBoard.placeBuilding(posInArray, playerColor, BUILDING_TYPE.CITY);
+                            serverRequest.notifyObjectPlacement(buildingType, posInArray, playerColor);
+                            updateOwnPlayer(currentPlayer);
+                            updateRepPlayers();
+                            return;
+                        }
+                        break;
+                    case BUYABLES.ROAD:
+                        if (inGameStartupPhase
+                            && gameBoard.canPlaceRoad(posInArray, mandatoryNodeID, playerColor))
+                        {
+                            mandatoryNodeID = -1;
+                            villageBuilt = false;
+                            currentServerPlayer.reduceLeftRoads();
+                            gameBoard.placeRoad(posInArray, playerColor);
+                            serverRequest.notifyObjectPlacement(buildingType, posInArray, playerColor);
+                            updateOwnPlayer(currentPlayer);
+                            updateRepPlayers();
+                            changeCurrentPlayer(clientPacket);
+                            return;
+                        }
 
-            serverRequest.notifyRejection(currentServerPlayer.getPlayerID(), "Building cant be built");
+                        if (!inGameStartupPhase
+                            && currentServerPlayer.canBuyBuyable(buildingType)
+                            && gameBoard.canPlaceRoad(posInArray, playerColor))
+                        {
+                            currentServerPlayer.buyBuyable(buildingType);
+                            currentServerPlayer.reduceLeftRoads();
+                            gameBoard.placeRoad(posInArray, playerColor);
+                            serverRequest.notifyObjectPlacement(buildingType, posInArray, playerColor);
+                            updateOwnPlayer(currentPlayer);
+                            updateRepPlayers();
+                            return;
+                        }
+                        break;
+                    default: Debug.Log("SERVER: handleBuild(): wrong BUYABLES"); break;
+                }
+
+                serverRequest.notifyRejection(currentServerPlayer.getPlayerID(), "Building cant be built");
+            }
+            else
+            {
+                serverRequest.notifyRejection(currentServerPlayer.getPlayerID(), "You don't have enough resources");
+                Debug.Log("SERVER: not enough resources");
+            }
         }
-            // else
-            // {
-            //     serverRequest.notifyRejection(currentServerPlayer.getPlayerID(), "You don't have enough resources");
-            //     Debug.Log("SERVER: not enough resources");
-            // }
     }
 }

@@ -232,7 +232,7 @@ namespace Networking.ClientSide
             Debug.Log("CLIENT: Current Player: " + currentPlayer);
             if(!runFixedUpdate){playerRepresentation.showNextPlayer(currentPlayer, serverPacket.currentPlayerID);}
             currentPlayer = serverPacket.currentPlayerID;
-            Debug.Log($"CLIENT: CurrentPlayer is player {serverPacket.currentPlayerID}");
+            Debug.Log("CLIENT: CurrentPlayer is player {serverPacket.currentPlayerID}");
         }
 
         public void handleVictory(Packet serverPacket)

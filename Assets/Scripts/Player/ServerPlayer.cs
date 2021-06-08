@@ -130,11 +130,9 @@ namespace Player
             this.isReady = isReady;
         }
 
-        public void setResourceAmount(RESOURCETYPE resourceType, int amount)
+        public void setResourceAmount(RESOURCETYPE resourcetype, int amount)
         {
-            // Debug.LogWarning("player had " + resources[resourceType] + " of " + resourceType);
-            resources[resourceType] += amount;
-            // Debug.LogWarning("player got " + amount + ", now has " + resources[resourceType]);
+            resources[resourcetype] += amount;
         }
 
         //Start phase
