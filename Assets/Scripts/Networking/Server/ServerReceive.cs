@@ -84,18 +84,19 @@ namespace Networking.ServerSide
                 }
             }
 
-            // start game if all player are ready
-            //todo: Boardgenerator!
+            // Start game if all player are ready
+            // Todo: Boardgenerator!
             if (runGame)
             {
-                //int[][] updateRepPlayers = convertSPAToRPA();
                 currentPlayer = playerAmount - 1;
                 serverRequest.gamestartInitialize(gameBoard.getHexagonsArray());
                 shuffledDevCardStack = generateRandomDevCardStack(unshuffledDevCardArray);
+                serverRequest.notifyNextPlayer(currentPlayer);
+                Debug.Log($"SERVER: Starting the game with player {currentPlayer}");
             }
 
-            // send error if no player was found
-            // todo: send error to all?
+            // Send error if no player was found
+            // Todo: send error to all?
             // serverRequest.notifyRejection(currentClientID, "You seem to be not existing...");
         }
 
@@ -272,16 +273,13 @@ namespace Networking.ServerSide
                 return;
             }
 
-            // Updating Representative Players TODO: DELETE WHEN RESOURCE DISTRIBUTION IS IMPLEMENTED
-            updateRepPlayers();
-            updateOwnPlayer(currentPlayer);
-
             // Begin next round
             if (!inGameStartupPhase) 
             {
                 changeCurrentPlayer(clientPacket);
-                Debug.Log("SERVER: Current Player index: " + currentPlayer); 
-                serverRequest.notifyNextPlayer(currentPlayer);
+                Debug.Log("SERVER: Current Player index: " + currentPlayer);
+                updateRepPlayers();
+                updateOwnPlayer(currentPlayer);
                 handleBeginRound(clientPacket);
             }
         }
@@ -383,6 +381,7 @@ namespace Networking.ServerSide
                 {
                     currentPlayer++;
                 }
+                serverRequest.notifyNextPlayer(currentPlayer);
             }
             else
             {
@@ -403,6 +402,7 @@ namespace Networking.ServerSide
                 {
                     currentPlayer--;
                 }
+                serverRequest.notifyNextPlayer(currentPlayer);
             }
         }
 
