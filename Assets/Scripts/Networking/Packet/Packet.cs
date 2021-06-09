@@ -12,6 +12,7 @@ namespace Networking.Package
         public int myPlayerID { get; set; } // player ID of the client who receives the packet
         
         public int currentPlayerID { get; set; } // ID of the current player
+        public int previousPlayerID { get; set; } // ID of the previous player
         
         public bool isReady { get; set; } // is a player ready or not (lobby only)
         

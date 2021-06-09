@@ -62,12 +62,13 @@ namespace Networking.Communication
         }
 
 
-        public void notifyNextPlayer(int playerIndex)
+        public void notifyNextPlayer(int playerIndex, int previousPlayerIndex)
         {
             Packet packet = new Packet();
             packet.type = (int) COMMUNICATION_METHODS.HANDLE_NEXT_PLAYER;
             packet.currentPlayerID = playerIndex;
-            
+            packet.previousPlayerID = previousPlayerIndex;
+
             // send to all
             Server.sendDataToAll(packet);
             Debug.Log("SERVER: Client should expect a NotifyNextPlayer package Type 14");
