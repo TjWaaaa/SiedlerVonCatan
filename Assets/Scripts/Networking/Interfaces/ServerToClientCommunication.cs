@@ -40,7 +40,7 @@ namespace Networking.Interfaces
         /// <summary>
         /// Notify all players who the next player is.
         /// </summary>
-        public void notifyNextPlayer(int playerIndex);
+        public void notifyNextPlayer(int playerIndex, int previousPlayerIndex);
 
         
         /// <summary>
