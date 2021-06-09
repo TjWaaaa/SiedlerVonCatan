@@ -15,11 +15,11 @@ namespace Player
         private string playerName;
         private PLAYERCOLOR playerColor;
         private int playerID;
-        private bool isReady;
         private int victoryPoints;
-        private int leftStreets = 15;
+        private int leftRoads = 15;
         private int leftVillages = 5;
-        private int leftCitys = 4;
+        private int leftCities = 4;
+        private bool isReady;
         
         private Dictionary<DEVELOPMENT_TYPE, int> devCards = new Dictionary<DEVELOPMENT_TYPE, int>
         {
@@ -98,31 +98,31 @@ namespace Player
             return amount;
         }
 
-        public int getLeftStreets()
+        public int getLeftRoads()
         {
-            return this.leftStreets;
+            return this.leftRoads;
         }
 
         public int getLeftVillages()
         {
             return this.leftVillages;
         }
+        
         public int getVictoryPoints()
         {
             return victoryPoints;
         }
 
-
         // Setter
 
-        public void setPlayerColor(PLAYERCOLOR color)
+        public void setPlayerColor(PLAYERCOLOR playerColor)
         {
-            this.playerColor = color;
+            this.playerColor = playerColor;
         }
 
-        public void setPlayerName(string name)
+        public void setPlayerName(string playerName)
         {
-            this.playerName = name;
+            this.playerName = playerName;
         }
 
         public void setIsReady(bool isReady)
@@ -130,31 +130,34 @@ namespace Player
             this.isReady = isReady;
         }
 
-        public void setResourceAmount(RESOURCETYPE resourcetype, int amount)
+        public void setResourceAmount(RESOURCETYPE resourceType, int amount)
         {
-            resources[resourcetype] += amount;
+            // Debug.LogWarning("player had " + resources[resourceType] + " of " + resourceType);
+            resources[resourceType] += amount;
+            // Debug.LogWarning("player got " + amount + ", now has " + resources[resourceType]);
         }
 
         //Start phase
-        public void buildStreet()
+        public void reduceLeftRoads()
         {
-            if (leftStreets > 13)
-            {
-                this.leftStreets--;
-            }
+            leftRoads--;
         }
 
-        public void buildVillage()
+        public void reduceLeftVillages()
         {
-            if (leftVillages > 3)
-            {
-                this.leftVillages--;
-                victoryPoints += 1;
-            }
+            leftVillages--;
+            victoryPoints++;
+        }
+
+        public void reduceLeftCities()
+        {
+            leftCities--;
+            leftVillages++;
+            victoryPoints++;
         }
 
         // Trade
-        public Boolean canTrade(RESOURCETYPE resourcetype)
+        public bool canTrade(RESOURCETYPE resourcetype)
         {
             if (resources[resourcetype] >= 4)
             {
@@ -181,44 +184,28 @@ namespace Player
         }
 
         // Buy
-        public Boolean canBuyBuyable(BUYABLES buyable)
+        public bool canBuyBuyable(BUYABLES buyable)
         {
             switch (buyable)
             {
                 case BUYABLES.ROAD:
-                    if (leftStreets >= 1
-                        && resources[RESOURCETYPE.WOOD] >= 1
-                        && resources[RESOURCETYPE.BRICK] >= 1)
-                    {
-                        return true;
-                    }
-                    else return false;
+                    return leftRoads >= 1
+                           && resources[RESOURCETYPE.WOOD] >= 1
+                           && resources[RESOURCETYPE.BRICK] >= 1;
                 case BUYABLES.VILLAGE:
-                    if (leftVillages >= 1
-                        && resources[RESOURCETYPE.BRICK] >= 1
-                        && resources[RESOURCETYPE.WOOD] >= 1
-                        && resources[RESOURCETYPE.SHEEP] >= 1
-                        && resources[RESOURCETYPE.WHEAT] >= 1)
-                    {
-                        return true;
-                    }
-                    else return false;
+                    return leftVillages >= 1
+                           && resources[RESOURCETYPE.BRICK] >= 1
+                           && resources[RESOURCETYPE.WOOD] >= 1
+                           && resources[RESOURCETYPE.SHEEP] >= 1
+                           && resources[RESOURCETYPE.WHEAT] >= 1;
                 case BUYABLES.CITY:
-                    if (leftCitys >= 1
-                        && resources[RESOURCETYPE.ORE] >= 3
-                        && resources[RESOURCETYPE.WHEAT] >= 2)
-                    {
-                        return true;
-                    }
-                    else return false;
+                    return leftCities >= 1
+                           && resources[RESOURCETYPE.ORE] >= 3
+                           && resources[RESOURCETYPE.WHEAT] >= 2;
                 case BUYABLES.DEVELOPMENT_CARDS:
-                    if (resources[RESOURCETYPE.ORE] >= 1
-                        && resources[RESOURCETYPE.WHEAT] >= 1
-                        && resources[RESOURCETYPE.SHEEP] >= 1)
-                    {
-                        return true;
-                    }
-                    else return false;
+                    return resources[RESOURCETYPE.ORE] >= 1
+                           && resources[RESOURCETYPE.WHEAT] >= 1
+                           && resources[RESOURCETYPE.SHEEP] >= 1;
                 default: return false;
             }
         }
@@ -230,22 +217,16 @@ namespace Player
                 case BUYABLES.ROAD:
                     resources[RESOURCETYPE.BRICK] -= 1;
                     resources[RESOURCETYPE.WOOD] -= 1;
-                    leftStreets -= 1;
                     break;
                 case BUYABLES.VILLAGE:
                     resources[RESOURCETYPE.BRICK] -= 1;
                     resources[RESOURCETYPE.WOOD] -= 1;
                     resources[RESOURCETYPE.SHEEP] -= 1;
                     resources[RESOURCETYPE.WHEAT] -= 1;
-                    leftVillages -= 1;
-                    victoryPoints += 1;
                     break;
                 case BUYABLES.CITY:
                     resources[RESOURCETYPE.ORE] -= 3;
                     resources[RESOURCETYPE.WHEAT] -= 2;
-                    leftVillages += 1;
-                    leftCitys -= 1;
-                    victoryPoints += 1;
                     break;
                 case BUYABLES.DEVELOPMENT_CARDS:
                     resources[RESOURCETYPE.ORE] -= 1;
@@ -257,12 +238,12 @@ namespace Player
 
         public int[] convertFromSPToRP()
         {
-            return new int[] { victoryPoints, getTotalResourceAmount(), getTotalDevCardAmount() };
+            return new[] { victoryPoints, getTotalResourceAmount(), getTotalDevCardAmount() };
         }
 
         public int[] convertFromSPToOP()
         {
-            return new int[] { leftStreets, leftVillages, leftCitys };
+            return new[] { leftRoads, leftVillages, leftCities };
         }
 
         public Dictionary<RESOURCETYPE, int> convertSPToOPResources()

@@ -3,7 +3,7 @@ using Enums;
 public class Node
 {
     private int posInArray;
-    private int[,] adjacentHexagonsPos = new int[3, 3];
+    private int[][] adjacentHexagonsPos = new int[3][];
     private int[] adjacentNodesPos = new int[3];
     private int[] adjacentEdgesPos = new int[3];
     private PLAYERCOLOR occupant = PLAYERCOLOR.NONE;
@@ -21,11 +21,10 @@ public class Node
 
     public void setAdjacentHexagonPos(int hexagonPosX, int hexagonPosY, int index)
     {
-        adjacentHexagonsPos[index, 0] = hexagonPosX;
-        adjacentHexagonsPos[index, 1] = hexagonPosY;
+        adjacentHexagonsPos[index] = new[] {hexagonPosX, hexagonPosY};
     }
 
-    public int[,] getAdjacentHexagonsPos()
+    public int[][] getAdjacentHexagonsPos()
     {
         return adjacentHexagonsPos;
     }

@@ -3,7 +3,6 @@ using Enums;
 using UnityEngine;
 using Player;
 using TMPro;
-using Networking.ClientSide;
 
 namespace UI
 {
@@ -20,9 +19,13 @@ namespace UI
         private TextMeshProUGUI ownPlayerLeftCitys;
 
 
+        /// <summary>
+        /// Represents all resources and left buildObjects of the player
+        /// </summary>
+        /// <param name="ownClientPlayer"></param>
         public void represent(OwnClientPlayer ownClientPlayer)
         {
-            // find labels in UI
+            // Find all GameObjects
 
             ownPlayerSheep = GameObject.Find("OwnPlayerSheep").GetComponent<TextMeshProUGUI>();
             ownPlayerWood = GameObject.Find("OwnPlayerWood").GetComponent<TextMeshProUGUI>();
@@ -33,23 +36,22 @@ namespace UI
             ownPlayerLeftStreets = GameObject.Find("OwnPlayerLeftStreets").GetComponent<TextMeshProUGUI>();
             ownPlayerLeftVillages = GameObject.Find("OwnPlayerLeftVillages").GetComponent<TextMeshProUGUI>();
             ownPlayerLeftCitys = GameObject.Find("OwnPlayerLeftCitys").GetComponent<TextMeshProUGUI>();
-
-
-            // connect labels to ownClientPlayer
+            
+            // Connect labels to ownClientPlayer
             updaetOwnPlayerUI(ownClientPlayer);
         }
 
         public void updaetOwnPlayerUI(OwnClientPlayer ownClientPlayer)
         {
-            ownPlayerLeftStreets.text = ownClientPlayer.getLeftStreets().ToString();
-            ownPlayerLeftVillages.text = ownClientPlayer.getLeftVillages().ToString();
-            ownPlayerLeftCitys.text = ownClientPlayer.getLeftCitys().ToString();
-
             ownPlayerSheep.text = ownClientPlayer.getResourceAmount(RESOURCETYPE.SHEEP).ToString();
             ownPlayerWood.text = ownClientPlayer.getResourceAmount(RESOURCETYPE.WOOD).ToString();
             ownPlayerBrick.text = ownClientPlayer.getResourceAmount(RESOURCETYPE.BRICK).ToString();
             ownPlayerOre.text = ownClientPlayer.getResourceAmount(RESOURCETYPE.ORE).ToString();
-            ownPlayerWheat.text = ownClientPlayer.getResourceAmount(RESOURCETYPE.WHEAT).ToString();
+            ownPlayerWheat.text = ownClientPlayer.getResourceAmount(RESOURCETYPE.WHEAT).ToString(); 
+            
+            ownPlayerLeftStreets.text = ownClientPlayer.getLeftStreets().ToString();
+            ownPlayerLeftVillages.text = ownClientPlayer.getLeftVillages().ToString();
+            ownPlayerLeftCitys.text = ownClientPlayer.getLeftCitys().ToString();
         }
     }
 }
