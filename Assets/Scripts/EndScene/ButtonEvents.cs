@@ -21,6 +21,11 @@ public class ButtonEvents : MonoBehaviour
 
     public void playAgain()
     {
+        var factory = GameObject.Find("PrefabFactory");
+        Destroy(factory);
+        var clientReceive = GameObject.Find("clientReceive(Clone)");
+        Destroy(clientReceive);
+        
         Client.shutDownClient();
         Server.shutDownServer();
         SceneManager.LoadScene("0_StartScene");
