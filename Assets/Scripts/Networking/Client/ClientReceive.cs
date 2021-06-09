@@ -126,7 +126,7 @@ namespace Networking.ClientSide
         /// <param name="playerName">Name of the player</param>
         /// <param name="playerColor">Color of the player</param>
         /// <param name="currentPlayerID">ID of the player</param>
-        public void representNewPlayer(int currentPlayerID, string playerName, PLAYERCOLOR playerColor)
+        private void representNewPlayer(int currentPlayerID, string playerName, PLAYERCOLOR playerColor)
         {
             try
             {
@@ -175,7 +175,7 @@ namespace Networking.ClientSide
             GameObject.Find("Canvas/LobbyIP").GetComponent<Text>().text = serverPacket.lobbyIP;
             
             // for each player:
-            // initiialize prefab with data
+            // initialize prefab with data
             Debug.Log("CLIENT: Client recieved new package: " + PacketSerializer.objectToJsonString(serverPacket));
 
             myID = serverPacket.myPlayerID;

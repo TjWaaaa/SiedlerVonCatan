@@ -121,5 +121,18 @@ namespace Networking.Interfaces
         /// </summary>
         /// <param name="serverPacket">Packet from server</param>
         public void handleAcceptPlayDevelopement(Packet serverPacket);
+
+
+        /// <summary>
+        /// Server sends a updateRepresentativePlayer packet. Updates all representative players ingame
+        /// </summary>
+        /// <param name="serverPacket">Packet from server</param>
+        public void handleUpdateRP(Packet serverPacket);
+
+        /// <summary>
+        /// Server sends a updateOwnPlayer packet. Updates only the own player object
+        /// </summary>
+        /// <param name="serverPacket">Packet from server</param>
+        public void handleUpdateOP(Packet serverPacket);
     }
 }
