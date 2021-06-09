@@ -189,7 +189,7 @@ namespace Networking.ClientSide
                 var jsonString = Encoding.ASCII.GetString(receievedBuffer);
                 
                 //Keep alive Ping
-                if (jsonString == "ping")
+                if (jsonString.Contains("ping") && !jsonString.Contains("{"))
                 {
                     timeOfLastPing = DateTime.Now.Ticks;
                     sendRequest("pong");
@@ -207,7 +207,6 @@ namespace Networking.ClientSide
             catch (Exception e)
             {
                 Debug.LogError("CLIENT: " + e.HelpLink + e);
-                throw e;
             }
         }
 

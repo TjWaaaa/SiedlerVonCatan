@@ -165,9 +165,9 @@ namespace Networking.ServerSide
             {
                 recievedByteLengh = currentClientSocket.EndReceive(AR);
             }
-            catch (SocketException)
+            catch (SocketException e)
             {
-                Debug.LogWarning("SERVER: Client forcefully disconnected");
+                Debug.LogWarning("SERVER: Client forcefully disconnected\n" + e.Message);
                 currentClientSocket.Close();
                 
                 // ominous solution to get to the key via the value
@@ -186,7 +186,7 @@ namespace Networking.ServerSide
                 }
                 catch (Exception e)
                 {
-                    Debug.LogError($"Could not shut down client socket {currentClientID}");
+                    Debug.LogError($"Could not shut down client socket {currentClientID}\n" + e.Message);
                 }
                 finally
                 {
@@ -201,7 +201,7 @@ namespace Networking.ServerSide
             string incomingDataString = Encoding.ASCII.GetString(currentBuffer);
             
             
-            if (incomingDataString == "pong") // Keep alive ping
+            if (incomingDataString.Contains("pong") && !incomingDataString.Contains("{")) // Keep alive ping
             {
                 timeOfPing[currentClientID] = DateTime.Now.Ticks;
                 Debug.Log("SERVER: recieved pong");
