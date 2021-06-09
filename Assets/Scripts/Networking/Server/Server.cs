@@ -164,12 +164,32 @@ namespace Networking.ServerSide
             }
             catch (SocketException)
             {
-                Debug.Log("SERVER: Client forcefully disconnected");
+                Debug.LogWarning("SERVER: Client forcefully disconnected");
                 currentClientSocket.Close();
                 
                 // ominous solution to get to the key via the value
-                socketPlayerData.Remove(socketPlayerData.FirstOrDefault(x => x.Value == currentClientSocket).Key);
+                //socketPlayerData.Remove(socketPlayerData.FirstOrDefault(x => x.Value == currentClientSocket).Key);
+                socketPlayerData.Remove(currentClientID);
                 //todo: reestablish connection
+                return;
+            }
+            
+            // Client disconnects
+            if (recievedByteLengh <= 0)
+            {
+                try
+                {
+                    currentClientSocket.Shutdown(SocketShutdown.Both);
+                }
+                catch (Exception e)
+                {
+                    Debug.LogError($"Could not shut down client socket {currentClientID}");
+                }
+                finally
+                {
+                    currentClientSocket.Close();
+                    socketPlayerData.Remove(currentClientID);
+                }
                 return;
             }
 
