@@ -4,6 +4,7 @@ using System.Net.Sockets;
 using System.Text;
 using System.Timers;
 using Enums;
+using Networking.Interfaces;
 using UnityEngine;
 using Networking.Package;
 
@@ -18,7 +19,7 @@ namespace Networking.ClientSide
 
         private static Socket clientSocket;
 
-        private static ClientReceive _clientReceive;
+        private static INetworkableClient _clientReceive;
         
         private static long timeOfLastPing;
         private static Timer keepAliveTimer;
@@ -32,7 +33,7 @@ namespace Networking.ClientSide
         /// <param name="ipAddress">IP address of the server</param>
         /// <returns>true if connection was established successfully. Otherwise false.</returns>
         /// <exception cref="Exception"></exception>
-        public static bool initClient(string ipAddress)
+        public static bool initClient(string ipAddress, INetworkableClient clientReceive)
         {
             if (isRunning)
             {
@@ -47,10 +48,11 @@ namespace Networking.ClientSide
             keepAliveTimer.Start();
             
             // instantiate a ClientGameLogic object
-            var gameLogicObject = new GameObject();
-            gameLogicObject.AddComponent<ClientReceive>();
-            gameLogicObject.AddComponent<BoardGenerator>();
-            _clientReceive = gameLogicObject.GetComponent<ClientReceive>();
+            // var gameLogicObject = new GameObject();
+            // gameLogicObject.AddComponent<ClientReceive>();
+            // gameLogicObject.AddComponent<BoardGenerator>();
+            // _clientReceive = gameLogicObject.GetComponent<ClientReceive>();
+            _clientReceive = clientReceive;
 
             buffer = new byte[BUFFER_SIZE];
             clientSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
@@ -178,7 +180,7 @@ namespace Networking.ClientSide
                 // Server Socket was shut down
                 if (receivedBufferSize <= 0)
                 {
-                    Debug.LogError("CLIENT: Received null from server.");
+                    Debug.LogWarning("CLIENT: Received null from server.");
                     return;
                 }
                 

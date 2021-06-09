@@ -362,7 +362,7 @@ namespace Networking.ServerSide
             return false;
         }
 
-        public void changeCurrentPlayer(Packet clientPacket)
+        private void changeCurrentPlayer(Packet clientPacket)
         {
             if (!firstRound)
             {

@@ -11,6 +11,7 @@ using Random = System.Random;
 using Enums;
 using Debug = UnityEngine.Debug;
 using System.Threading;
+using Networking.Interfaces;
 
 namespace Networking.ServerSide
 {
@@ -30,19 +31,21 @@ namespace Networking.ServerSide
         private static Dictionary<int, long> timeOfPing;
         
         private static Stack<Color> playerColors = new Stack<Color>();
-        private static ServerReceive _serverReceive = new ServerReceive();
+        private static INetworkableServer _serverReceive;
 
 
         /// <summary>
         /// Starts the server to host a game.
         /// </summary>
-        public static bool setupServer()
+        public static bool setupServer(INetworkableServer serverReceive)
         {
             if (isRunning)
             {
                 Debug.LogWarning("Server has already been started. Aborting setup...");
                 return true;
             }
+
+            _serverReceive = serverReceive;
             
             serverSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
             socketPlayerData = new Dictionary<int, Socket>();
@@ -168,8 +171,8 @@ namespace Networking.ServerSide
                 currentClientSocket.Close();
                 
                 // ominous solution to get to the key via the value
-                //socketPlayerData.Remove(socketPlayerData.FirstOrDefault(x => x.Value == currentClientSocket).Key);
                 socketPlayerData.Remove(currentClientID);
+                //socketPlayerData.Remove(socketPlayerData.FirstOrDefault(x => x.Value == currentClientSocket).Key);
                 //todo: reestablish connection
                 return;
             }
