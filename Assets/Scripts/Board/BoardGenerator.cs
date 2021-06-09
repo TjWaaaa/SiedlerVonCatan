@@ -117,7 +117,7 @@ public class BoardGenerator : MonoBehaviour
     {
         if (buildType == BUYABLES.VILLAGE)
         {
-            Debug.Log("CLIENT: Buyable: Village");
+            Debug.LogWarning($"CLIENT: Buyable: Village, Build ID: {buildId}");
             GameObject node = GameObject.Find("V" + buildId.ToString());
             Vector3 nodePos = node.transform.position;
 
