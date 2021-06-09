@@ -82,5 +82,12 @@ namespace Networking.Interfaces
         /// </summary>
         /// <param name="clientPacket"></param>
         public void handleTradeOffer(Packet clientPacket);
+
+
+        /// <summary>
+        /// Generates a new player object with a playerID. 
+        /// </summary>
+        /// <param name="playerId">ID of the new player</param>
+        public void generatePlayer(int playerId);
     }
 }
