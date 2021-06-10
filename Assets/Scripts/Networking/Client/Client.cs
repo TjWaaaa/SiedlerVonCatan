@@ -176,33 +176,42 @@ namespace Networking.ClientSide
                     //TODO handle connection loss
                     return;
                 }
-                
+
                 // Server Socket was shut down
                 if (receivedBufferSize <= 0)
                 {
                     Debug.LogWarning("CLIENT: Received null from server.");
+                    keepAliveTimer.Stop();
                     return;
                 }
-                
+
                 byte[] receievedBuffer = new byte[receivedBufferSize];
                 Array.Copy(buffer, receievedBuffer, receivedBufferSize);
                 var jsonString = Encoding.ASCII.GetString(receievedBuffer);
-                
+
                 //Keep alive Ping
                 if (jsonString.Contains("ping") && !jsonString.Contains("{"))
                 {
                     timeOfLastPing = DateTime.Now.Ticks;
                     sendRequest("pong");
-                } 
+                }
                 else
                 {
                     Debug.Log("CLIENT: received Data: " + jsonString);
                     Packet serverData = PacketSerializer.jsonToObject(jsonString);
-                
+
                     delegateIncomingDataToMethods(serverData);
                 }
 
-                clientSocket.BeginReceive(buffer, 0, BUFFER_SIZE, SocketFlags.None, receiveCallback, clientSocket); // start listening again
+                try
+                {
+                    clientSocket.BeginReceive(buffer, 0, BUFFER_SIZE, SocketFlags.None, receiveCallback,
+                        clientSocket); // start listening again
+                }
+                catch (SocketException e)
+                {
+                    Debug.Log("Client was probably shut down" + e.Message);
+                }
             }
             catch (Exception e)
             {
