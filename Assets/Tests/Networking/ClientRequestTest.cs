@@ -5,7 +5,10 @@ using UnityEngine;
 using UnityEngine.TestTools;
 using Networking;
 
-public class NetworkTest
+/// <summary>
+/// Test if all Packets are constructed correctly
+/// </summary>
+public class ClientRequestTest
 {
     // A Test behaves as an ordinary method
     [Test]

@@ -126,7 +126,7 @@ namespace Networking.ClientSide
         /// <param name="playerName">Name of the player</param>
         /// <param name="playerColor">Color of the player</param>
         /// <param name="currentPlayerID">ID of the player</param>
-        public void representNewPlayer(int currentPlayerID, string playerName, PLAYERCOLOR playerColor)
+        private void representNewPlayer(int currentPlayerID, string playerName, PLAYERCOLOR playerColor)
         {
             try
             {
@@ -175,7 +175,7 @@ namespace Networking.ClientSide
             GameObject.Find("Canvas/LobbyIP").GetComponent<Text>().text = serverPacket.lobbyIP;
             
             // for each player:
-            // initiialize prefab with data
+            // initialize prefab with data
             Debug.Log("CLIENT: Client recieved new package: " + PacketSerializer.objectToJsonString(serverPacket));
 
             myID = serverPacket.myPlayerID;
@@ -229,8 +229,9 @@ namespace Networking.ClientSide
 
         public void handleNextPlayer(Packet serverPacket)
         {   
-            Debug.Log("CLIENT: Current Player: " + currentPlayer);
-            if(!runFixedUpdate){playerRepresentation.showNextPlayer(currentPlayer, serverPacket.currentPlayerID);}
+            Debug.Log("CLIENT: Current Player: " + serverPacket.previousPlayerID);
+            Debug.LogWarning($"CLIENT: It was {serverPacket.previousPlayerID}'s turn and now it's {serverPacket.currentPlayerID}'s turn!");
+            if(!runFixedUpdate){playerRepresentation.showNextPlayer(serverPacket.previousPlayerID, serverPacket.currentPlayerID);}
             currentPlayer = serverPacket.currentPlayerID;
             Debug.Log("CLIENT: CurrentPlayer is player {serverPacket.currentPlayerID}");
         }
@@ -258,9 +259,6 @@ namespace Networking.ClientSide
         public void handleAccpetBeginRound(Packet serverPacket)
         {
             Debug.Log("CLIENT: New Round initiated");
-            // Show new currentPlayer
-            int cache = currentPlayer;
-            currentPlayer = currentPlayer == representativePlayers.Count - 1 ?  0 : ++currentPlayer;
             Debug.Log("CLIENT: Current Player index: " + currentPlayer);
             // Render dice rolling
             GameObject.FindGameObjectWithTag("diceHolder").GetComponent<RenderRollDices>().renderRollDices(serverPacket.diceResult);
