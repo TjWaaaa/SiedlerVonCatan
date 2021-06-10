@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using Enums;
 using Newtonsoft.Json.Linq;
@@ -9,6 +10,7 @@ using UnityEngine.UI;
 using Networking.Package;
 using Networking.ServerSide;
 using Player;
+using TMPro;
 using Trade;
 using UI;
 
@@ -166,6 +168,27 @@ namespace Networking.ClientSide
                 Debug.LogError("CLIENT: " + e);
             }
         }
+
+        /// <summary>
+        /// Loads the endscene. Performs cleanup operation on game scene in background.
+        /// </summary>
+        /// <param name="winnerName"> name of the winner</param>
+        /// <returns>null</returns>
+        private IEnumerator loadEndScene(string winnerName)
+        {
+            
+            AsyncOperation promise = SceneManager.LoadSceneAsync("3_EndScene");
+
+            while (!promise.isDone)
+            {
+                yield return null;
+            }
+            
+            string win = $"Congratulations!\nPlayer {winnerName} won the game!";
+            GameObject textObj = GameObject.Find("Canvas/victoryPanel/Congrats");
+            var comp = textObj.GetComponent<TMP_Text>();
+            comp.text = win;
+        }
         
         //---------------------------------------------- Interface INetworkableClient implementation ----------------------------------------------
         
@@ -205,6 +228,17 @@ namespace Networking.ClientSide
 
         public void handleGameStartInitialize(Packet serverPacket)
         {
+            // SceneManager.SetActiveScene(SceneManager.GetSceneByName("2_GameScene"));
+            //
+            // // Clean up lobby
+            // var parent = GameObject.Find("Scroll View/Viewport/Content").transform;
+            // foreach (Transform child in parent)
+            // {
+            //     Destroy(child.gameObject);
+            // }
+            //
+            // SceneManager.UnloadSceneAsync("1_LobbyScene");
+            
             AsyncOperation asyncLoadLevel = SceneManager.LoadSceneAsync("2_GameScene");
             gameBoard = serverPacket.gameBoard;
             Debug.Log("CLIENT: Sie haben ein Spielbrett erhalten :)");
@@ -241,7 +275,8 @@ namespace Networking.ClientSide
             // Show victorious Player
             // Load the post game Scene or Lobby so a new game can be started
             Debug.Log($"CLIENT: Yeay somebody won and it is {serverPacket.playerName} with the color {serverPacket.playerColor}");
-            throw new System.NotImplementedException();
+
+            StartCoroutine(loadEndScene(serverPacket.playerName));
         }
 
         public void handleClientDisconnect(Packet serverPacket)

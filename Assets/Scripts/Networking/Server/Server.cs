@@ -165,9 +165,9 @@ namespace Networking.ServerSide
             {
                 recievedByteLengh = currentClientSocket.EndReceive(AR);
             }
-            catch (SocketException)
+            catch (SocketException e)
             {
-                Debug.Log("SERVER: Client forcefully disconnected");
+                Debug.LogWarning("SERVER: Client forcefully disconnected\n" + e.Message);
                 currentClientSocket.Close();
                 
                 // ominous solution to get to the key via the value
@@ -176,12 +176,23 @@ namespace Networking.ServerSide
                 //todo: reestablish connection
                 return;
             }
-
-            // Client disconnected
+            
+            // Client disconnects
             if (recievedByteLengh <= 0)
             {
-                Debug.LogWarning($"SERVER: Client with id: {currentClientID} has disconnected.");
-                socketPlayerData.Remove(currentClientID);
+                try
+                {
+                    currentClientSocket.Shutdown(SocketShutdown.Both);
+                }
+                catch (Exception e)
+                {
+                    Debug.LogError($"Could not shut down client socket {currentClientID}\n" + e.Message);
+                }
+                finally
+                {
+                    currentClientSocket.Close();
+                    socketPlayerData.Remove(currentClientID);
+                }
                 return;
             }
 
@@ -190,7 +201,7 @@ namespace Networking.ServerSide
             string incomingDataString = Encoding.ASCII.GetString(currentBuffer);
             
             
-            if (incomingDataString == "pong") // Keep alive ping
+            if (incomingDataString.Contains("pong") && !incomingDataString.Contains("{")) // Keep alive ping
             {
                 timeOfPing[currentClientID] = DateTime.Now.Ticks;
                 Debug.Log("SERVER: recieved pong");
@@ -343,7 +354,7 @@ namespace Networking.ServerSide
                 }
                 catch (Exception e)
                 {
-                    Debug.LogError($"SERVER: Socket with number {key} could not be shut down. Closing..." + e);
+                    Debug.LogError($"SERVER: Socket with number {key} could not be shut down. Closing... \n" + e);
                 }
                 finally
                 {
