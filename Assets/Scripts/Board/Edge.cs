@@ -1,10 +1,11 @@
+using System.Collections.Generic;
 using Enums;
 
 public class Edge
 {
     private int posInArray; 
-    private int[] adjacentNodesPos = new int[2];
-    private int[] adjacentEdgesPos = new int[4];
+    private LinkedList<int> adjacentNodesPos = new LinkedList<int>();
+    private LinkedList<int> adjacentEdgesPos = new LinkedList<int>();
     private PLAYERCOLOR occupant = PLAYERCOLOR.NONE;
 
     public Edge(int posInArray)
@@ -19,20 +20,20 @@ public class Edge
 
     public void setAdjacentNodePos(int nodePos, int index)
     {
-        adjacentNodesPos[index] = nodePos;
+        adjacentNodesPos.AddLast(nodePos);
     }
 
-    public int[] getAdjacentNodesPos()
+    public LinkedList<int> getAdjacentNodesPos()
     {
         return adjacentNodesPos;
     }
 
-    public void setAdjacentEdge(int edge, int index)
+    public void setAdjacentEdgePos(int edgePos, int index)
     {
-        adjacentEdgesPos[index] = edge;
+        adjacentEdgesPos.AddLast(edgePos);
     }
 
-    public int[] getAdjacentEdges()
+    public LinkedList<int> getAdjacentEdgesPos()
     {
         return adjacentEdgesPos;
     }

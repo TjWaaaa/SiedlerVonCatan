@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Enums;
 using Newtonsoft.Json;
 
@@ -5,7 +6,7 @@ public class Hexagon
 {
     [JsonProperty] private int fieldNumber;
     [JsonProperty] private HEXAGON_TYPE type;
-    [JsonProperty] private int[] adjacentNodesPos = new int[6];
+    [JsonProperty] private LinkedList<int> adjacentNodesPos = new LinkedList<int>();
     [JsonProperty] private bool blockedByRobber = false;
 
     public Hexagon(HEXAGON_TYPE type, int fieldNumber)
@@ -55,10 +56,11 @@ public class Hexagon
 
     public void setAdjacentNodePos(int nodePos, int index)
     {
-        adjacentNodesPos[index] = nodePos;
+        adjacentNodesPos.AddLast(nodePos);
+        //adjacentNodesPos[index] = nodePos;
     }
 
-    public int[] getAdjacentNodesPos()
+    public LinkedList<int> getAdjacentNodesPos()
     {
         return adjacentNodesPos;
     }
