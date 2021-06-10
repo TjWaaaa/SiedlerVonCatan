@@ -3,7 +3,7 @@ using Newtonsoft.Json;
 
 public class Hexagon
 {
-    private int fN;
+    [JsonProperty] private int fN;
     [JsonProperty] private HEXAGON_TYPE t;
     private int[] aN = new int[6];
     private bool bB = false;
