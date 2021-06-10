@@ -248,7 +248,7 @@ namespace Networking.ClientSide
         {
             Debug.Log("CLIENT: Place building " + serverPacket.buildType + " on " + serverPacket.buildID);
             BUYABLES buildType = (BUYABLES) serverPacket.buildType;
-            int buildId = serverPacket.buildID;
+            int buildId = serverPacket.buildID.GetValueOrDefault();
             PLAYERCOLOR buildColor = serverPacket.buildColor;
             Debug.Log("CLIENT: client recieved color: " + buildColor);
 
@@ -265,8 +265,8 @@ namespace Networking.ClientSide
         {   
             Debug.Log("CLIENT: Current Player: " + serverPacket.previousPlayerID);
             Debug.LogWarning($"CLIENT: It was {serverPacket.previousPlayerID}'s turn and now it's {serverPacket.currentPlayerID}'s turn!");
-            if(!runFixedUpdate){playerRepresentation.showNextPlayer(serverPacket.previousPlayerID, serverPacket.currentPlayerID);}
-            currentPlayer = serverPacket.currentPlayerID;
+            if(!runFixedUpdate){playerRepresentation.showNextPlayer(serverPacket.previousPlayerID.GetValueOrDefault(), serverPacket.currentPlayerID.GetValueOrDefault());}
+            currentPlayer = serverPacket.currentPlayerID.GetValueOrDefault();
             Debug.Log($"CLIENT: CurrentPlayer is player {serverPacket.currentPlayerID}");
         }
 
@@ -307,7 +307,7 @@ namespace Networking.ClientSide
         
         public void handleAcceptTradeOffer(Packet serverPacket)
         {
-            int buttonNumber = serverPacket.buttonNumber;
+            int buttonNumber = serverPacket.buttonNumber.GetValueOrDefault();
             TradeMenu.markOfferResource(buttonNumber);
         }
 
@@ -323,7 +323,7 @@ namespace Networking.ClientSide
 
         public void handleAcceptBuyDevelopement(Packet serverPacket)
         {
-            _devCardsMenu.updateLeftDevCards(serverPacket.leftDevCards);
+            _devCardsMenu.updateLeftDevCards(serverPacket.leftDevCards.GetValueOrDefault());
             Debug.Log("CLIENT: One Development card was bought. There are " + serverPacket.leftDevCards + " cards left.");
         }
 
