@@ -161,7 +161,7 @@ namespace Networking.ServerSide
 
                 ServerPlayer currentServerPlayer = allPlayer.ElementAt(currentPlayer).Value;
                 RESOURCETYPE resourcetype = (RESOURCETYPE)clientPacket.resourceType;
-                int buttonNumber = clientPacket.buttonNumber;
+                int buttonNumber = clientPacket.buttonNumber.GetValueOrDefault();
                 if (currentServerPlayer.canTrade(resourcetype))
                 {
                     serverRequest.notifyAcceptTradeOffer(currentServerPlayer.getPlayerID(), buttonNumber);
@@ -189,7 +189,7 @@ namespace Networking.ServerSide
 
             ServerPlayer currentServerPlayer = allPlayer.ElementAt(currentPlayer).Value;
             BUYABLES buildingType = (BUYABLES)clientPacket.buildType;
-            int posInArray = clientPacket.buildID;
+            int posInArray = clientPacket.buildID.GetValueOrDefault();
 
             PLAYERCOLOR playerColor = allPlayer.ElementAt(currentPlayer).Value.getPlayerColor();
 

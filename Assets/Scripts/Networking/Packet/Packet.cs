@@ -11,8 +11,8 @@ namespace Networking.Package
         public PLAYERCOLOR playerColor { get; set; } // [r,g,b,a]
         public int myPlayerID { get; set; } // player ID of the client who receives the packet
         
-        public int currentPlayerID { get; set; } // ID of the current player
-        public int previousPlayerID { get; set; } // ID of the previous player
+        public int? currentPlayerID { get; set; } // ID of the current player
+        public int? previousPlayerID { get; set; } // ID of the previous player
         
         public bool isReady { get; set; } // is a player ready or not (lobby only)
         
@@ -31,12 +31,12 @@ namespace Networking.Package
         public int[] tradeResourcesOffer { get; set; } // what i want to spent [0,0,0,0,0]
         public int[] tradeResourcesExpect { get; set; } // resources i want [0,0,0,0,0]
         
-        public int buildID { get; set; }
-        public int buildType { get; set; } // building i want to build
+        public int? buildID { get; set; }
+        public int? buildType { get; set; } // building i want to build
         public PLAYERCOLOR buildColor { get; set; } // color of building
         
         
-        public int victoryPoint { get; set; }
+        public int? victoryPoint { get; set; }
         
         public string errorMessage { get; set; } // when client request is rejected
 
@@ -47,10 +47,10 @@ namespace Networking.Package
         public Dictionary<RESOURCETYPE, int> updateResourcesOnOP {get; set;}
         public Dictionary<DEVELOPMENT_TYPE, int> updateDevCardsOnOP {get; set;}
         
-        public int resourceType { get; set; }
+        public int? resourceType { get; set; }
         
-        public int buttonNumber { get; set; }
+        public int? buttonNumber { get; set; }
         
-        public int leftDevCards { get; set; }
+        public int? leftDevCards { get; set; }
     }
 }
