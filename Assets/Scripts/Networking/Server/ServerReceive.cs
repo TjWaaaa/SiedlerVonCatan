@@ -407,8 +407,6 @@ namespace Networking.ServerSide
 
         private void buildStructure(ServerPlayer currentServerPlayer, BUYABLES buildingType, int posInArray, PLAYERCOLOR playerColor, Packet clientPacket)
         {
-            // if (currentServerPlayer.canBuyBuyable(buildingType))
-            // {
             switch (buildingType)
             {
                 case BUYABLES.VILLAGE:
@@ -493,10 +491,5 @@ namespace Networking.ServerSide
 
             serverRequest.notifyRejection(currentServerPlayer.getPlayerID(), "Building cant be built");
         }
-            // else
-            // {
-            //     serverRequest.notifyRejection(currentServerPlayer.getPlayerID(), "You don't have enough resources");
-            //     Debug.Log("SERVER: not enough resources");
-            // }
     }
 }

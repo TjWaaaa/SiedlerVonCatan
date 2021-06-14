@@ -2,8 +2,8 @@
 {
     public enum HEXAGON_TYPE
     {
-        WATER, DESERT,
         SHEEP, WOOD, BRICK, ORE, WHEAT,
+        WATER, DESERT,
         PORTNORMAL, PORTSHEEP, PORTWOOD, PORTBRICK, PORTORE, PORTWHEAT,
         NONE
     }

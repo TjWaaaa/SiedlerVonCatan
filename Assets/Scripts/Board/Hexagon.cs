@@ -9,10 +9,10 @@ public class Hexagon
     private LinkedList<int> adjacentNodesPos = new LinkedList<int>();
     private bool blockedByRobber = false;
 
-    public Hexagon(HEXAGON_TYPE type, int fN)
+    public Hexagon(HEXAGON_TYPE type, int fieldNumber)
     {
         this.type = type;
-        this.fieldNumber = fN;
+        this.fieldNumber = fieldNumber;
     }
 
     [JsonConstructor]
@@ -54,7 +54,7 @@ public class Hexagon
         }
     }
 
-    public void setAdjacentNodePos(int nodePos, int index)
+    public void setAdjacentNodePos(int nodePos)
     {
         adjacentNodesPos.AddLast(nodePos);
         //adjacentNodesPos[index] = nodePos;
