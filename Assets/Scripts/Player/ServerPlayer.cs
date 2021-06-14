@@ -32,11 +32,11 @@ namespace Player
 
         private Dictionary<RESOURCETYPE, int> resources = new Dictionary<RESOURCETYPE, int>
         {
-            {RESOURCETYPE.SHEEP, 0},
-            {RESOURCETYPE.ORE, 0},
-            {RESOURCETYPE.BRICK, 0},
-            {RESOURCETYPE.WOOD, 0},
-            {RESOURCETYPE.WHEAT, 0}
+            {RESOURCETYPE.SHEEP, 10},
+            {RESOURCETYPE.ORE, 10},
+            {RESOURCETYPE.BRICK, 10},
+            {RESOURCETYPE.WOOD, 10},
+            {RESOURCETYPE.WHEAT, 10}
 
         };
 
@@ -130,11 +130,9 @@ namespace Player
             this.isReady = isReady;
         }
 
-        public void setResourceAmount(RESOURCETYPE resourceType, int amount)
+        public void setResourceAmount(RESOURCETYPE resourcetype, int amount)
         {
-            // Debug.LogWarning("player had " + resources[resourceType] + " of " + resourceType);
-            resources[resourceType] += amount;
-            // Debug.LogWarning("player got " + amount + ", now has " + resources[resourceType]);
+            resources[resourcetype] += amount;
         }
 
         //Start phase
@@ -173,14 +171,25 @@ namespace Player
         public void trade(int[] offer, int[] expect)
         {
 
+            RESOURCETYPE offerRes = RESOURCETYPE.NONE;
+            RESOURCETYPE expectRes = RESOURCETYPE.NONE;
             for (int i = 0; i < offer.Length; i++)
             {
                 resources[resources.ElementAt(i).Key] -= offer[i];
+                if (offer[i] > 0)
+                {
+                    offerRes = resources.ElementAt(i).Key;
+                }
             }
             for (int i = 0; i < expect.Length; i++)
             {
                 resources[resources.ElementAt(i).Key] += expect[i];
+                if (expect[i] > 0)
+                {
+                    expectRes = resources.ElementAt(i).Key;
+                }
             }
+            Debug.Log("traded " + offerRes + " against " + expectRes);
         }
 
         // Buy

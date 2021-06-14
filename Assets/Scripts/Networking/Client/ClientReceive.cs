@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using Enums;
 using Newtonsoft.Json.Linq;
@@ -9,6 +10,7 @@ using UnityEngine.UI;
 using Networking.Package;
 using Networking.ServerSide;
 using Player;
+using TMPro;
 using Trade;
 using UI;
 
@@ -166,6 +168,27 @@ namespace Networking.ClientSide
                 Debug.LogError("CLIENT: " + e);
             }
         }
+
+        /// <summary>
+        /// Loads the endscene. Performs cleanup operation on game scene in background.
+        /// </summary>
+        /// <param name="winnerName"> name of the winner</param>
+        /// <returns>null</returns>
+        private IEnumerator loadEndScene(string winnerName)
+        {
+            
+            AsyncOperation promise = SceneManager.LoadSceneAsync("3_EndScene");
+
+            while (!promise.isDone)
+            {
+                yield return null;
+            }
+            
+            string win = $"Congratulations!\nPlayer {winnerName} won the game!";
+            GameObject textObj = GameObject.Find("Canvas/victoryPanel/Congrats");
+            var comp = textObj.GetComponent<TMP_Text>();
+            comp.text = win;
+        }
         
         //---------------------------------------------- Interface INetworkableClient implementation ----------------------------------------------
         
@@ -205,6 +228,17 @@ namespace Networking.ClientSide
 
         public void handleGameStartInitialize(Packet serverPacket)
         {
+            // SceneManager.SetActiveScene(SceneManager.GetSceneByName("2_GameScene"));
+            //
+            // // Clean up lobby
+            // var parent = GameObject.Find("Scroll View/Viewport/Content").transform;
+            // foreach (Transform child in parent)
+            // {
+            //     Destroy(child.gameObject);
+            // }
+            //
+            // SceneManager.UnloadSceneAsync("1_LobbyScene");
+            
             AsyncOperation asyncLoadLevel = SceneManager.LoadSceneAsync("2_GameScene");
             gameBoard = serverPacket.gameBoard;
             Debug.Log("CLIENT: Sie haben ein Spielbrett erhalten :)");
@@ -214,7 +248,7 @@ namespace Networking.ClientSide
         {
             Debug.Log("CLIENT: Place building " + serverPacket.buildType + " on " + serverPacket.buildID);
             BUYABLES buildType = (BUYABLES) serverPacket.buildType;
-            int buildId = serverPacket.buildID;
+            int buildId = serverPacket.buildID.GetValueOrDefault();
             PLAYERCOLOR buildColor = serverPacket.buildColor;
             Debug.Log("CLIENT: client recieved color: " + buildColor);
 
@@ -231,8 +265,8 @@ namespace Networking.ClientSide
         {   
             Debug.Log("CLIENT: Current Player: " + serverPacket.previousPlayerID);
             Debug.LogWarning($"CLIENT: It was {serverPacket.previousPlayerID}'s turn and now it's {serverPacket.currentPlayerID}'s turn!");
-            if(!runFixedUpdate){playerRepresentation.showNextPlayer(serverPacket.previousPlayerID, serverPacket.currentPlayerID);}
-            currentPlayer = serverPacket.currentPlayerID;
+            if(!runFixedUpdate){playerRepresentation.showNextPlayer(serverPacket.previousPlayerID.GetValueOrDefault(), serverPacket.currentPlayerID.GetValueOrDefault());}
+            currentPlayer = serverPacket.currentPlayerID.GetValueOrDefault();
             Debug.Log($"CLIENT: CurrentPlayer is player {serverPacket.currentPlayerID}");
         }
 
@@ -241,7 +275,8 @@ namespace Networking.ClientSide
             // Show victorious Player
             // Load the post game Scene or Lobby so a new game can be started
             Debug.Log($"CLIENT: Yeay somebody won and it is {serverPacket.playerName} with the color {serverPacket.playerColor}");
-            throw new System.NotImplementedException();
+
+            StartCoroutine(loadEndScene(serverPacket.playerName));
         }
 
         public void handleClientDisconnect(Packet serverPacket)
@@ -272,7 +307,7 @@ namespace Networking.ClientSide
         
         public void handleAcceptTradeOffer(Packet serverPacket)
         {
-            int buttonNumber = serverPacket.buttonNumber;
+            int buttonNumber = serverPacket.buttonNumber.GetValueOrDefault();
             TradeMenu.markOfferResource(buttonNumber);
         }
 
@@ -288,7 +323,7 @@ namespace Networking.ClientSide
 
         public void handleAcceptBuyDevelopement(Packet serverPacket)
         {
-            _devCardsMenu.updateLeftDevCards(serverPacket.leftDevCards);
+            _devCardsMenu.updateLeftDevCards(serverPacket.leftDevCards.GetValueOrDefault());
             Debug.Log("CLIENT: One Development card was bought. There are " + serverPacket.leftDevCards + " cards left.");
         }
 

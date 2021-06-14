@@ -6,34 +6,34 @@ public class Hexagon
 {
     [JsonProperty] private int fieldNumber;
     [JsonProperty] private HEXAGON_TYPE type;
-    [JsonProperty] private LinkedList<int> adjacentNodesPos = new LinkedList<int>();
-    [JsonProperty] private bool blockedByRobber = false;
+    private LinkedList<int> adjacentNodesPos = new LinkedList<int>();
+    private bool blockedByRobber = false;
 
-    public Hexagon(HEXAGON_TYPE type, int fieldNumber)
+    public Hexagon(HEXAGON_TYPE t, int fN)
     {
-        this.type = type;
-        this.fieldNumber = fieldNumber;
+        this.t = t;
+        this.fN = fN;
     }
 
     [JsonConstructor]
-    public Hexagon(HEXAGON_TYPE type)
+    public Hexagon(HEXAGON_TYPE t)
     {
-        this.type = type;
-        this.fieldNumber = 0;
+        this.t = t;
+        this.fN = 0;
     }
 
     public int getFieldNumber()
     {
-        return this.fieldNumber;
+        return this.fN;
     }
     public HEXAGON_TYPE getType()
     {
-        return type;
+        return t;
     }
 
     public RESOURCETYPE getResourceType()
     {
-        switch (type)
+        switch (t)
         {
             case HEXAGON_TYPE.SHEEP:
             case HEXAGON_TYPE.PORTSHEEP:
@@ -62,17 +62,17 @@ public class Hexagon
 
     public LinkedList<int> getAdjacentNodesPos()
     {
-        return adjacentNodesPos;
+        return aN;
     }
 
     public bool isBlockedByRobber()
     {
-        return blockedByRobber;
+        return bB;
     }
 
     public bool isPort()
     {
-        switch (this.type)
+        switch (this.t)
         {
             case HEXAGON_TYPE.PORTNORMAL:
             case HEXAGON_TYPE.PORTSHEEP:
@@ -86,7 +86,7 @@ public class Hexagon
 
     public bool isLand()
     {
-        switch (this.type)
+        switch (this.t)
         {
             case HEXAGON_TYPE.SHEEP:
             case HEXAGON_TYPE.WOOD:
