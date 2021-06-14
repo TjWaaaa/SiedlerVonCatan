@@ -1,4 +1,5 @@
 using System;
+using Enums;
 using Networking.Communication;
 using TMPro;
 using UnityEngine;
@@ -86,7 +87,8 @@ namespace Trade
         {
             if (TradeButton.isValidTradeRequest())
             {
-
+                
+                Debug.Log("Client want's to trade " + TradeButton.getOfferResourcetype() + " against " + TradeButton.getExpectResourcetype());
                 int[] offer = convertOfferResourcesToArray();
                 int[] expect = convertExpectResourcesToArray();
                 
@@ -121,20 +123,22 @@ namespace Trade
         /// <returns>offer</returns>
         private int[] convertOfferResourcesToArray()
         {
-            int[] offer = new int[5];
-            foreach (GameObject button in offerResources) 
+            switch (TradeButton.getOfferResourcetype())
             {
-                if (button.GetComponent<TradeButton>().getResourcetype() == TradeButton.getOfferResourcetype())
-                {
-                    offer[Array.IndexOf(offerResources, button)] = 4;
-                }
-                else
-                {
-                    offer[Array.IndexOf(offerResources, button)] = 0;
-                }
+                case RESOURCETYPE.SHEEP:
+                    return new[] {4, 0, 0, 0, 0};
+                case RESOURCETYPE.ORE:
+                    return new[] {0, 4, 0, 0, 0};
+                case RESOURCETYPE.BRICK:
+                    return new[] {0, 0, 4, 0, 0};
+                case RESOURCETYPE.WOOD:
+                    return new[] {0, 0, 0, 4, 0};
+                case RESOURCETYPE.WHEAT:
+                    return new[] {0, 0, 0, 0, 4};
+                default:
+                    return new[] {0, 0, 0, 0, 0};
+                    
             }
-            
-            return offer;
         }
 
         /// <summary>
@@ -143,20 +147,22 @@ namespace Trade
         /// <returns>expect</returns>
         private int[] convertExpectResourcesToArray()
         {
-            int[] expect = new int[5];
-            foreach (GameObject button in expectResources)
+            switch (TradeButton.getExpectResourcetype())
             {
-                if (button.GetComponent<TradeButton>().getResourcetype() == TradeButton.getExpectResourcetype())
-                {
-                    expect[Array.IndexOf(expectResources, button)] = 1;
-                }
-                else
-                {
-                    expect[Array.IndexOf(expectResources, button)] = 0;
-                }
+                case RESOURCETYPE.SHEEP:
+                    return new[] {1, 0, 0, 0, 0};
+                case RESOURCETYPE.ORE:
+                    return new[] {0, 1, 0, 0, 0};
+                case RESOURCETYPE.BRICK:
+                    return new[] {0, 0, 1, 0, 0};
+                case RESOURCETYPE.WOOD:
+                    return new[] {0, 0, 0, 1, 0};
+                case RESOURCETYPE.WHEAT:
+                    return new[] {0, 0, 0, 0, 1};
+                default:
+                    return new[] {0, 0, 0, 0, 0};
+                    
             }
-
-            return expect;
         }
     }
 }

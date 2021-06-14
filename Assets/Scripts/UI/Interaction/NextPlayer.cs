@@ -20,7 +20,7 @@ namespace UI
         
         public void nextPlayer()
         {
-            Debug.Log("CLIENT: NextPlayer in GameController is called");
+            Debug.LogWarning("CLIENT: NextPlayer in GameController is called");
             clientRequest.requestEndTurn();
         }
     }
