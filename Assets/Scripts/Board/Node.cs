@@ -1,11 +1,12 @@
+using System.Collections.Generic;
 using Enums;
 
 public class Node
 {
     private int posInArray;
     private int[][] adjacentHexagonsPos = new int[3][];
-    private int[] adjacentNodesPos = new int[3];
-    private int[] adjacentEdgesPos = new int[3];
+    private LinkedList<int> adjacentNodesPos = new LinkedList<int>();
+    private LinkedList<int> adjacentEdgesPos = new LinkedList<int>();
     private PLAYERCOLOR occupant = PLAYERCOLOR.NONE;
     private BUILDING_TYPE buildingType = BUILDING_TYPE.NONE;
 
@@ -29,22 +30,22 @@ public class Node
         return adjacentHexagonsPos;
     }
 
-    public void setAdjacentNodePos(int nodePos, int index)
+    public void setAdjacentNodePos(int nodePos)
     {
-        adjacentNodesPos[index] = nodePos;
+        adjacentNodesPos.AddLast(nodePos);
     }
     
-    public int[] getAdjacentNodesPos()
+    public LinkedList<int> getAdjacentNodesPos()
     {
         return adjacentNodesPos;
     }
 
     public void setAdjacentEdgePos(int edgePos, int index)
     {
-        adjacentEdgesPos[index] = edgePos;
+        adjacentEdgesPos.AddLast(edgePos);
     }
 
-    public int[] getAdjacentEdgesPos()
+    public LinkedList<int> getAdjacentEdgesPos()
     {
         return adjacentEdgesPos;
     }
