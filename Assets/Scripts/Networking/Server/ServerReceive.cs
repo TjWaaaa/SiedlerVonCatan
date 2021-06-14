@@ -93,7 +93,7 @@ namespace Networking.ServerSide
                 currentPlayer = playerAmount - 1;
                 serverRequest.gamestartInitialize(gameBoard.getHexagonsArray());
                 shuffledDevCardStack = generateRandomDevCardStack(unshuffledDevCardArray);
-                serverRequest.notifyNextPlayer(currentPlayer);
+                serverRequest.notifyNextPlayer(currentPlayer,0);
                 Debug.Log($"SERVER: Starting the game with player {currentPlayer}");
             }
 
@@ -278,7 +278,7 @@ namespace Networking.ServerSide
             // Begin next round
             if (!inGameStartupPhase)
             {
-                changeCurrentPlayer(clientPacket);
+                changeCurrentPlayer(clientPacket,currentPlayer);
                 Debug.Log("SERVER: Current Player index: " + currentPlayer);
                 updateRepPlayers();
                 updateOwnPlayer(currentPlayer);
@@ -364,7 +364,7 @@ namespace Networking.ServerSide
             return false;
         }
 
-        private void changeCurrentPlayer(Packet clientPacket)
+        private void changeCurrentPlayer(Packet clientPacket,int playersId)
         {
             if (!firstRound)
             {
@@ -383,7 +383,7 @@ namespace Networking.ServerSide
                 {
                     currentPlayer++;
                 }
-                serverRequest.notifyNextPlayer(currentPlayer);
+                serverRequest.notifyNextPlayer(currentPlayer,playersId);
             }
             else
             {
@@ -395,7 +395,7 @@ namespace Networking.ServerSide
                 {
                     currentPlayer--;
                 }
-                serverRequest.notifyNextPlayer(currentPlayer);
+                serverRequest.notifyNextPlayer(currentPlayer,playersId);
             }
         }
 
@@ -466,8 +466,7 @@ namespace Networking.ServerSide
                         serverRequest.notifyObjectPlacement(buildingType, posInArray, playerColor);
                         updateOwnPlayer(currentPlayer);
                         updateRepPlayers();
-                        changeCurrentPlayer(clientPacket);
-                        serverRequest.notifyNextPlayer(currentPlayer);
+                        changeCurrentPlayer(clientPacket,currentPlayer);
                         return;
                     }
                     if (!inGameStartupPhase
