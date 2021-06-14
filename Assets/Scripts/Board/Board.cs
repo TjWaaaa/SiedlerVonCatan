@@ -478,7 +478,7 @@ public class Board
                     if (subStrings[i] != "-")
                     {
                         int neighborPos = int.Parse(subStrings[i]);
-                        currentHexagon.setAdjacentNodePos(neighborPos, i);
+                        currentHexagon.setAdjacentNodePos(neighborPos);
                     }
                 }
             }
