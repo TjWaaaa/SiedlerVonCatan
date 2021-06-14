@@ -90,7 +90,7 @@ public class BuildController : MonoBehaviour
         buildStreetMode = false;
         buildVillageMode = false;
         buildCityMode = false;
-        Debug.Log("BUILDMODE IS OFF");
+        Debug.Log("build mode is off");
     }
 
     private void startBuildStreetMode()
@@ -98,7 +98,7 @@ public class BuildController : MonoBehaviour
         buildStreetMode = true;
         buildCityMode = false;
         buildVillageMode = false;
-        Debug.Log("BUILDSTREETMODE IS ON");
+        Debug.Log("build street mode is on");
     }
 
     private void startBuildVillageMode()
@@ -106,7 +106,7 @@ public class BuildController : MonoBehaviour
         buildVillageMode = true;
         buildStreetMode = false;
         buildCityMode = false;
-        Debug.Log("BUILDVILLAGEMODE IS ON");
+        Debug.Log("build village mode is on");
     }
 
     private void startBuildCityMode()
@@ -114,7 +114,7 @@ public class BuildController : MonoBehaviour
         buildVillageMode = false;
         buildStreetMode = false;
         buildCityMode = true;
-        Debug.Log("BUILDCITYMODE IS ON");
+        Debug.Log("build city mode is on");
     }
     
     

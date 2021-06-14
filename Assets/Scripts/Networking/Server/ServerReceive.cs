@@ -13,20 +13,25 @@ namespace Networking.ServerSide
 {
     public class ServerReceive : INetworkableServer
     {
-        private Dictionary<int, ServerPlayer> allPlayer = new Dictionary<int, ServerPlayer>();
-
-        private int playerAmount = 0;
-        private int currentPlayer = 0;
+        private readonly ServerRequest serverRequest = new ServerRequest();
+        
         private int mandatoryNodeID;
-
+        
+        // Player
+        private Dictionary<int, ServerPlayer> allPlayer = new Dictionary<int, ServerPlayer>();
+        private int playerAmount;
+        private int currentPlayer;
+        private readonly Stack<PLAYERCOLOR> possibleColors = new Stack<PLAYERCOLOR>();
+        
+        // Gamestage params 
         private bool firstRound = true;
         private bool inGameStartupPhase = true;
-        private bool villageBuilt = false;
+        private bool villageBuilt;
 
-        private readonly Stack<PLAYERCOLOR> possibleColors = new Stack<PLAYERCOLOR>();
-        private readonly ServerRequest serverRequest = new ServerRequest();
-
+        // Board
         private Board gameBoard = new Board();
+        
+        // Development Cards
         private Stack<DEVELOPMENT_TYPE> shuffledDevCardStack = new Stack<DEVELOPMENT_TYPE>();
         private DEVELOPMENT_TYPE[] unshuffledDevCardArray = { DEVELOPMENT_TYPE.VICTORY_POINT,
             DEVELOPMENT_TYPE.VICTORY_POINT, DEVELOPMENT_TYPE.VICTORY_POINT, DEVELOPMENT_TYPE.VICTORY_POINT,
@@ -141,7 +146,8 @@ namespace Networking.ServerSide
                 serverRequest.notifyRejection(clientPacket.myPlayerID, "You are not allowed to trade with bank!");
                 return;
             }
-            Debug.LogWarning("offer: " + clientPacket.tradeResourcesOffer + "; expect: " + clientPacket.tradeResourcesExpect);
+            
+            Debug.Log("offer: " + clientPacket.tradeResourcesOffer + "; expect: " + clientPacket.tradeResourcesExpect);
             allPlayer.ElementAt(currentPlayer).Value.trade(clientPacket.tradeResourcesOffer, clientPacket.tradeResourcesExpect);
 
             updateRepPlayers();
