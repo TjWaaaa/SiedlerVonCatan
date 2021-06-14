@@ -19,26 +19,31 @@ namespace Networking.ClientSide
     public class ClientReceive : MonoBehaviour, INetworkableClient
     {
         public int myID { get; private set; }
+        
+        private bool runFixedUpdate = true;
 
         private PrefabFactory prefabFactory;
+        
+        // UI
+        private Scene currentScene;
+        private GameObject diceHolder;
         private GameObject scrollViewContent;
         private PlayerRepresentation playerRepresentation = new PlayerRepresentation();
         private OwnPlayerRepresentation ownPlayerRepresentation = new OwnPlayerRepresentation();
-        private DevCardsMenu _devCardsMenu; 
+        private DevCardsMenu _devCardsMenu;
+        private TradeMenu _tradeMenu;
 
-        //private RepresentativePlayer[] representativePlayerArray;
-        public List<RepresentativePlayer> representativePlayers = new List<RepresentativePlayer>();
-        public OwnClientPlayer ownClientPlayer;
+        // Player
+        private List<RepresentativePlayer> representativePlayers = new List<RepresentativePlayer>();
+        private OwnClientPlayer ownClientPlayer;
         private int playerNumber = 1;
-
         private int currentPlayer = 0;
+        
+        // Board
         private Hexagon[][] gameBoard;
-
-        private Scene currentScene;
-        private bool runFixedUpdate = true;
         private BoardGenerator boardGenerator;
 
-        private GameObject diceHolder;
+        
 
         /// <summary>
         /// Create a persistent ClientGameLogicObject that stays over scene changes.
@@ -60,6 +65,10 @@ namespace Networking.ClientSide
             ThreadManager.updateMainThread();
         }
 
+        
+        /// <summary>
+        /// Load everything, when the GameScene is started. This happens only once
+        /// </summary>
         public void FixedUpdate()
         {
             if (runFixedUpdate)
@@ -74,6 +83,7 @@ namespace Networking.ClientSide
                     ownPlayerRepresentation.represent(ownClientPlayer);
                     playerRepresentation.showNextPlayer(0,currentPlayer);
                     _devCardsMenu = GameObject.Find("_UI").GetComponent<DevCardsMenu>();
+                    _tradeMenu = GameObject.Find("_UI").GetComponent<TradeMenu>();
                     
                 }
             }
@@ -93,7 +103,7 @@ namespace Networking.ClientSide
 
 
         /// <summary>
-        /// Shuts down bowth client and server.
+        /// Shuts down both client and server.
         /// </summary>
         public static void quitGame()
         {
@@ -103,9 +113,9 @@ namespace Networking.ClientSide
         }
 
         /// <summary>
-        /// converts a float array with r,g,b,a to a Color object
+        /// Converts PLAYERCOLOR to a Color object
         /// </summary>
-        /// <param name="values">r,g,b,a float values</param>
+        /// <param name="playerColor"></param>
         /// <returns>Color object</returns>
         private Color decodeColor(PLAYERCOLOR playerColor)
         {
@@ -124,6 +134,7 @@ namespace Networking.ClientSide
         /// <summary>
         /// Add a player list entry to the lobby.
         /// If a player already exists, its values are updated.
+        /// Create RepresentativePlayers and OwnClientPlayer
         /// </summary>
         /// <param name="playerName">Name of the player</param>
         /// <param name="playerColor">Color of the player</param>
@@ -144,7 +155,7 @@ namespace Networking.ClientSide
                     listItem.transform.Find("No.").GetComponent<Text>().color = decodeColor(playerColor);
                     listItem.transform.Find("Player").GetComponent<Text>().text = playerName;
 
-                    if (currentPlayerID != myID) // Disable all toggle components which don't belong to the local client
+                    if (currentPlayerID != myID) // Disable all toggle components which don't belong to the local client and create representativePlayers
                     {
                         listItem.transform.Find("IsReady").GetComponent<Toggle>().enabled = false;
                         listItem.transform.Find("IsReady").GetComponent<PlayerReady>().enabled = false;
@@ -152,14 +163,15 @@ namespace Networking.ClientSide
                     }
                     else
                     {
+                        representativePlayers.Add( new RepresentativePlayer(currentPlayerID, playerName + " (you)", decodeColor(playerColor)));
                         ownClientPlayer = new OwnClientPlayer(currentPlayerID);
                         Debug.Log("CLIENT: Created OwnClientPlayer with ID" + currentPlayerID);
-                        representativePlayers.Add( new RepresentativePlayer(currentPlayerID, playerName + " (you)", decodeColor(playerColor)));
                     }
-                    listItem.name = currentPlayerID.ToString();
                     
+                    listItem.name = currentPlayerID.ToString();
                     Debug.Log("CLIENT: "+ playerName + " created. Player Number " + representativePlayers.Count);
                 }
+                
                 else // List entry does already exist --> update name and color 
                 {
                     listItem.transform.Find("Player").GetComponent<Text>().text = playerName;
@@ -196,7 +208,7 @@ namespace Networking.ClientSide
         
         public void handleClientJoined(Packet serverPacket)
         {
-            //set Loby IP
+            // Set Lobby IP
             GameObject.Find("Canvas/LobbyIP").GetComponent<Text>().text = serverPacket.lobbyIP;
             
             // for each player:
@@ -310,7 +322,7 @@ namespace Networking.ClientSide
         public void handleAcceptTradeOffer(Packet serverPacket)
         {
             int buttonNumber = serverPacket.buttonNumber.GetValueOrDefault();
-            TradeMenu.markOfferResource(buttonNumber);
+            _tradeMenu.markOfferResource(buttonNumber);
         }
 
         public void handleAcceptBuild(Packet serverPacket)
@@ -331,13 +343,11 @@ namespace Networking.ClientSide
 
         public void handleAcceptPlayDevelopement(Packet serverPacket)
         {
-            //idk update some shit here in UI
             Debug.Log($"CLIENT: {serverPacket.playerName} played a devCard: {serverPacket.developmentCard}");
         }
 
         public void handleUpdateRP(Packet serverPacket)
-        {   
-            Debug.Log("CLIENT: handleUpdateRP in Client has been called");
+        {
             int i = 0;
             foreach(RepresentativePlayer rp in representativePlayers)
             {
@@ -345,6 +355,7 @@ namespace Networking.ClientSide
                 playerRepresentation.updateUiPR(i,rp);
                 i++;   
             }
+            Debug.Log("CLIENT: update RP");
         }
         
         public void handleUpdateOP(Packet serverPacket)
@@ -352,7 +363,7 @@ namespace Networking.ClientSide
             ownClientPlayer.updateOP(serverPacket.updateOP,serverPacket.updateResourcesOnOP, serverPacket.updateDevCardsOnOP);
             ownPlayerRepresentation.updaetOwnPlayerUI(ownClientPlayer);
             _devCardsMenu.showDevCards(ownClientPlayer);
-            Debug.Log("CLIENT: UPDATE OP");
+            Debug.Log("CLIENT: update OP");
         }
     }
 }

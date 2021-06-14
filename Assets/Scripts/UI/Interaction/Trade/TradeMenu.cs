@@ -15,9 +15,9 @@ namespace Trade
         private GameObject startTradeButton;
         private GameObject closeTradeButton;
         private GameObject tradeButton;
-        private static GameObject[] offerResources = new GameObject[5];
+        private GameObject[] offerResources = new GameObject[5];
         private GameObject[] expectResources = new GameObject[5];
-        private static TextMeshProUGUI resourceOffer;
+        private TextMeshProUGUI resourceOffer;
         private TextMeshProUGUI resourceExpect;
         private TextMeshProUGUI amountOffer;
         
@@ -25,6 +25,7 @@ namespace Trade
         void Start()
         {
             tradeMenu = GameObject.Find("TradeMenu");
+            
             // Find all buttons 
             startTradeButton = GameObject.Find("startTrade");
             closeTradeButton = GameObject.Find("closeTrade");
@@ -32,13 +33,13 @@ namespace Trade
             resourceOffer = GameObject.Find("resourceOffer").GetComponent<TextMeshProUGUI>();
             resourceExpect = GameObject.Find("resourceExpect").GetComponent<TextMeshProUGUI>();
             amountOffer = GameObject.Find("amountOffer").GetComponent<TextMeshProUGUI>();
+            offerResources = GameObject.FindGameObjectsWithTag("giveResource");
+            expectResources = GameObject.FindGameObjectsWithTag("getResource");
             
             // Add EventListener
             startTradeButton.GetComponent<Button>().onClick.AddListener(startTrade);
             closeTradeButton.GetComponent<Button>().onClick.AddListener(closeTrade);
             tradeButton.GetComponent<Button>().onClick.AddListener(trade);
-            offerResources = GameObject.FindGameObjectsWithTag("giveResource");
-            expectResources = GameObject.FindGameObjectsWithTag("getResource");
             foreach (GameObject button in offerResources) { button.GetComponent<Button>().onClick.AddListener(delegate { checkOfferResource(button); }); }
             foreach (GameObject button in expectResources) { button.GetComponent<Button>().onClick.AddListener(delegate { markExpectResource(button); }); }
 
@@ -64,7 +65,7 @@ namespace Trade
         /// Called by ClientReceive
         /// </summary>
         /// <param name="buttonIndex">index in offerResources</param>
-        public static void markOfferResource(int buttonIndex)
+        public void markOfferResource(int buttonIndex)
         {
             resourceOffer.text = offerResources[buttonIndex].GetComponent<TradeButton>().clickButton();
         }
