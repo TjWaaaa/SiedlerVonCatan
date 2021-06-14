@@ -32,11 +32,11 @@ namespace Player
 
         private Dictionary<RESOURCETYPE, int> resources = new Dictionary<RESOURCETYPE, int>
         {
-            {RESOURCETYPE.SHEEP, 10},
-            {RESOURCETYPE.ORE, 10},
-            {RESOURCETYPE.BRICK, 10},
-            {RESOURCETYPE.WOOD, 10},
-            {RESOURCETYPE.WHEAT, 10}
+            {RESOURCETYPE.SHEEP, 0},
+            {RESOURCETYPE.ORE, 0},
+            {RESOURCETYPE.BRICK, 0},
+            {RESOURCETYPE.WOOD, 0},
+            {RESOURCETYPE.WHEAT, 0}
 
         };
 

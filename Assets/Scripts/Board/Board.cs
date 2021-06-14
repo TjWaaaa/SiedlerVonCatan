@@ -437,6 +437,7 @@ public class Board
         foreach (int[] hexagonPos in adjacentHexagonsPos)
         {
             HEXAGON_TYPE hexagonType = hexagonsArray[hexagonPos[0]][hexagonPos[1]].getType();
+            Debug.LogWarning("hexagonType: " + hexagonType);
             if ((int) hexagonType > 4)
             {
                 continue;
