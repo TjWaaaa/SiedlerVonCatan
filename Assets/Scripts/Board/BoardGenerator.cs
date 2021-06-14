@@ -21,6 +21,7 @@ public class BoardGenerator : MonoBehaviour
                 {
                     continue;
                 }
+                
                 Hexagon hexagon = gameBoard[row][col];
                 string hexagonPath = "Tiles3D/" + findPrefabByHexagonType(hexagon.getType()) + "Prefab";
                 GameObject prefab = (GameObject)Resources.Load(hexagonPath);

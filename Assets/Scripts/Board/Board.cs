@@ -76,7 +76,6 @@ public class Board
         assignNeighborsToHexagons();
         assignNeighborsToNodes();
         assignNeighborsToEdges();
-
     }
     /// <summary>
     /// Contructor for test purposes. Takes a pre defined Numberstack an initalizes a Board Object
@@ -194,7 +193,10 @@ public class Board
     /// <param name="player">color of the player who tries to build</param>
     public bool canPlaceBuilding(int nodeId, PLAYERCOLOR player, BUILDING_TYPE buildingType, bool preGamePhase)
     {
+        if (player == PLAYERCOLOR.NONE) return false;
+        
         Node requestedNode = nodesArray[nodeId];
+
         if (!allowedToBuildOnNode(requestedNode, player, preGamePhase)) return false;
 
         if (buildingType == BUILDING_TYPE.VILLAGE
@@ -230,8 +232,8 @@ public class Board
             return false;
         }
 
-        int[] neighborNodesPos = currentNode.getAdjacentNodesPos();
-        int[] neighborEdgesPos = currentNode.getAdjacentEdgesPos();
+        LinkedList<int> neighborNodesPos = currentNode.getAdjacentNodesPos();
+        LinkedList<int> neighborEdgesPos = currentNode.getAdjacentEdgesPos();
 
         foreach (int nodePos in neighborNodesPos)
         {
@@ -248,32 +250,54 @@ public class Board
             {
                 Edge edge = edgesArray[edgePos];
                 // true if at least 1 edge is occupied by player
-                if (edge.getOccupant() == player) return true;
+                if (edge.getOccupant() == player)
+                {
+                    Debug.Log("near road on " + edgePos);
+                    return true;
+                }
             }
             // false if none is occupied by player
             return false;
         }
         // true if in pre game phase
-        // in pre game phase cities can be build without being adjacent to a node
-        return true;
+        // in pre game phase villages can be build without being adjacent to a node
+        else
+        {
+            return true;
+        }
     }
 
-    public void placeBuilding(int nodeId, PLAYERCOLOR player, BUILDING_TYPE buildingType)
+    public bool placeBuilding(int nodeId, PLAYERCOLOR player, BUILDING_TYPE buildingType)
     {
         Node requestedNode = nodesArray[nodeId];
         switch (buildingType)
         {
             case BUILDING_TYPE.VILLAGE:
+            {
+                if (requestedNode.getOccupant() != PLAYERCOLOR.NONE
+                    || requestedNode.getBuildingType() != BUILDING_TYPE.NONE)
+                {
+                    return false;
+                }
+
                 requestedNode.setBuildingType(BUILDING_TYPE.VILLAGE);
                 requestedNode.setOccupant(player);
-                break;
+                return true;
+            }
             case BUILDING_TYPE.CITY:
+            {
+                if (requestedNode.getOccupant() != player
+                    || requestedNode.getBuildingType() != BUILDING_TYPE.VILLAGE)
+                {
+                    return false;
+                }
                 requestedNode.setBuildingType(BUILDING_TYPE.CITY);
-                requestedNode.setOccupant(player);
-                break;
+                //requestedNode.setOccupant(player);
+                return true;
+            }
             default:
                 Debug.Log("SERVER: buildBuilding() building of type " + buildingType + " cant be built");
-                break;
+                return false;
         }
     }
 
@@ -314,11 +338,11 @@ public class Board
         Edge currentEdge = edgesArray[edgeId];
         if (currentEdge.getOccupant() != PLAYERCOLOR.NONE) return false;
         
-        int[] neighborNodesPos = currentEdge.getAdjacentNodesPos();
+        LinkedList<int> neighborNodesPos = currentEdge.getAdjacentNodesPos();
         
-        foreach (int adjacentNodePos in neighborNodesPos)
+        foreach (int nodePos in neighborNodesPos)
         {
-            if (adjacentNodePos == mandatoryAdjacentNodePos)
+            if (nodePos == mandatoryAdjacentNodePos)
             {
                 Debug.Log("SERVER: road can be placed");
                 return true;
@@ -338,8 +362,8 @@ public class Board
     {
         if (currentEdge.getOccupant() != PLAYERCOLOR.NONE) return false;
 
-        int[] neighborNodesPos = currentEdge.getAdjacentNodesPos();
-        int[] neighborEdgesPos = currentEdge.getAdjacentEdges();
+        LinkedList<int> neighborNodesPos = currentEdge.getAdjacentNodesPos();
+        LinkedList<int> neighborEdgesPos = currentEdge.getAdjacentEdgesPos();
 
         foreach (int nodePos in neighborNodesPos)
         {
@@ -356,11 +380,16 @@ public class Board
         return false;
     }
 
-    public void placeRoad(int edgeId, PLAYERCOLOR player)
+    public bool placeRoad(int edgeId, PLAYERCOLOR player)
     {
-        Debug.Log("SERVER: road placed");
         Edge currentEdge = edgesArray[edgeId];
-        currentEdge.setOccupant(player);
+        if (currentEdge.getOccupant() == PLAYERCOLOR.NONE)
+        {
+            currentEdge.setOccupant(player);
+            Debug.Log("SERVER: road placed");
+            return true;
+        }
+        return false;
     }
 
     public int[] distributeResources(int hexagonNumber, PLAYERCOLOR playerColor)
@@ -371,7 +400,7 @@ public class Board
         {
             int resourceType = (int) hexagon.getResourceType();
             
-            int[] adjacentNodesPos = hexagon.getAdjacentNodesPos();
+            LinkedList<int> adjacentNodesPos = hexagon.getAdjacentNodesPos();
             foreach (int nodePos in adjacentNodesPos)
             {
                 Node node = nodesArray[nodePos];
@@ -446,10 +475,11 @@ public class Board
 
                 for (int i = 0; i < 6; i++)
                 {
-                    if (subStrings[i] == "-") continue;
-
-                    int neighborPos = int.Parse(subStrings[i]);
-                    currentHexagon.setAdjacentNodePos(neighborPos, i);
+                    if (subStrings[i] != "-")
+                    {
+                        int neighborPos = int.Parse(subStrings[i]);
+                        currentHexagon.setAdjacentNodePos(neighborPos, i);
+                    }
                 }
             }
         }
@@ -483,7 +513,7 @@ public class Board
                 if (nNodes[i] != "-")
                 {
                     int nNodePos = int.Parse(nNodes[i]);
-                    currentNode.setAdjacentNodePos(nNodePos, i);
+                    currentNode.setAdjacentNodePos(nNodePos);
                 }
 
                 // sets adjacent edge
@@ -526,7 +556,7 @@ public class Board
                 if (nEdges[i] != "-")
                 {
                     int nEdgePos = int.Parse(nEdges[i]);
-                    currentEdge.setAdjacentEdge(nEdgePos, i);
+                    currentEdge.setAdjacentEdgePos(nEdgePos, i);
                 }
             }
         }
