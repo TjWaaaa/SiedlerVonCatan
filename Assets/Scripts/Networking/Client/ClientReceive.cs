@@ -148,14 +148,16 @@ namespace Networking.ClientSide
                     {
                         listItem.transform.Find("IsReady").GetComponent<Toggle>().enabled = false;
                         listItem.transform.Find("IsReady").GetComponent<PlayerReady>().enabled = false;
+                        representativePlayers.Add( new RepresentativePlayer(currentPlayerID, playerName, decodeColor(playerColor)));
                     }
                     else
                     {
                         ownClientPlayer = new OwnClientPlayer(currentPlayerID);
                         Debug.Log("CLIENT: Created OwnClientPlayer with ID" + currentPlayerID);
+                        representativePlayers.Add( new RepresentativePlayer(currentPlayerID, playerName + " (you)", decodeColor(playerColor)));
                     }
                     listItem.name = currentPlayerID.ToString();
-                    representativePlayers.Add( new RepresentativePlayer(currentPlayerID, playerName, decodeColor(playerColor)));
+                    
                     Debug.Log("CLIENT: "+ playerName + " created. Player Number " + representativePlayers.Count);
                 }
                 else // List entry does already exist --> update name and color 
