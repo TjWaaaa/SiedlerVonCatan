@@ -64,7 +64,6 @@ namespace Networking.ServerSide
                 // look for all Players that are fully initialized and add it to ArrayList that updates client lobbies. 
                 if (player.getPlayerName() != null)
                 {
-                    PLAYERCOLOR playerColor = player.getPlayerColor(); // needs to be done, because Color is not serializable ¯\_(ツ)_/¯
                     allPlayerInformation.Add(new object[] { player.getPlayerID(), player.getPlayerName(), player.getPlayerColor() });
                 }
             }
