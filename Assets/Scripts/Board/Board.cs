@@ -3,20 +3,11 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Enums;
-using Player;
 using UnityEngine;
-
-//TODO: assignNeighborsToHexagons(); prüfen ob die Methode mit de neuen Array klar kommt
-//TODO: assignNeighborsToNodes();    prüfen ob die Methode mit de neuen Array klar kommt
-//TODO: assignNeighborsToEdges();    prüfen ob die Methode mit de neuen Array klar kommt
 
 public class Board
 {
     private Hexagon[][] hexagonsArray;
-    private Node[] nodesArray = new Node[54];
-    private Edge[] edgesArray = new Edge[72];
-    private Stack<int> numberStack;
-
     private Hexagon[][] hexagonDiceNumbers =
     {
         new Hexagon[0], // 0
@@ -33,6 +24,10 @@ public class Board
         new Hexagon[2], // 11
         new Hexagon[1], // 12
     };
+    
+    private Node[] nodesArray = new Node[54];
+    private Edge[] edgesArray = new Edge[72];
+    private Stack<int> numberStack;
 
     private readonly int[][] boardConfig = {
         new[] {0,0,0,4,1,4,1},
@@ -44,9 +39,9 @@ public class Board
         new[]       {4,1,4,1,0,0,0}
     };
 
-    private int[] neighborOffsetX = new int[] {  1, 0,-1,-1, 0, 1 }; //specifies the position of adjacent hexagons in horizontal direction
-    private int[] neighborOffsetY = new int[] { -1,-1, 0, 1, 1, 0 }; //specifies the position of adjacent hexagons in vertical direction
-    private int[] availableNumbers = new int[] { 2, 3, 3, 4, 4, 5, 5, 6, 6, 8, 8, 9, 9, 10, 10, 11, 11, 12 };
+    private int[] neighborOffsetX = {  1, 0,-1,-1, 0, 1 }; //specifies the position of adjacent hexagons in horizontal direction
+    private int[] neighborOffsetY = { -1,-1, 0, 1, 1, 0 }; //specifies the position of adjacent hexagons in vertical direction
+    private int[] availableNumbers = { 2, 3, 3, 4, 4, 5, 5, 6, 6, 8, 8, 9, 9, 10, 10, 11, 11, 12 };
 
     private readonly HEXAGON_TYPE[] landHexagons = {
         HEXAGON_TYPE.SHEEP, HEXAGON_TYPE.SHEEP, HEXAGON_TYPE.SHEEP, HEXAGON_TYPE.SHEEP,
@@ -172,7 +167,7 @@ public class Board
     {
         for (int i = 0; i < 54; i++)
         {
-            nodesArray[i] = new Node(i);
+            nodesArray[i] = new Node();
         }
     }
 
@@ -432,7 +427,7 @@ public class Board
     {
         int[] distributedResources = new int[5];
         Node village = nodesArray[nodeId];
-        int[][] adjacentHexagonsPos = village.getAdjacentHexagonsPos();
+        LinkedList<int[]> adjacentHexagonsPos = village.getAdjacentHexagonsPos();
         
         foreach (int[] hexagonPos in adjacentHexagonsPos)
         {
@@ -508,7 +503,7 @@ public class Board
                 string[] nHexagonCoordinates = nHexagons[i].Split('.');
                 int nHexagonPosX = int.Parse(nHexagonCoordinates[0]);
                 int nHexagonPosY = int.Parse(nHexagonCoordinates[1]);
-                currentNode.setAdjacentHexagonPos(nHexagonPosX, nHexagonPosY, i);
+                currentNode.setAdjacentHexagonPos(new[] {nHexagonPosX, nHexagonPosY});
 
                 // sets adjacent node
                 if (nNodes[i] != "-")
@@ -521,7 +516,7 @@ public class Board
                 if (nEdges[i] != "-")
                 {
                     int nEdgePos = int.Parse(nEdges[i]);
-                    currentNode.setAdjacentEdgePos(nEdgePos, i);
+                    currentNode.setAdjacentEdgePos(nEdgePos);
                 }
             }
         }
