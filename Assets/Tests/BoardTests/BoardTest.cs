@@ -1,17 +1,12 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
 using NUnit.Framework;
-using UnityEngine;
-using UnityEngine.TestTools;
 using Enums;
 
 public class BoardTest
 {
     
-    private int[] availableNumbers = new int[] { 2, 3, 3, 4, 4, 5, 5, 6, 6, 8, 8, 9, 9, 10, 10, 11, 11, 12 };
+    private int[] availableNumbers = { 2, 3, 3, 4, 4, 5, 5, 6, 6, 8, 8, 9, 9, 10, 10, 11, 11, 12 };
     private BoardTestHelper helper = new BoardTestHelper();
    
     private int[] arie = new int[] { 2, 4, 21, 31 };
@@ -19,7 +14,7 @@ public class BoardTest
 
 
     [Test]
-    public void testFieldnumberConstraints()
+    public void fieldnumberConstraintsTest()
     {
         int numOfTests = 1000;
         bool constraintsMet = false;
@@ -47,7 +42,7 @@ public class BoardTest
     }
  }
 
-public class testCanPlaceBuilding
+public class canPlaceBuildingTest
 {
     [Test]
     public void testCanPlaceVillageInPreGamePhase_Positive()
