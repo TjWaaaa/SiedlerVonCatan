@@ -7,6 +7,7 @@ using Networking.ClientSide;
 using Networking.Communication;
 using Networking.ServerSide;
 using NUnit.Framework;
+using UnityEngine;
 
 namespace Tests.Networking
 {
@@ -44,9 +45,9 @@ namespace Tests.Networking
             ThreadManager.updateMainThread();
         
             ArrayList recievedLobbyContent = MockClientReceive.packethandleClientJoined.lobbyContent;
-            int receivedCurrentPlayerID = (int) recievedLobbyContent[0];
+            int receivedCurrentPlayerID = (int)(long) recievedLobbyContent[0];
             string receivedPlayerName = (string) recievedLobbyContent[1];
-            PLAYERCOLOR receivedPlayerColor = (PLAYERCOLOR) recievedLobbyContent[2];
+            PLAYERCOLOR receivedPlayerColor = (PLAYERCOLOR)(long) recievedLobbyContent[2];
             
             string recievedLobbyIP = MockClientReceive.packethandleClientJoined.lobbyIP;
             int packetType = MockClientReceive.packethandleClientJoined.type;
@@ -89,8 +90,8 @@ namespace Tests.Networking
             ThreadManager.updateMainThread();
        
             int? receivedBuildID = MockClientReceive.packethandleObjectPlacement.buildID;
-            BUILDING_TYPE receivedBuildType = (BUILDING_TYPE) MockClientReceive.packethandleObjectPlacement.buildType;
-            PLAYERCOLOR receivedPlayerColor = (PLAYERCOLOR) MockClientReceive.packethandleObjectPlacement.playerColor;
+            BUYABLES receivedBuildType = (BUYABLES) MockClientReceive.packethandleObjectPlacement.buildType;
+            PLAYERCOLOR receivedPlayerColor = MockClientReceive.packethandleObjectPlacement.buildColor;
 
             int packetType = MockClientReceive.packethandleObjectPlacement.type;
             Assert.AreEqual((int) COMMUNICATION_METHODS.HANDLE_OBJECT_PLACEMENT, packetType);
@@ -187,11 +188,12 @@ namespace Tests.Networking
             bool readyStatus = false;
             
             //send data
-            serverRequest.notifyPlayerReady(clientID, playerName, readyStatus);
+            serverRequest.notifyPlayerReady(-1, playerName, readyStatus); // -1 because this can not be a client ID and
+                                                                                    // on serverside the sendToAllButOne method is called
             Thread.Sleep(50);
             ThreadManager.updateMainThread();
 
-            int packetType = MockClientReceive.packethandleClientJoined.type;
+            int packetType = MockClientReceive.packethandlePlayerReadyNotification.type;
             string receivedPlayerName = MockClientReceive.packethandlePlayerReadyNotification.playerName;
             bool receivedReady = MockClientReceive.packethandlePlayerReadyNotification.isReady;
             

@@ -34,13 +34,13 @@ namespace Networking.Communication
         }
 
 
-        public void notifyObjectPlacement(BUYABLES buildType, int buildID, PLAYERCOLOR playerColor)
+        public void notifyObjectPlacement(BUYABLES buildType, int buildID, PLAYERCOLOR buildColor)
         {
             Packet packet = new Packet();
             packet.type = (int) COMMUNICATION_METHODS.HANDLE_OBJECT_PLACEMENT;
             packet.buildID = buildID;
             packet.buildType = (int) buildType;
-            packet.buildColor = playerColor;
+            packet.buildColor = buildColor;
 
             // send to all
             Server.sendDataToAll(packet);
