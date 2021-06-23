@@ -33,19 +33,6 @@ namespace Networking.Communication
             Debug.Log("SERVER: Client should expect a gameStartInitialize package Type 11");
         }
 
-        public void distributeResources(int playerID, int[] resources, int victoryPoints)
-        {
-            Packet packet = new Packet();
-            packet.type = (int) COMMUNICATION_METHODS.HANDLE_GET_RESOURCES;
-            packet.myPlayerID = playerID;
-            packet.resourcesObtained = resources;
-            packet.victoryPoint = victoryPoints;
-            
-            // send to one
-            Server.sendDataToOne(playerID, packet);
-            Debug.Log("SERVER: Client should expect a distributeResources package Type 24");
-        }
-
 
         public void notifyObjectPlacement(BUYABLES buildType, int buildID, PLAYERCOLOR playerColor)
         {

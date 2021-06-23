@@ -313,26 +313,11 @@ namespace Networking.ClientSide
             GameObject.FindGameObjectWithTag("diceHolder").GetComponent<RenderRollDices>().renderRollDices(serverPacket.diceResult);
             // Render gained ressources
         }
-
-        public void handleAcceptTradeBank(Packet serverPacket)
-        {
-            throw new System.NotImplementedException();
-        }
         
         public void handleAcceptTradeOffer(Packet serverPacket)
         {
             int buttonNumber = serverPacket.buttonNumber.GetValueOrDefault();
             _tradeMenu.markOfferResource(buttonNumber);
-        }
-
-        public void handleAcceptBuild(Packet serverPacket)
-        {
-            throw new System.NotImplementedException();
-        }
-
-        public void handleGetResources(Packet serverPacket)
-        {
-            throw new System.NotImplementedException();
         }
 
         public void handleAcceptBuyDevelopement(Packet serverPacket)

@@ -74,12 +74,6 @@ namespace Networking.Interfaces
         /// <param name="serverPacket">Packet from server</param>
         public void handleAccpetBeginRound(Packet serverPacket);
 
-        
-        /// <summary>
-        /// The trade request was approved.
-        /// </summary>
-        /// <param name="serverPacket">Packet from server</param>
-        public void handleAcceptTradeBank(Packet serverPacket);
 
         /// <summary>
         /// The trade offer request was approved.
@@ -93,20 +87,6 @@ namespace Networking.Interfaces
         // /// </summary>
         // /// <param name="serverPacket">Packet from server</param>
         //public void handleAcceptTradePort(Packet serverPacket);
-
-        
-        /// <summary>
-        /// Server returns the new building with the position
-        /// </summary>
-        /// <param name="serverPacket">Packet from server</param>
-        public void handleAcceptBuild(Packet serverPacket);
-        
-        
-        /// <summary>
-        /// Server returns the new resources. Updates clients resources
-        /// </summary>
-        /// <param name="serverPacket">Packet from server</param>
-        public void handleGetResources(Packet serverPacket);
         
         
         /// <summary>

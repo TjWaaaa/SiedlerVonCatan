@@ -14,10 +14,7 @@ namespace Tests.Networking
         public static Packet packethandleClientDisconnect;
         public static Packet packethandleRejection;
         public static Packet packethandleAccpetBeginRound;
-        public static Packet packethandleAcceptTradeBank;
         public static Packet packethandleAcceptTradeOffer;
-        public static Packet packethandleAcceptBuild;
-        public static Packet packethandleGetResources;
         public static Packet packethandleAcceptBuyDevelopement;
         public static Packet packethandleAcceptPlayDevelopement;
         public static Packet packethandleUpdateRP;
@@ -83,28 +80,10 @@ namespace Tests.Networking
             clientID = serverPacket.myPlayerID;
         }
 
-        public void handleAcceptTradeBank(Packet serverPacket)
-        {
-            packethandleAcceptTradeBank = serverPacket;
-            clientID = serverPacket.myPlayerID;
-        }
-
         public void handleAcceptTradeOffer(Packet clientPacket)
         {
             packethandleAcceptTradeOffer = clientPacket;
             clientID = clientPacket.myPlayerID;
-        }
-
-        public void handleAcceptBuild(Packet serverPacket)
-        {
-            packethandleAcceptBuild = serverPacket;
-            clientID = serverPacket.myPlayerID;
-        }
-
-        public void handleGetResources(Packet serverPacket)
-        {
-            packethandleGetResources = serverPacket;
-            clientID = serverPacket.myPlayerID;
         }
 
         public void handleAcceptBuyDevelopement(Packet serverPacket)

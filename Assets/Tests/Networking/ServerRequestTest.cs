@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
 using Enums;
+using Networking;
 using Networking.ClientSide;
 using Networking.Communication;
 using Networking.ServerSide;
@@ -27,24 +28,32 @@ namespace Tests.Networking
             clientID = MockServerReceive.playerID;
             serverRequest = new ServerRequest();
         }
-
-
+        
         
         [Test]
         public void notifyClientJoinedTest()
         {
-            ArrayList lobbyContent = new ArrayList(){clientID, "TestPlayer", PLAYERCOLOR.RED};
+            string playerName = "TestPlayer";
+            PLAYERCOLOR playerColor = PLAYERCOLOR.RED;
+            ArrayList lobbyContent = new ArrayList(){clientID, playerName, playerColor};
             string lobbyIP = "127.0.0.1";
         
             // send data
             serverRequest.notifyClientJoined(lobbyContent, lobbyIP);
             Thread.Sleep(50);
+            ThreadManager.updateMainThread();
         
-            string recievedLobbyContent = MockClientReceive.packethandleClientJoined.playerName;
-            string recievedLobbyIP = MockClientReceive.packethandleClientJoined.playerName;
+            ArrayList recievedLobbyContent = MockClientReceive.packethandleClientJoined.lobbyContent;
+            int receivedCurrentPlayerID = (int) recievedLobbyContent[0];
+            string receivedPlayerName = (string) recievedLobbyContent[1];
+            PLAYERCOLOR receivedPlayerColor = (PLAYERCOLOR) recievedLobbyContent[2];
+            
+            string recievedLobbyIP = MockClientReceive.packethandleClientJoined.lobbyIP;
             int packetType = MockClientReceive.packethandleClientJoined.type;
         
-            Assert.AreEqual(lobbyContent, recievedLobbyContent);
+            Assert.AreEqual(clientID, receivedCurrentPlayerID);
+            Assert.AreEqual(playerName, receivedPlayerName);
+            Assert.AreEqual(playerColor, receivedPlayerColor);
             Assert.AreEqual(lobbyIP, recievedLobbyIP);
             Assert.AreEqual((int) COMMUNICATION_METHODS.HANDLE_CLIENT_JOINED, packetType);
         }
@@ -57,6 +66,7 @@ namespace Tests.Networking
             // send data
             serverRequest.gamestartInitialize(gameBoard);
             Thread.Sleep(50);
+            ThreadManager.updateMainThread();
 
             Hexagon[][] recievedGameBoard = MockClientReceive.packethandleGameStartInitialize.gameBoard;
 
@@ -65,25 +75,6 @@ namespace Tests.Networking
             Assert.AreEqual(gameBoard, recievedGameBoard);
         }
         
-        [Test]
-        public void distributeResourcesTest()
-        {
-            
-            int[] ressources = {1, 2, 3, 4, 5};
-            int victoryPoints = 0;
-            
-            // send data
-            serverRequest.distributeResources(clientID, ressources, victoryPoints);
-            Thread.Sleep(50);
-
-            int[] receivedRessources = MockClientReceive.packethandleGetResources.resourcesObtained;
-            int? receivedVictorypoints = MockClientReceive.packethandleGetResources.victoryPoint;
-            int packetType = MockClientReceive.packethandleClientJoined.type;
-
-            Assert.AreEqual(ressources, receivedRessources);
-            Assert.AreEqual(victoryPoints, receivedVictorypoints);
-            Assert.AreEqual((int) COMMUNICATION_METHODS.HANDLE_GET_RESOURCES, packetType);
-        }
         
         [Test]
         public void notifyObjectPlacementTest()
@@ -95,10 +86,11 @@ namespace Tests.Networking
             // send data
             serverRequest.notifyObjectPlacement(buildType, buildID, playerColor);
             Thread.Sleep(50);
+            ThreadManager.updateMainThread();
        
             int? receivedBuildID = MockClientReceive.packethandleObjectPlacement.buildID;
-            int? receivedBuildType = MockClientReceive.packethandleObjectPlacement.buildType;
-            PLAYERCOLOR receivedPlayerColor = MockClientReceive.packethandleObjectPlacement.playerColor;
+            BUILDING_TYPE receivedBuildType = (BUILDING_TYPE) MockClientReceive.packethandleObjectPlacement.buildType;
+            PLAYERCOLOR receivedPlayerColor = (PLAYERCOLOR) MockClientReceive.packethandleObjectPlacement.playerColor;
 
             int packetType = MockClientReceive.packethandleObjectPlacement.type;
             Assert.AreEqual((int) COMMUNICATION_METHODS.HANDLE_OBJECT_PLACEMENT, packetType);
@@ -116,6 +108,7 @@ namespace Tests.Networking
             // send data
             serverRequest.notifyNextPlayer(currentPlayer, previousPlayer);
             Thread.Sleep(50);
+            ThreadManager.updateMainThread();
 
             int packetType = MockClientReceive.packethandleNextPlayer.type;
             int? receivedCurrentPlayer = MockClientReceive.packethandleNextPlayer.currentPlayerID;
@@ -135,6 +128,7 @@ namespace Tests.Networking
             // send data
             serverRequest.notifyVictory(playerName, playerColor);
             Thread.Sleep(50);
+            ThreadManager.updateMainThread();
 
             string receivedPlayerName = MockClientReceive.packethandleVictory.playerName;
             PLAYERCOLOR receivedPlayerColor = MockClientReceive.packethandleVictory.playerColor;
@@ -148,12 +142,13 @@ namespace Tests.Networking
         [Test]
         public void notifyClientDisconnectTest()
         {
-            string playerName = "Hallo Herr Hahn, wenn Sie das sehen, können Sie uns eine 1 geben :)";
+            string playerName = "Hallo Herr Hahn, wenn Sie das sehen, koennen Sie uns eine 1 geben :)";
             PLAYERCOLOR playerColor = PLAYERCOLOR.NONE;
             
             // send Data
             serverRequest.notifyClientDisconnect(playerName, playerColor);
             Thread.Sleep(50);
+            ThreadManager.updateMainThread();
 
             int packetType = MockClientReceive.packethandleClientDisconnect.type;
             string receivedPlayerName = MockClientReceive.packethandleClientDisconnect.playerName;
@@ -174,6 +169,7 @@ namespace Tests.Networking
             // send data
             serverRequest.notifyRejection(clientID, errorMessage);
             Thread.Sleep(50);
+            ThreadManager.updateMainThread();
 
             int receivedPlayerID = MockClientReceive.packethandleRejection.myPlayerID;
             string receivedErrorMessage = MockClientReceive.packethandleRejection.errorMessage;
@@ -187,12 +183,13 @@ namespace Tests.Networking
         [Test]
         public void notifyPlayerReadyTest()
         {
-            string playerName = "Hallo Alex, wenn du das siehst, du bist toll!";
+            string playerName = "Hallo Herr Tutor, wenn du das siehst, du bist toll!";
             bool readyStatus = false;
             
             //send data
             serverRequest.notifyPlayerReady(clientID, playerName, readyStatus);
             Thread.Sleep(50);
+            ThreadManager.updateMainThread();
 
             int packetType = MockClientReceive.packethandleClientJoined.type;
             string receivedPlayerName = MockClientReceive.packethandlePlayerReadyNotification.playerName;
@@ -211,6 +208,7 @@ namespace Tests.Networking
              // send Data
             serverRequest.notifyRollDice(diceResult);
             Thread.Sleep(50);       
+            ThreadManager.updateMainThread();
 
             int[] receivedDiceResult = MockClientReceive.packethandleAccpetBeginRound.diceResult;
 
@@ -227,9 +225,10 @@ namespace Tests.Networking
             //send data
             serverRequest.acceptBuyDevelopement(leftDevCards);
             Thread.Sleep(50);
+            ThreadManager.updateMainThread();
 
-            int packetType = MockClientReceive.packethandleClientJoined.type;
-            int? receivedLeftDevCards = MockClientReceive.packethandleClientJoined.leftDevCards;
+            int packetType = MockClientReceive.packethandleAcceptBuyDevelopement.type;
+            int? receivedLeftDevCards = MockClientReceive.packethandleAcceptBuyDevelopement.leftDevCards;
             
             Assert.AreEqual(leftDevCards, receivedLeftDevCards);
             Assert.AreEqual((int) COMMUNICATION_METHODS.HANDLE_ACCEPT_BUY_DEVELOPMENT_CARD, packetType);
@@ -244,6 +243,7 @@ namespace Tests.Networking
             // send Data
             serverRequest.notifyAcceptPlayDevelopement(clientID, devCard, playerName);
             Thread.Sleep(50);
+            ThreadManager.updateMainThread();
             
             int receivedPlayerID = MockClientReceive.packethandleAcceptPlayDevelopement.myPlayerID;
             DEVELOPMENT_TYPE receivedDevCard = MockClientReceive.packethandleAcceptPlayDevelopement.developmentCard;
@@ -264,10 +264,11 @@ namespace Tests.Networking
             //send data
             serverRequest.notifyAcceptTradeOffer(clientID, buttonNumber);
             Thread.Sleep(50);
+            ThreadManager.updateMainThread();
 
-            int packetType = MockClientReceive.packethandleClientJoined.type;
-            int? receivedButtonNumber = MockClientReceive.packethandleClientJoined.buttonNumber;
-            int? receivedPlayerID = MockClientReceive.packethandleClientJoined.myPlayerID;
+            int packetType = MockClientReceive.packethandleAcceptTradeOffer.type;
+            int? receivedButtonNumber = MockClientReceive.packethandleAcceptTradeOffer.buttonNumber;
+            int? receivedPlayerID = MockClientReceive.packethandleAcceptTradeOffer.myPlayerID;
             
             Assert.AreEqual(clientID, receivedPlayerID);
             Assert.AreEqual(buttonNumber, receivedButtonNumber);
@@ -282,9 +283,10 @@ namespace Tests.Networking
             // sendData 
             serverRequest.updateRepPlayers(updateNumbers);
             Thread.Sleep(50);
+            ThreadManager.updateMainThread();
             
-            int[][] receivedUpdateNumbers = MockClientReceive.packethandleClientJoined.updateRP;
-            int packetType = MockClientReceive.packethandleClientJoined.type;
+            int[][] receivedUpdateNumbers = MockClientReceive.packethandleUpdateRP.updateRP;
+            int packetType = MockClientReceive.packethandleUpdateRP.type;
             
             Assert.AreEqual(updateNumbers, receivedUpdateNumbers);
             Assert.AreEqual((int) COMMUNICATION_METHODS.HANDLE_UPDATE_RP, packetType);
@@ -299,7 +301,8 @@ namespace Tests.Networking
 
             // send Data
             serverRequest.updateOwnPlayer(updateOP, updateResourcesOnOP, updateDevCardsOnOP, clientID);
-            Thread.Sleep(50);        
+            Thread.Sleep(50);
+            ThreadManager.updateMainThread();
 
             int[] receivedUpdateOP = MockClientReceive.packethandleUpdateOP.updateOP;
             Dictionary<RESOURCETYPE, int> receivedUpdateResourcesOnOP = MockClientReceive.packethandleUpdateOP.updateResourcesOnOP;
