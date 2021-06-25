@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using System.Collections.Generic;
 using Enums;
 
 namespace Networking.Interfaces
@@ -17,17 +18,8 @@ namespace Networking.Interfaces
         /// </summary>
         /// <param name="gameBoard">Game board</param>
         public void gamestartInitialize(Hexagon[][] gameBoard);
-        
-        
-        /// <summary>
-        /// Send new resources to player 
-        /// </summary>
-        /// <param name="playerID">ID of active player</param>
-        /// <param name="resources">[+ gain resources, - spent resources]</param>
-        /// <param name="victoryPoints">a players new victory points</param>
-        public void distributeResources(int playerID, int[] resources, int victoryPoints); 
 
-        
+
         /// <summary>
         /// In game: when other player built something, send this information to clients.
         /// </summary>
@@ -90,19 +82,9 @@ namespace Networking.Interfaces
 
         /// <summary>
         /// Returns the dice result to all clients.
-        /// distributeResources() needs to be called in addition to distribute the resources.
         /// </summary>
         /// <param name="diceResult">two integer numbers as dice1 and dice2</param>
         public void notifyRollDice(int[] diceResult);
-
-        // use method distributeResources
-        // public void notifyAcceptTradeBank();
-
-        // use notifyObjectPlacement
-        // public void notifyAcceptBuild();
-
-        // use method distributeResources
-        // public void notifyAcceptGetResources();
 
 
         /// <summary>
@@ -127,5 +109,23 @@ namespace Networking.Interfaces
         /// <param name="playerID"></param>
         /// <param name="buttonNumber"></param>
         public void notifyAcceptTradeOffer(int playerID, int buttonNumber);
+
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="updateLeftBuildings"></param>
+        /// <param name="updateResources"></param>
+        /// <param name="updateDevCards"></param>
+        /// <param name="playerID"></param>
+        public void updateOwnPlayer(int[] updateLeftBuildings, Dictionary<RESOURCETYPE, int> updateResources,
+            Dictionary<DEVELOPMENT_TYPE, int> updateDevCards, int playerID);
+
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="updateNumbers"></param>
+        public void updateRepPlayers(int[][] updateNumbers);
     }
 }

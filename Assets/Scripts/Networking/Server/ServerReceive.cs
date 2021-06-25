@@ -13,7 +13,7 @@ namespace Networking.ServerSide
 {
     public class ServerReceive : INetworkableServer
     {
-        private readonly ServerRequest serverRequest = new ServerRequest();
+        private readonly ServerToClientCommunication serverRequest;
         
         private int mandatoryNodeID;
         
@@ -37,8 +37,9 @@ namespace Networking.ServerSide
             DEVELOPMENT_TYPE.VICTORY_POINT, DEVELOPMENT_TYPE.VICTORY_POINT, DEVELOPMENT_TYPE.VICTORY_POINT,
             DEVELOPMENT_TYPE.VICTORY_POINT, DEVELOPMENT_TYPE.VICTORY_POINT, DEVELOPMENT_TYPE.VICTORY_POINT };
 
-        public ServerReceive()
+        public ServerReceive(ServerToClientCommunication serverRequest)
         {
+            this.serverRequest = serverRequest;
             possibleColors.Push(PLAYERCOLOR.YELLOW);
             possibleColors.Push(PLAYERCOLOR.WHITE);
             possibleColors.Push(PLAYERCOLOR.BLUE);
@@ -64,7 +65,6 @@ namespace Networking.ServerSide
                 // look for all Players that are fully initialized and add it to ArrayList that updates client lobbies. 
                 if (player.getPlayerName() != null)
                 {
-                    PLAYERCOLOR playerColor = player.getPlayerColor(); // needs to be done, because Color is not serializable ¯\_(ツ)_/¯
                     allPlayerInformation.Add(new object[] { player.getPlayerID(), player.getPlayerName(), player.getPlayerColor() });
                 }
             }

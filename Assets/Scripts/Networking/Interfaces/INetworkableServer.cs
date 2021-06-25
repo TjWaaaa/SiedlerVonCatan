@@ -34,6 +34,13 @@ namespace Networking.Interfaces
         public void handleTradeBank(Packet clientPacket);
         
         
+        /// <summary>
+        /// Checks if player has enough resources to offer
+        /// </summary>
+        /// <param name="clientPacket"></param>
+        public void handleTradeOffer(Packet clientPacket);
+        
+        
         // /// <summary>
         // /// React to client call requestTradePort(). If client funds are sufficient allow trade.
         // /// </summary>
@@ -75,13 +82,6 @@ namespace Networking.Interfaces
         /// If server noticed a client disconnect this method is called.
         /// </summary>
         public void handleClientDisconnectServerCall(int disconnectedClientID);
-
-        
-        /// <summary>
-        /// Checks if player has enough resources to offer
-        /// </summary>
-        /// <param name="clientPacket"></param>
-        public void handleTradeOffer(Packet clientPacket);
 
 
         /// <summary>

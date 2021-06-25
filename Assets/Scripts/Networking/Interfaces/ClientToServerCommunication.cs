@@ -16,13 +16,7 @@ namespace Networking.Interfaces
         /// </summary>
         /// <param name="isReady">true -> i'm ready | false -> i'm not ready</param>
         public void requestPlayerReady(bool isReady);
-        
-        // Phase: 1 (roll dice + Raw material yields + what ever happens here ...)
-        /// <summary>
-        /// Request if a player is allowed to begin a round and able to toll the dice.
-        /// </summary>
-        public void requestRollDice();
-        
+
         // Phase: 2 (trade)
         /// <summary>
         /// Request if a player has enough resources to trade.

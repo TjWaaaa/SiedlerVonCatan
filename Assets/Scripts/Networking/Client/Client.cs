@@ -330,32 +330,11 @@ namespace Networking.ClientSide
                             _clientReceive.handleAccpetBeginRound(incomingData);
                         });
                         break;
-
-                    case (int) COMMUNICATION_METHODS.HANDLE_ACCEPT_TRADE_BANK:
-                        ThreadManager.executeOnMainThread(() =>
-                        {
-                            _clientReceive.handleAcceptTradeBank(incomingData);
-                        });
-                        break;
                     
                     case (int) COMMUNICATION_METHODS.HANDLE_ACCEPT_TRADE_OFFER:
                         ThreadManager.executeOnMainThread(() =>
                         {
                             _clientReceive.handleAcceptTradeOffer(incomingData);
-                        });
-                        break;
-
-                    case (int) COMMUNICATION_METHODS.HANDLE_ACCEPT_BUILD:
-                        ThreadManager.executeOnMainThread(() =>
-                        {
-                            _clientReceive.handleAcceptBuild(incomingData);
-                        });
-                        break;
-
-                    case (int) COMMUNICATION_METHODS.HANDLE_GET_RESOURCES:
-                        ThreadManager.executeOnMainThread(() =>
-                        {
-                            _clientReceive.handleGetResources(incomingData);
                         });
                         break;
 

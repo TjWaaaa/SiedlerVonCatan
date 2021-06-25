@@ -6,59 +6,74 @@ namespace Tests.Networking
 {
     public class MockServerReceive : INetworkableServer
     {
+
+        public static Packet packetHandleRequestJoinLobby;
+        public static Packet packethandleRequestPlayerReady;
+        public static Packet packethandleBeginRound;
+        public static Packet packethandleTradeBank;
+        public static Packet packethandleTradeOffer;
+        public static Packet packethandleBuild;
+        public static Packet packethandleBuyDevelopement;
+        public static Packet packethandlePlayDevelopement;
+        public static Packet packethandleEndTurn;
+        public static Packet packethandleClientDisconnectServerCall;
+
+        public static int playerID;
+
         public void handleRequestJoinLobby(Packet clientPacket, int currentClientID)
         {
-            throw new System.NotImplementedException();
+            packetHandleRequestJoinLobby = clientPacket;
         }
 
         public void handleRequestPlayerReady(Packet clientPacket, int currentClientID)
         {
-            throw new System.NotImplementedException();
+            packethandleRequestPlayerReady = clientPacket;
         }
 
         public void handleBeginRound(Packet clientPacket)
         {
-            throw new System.NotImplementedException();
+            packethandleBeginRound = clientPacket;
         }
 
         public void handleTradeBank(Packet clientPacket)
         {
-            throw new System.NotImplementedException();
+            packethandleTradeBank = clientPacket;
+        }
+        
+        public void handleTradeOffer(Packet clientPacket)
+        {
+            packethandleTradeOffer = clientPacket;
         }
 
         public void handleBuild(Packet clientPacket)
         {
-            throw new System.NotImplementedException();
+            packethandleBuild = clientPacket;
         }
 
         public void handleBuyDevelopement(Packet clientPacket)
         {
-            throw new System.NotImplementedException();
+            packethandleBuyDevelopement = clientPacket;
         }
 
         public void handlePlayDevelopement(Packet clientPacket)
         {
-            throw new System.NotImplementedException();
+            packethandlePlayDevelopement = clientPacket;
         }
 
         public void handleEndTurn(Packet clientPacket)
         {
-            throw new System.NotImplementedException();
+            packethandleEndTurn = clientPacket;
         }
 
         public void handleClientDisconnectServerCall(int disconnectedClientID)
         {
-            throw new System.NotImplementedException();
+            // packethandleClientDisconnectServerCall = disconnectedClientID;
         }
-
-        public void handleTradeOffer(Packet clientPacket)
-        {
-            throw new System.NotImplementedException();
-        }
+        
 
         public void generatePlayer(int playerId)
         {
-            //todo: think of something intelligent to test here.
+            playerID = playerId;
         }
     }
 }

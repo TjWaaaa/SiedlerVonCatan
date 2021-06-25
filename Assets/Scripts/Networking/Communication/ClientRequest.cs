@@ -25,15 +25,6 @@ namespace Networking.Communication
             Client.sendRequest(PacketSerializer.objectToJsonString(packet));
         }
 
-        //TODO: kick this method???!?!?! its never called...
-        public void requestRollDice()
-        {
-            Packet packet = new Packet();
-            packet.type = (int) COMMUNICATION_METHODS.HANDLE_BEGIN_ROUND;
-            
-            Client.sendRequest(PacketSerializer.objectToJsonString(packet));
-        }
-
         public void requestTradeBank(int[] offer, int[] expect)
         {
             Packet packet = new Packet();
