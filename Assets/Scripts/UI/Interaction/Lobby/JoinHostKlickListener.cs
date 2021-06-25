@@ -61,7 +61,7 @@ public class JoinHostKlickListener : MonoBehaviour
     /// To prevent this an Exception is thrown.</exception>
     public void hostListener()
     {
-        bool isRunning = Server.setupServer(new ServerReceive()); //host server
+        bool isRunning = Server.setupServer(new ServerReceive(new ServerRequest())); //host server
         string playerName = GameObject.Find("Canvas/hostPanel/host_PlayerName").GetComponent<InputField>().text;
         
         // Packet gameInformation = new Packet();

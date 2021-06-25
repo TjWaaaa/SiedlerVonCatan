@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using System.Collections.Generic;
 using Enums;
 
 namespace Networking.Interfaces
@@ -108,5 +109,23 @@ namespace Networking.Interfaces
         /// <param name="playerID"></param>
         /// <param name="buttonNumber"></param>
         public void notifyAcceptTradeOffer(int playerID, int buttonNumber);
+
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="updateLeftBuildings"></param>
+        /// <param name="updateResources"></param>
+        /// <param name="updateDevCards"></param>
+        /// <param name="playerID"></param>
+        public void updateOwnPlayer(int[] updateLeftBuildings, Dictionary<RESOURCETYPE, int> updateResources,
+            Dictionary<DEVELOPMENT_TYPE, int> updateDevCards, int playerID);
+
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="updateNumbers"></param>
+        public void updateRepPlayers(int[][] updateNumbers);
     }
 }

@@ -13,7 +13,7 @@ namespace Networking.ServerSide
 {
     public class ServerReceive : INetworkableServer
     {
-        private readonly ServerRequest serverRequest = new ServerRequest();
+        private readonly ServerToClientCommunication serverRequest;
         
         private int mandatoryNodeID;
         
@@ -37,8 +37,9 @@ namespace Networking.ServerSide
             DEVELOPMENT_TYPE.VICTORY_POINT, DEVELOPMENT_TYPE.VICTORY_POINT, DEVELOPMENT_TYPE.VICTORY_POINT,
             DEVELOPMENT_TYPE.VICTORY_POINT, DEVELOPMENT_TYPE.VICTORY_POINT, DEVELOPMENT_TYPE.VICTORY_POINT };
 
-        public ServerReceive()
+        public ServerReceive(ServerToClientCommunication serverRequest)
         {
+            this.serverRequest = serverRequest;
             possibleColors.Push(PLAYERCOLOR.YELLOW);
             possibleColors.Push(PLAYERCOLOR.WHITE);
             possibleColors.Push(PLAYERCOLOR.BLUE);
