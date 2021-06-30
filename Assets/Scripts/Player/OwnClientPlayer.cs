@@ -19,13 +19,13 @@ namespace Player
             {DEVELOPMENT_TYPE.YEAR_OF_PLENTY, 0},
             {DEVELOPMENT_TYPE.MONOPOLY, 0}
         };
-        private Dictionary<RESOURCETYPE, int> resources = new Dictionary<RESOURCETYPE, int>
+        private Dictionary<RESOURCE_TYPE, int> resources = new Dictionary<RESOURCE_TYPE, int>
         {
-            {RESOURCETYPE.SHEEP, 0},
-            {RESOURCETYPE.ORE, 0},
-            {RESOURCETYPE.BRICK, 0},
-            {RESOURCETYPE.WOOD, 0},
-            {RESOURCETYPE.WHEAT, 0}
+            {RESOURCE_TYPE.SHEEP, 0},
+            {RESOURCE_TYPE.ORE, 0},
+            {RESOURCE_TYPE.BRICK, 0},
+            {RESOURCE_TYPE.WOOD, 0},
+            {RESOURCE_TYPE.WHEAT, 0}
         };
 
         public OwnClientPlayer(int playerID)
@@ -36,9 +36,9 @@ namespace Player
 
         // getter
 
-        public int getResourceAmount(RESOURCETYPE resourcetype)
+        public int getResourceAmount(RESOURCE_TYPE resourceType)
         {
-            return resources[resourcetype];
+            return resources[resourceType];
         }
         
         public int getDevCardAmount(DEVELOPMENT_TYPE type)
@@ -63,7 +63,7 @@ namespace Player
 
         
 
-        public void updateOP(int[] updateNumbers, Dictionary<RESOURCETYPE, int> updateResources, Dictionary<DEVELOPMENT_TYPE, int> updateDevCards)
+        public void updateOP(int[] updateNumbers, Dictionary<RESOURCE_TYPE, int> updateResources, Dictionary<DEVELOPMENT_TYPE, int> updateDevCards)
         {
             leftStreets = updateNumbers[0];
             leftVillages = updateNumbers[1];

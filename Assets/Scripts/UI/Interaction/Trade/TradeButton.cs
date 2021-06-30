@@ -7,18 +7,18 @@ namespace Trade
 {
     public class TradeButton : MonoBehaviour
     {
-        private RESOURCETYPE resourcetype;
+        private RESOURCE_TYPE resourceType;
         private Boolean isClicked;
 
         // Selected resources
-        private static RESOURCETYPE offerResourcetype = RESOURCETYPE.NONE;
-        private static RESOURCETYPE expectResourcetype = RESOURCETYPE.NONE;
+        private static RESOURCE_TYPE offerResourcetype = RESOURCE_TYPE.NONE;
+        private static RESOURCE_TYPE expectResourcetype = RESOURCE_TYPE.NONE;
 
 
         void Start()
         {
             // Get the resource of each button individually
-            resourcetype = (RESOURCETYPE) Enum.Parse(typeof(RESOURCETYPE), gameObject.name, true);
+            resourceType = (RESOURCE_TYPE) Enum.Parse(typeof(RESOURCE_TYPE), gameObject.name, true);
 
         }
 
@@ -32,9 +32,9 @@ namespace Trade
             {
                 if (gameObject.CompareTag("giveResource"))
                 {
-                    if (offerResourcetype == RESOURCETYPE.NONE)
+                    if (offerResourcetype == RESOURCE_TYPE.NONE)
                     {
-                        offerResourcetype = resourcetype;
+                        offerResourcetype = resourceType;
                         gameObject.transform.GetChild(1).SetAsFirstSibling();
                         isClicked = true;
                     }
@@ -43,9 +43,9 @@ namespace Trade
                 }
                 else
                 {
-                    if (expectResourcetype == RESOURCETYPE.NONE)
+                    if (expectResourcetype == RESOURCE_TYPE.NONE)
                     {
-                        expectResourcetype = resourcetype;
+                        expectResourcetype = resourceType;
                         gameObject.transform.GetChild(1).SetAsFirstSibling();
                         isClicked = true;
                     }
@@ -57,8 +57,8 @@ namespace Trade
             {
                 gameObject.transform.GetChild(1).SetAsFirstSibling();
                 isClicked = false;
-                if (gameObject.CompareTag("giveResource")) offerResourcetype = RESOURCETYPE.NONE;
-                else expectResourcetype = RESOURCETYPE.NONE;
+                if (gameObject.CompareTag("giveResource")) offerResourcetype = RESOURCE_TYPE.NONE;
+                else expectResourcetype = RESOURCE_TYPE.NONE;
                 return "";
             }
         }
@@ -74,8 +74,8 @@ namespace Trade
             }
 
             isClicked = false;
-            offerResourcetype = RESOURCETYPE.NONE;
-            expectResourcetype = RESOURCETYPE.NONE;
+            offerResourcetype = RESOURCE_TYPE.NONE;
+            expectResourcetype = RESOURCE_TYPE.NONE;
         }
         
         /// <summary>
@@ -84,24 +84,24 @@ namespace Trade
         /// <returns>isValidTradeRequest</returns>
         public static Boolean isValidTradeRequest()
                 {
-                    if (expectResourcetype != RESOURCETYPE.NONE && offerResourcetype != RESOURCETYPE.NONE) return true;
+                    if (expectResourcetype != RESOURCE_TYPE.NONE && offerResourcetype != RESOURCE_TYPE.NONE) return true;
                     else return false;
                 }
         
         
         // Getter
 
-        public RESOURCETYPE getResourcetype()
+        public RESOURCE_TYPE getResourcetype()
         {
-            return resourcetype;
+            return resourceType;
         }
 
-        public static RESOURCETYPE getExpectResourcetype()
+        public static RESOURCE_TYPE getExpectResourcetype()
         {
             return expectResourcetype;
         }
 
-        public static RESOURCETYPE getOfferResourcetype()
+        public static RESOURCE_TYPE getOfferResourcetype()
         {
             return offerResourcetype;
         }

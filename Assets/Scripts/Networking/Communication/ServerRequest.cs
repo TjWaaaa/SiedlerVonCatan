@@ -189,7 +189,7 @@ namespace Networking.Communication
             Debug.Log("SERVER: Client should expect an UpdateRP package Type 27");
         }
 
-        public void updateOwnPlayer(int[] updateLeftBuildings,Dictionary<RESOURCETYPE, int> updateResources, Dictionary<DEVELOPMENT_TYPE, int> updateDevCards, int playerID)
+        public void updateOwnPlayer(int[] updateLeftBuildings,Dictionary<RESOURCE_TYPE, int> updateResources, Dictionary<DEVELOPMENT_TYPE, int> updateDevCards, int playerID)
         {
             Debug.Log("SERVER: ServerRequest updateOwnPlayer");
             Packet packet = new Packet();

@@ -44,7 +44,7 @@ namespace Networking.Package
 
         public int[] updateOP {get; set; }
 
-        public Dictionary<RESOURCETYPE, int> updateResourcesOnOP {get; set;}
+        public Dictionary<RESOURCE_TYPE, int> updateResourcesOnOP {get; set;}
         public Dictionary<DEVELOPMENT_TYPE, int> updateDevCardsOnOP {get; set;}
         
         public int? resourceType { get; set; }

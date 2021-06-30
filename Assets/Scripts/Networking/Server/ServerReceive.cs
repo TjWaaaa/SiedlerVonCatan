@@ -131,7 +131,7 @@ namespace Networking.ServerSide
 
                 for (int i = 0; i < distributedResources.Length; i++)
                 {
-                    player.setResourceAmount((RESOURCETYPE)i, distributedResources[i]);
+                    player.setResourceAmount((RESOURCE_TYPE)i, distributedResources[i]);
                 }
                 updateOwnPlayer(playerIndex);
             }
@@ -166,9 +166,9 @@ namespace Networking.ServerSide
                 }
 
                 ServerPlayer currentServerPlayer = allPlayer.ElementAt(currentPlayer).Value;
-                RESOURCETYPE resourcetype = (RESOURCETYPE)clientPacket.resourceType;
+                RESOURCE_TYPE resourceType = (RESOURCE_TYPE)clientPacket.resourceType;
                 int buttonNumber = clientPacket.buttonNumber.GetValueOrDefault();
-                if (currentServerPlayer.canTrade(resourcetype))
+                if (currentServerPlayer.canTrade(resourceType))
                 {
                     serverRequest.notifyAcceptTradeOffer(currentServerPlayer.getPlayerID(), buttonNumber);
                 }
@@ -424,7 +424,7 @@ namespace Networking.ServerSide
                         int[] distributedResources = gameBoard.distributeFirstResources(posInArray);
                         for (int i = 0; i < distributedResources.Length; i++)
                         {
-                            currentServerPlayer.setResourceAmount((RESOURCETYPE) i, distributedResources[i]);
+                            currentServerPlayer.setResourceAmount((RESOURCE_TYPE) i, distributedResources[i]);
                         }
 
                         updateOwnPlayer(currentPlayer);
@@ -461,7 +461,7 @@ namespace Networking.ServerSide
                 case BUYABLES.ROAD:
                     if (inGameStartupPhase
                         && villageBuilt
-                        && gameBoard.canPlaceRoad(posInArray, mandatoryNodeID, playerColor))
+                        && gameBoard.canPlaceRoad(posInArray, mandatoryNodeID))
                     {
                         villageBuilt = false;
                         currentServerPlayer.reduceLeftRoads();

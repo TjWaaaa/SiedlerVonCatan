@@ -30,13 +30,13 @@ namespace Player
             {DEVELOPMENT_TYPE.MONOPOLY, 0}
         };
 
-        private Dictionary<RESOURCETYPE, int> resources = new Dictionary<RESOURCETYPE, int>
+        private Dictionary<RESOURCE_TYPE, int> resources = new Dictionary<RESOURCE_TYPE, int>
         {
-            {RESOURCETYPE.SHEEP, 0},
-            {RESOURCETYPE.ORE, 0},
-            {RESOURCETYPE.BRICK, 0},
-            {RESOURCETYPE.WOOD, 0},
-            {RESOURCETYPE.WHEAT, 0}
+            {RESOURCE_TYPE.SHEEP, 0},
+            {RESOURCE_TYPE.ORE, 0},
+            {RESOURCE_TYPE.BRICK, 0},
+            {RESOURCE_TYPE.WOOD, 0},
+            {RESOURCE_TYPE.WHEAT, 0}
 
         };
 
@@ -70,9 +70,9 @@ namespace Player
             return isReady;
         }
 
-        public int getResourceAmount(RESOURCETYPE resourcetype)
+        public int getResourceAmount(RESOURCE_TYPE resourceType)
         {
-            return resources[resourcetype];
+            return resources[resourceType];
         }
 
         public int getTotalResourceAmount()
@@ -130,9 +130,9 @@ namespace Player
             this.isReady = isReady;
         }
 
-        public void setResourceAmount(RESOURCETYPE resourcetype, int amount)
+        public void setResourceAmount(RESOURCE_TYPE resourceType, int amount)
         {
-            resources[resourcetype] += amount;
+            resources[resourceType] += amount;
         }
 
         //Start phase
@@ -155,15 +155,15 @@ namespace Player
         }
 
         // Trade
-        public bool canTrade(RESOURCETYPE resourcetype)
+        public bool canTrade(RESOURCE_TYPE resourceType)
         {
-            if (resources[resourcetype] >= 4)
+            if (resources[resourceType] >= 4)
             {
                 return true;
             }
             else
             {
-                Debug.Log("CLIENT: You only have " + resources[resourcetype] + resourcetype.ToString().ToLower() + ". Trade something else.");
+                Debug.Log("CLIENT: You only have " + resources[resourceType] + resourceType.ToString().ToLower() + ". Trade something else.");
                 return false;
             }
         }
@@ -171,8 +171,8 @@ namespace Player
         public void trade(int[] offer, int[] expect)
         {
 
-            RESOURCETYPE offerRes = RESOURCETYPE.NONE;
-            RESOURCETYPE expectRes = RESOURCETYPE.NONE;
+            RESOURCE_TYPE offerRes = RESOURCE_TYPE.NONE;
+            RESOURCE_TYPE expectRes = RESOURCE_TYPE.NONE;
             for (int i = 0; i < offer.Length; i++)
             {
                 resources[resources.ElementAt(i).Key] -= offer[i];
@@ -199,22 +199,22 @@ namespace Player
             {
                 case BUYABLES.ROAD:
                     return leftRoads >= 1
-                           && resources[RESOURCETYPE.WOOD] >= 1
-                           && resources[RESOURCETYPE.BRICK] >= 1;
+                           && resources[RESOURCE_TYPE.WOOD] >= 1
+                           && resources[RESOURCE_TYPE.BRICK] >= 1;
                 case BUYABLES.VILLAGE:
                     return leftVillages >= 1
-                           && resources[RESOURCETYPE.BRICK] >= 1
-                           && resources[RESOURCETYPE.WOOD] >= 1
-                           && resources[RESOURCETYPE.SHEEP] >= 1
-                           && resources[RESOURCETYPE.WHEAT] >= 1;
+                           && resources[RESOURCE_TYPE.BRICK] >= 1
+                           && resources[RESOURCE_TYPE.WOOD] >= 1
+                           && resources[RESOURCE_TYPE.SHEEP] >= 1
+                           && resources[RESOURCE_TYPE.WHEAT] >= 1;
                 case BUYABLES.CITY:
                     return leftCities >= 1
-                           && resources[RESOURCETYPE.ORE] >= 3
-                           && resources[RESOURCETYPE.WHEAT] >= 2;
+                           && resources[RESOURCE_TYPE.ORE] >= 3
+                           && resources[RESOURCE_TYPE.WHEAT] >= 2;
                 case BUYABLES.DEVELOPMENT_CARDS:
-                    return resources[RESOURCETYPE.ORE] >= 1
-                           && resources[RESOURCETYPE.WHEAT] >= 1
-                           && resources[RESOURCETYPE.SHEEP] >= 1;
+                    return resources[RESOURCE_TYPE.ORE] >= 1
+                           && resources[RESOURCE_TYPE.WHEAT] >= 1
+                           && resources[RESOURCE_TYPE.SHEEP] >= 1;
                 default: return false;
             }
         }
@@ -224,23 +224,23 @@ namespace Player
             switch (buyable)
             {
                 case BUYABLES.ROAD:
-                    resources[RESOURCETYPE.BRICK] -= 1;
-                    resources[RESOURCETYPE.WOOD] -= 1;
+                    resources[RESOURCE_TYPE.BRICK] -= 1;
+                    resources[RESOURCE_TYPE.WOOD] -= 1;
                     break;
                 case BUYABLES.VILLAGE:
-                    resources[RESOURCETYPE.BRICK] -= 1;
-                    resources[RESOURCETYPE.WOOD] -= 1;
-                    resources[RESOURCETYPE.SHEEP] -= 1;
-                    resources[RESOURCETYPE.WHEAT] -= 1;
+                    resources[RESOURCE_TYPE.BRICK] -= 1;
+                    resources[RESOURCE_TYPE.WOOD] -= 1;
+                    resources[RESOURCE_TYPE.SHEEP] -= 1;
+                    resources[RESOURCE_TYPE.WHEAT] -= 1;
                     break;
                 case BUYABLES.CITY:
-                    resources[RESOURCETYPE.ORE] -= 3;
-                    resources[RESOURCETYPE.WHEAT] -= 2;
+                    resources[RESOURCE_TYPE.ORE] -= 3;
+                    resources[RESOURCE_TYPE.WHEAT] -= 2;
                     break;
                 case BUYABLES.DEVELOPMENT_CARDS:
-                    resources[RESOURCETYPE.ORE] -= 1;
-                    resources[RESOURCETYPE.WHEAT] -= 1;
-                    resources[RESOURCETYPE.SHEEP] -= 1;
+                    resources[RESOURCE_TYPE.ORE] -= 1;
+                    resources[RESOURCE_TYPE.WHEAT] -= 1;
+                    resources[RESOURCE_TYPE.SHEEP] -= 1;
                     break;
             }
         }
@@ -255,7 +255,7 @@ namespace Player
             return new[] { leftRoads, leftVillages, leftCities };
         }
 
-        public Dictionary<RESOURCETYPE, int> convertSPToOPResources()
+        public Dictionary<RESOURCE_TYPE, int> convertSPToOPResources()
         {
             return resources;
         }

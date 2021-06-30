@@ -125,15 +125,15 @@ namespace Trade
         {
             switch (TradeButton.getOfferResourcetype())
             {
-                case RESOURCETYPE.SHEEP:
+                case RESOURCE_TYPE.SHEEP:
                     return new[] {4, 0, 0, 0, 0};
-                case RESOURCETYPE.ORE:
+                case RESOURCE_TYPE.ORE:
                     return new[] {0, 4, 0, 0, 0};
-                case RESOURCETYPE.BRICK:
+                case RESOURCE_TYPE.BRICK:
                     return new[] {0, 0, 4, 0, 0};
-                case RESOURCETYPE.WOOD:
+                case RESOURCE_TYPE.WOOD:
                     return new[] {0, 0, 0, 4, 0};
-                case RESOURCETYPE.WHEAT:
+                case RESOURCE_TYPE.WHEAT:
                     return new[] {0, 0, 0, 0, 4};
                 default:
                     return new[] {0, 0, 0, 0, 0};
@@ -149,15 +149,15 @@ namespace Trade
         {
             switch (TradeButton.getExpectResourcetype())
             {
-                case RESOURCETYPE.SHEEP:
+                case RESOURCE_TYPE.SHEEP:
                     return new[] {1, 0, 0, 0, 0};
-                case RESOURCETYPE.ORE:
+                case RESOURCE_TYPE.ORE:
                     return new[] {0, 1, 0, 0, 0};
-                case RESOURCETYPE.BRICK:
+                case RESOURCE_TYPE.BRICK:
                     return new[] {0, 0, 1, 0, 0};
-                case RESOURCETYPE.WOOD:
+                case RESOURCE_TYPE.WOOD:
                     return new[] {0, 0, 0, 1, 0};
-                case RESOURCETYPE.WHEAT:
+                case RESOURCE_TYPE.WHEAT:
                     return new[] {0, 0, 0, 0, 1};
                 default:
                     return new[] {0, 0, 0, 0, 0};

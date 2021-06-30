@@ -5,26 +5,45 @@ public class BoardGenerator : MonoBehaviour
 {
     public GameObject robber;
 
-    private const float r = 0.866f;
-    private const float a = 1f;
-    private const float d = 2f;
-    private const float s = 1.73205f;
-    private const float offset = 3f / 2f * a;
+    private const float R = 0.866f;
+    private const float A = 1f;
+    private const float D = 2f;
+    private const float S = 1.73205f;
+    private const float Offset = 3f / 2f * A;
+    
+    private readonly GameObject prefabWater = (GameObject) Resources.Load("Tiles3D/waterPrefab");
+    private readonly GameObject prefabDesert = (GameObject) Resources.Load("Tiles3D/desertPrefab");
+    
+    private readonly GameObject prefabSheep = (GameObject) Resources.Load("Tiles3D/sheepPrefab");
+    private readonly GameObject prefabWood = (GameObject) Resources.Load("Tiles3D/woodPrefab");
+    private readonly GameObject prefabBrick = (GameObject) Resources.Load("Tiles3D/brickPrefab");
+    private readonly GameObject prefabOre = (GameObject) Resources.Load("Tiles3D/orePrefab");
+    private readonly GameObject prefabWheat = (GameObject) Resources.Load("Tiles3D/wheatPrefab");
+    
+    private readonly GameObject prefabRandomPort = (GameObject) Resources.Load("Tiles3D/randomPortPrefab");
+    private readonly GameObject prefabSheepPort = (GameObject) Resources.Load("Tiles3D/sheepPortPrefab");
+    private readonly GameObject prefabWoodPort = (GameObject) Resources.Load("Tiles3D/woodPortPrefab");
+    private readonly GameObject prefabBrickPort = (GameObject) Resources.Load("Tiles3D/brickPortPrefab");
+    private readonly GameObject prefabOrePort = (GameObject) Resources.Load("Tiles3D/orePortPrefab");
+    private readonly GameObject prefabWheatPort = (GameObject) Resources.Load("Tiles3D/wheatPortPrefab");
 
+    /// <summary>
+    /// TODO
+    /// </summary>
+    /// <param name="gameBoard"></param>
     public void instantiateGameBoard(Hexagon[][] gameBoard)
     {
         for (int row = 0; row < gameBoard.Length; row++)
         {
             for (int col = 0; col < gameBoard[row].Length; col++)
             {
-                if (gameBoard[row][col]==null) //zeile von Marco eingefügt, keine ahnung ob sinnvoll aber wirft sonst NullReferenceErrororororo, pls prüfen thx :*
+                if (gameBoard[row][col] == null)
                 {
                     continue;
                 }
                 
                 Hexagon hexagon = gameBoard[row][col];
-                string hexagonPath = "Tiles3D/" + findPrefabByHexagonType(hexagon.getType()) + "Prefab";
-                GameObject prefab = (GameObject)Resources.Load(hexagonPath);
+                GameObject prefab = findPrefabByHexagonType(hexagon.getType());
 
                 int offsetX = row switch
                 {
@@ -41,11 +60,11 @@ public class BoardGenerator : MonoBehaviour
                 GameObject newHexagon;
                 if (row % 2 == 0)
                 {
-                    newHexagon = Instantiate(prefab, new Vector3(col * s + offsetX * s, 0, -(row / 2f * (d + a)) + 9), Rotation(hexagon, row, col));
+                    newHexagon = Instantiate(prefab, new Vector3(col * S + offsetX * S, 0, -(row / 2f * (D + A)) + 9), Rotation(hexagon, row, col));
                 }
                 else
                 {
-                    newHexagon = Instantiate(prefab, new Vector3(col * s + r + offsetX * s, 0, -((row - 1) / 2f * (d + a) + offset) + 9), Rotation(hexagon, row, col));
+                    newHexagon = Instantiate(prefab, new Vector3(col * S + R + offsetX * S, 0, -((row - 1) / 2f * (D + A) + Offset) + 9), Rotation(hexagon, row, col));
                 }
 
                 // change hexagon numbers
@@ -64,9 +83,15 @@ public class BoardGenerator : MonoBehaviour
                 }
             }
         }
-
     }
 
+    /// <summary>
+    /// TODO
+    /// </summary>
+    /// <param name="hexagon"></param>
+    /// <param name="row"></param>
+    /// <param name="col"></param>
+    /// <returns></returns>
     private Quaternion Rotation(Hexagon hexagon, int row, int col)
     {
         //Ports need to be rotated
@@ -89,70 +114,97 @@ public class BoardGenerator : MonoBehaviour
         return Quaternion.identity;
     }
 
-    private string findPrefabByHexagonType(HEXAGON_TYPE hexagonType)
+    /// <summary>
+    /// TODO
+    /// </summary>
+    /// <param name="hexagonType"></param>
+    /// <returns></returns>
+    private GameObject findPrefabByHexagonType(HEXAGON_TYPE hexagonType)
     {
         switch (hexagonType)
         {
-            case HEXAGON_TYPE.WATER: return "water";
-            case HEXAGON_TYPE.DESERT: return "desert";
+            case HEXAGON_TYPE.WATER: return prefabWater;
+            case HEXAGON_TYPE.DESERT: return prefabDesert;
 
-            case HEXAGON_TYPE.SHEEP: return "sheep";
-            case HEXAGON_TYPE.WOOD: return "wood";
-            case HEXAGON_TYPE.BRICK: return "brick";
-            case HEXAGON_TYPE.ORE: return "ore";
-            case HEXAGON_TYPE.WHEAT: return "wheat";
+            case HEXAGON_TYPE.SHEEP: return prefabSheep;
+            case HEXAGON_TYPE.WOOD: return prefabWood;
+            case HEXAGON_TYPE.BRICK: return prefabBrick;
+            case HEXAGON_TYPE.ORE: return prefabOre;
+            case HEXAGON_TYPE.WHEAT: return prefabWheat;
 
-            case HEXAGON_TYPE.PORTNORMAL: return "randomPort";
-            case HEXAGON_TYPE.PORTSHEEP: return "sheepPort";
-            case HEXAGON_TYPE.PORTWOOD: return "woodPort";
-            case HEXAGON_TYPE.PORTBRICK: return "brickPort";
-            case HEXAGON_TYPE.PORTORE: return "orePort";
-            case HEXAGON_TYPE.PORTWHEAT: return "wheatPort";
+            case HEXAGON_TYPE.PORTNORMAL: return prefabRandomPort;
+            case HEXAGON_TYPE.PORTSHEEP: return prefabSheepPort;
+            case HEXAGON_TYPE.PORTWOOD: return prefabWoodPort;
+            case HEXAGON_TYPE.PORTBRICK: return prefabBrickPort;
+            case HEXAGON_TYPE.PORTORE: return prefabOrePort;
+            case HEXAGON_TYPE.PORTWHEAT: return prefabWheatPort;
 
             default: //Debug.LogError("BoardGenerator: no HexagonType set in current Hexagon");
                 return null;
         }
     }
 
+    /// <summary>
+    /// TODO
+    /// </summary>
+    /// <param name="buildType"></param>
+    /// <param name="buildId"></param>
+    /// <param name="buildColor"></param>
     public void placeBuilding(BUYABLES buildType, int buildId, PLAYERCOLOR buildColor)
     {
-        if (buildType == BUYABLES.VILLAGE)
+        switch (buildType)
         {
-            Debug.LogWarning($"CLIENT: Buyable: Village, Build ID: {buildId}");
-            GameObject node = GameObject.Find("V" + buildId.ToString());
-            Vector3 nodePos = node.transform.position;
-
-            if (buildVillage(buildId, nodePos, buildColor))
+            case BUYABLES.VILLAGE:
             {
-                Destroy(node);
+                Debug.LogWarning($"CLIENT: Buyable: Village, Build ID: {buildId}");
+                GameObject node = GameObject.Find("V" + buildId.ToString());
+                Vector3 nodePos = node.transform.position;
+
+                if (buildVillage(buildId, nodePos, buildColor))
+                {
+                    Destroy(node);
+                }
+
+                break;
             }
-        }
-        else if (buildType == BUYABLES.CITY)
-        {
-            Debug.Log("CLIENT: Buyable: City");
-            GameObject village = GameObject.Find("C" + buildId.ToString());
-            Vector3 villagePos = village.transform.position;
+            case BUYABLES.CITY:
+            {
+                Debug.Log("CLIENT: Buyable: City");
+                GameObject village = GameObject.Find("C" + buildId.ToString());
+                Vector3 villagePos = village.transform.position;
             
-            if (buildCity(villagePos, buildColor))
-            {
-                Destroy(village);
-            }
-        }
-        else if (buildType == BUYABLES.ROAD)
-        {
-            Debug.Log("CLIENT: Buyable: Road");
-            GameObject edge = GameObject.Find("R" + buildId.ToString());
-            Vector3 edgePos = edge.transform.position;
-            Quaternion edgeRotation = edge.transform.rotation;
+                if (buildCity(villagePos, buildColor))
+                {
+                    Destroy(village);
+                }
 
-            if (BuildRoad(edgePos, edgeRotation, buildColor))
+                break;
+            }
+            case BUYABLES.ROAD:
             {
-                Destroy(edge);
+                Debug.Log("CLIENT: Buyable: Road");
+                GameObject edge = GameObject.Find("R" + buildId.ToString());
+                Vector3 edgePos = edge.transform.position;
+                Quaternion edgeRotation = edge.transform.rotation;
+
+                if (BuildRoad(edgePos, edgeRotation, buildColor))
+                {
+                    Destroy(edge);
+                }
+
+                break;
             }
         }
     }
     
-    public bool buildVillage(int buildId, Vector3 position, PLAYERCOLOR buildColor)
+    /// <summary>
+    /// TODO
+    /// </summary>
+    /// <param name="buildId"></param>
+    /// <param name="position"></param>
+    /// <param name="buildColor"></param>
+    /// <returns></returns>
+    private bool buildVillage(int buildId, Vector3 position, PLAYERCOLOR buildColor)
     {
         GameObject prefab;
         switch (buildColor)
@@ -170,7 +222,13 @@ public class BoardGenerator : MonoBehaviour
         return true;
     }
 
-    public bool buildCity(Vector3 position, PLAYERCOLOR buildColor)
+    /// <summary>
+    /// TODO
+    /// </summary>
+    /// <param name="position"></param>
+    /// <param name="buildColor"></param>
+    /// <returns></returns>
+    private bool buildCity(Vector3 position, PLAYERCOLOR buildColor)
     {
         GameObject prefab;
         switch (buildColor)
@@ -187,7 +245,14 @@ public class BoardGenerator : MonoBehaviour
         return true;
     }
 
-    public bool BuildRoad(Vector3 position, Quaternion rotation, PLAYERCOLOR buildColor)
+    /// <summary>
+    /// TODO
+    /// </summary>
+    /// <param name="position"></param>
+    /// <param name="rotation"></param>
+    /// <param name="buildColor"></param>
+    /// <returns></returns>
+    private bool BuildRoad(Vector3 position, Quaternion rotation, PLAYERCOLOR buildColor)
     {
         GameObject prefab;
         switch (buildColor)

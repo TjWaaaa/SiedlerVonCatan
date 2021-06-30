@@ -27,7 +27,7 @@ namespace Networking.Interfaces
         /// <summary>
         /// Request if a player has enough resources to trade.
         /// </summary>
-        public void requestTradeOffer(RESOURCETYPE offerResource, int buttonNumber);
+        public void requestTradeOffer(RESOURCE_TYPE offerResource, int buttonNumber);
         
         /// <summary>
         /// Requests if a player is allowed to trade a certain resource with the bank.

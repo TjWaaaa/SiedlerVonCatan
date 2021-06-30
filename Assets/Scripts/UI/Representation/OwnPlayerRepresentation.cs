@@ -43,11 +43,11 @@ namespace UI
 
         public void updaetOwnPlayerUI(OwnClientPlayer ownClientPlayer)
         {
-            ownPlayerSheep.text = ownClientPlayer.getResourceAmount(RESOURCETYPE.SHEEP).ToString();
-            ownPlayerWood.text = ownClientPlayer.getResourceAmount(RESOURCETYPE.WOOD).ToString();
-            ownPlayerBrick.text = ownClientPlayer.getResourceAmount(RESOURCETYPE.BRICK).ToString();
-            ownPlayerOre.text = ownClientPlayer.getResourceAmount(RESOURCETYPE.ORE).ToString();
-            ownPlayerWheat.text = ownClientPlayer.getResourceAmount(RESOURCETYPE.WHEAT).ToString(); 
+            ownPlayerSheep.text = ownClientPlayer.getResourceAmount(RESOURCE_TYPE.SHEEP).ToString();
+            ownPlayerWood.text = ownClientPlayer.getResourceAmount(RESOURCE_TYPE.WOOD).ToString();
+            ownPlayerBrick.text = ownClientPlayer.getResourceAmount(RESOURCE_TYPE.BRICK).ToString();
+            ownPlayerOre.text = ownClientPlayer.getResourceAmount(RESOURCE_TYPE.ORE).ToString();
+            ownPlayerWheat.text = ownClientPlayer.getResourceAmount(RESOURCE_TYPE.WHEAT).ToString(); 
             
             ownPlayerLeftStreets.text = ownClientPlayer.getLeftStreets().ToString();
             ownPlayerLeftVillages.text = ownClientPlayer.getLeftVillages().ToString();

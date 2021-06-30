@@ -44,7 +44,7 @@ namespace Networking.Communication
             Client.sendRequest(PacketSerializer.objectToJsonString(packet));
         }
 
-        public void requestTradeOffer(RESOURCETYPE offerResource, int buttonNumber)
+        public void requestTradeOffer(RESOURCE_TYPE offerResource, int buttonNumber)
         {
             Packet packet = new Packet();               
             packet.type = (int) COMMUNICATION_METHODS.HANDLE_TRADE_OFFER;
