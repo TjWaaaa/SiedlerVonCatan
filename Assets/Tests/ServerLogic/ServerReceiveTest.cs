@@ -1,5 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Net;
+using System.Net.Sockets;
 using Enums;
 using Networking.ClientSide;
 using Networking.Package;
@@ -13,17 +15,15 @@ using UnityEngine.TestTools;
 
 /// <summary>
 /// This calls all ServerReceive methods.
-/// All Assert statements are in MockServerRequest.
-/// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-/// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!IMPORTANT!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-/// All test need to be run in one go! Otherwise some tests fail.
-/// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+/// After that the corresponding outputs are asserted.
 /// </summary>
 public class ServerReceiveTest
 {
     private ServerReceive serverReceive;
     private readonly int playerID = 1;
     private readonly string playerName = "Horst";
+
+    private bool firstPlayerJoined;
 
     /// <summary>
     /// Prepare serverReceive and Server for testing
@@ -45,6 +45,25 @@ public class ServerReceiveTest
         Packet packet = new Packet();
         packet.playerName = playerName;
         serverReceive.handleRequestJoinLobby(packet, playerID);
+        
+        // determine own IP-Address
+        var host = Dns.GetHostEntry(Dns.GetHostName());
+        string ipAddress = null;
+        foreach (var ip in host.AddressList)
+        {
+            if (ip.AddressFamily == AddressFamily.InterNetwork)
+            {
+                ipAddress = ip.ToString();
+            }
+        }
+
+        ArrayList playerInformation = MockServerRequest.notifyClientJoinedPlayerInformation;
+        Assert.AreEqual(ipAddress, MockServerRequest.notifyClientJoinedLobbyIP);
+        Assert.AreEqual(PLAYERCOLOR.RED, ((object[]) playerInformation[0])[2]);
+        Assert.AreEqual("Horst", ((object[]) playerInformation[0])[1]);
+        Assert.AreEqual(1, ((object[]) playerInformation[0])[0]);
+
+        firstPlayerJoined = true;
     }
     
     /// <summary>
@@ -54,19 +73,57 @@ public class ServerReceiveTest
     [Test]
     public void handleRequestPlayerReadyTest()
     {
+        if (!firstPlayerJoined) // join first player, if it hasn't happened already.
+        {
+            Packet _packet = new Packet();
+            _packet.playerName = playerName;
+            serverReceive.handleRequestJoinLobby(_packet, playerID);
+            firstPlayerJoined = true;
+        }
+        
         // join second player
         serverReceive.generatePlayer(2);
         Packet _joinPacket = new Packet();
         _joinPacket.playerName = "Guenter";
         serverReceive.handleRequestJoinLobby(_joinPacket, 2);
+        
+        // Test new players information
+        ArrayList playerInformation = MockServerRequest.notifyClientJoinedPlayerInformation;
+        Assert.AreEqual(PLAYERCOLOR.BLUE, ((object[]) playerInformation[1])[2]);
+        Assert.AreEqual("Guenter", ((object[]) playerInformation[1])[1]);
+        Assert.AreEqual(2, ((object[]) playerInformation[1])[0]);
 
-        // set first player to isReady == true
+        
+        // set first player to isReady == false
         Packet packet = new Packet();
+        packet.isReady = false;
+        serverReceive.handleRequestPlayerReady(packet, playerID);
+        // test received data
+        Assert.AreEqual(playerID, MockServerRequest.notifyPlayerReadyCurrentClientID);
+        Assert.AreEqual(playerName, MockServerRequest.notifyPlayerReadyPlayerName);
+        Assert.AreEqual(false, MockServerRequest.notifyPlayerReadyReadyStatus);
+        
+        // set first player to isReady == true
         packet.isReady = true;
         serverReceive.handleRequestPlayerReady(packet, playerID);
+        // test received data
+        Assert.AreEqual(playerID, MockServerRequest.notifyPlayerReadyCurrentClientID);
+        Assert.AreEqual(playerName, MockServerRequest.notifyPlayerReadyPlayerName);
+        Assert.AreEqual(true, MockServerRequest.notifyPlayerReadyReadyStatus);
         
         // set second player to isReady == true
         serverReceive.handleRequestPlayerReady(packet, 2);
+        Assert.AreEqual(2, MockServerRequest.notifyPlayerReadyCurrentClientID);
+        Assert.AreEqual("Guenter", MockServerRequest.notifyPlayerReadyPlayerName);
+        Assert.AreEqual(true, MockServerRequest.notifyPlayerReadyReadyStatus);
+
+        
+        // check of Board is not empty, a random content cant be checked
+        Assert.IsNotEmpty(MockServerRequest.gamestartInitializeGameBoard);
+        
+        
+        Assert.AreEqual(0, MockServerRequest.notifyNextPlayerPreviousPlayerIndex);
+        Assert.AreEqual(1, MockServerRequest.notifyNextPlayerPlayerIndex);
     }
 
     /// <summary>
