@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
 using Enums;
 using Player;
 using UnityEngine;
@@ -65,7 +66,7 @@ public class Board
         HEXAGON_TYPE.PORTWHEAT
     };
 
-    private const string path = "Assets/Scripts/Board/";
+    //private const string path = "Assets/Scripts/Board/";
 
     public Board()
     {
@@ -452,7 +453,9 @@ public class Board
     /// </summary>
     private void assignNeighborsToHexagons()
     {
-        StreamReader file = new StreamReader(path + "AdjacentNodesToHexagons.txt");
+        TextAsset adjacentNodesToHexagons = (TextAsset)Resources.Load("AdjacentNodesToHexagons");
+        MemoryStream adjacentNodesToHexagonsStream = new MemoryStream(Encoding.UTF8.GetBytes(adjacentNodesToHexagons.text));
+        StreamReader file = new StreamReader(adjacentNodesToHexagonsStream);
 
         for (int row = 0; row < boardConfig.Length; row++)
         {
@@ -492,9 +495,17 @@ public class Board
     /// </summary>
     private void assignNeighborsToNodes()
     {
-        StreamReader hexagonsFile = new StreamReader(path + "AdjacentHexagonsToNodes.txt");
-        StreamReader nodesFile = new StreamReader(path + "AdjacentNodesToNodes.txt");
-        StreamReader edgesFile = new StreamReader(path + "AdjacentEdgesToNodes.txt");
+        TextAsset adjacentHexagonsToNodes = (TextAsset)Resources.Load("AdjacentHexagonsToNodes");
+        MemoryStream adjacentHexagonsToNodesStream = new MemoryStream(Encoding.UTF8.GetBytes(adjacentHexagonsToNodes.text));
+        StreamReader hexagonsFile = new StreamReader(adjacentHexagonsToNodesStream);
+        
+        TextAsset adjacentNodesToNodes = (TextAsset)Resources.Load("AdjacentNodesToNodes");
+        MemoryStream adjacentNodesToNodesStream = new MemoryStream(Encoding.UTF8.GetBytes(adjacentNodesToNodes.text));
+        StreamReader nodesFile = new StreamReader(adjacentNodesToNodesStream);
+        
+        TextAsset adjacentEdgesToNodes = (TextAsset)Resources.Load("AdjacentEdgesToNodes");
+        MemoryStream adjacentEdgesToNodesStream = new MemoryStream(Encoding.UTF8.GetBytes(adjacentEdgesToNodes.text));
+        StreamReader edgesFile = new StreamReader(adjacentEdgesToNodesStream);
 
         foreach (Node currentNode in nodesArray)
         {
@@ -535,8 +546,13 @@ public class Board
     /// </summary>
     private void assignNeighborsToEdges()
     {
-        StreamReader nodesFile = new StreamReader(path + "AdjacentNodesToEdges.txt");
-        StreamReader edgesFile = new StreamReader(path + "AdjacentEdgesToEdges.txt");
+        TextAsset adjacentNodesToEdges = (TextAsset)Resources.Load("AdjacentNodesToEdges");
+        MemoryStream adjacentNodesToEdgesStream = new MemoryStream(Encoding.UTF8.GetBytes(adjacentNodesToEdges.text));
+        StreamReader nodesFile = new StreamReader(adjacentNodesToEdgesStream);
+        
+        TextAsset adjacentEdgesToEdges = (TextAsset)Resources.Load("AdjacentEdgesToEdges");
+        MemoryStream adjacentEdgesToEdgesStream = new MemoryStream(Encoding.UTF8.GetBytes(adjacentEdgesToEdges.text));
+        StreamReader edgesFile = new StreamReader(adjacentEdgesToEdgesStream);
 
         foreach (Edge currentEdge in edgesArray)
         {
