@@ -35,6 +35,12 @@ namespace Tests.ServerLogic
         public static int updateOwnPlayerPlayerID;
         public static int[][] updateRepPlayersUpdateNumbers;
 
+        public static int notifyRejectionPlayerID;
+        public static string notifyRejectionErrorMessage;
+
+        public static int notifyAcceptTradeOfferButtonNumber;
+
+
         public void notifyClientJoined(ArrayList playerInformation, string lobbyIP)
         {
             notifyClientJoinedPlayerInformation = playerInformation;
@@ -69,7 +75,8 @@ namespace Tests.ServerLogic
 
         public void notifyRejection(int playerID, string errorMessage)
         {
-            throw new System.NotImplementedException();
+            notifyRejectionPlayerID = playerID;
+            notifyRejectionErrorMessage = errorMessage;
         }
 
         public void notifyPlayerReady(int currentClientID, string playerName, bool readyStatus)
@@ -96,7 +103,7 @@ namespace Tests.ServerLogic
 
         public void notifyAcceptTradeOffer(int playerID, int buttonNumber)
         {
-            throw new System.NotImplementedException();
+            notifyAcceptTradeOfferButtonNumber = buttonNumber;
         }
 
         public void updateOwnPlayer(int[] updateLeftBuildings, Dictionary<RESOURCETYPE, int> updateResources, Dictionary<DEVELOPMENT_TYPE, int> updateDevCards, int playerID)
