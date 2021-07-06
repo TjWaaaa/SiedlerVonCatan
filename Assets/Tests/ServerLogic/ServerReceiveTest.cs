@@ -149,61 +149,94 @@ public class ServerReceiveTest
     [Test]
     public void handleTradeBankTest()
     {
-        // Current player wants to trade
         Packet packet = new Packet();
-        packet.myPlayerID = 2;
-        packet.tradeResourcesOffer = new[] {8, 0, 0, 0, 0};
-        packet.tradeResourcesExpect = new[] {0, 1, 0, 0, 0};
-        serverReceive.handleTradeBank(packet);
-        
-        Dictionary<RESOURCETYPE, int> testResources = new Dictionary<RESOURCETYPE, int>
-        {
-            {RESOURCETYPE.SHEEP, 2},
-            {RESOURCETYPE.ORE, 11},
-            {RESOURCETYPE.BRICK, 10},
-            {RESOURCETYPE.WOOD, 10},
-            {RESOURCETYPE.WHEAT, 10}
-        };
-        Assert.AreEqual(testResources,MockServerRequest.updateOwnPlayerUpdateResources);
-
-        // not current player can't trade
-        Packet packet2 = new Packet();
-        packet2.myPlayerID = 1;
-        packet2.tradeResourcesOffer = new[] {4, 0, 0, 0, 0};
-        packet2.tradeResourcesExpect = new[] {0, 1, 0, 0, 0};
-        serverReceive.handleTradeBank(packet2);
-        Assert.AreEqual("You are not allowed to trade with bank!",MockServerRequest.notifyRejectionErrorMessage);
+        packet.tradeResourcesOffer = new[] {1, 0, 0, 0, 0};
     }
 
-    // guess this can only work, after the gamestartphase, so nextPlayer has to run some times before...?
     [Test]
-    public void handleTradeOfferTest()
+    public void handleBuildPreGamePhaseTest()
     {
-        // Current player want's to trade something he can trade
+        // build first village on node with id 0
         Packet packet = new Packet();
-        packet.myPlayerID = 2;
-        packet.resourceType = (int) RESOURCETYPE.WOOD;
-        packet.buttonNumber = 0;
-        serverReceive.handleTradeOffer(packet);
-        Assert.AreEqual(0, MockServerRequest.notifyAcceptTradeOfferButtonNumber);
-
-        // Current player want's to trade something he can't trade
-        Packet packet2 = new Packet();
-        packet2.myPlayerID = 2;
-        packet2.resourceType = (int) RESOURCETYPE.SHEEP;
-        packet2.buttonNumber = 0;
-        serverReceive.handleTradeOffer(packet);
-        Assert.AreEqual("Not enough resources to offer", MockServerRequest.notifyRejectionErrorMessage);
+        packet.myPlayerID = playerID;
+        packet.buildType = (int) BUYABLES.VILLAGE;
+        packet.buildID = 0;
         
-        // not current player can't offer
-        Packet packet3 = new Packet();
-        packet3.myPlayerID = 1;
-        packet3.resourceType = (int) RESOURCETYPE.SHEEP;
-        packet3.buttonNumber = 0;
-        serverReceive.handleTradeOffer(packet);
-        Assert.AreEqual("You are not allowed to offer a trade!", MockServerRequest.notifyRejectionErrorMessage);
+        serverReceive.handleBuild(packet);
+        Assert.AreEqual(PLAYERCOLOR.BLUE, MockServerRequest.notifyObjectPlacementPlayerColor);
+        Assert.AreEqual(BUYABLES.VILLAGE, MockServerRequest.notifyObjectPlacementBuildType);
+        Assert.AreEqual(0, MockServerRequest.notifyObjectPlacementBuildID);
+        MockServerRequest.notifyObjectPlacementPlayerColor = PLAYERCOLOR.NONE;
+        MockServerRequest.notifyObjectPlacementBuildType = BUYABLES.NONE;
+        MockServerRequest.notifyObjectPlacementBuildID = 0;
         
+        
+        // reject build city
+        packet = new Packet();
+        packet.myPlayerID = playerID;
+        packet.buildType = (int) BUYABLES.CITY;
+        packet.buildID = 0;
+        
+        serverReceive.handleBuild(packet);
+        Assert.AreEqual("Building cant be built", MockServerRequest.notifyRejectionErrorMessage);
+        MockServerRequest.notifyRejectionErrorMessage = "";
+        
+        
+        // build road on edge with id 0
+        packet = new Packet();
+        packet.myPlayerID = playerID;
+        packet.buildType = (int) BUYABLES.ROAD;
+        packet.buildID = 0;
+        
+        serverReceive.handleBuild(packet);
+        Assert.AreEqual(PLAYERCOLOR.BLUE, MockServerRequest.notifyObjectPlacementPlayerColor);
+        Assert.AreEqual(BUYABLES.ROAD, MockServerRequest.notifyObjectPlacementBuildType);
+        Assert.AreEqual(0, MockServerRequest.notifyObjectPlacementBuildID);
+        MockServerRequest.notifyObjectPlacementPlayerColor = PLAYERCOLOR.NONE;
+        MockServerRequest.notifyObjectPlacementBuildType = BUYABLES.NONE;
+        MockServerRequest.notifyObjectPlacementBuildID = 0;
+        
+        
+        // reject build village with wrong player
+        packet = new Packet();
+        packet.myPlayerID = 0;
+        packet.buildType = (int) BUYABLES.VILLAGE;
+        packet.buildID = 2;
+        
+        serverReceive.handleBuild(packet);
+        Assert.AreEqual("You are not allowed to build!", MockServerRequest.notifyRejectionErrorMessage);
+        
+        
+        // build second village on node with id 2
+        packet = new Packet();
+        packet.myPlayerID = playerID;
+        packet.buildType = (int) BUYABLES.VILLAGE;
+        packet.buildID = 2;
+        
+        serverReceive.handleBuild(packet);
+        Assert.AreEqual(PLAYERCOLOR.BLUE, MockServerRequest.notifyObjectPlacementPlayerColor);
+        Assert.AreEqual(BUYABLES.VILLAGE, MockServerRequest.notifyObjectPlacementBuildType);
+        Assert.AreEqual(2, MockServerRequest.notifyObjectPlacementBuildID);
+        MockServerRequest.notifyObjectPlacementPlayerColor = PLAYERCOLOR.NONE;
+        MockServerRequest.notifyObjectPlacementBuildType = BUYABLES.NONE;
+        MockServerRequest.notifyObjectPlacementBuildID = 0;
+        
+        
+        // build road on edge with id 5
+        packet = new Packet();
+        packet.myPlayerID = playerID;
+        packet.buildType = (int) BUYABLES.ROAD;
+        packet.buildID = 5;
+        
+        serverReceive.handleBuild(packet);
+        Assert.AreEqual(PLAYERCOLOR.BLUE, MockServerRequest.notifyObjectPlacementPlayerColor);
+        Assert.AreEqual(BUYABLES.ROAD, MockServerRequest.notifyObjectPlacementBuildType);
+        Assert.AreEqual(5, MockServerRequest.notifyObjectPlacementBuildID);
+        MockServerRequest.notifyObjectPlacementPlayerColor = PLAYERCOLOR.NONE;
+        MockServerRequest.notifyObjectPlacementBuildType = BUYABLES.NONE;
+        MockServerRequest.notifyObjectPlacementBuildID = 0;
     }
+    
     
     /// <summary>
     /// Closes Server at the end of test session

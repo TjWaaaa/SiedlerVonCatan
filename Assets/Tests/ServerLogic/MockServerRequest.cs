@@ -34,6 +34,10 @@ namespace Tests.ServerLogic
         public static Dictionary<DEVELOPMENT_TYPE, int> updateOwnPlayerUpdateDevCards;
         public static int updateOwnPlayerPlayerID;
         public static int[][] updateRepPlayersUpdateNumbers;
+        
+        public static BUYABLES notifyObjectPlacementBuildType;
+        public static PLAYERCOLOR notifyObjectPlacementPlayerColor;
+        public static int notifyObjectPlacementBuildID;
 
         public static int notifyRejectionPlayerID;
         public static string notifyRejectionErrorMessage;
@@ -54,7 +58,9 @@ namespace Tests.ServerLogic
 
         public void notifyObjectPlacement(BUYABLES buildType, int buildID, PLAYERCOLOR color)
         {
-            throw new System.NotImplementedException();
+            notifyObjectPlacementBuildType = buildType;
+            notifyObjectPlacementBuildID = buildID;
+            notifyObjectPlacementPlayerColor = color;
         }
 
         public void notifyNextPlayer(int playerIndex, int previousPlayerIndex)
