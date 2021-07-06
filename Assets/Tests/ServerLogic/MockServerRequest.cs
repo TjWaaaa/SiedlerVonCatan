@@ -10,41 +10,33 @@ namespace Tests.ServerLogic
 {
     /// <summary>
     /// All Methods in here are called indirectly from ServerReceive.
+    /// All Parameters of Methods are saved in a field to be Asserted from ServerReceiveTest.
     /// </summary>
     public class MockServerRequest : ServerToClientCommunication
     {
-        private bool joinedOnce = false; // flag that tests in notifyClientJoined aren't run twice.
+        // List of all Parameters that can be passed to any method in MockServerRequest
+        public static ArrayList notifyClientJoinedPlayerInformation;
+        public static string notifyClientJoinedLobbyIP;
+        
+        public static Hexagon[][] gamestartInitializeGameBoard;
 
+
+        public static int notifyNextPlayerPlayerIndex;
+        public static int notifyNextPlayerPreviousPlayerIndex;
+        
+        public static int notifyPlayerReadyCurrentClientID;
+        public static string notifyPlayerReadyPlayerName;
+        public static bool notifyPlayerReadyReadyStatus;
 
         public void notifyClientJoined(ArrayList playerInformation, string lobbyIP)
         {
-            // make sure this runs only once
-            if (!joinedOnce) {
-                // determine own IP address
-            var host = Dns.GetHostEntry(Dns.GetHostName());
-            string ipAddress = null;
-            foreach (var ip in host.AddressList)
-            {
-                if (ip.AddressFamily == AddressFamily.InterNetwork)
-                {
-                    ipAddress = ip.ToString();
-                }
-            }
-            
-            
-            Assert.AreEqual(ipAddress, lobbyIP);
-            Assert.AreEqual(PLAYERCOLOR.RED, ((object[]) playerInformation[0])[2]);
-            Assert.AreEqual("Horst", ((object[]) playerInformation[0])[1]);
-            Assert.AreEqual(1, ((object[]) playerInformation[0])[0]);
-
-            joinedOnce = true;
-            }
+            notifyClientJoinedPlayerInformation = playerInformation;
+            notifyClientJoinedLobbyIP = lobbyIP;
         }
 
         public void gamestartInitialize(Hexagon[][] gameBoard)
         {
-            // check of Board is not empty, a random content cant be checked
-            Assert.IsNotEmpty(gameBoard);
+            gamestartInitializeGameBoard = gameBoard;
         }
 
         public void notifyObjectPlacement(BUYABLES buildType, int buildID, PLAYERCOLOR color)
@@ -54,8 +46,8 @@ namespace Tests.ServerLogic
 
         public void notifyNextPlayer(int playerIndex, int previousPlayerIndex)
         {
-            Assert.AreEqual(0, previousPlayerIndex);
-            Assert.AreEqual(1, playerIndex);
+            notifyNextPlayerPlayerIndex = playerIndex;
+            notifyNextPlayerPreviousPlayerIndex = previousPlayerIndex;
         }
 
         public void notifyVictory(string playerName, PLAYERCOLOR playerColor)
@@ -75,7 +67,9 @@ namespace Tests.ServerLogic
 
         public void notifyPlayerReady(int currentClientID, string playerName, bool readyStatus)
         {
-            Assert.AreEqual(true, readyStatus);
+            notifyPlayerReadyCurrentClientID = currentClientID;
+            notifyPlayerReadyPlayerName = playerName;
+            notifyPlayerReadyReadyStatus = readyStatus;
         }
 
         public void notifyRollDice(int[] diceResult)
