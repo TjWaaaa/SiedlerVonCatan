@@ -31,7 +31,7 @@ public class ServerReceiveTest
     [OneTimeSetUp]
     public void setUp()
     {
-        serverReceive = new ServerReceive(new MockServerRequest());
+        serverReceive = new ServerReceive(new MockServerRequest(), true);
         Server.setupServer(new MockServerReceive());
         serverReceive.generatePlayer(playerID);
     }
@@ -126,6 +126,34 @@ public class ServerReceiveTest
         Assert.AreEqual(1, MockServerRequest.notifyNextPlayerPlayerIndex);
     }
 
+
+    [Test]
+    public void handleBeginRoundTest()
+    {
+        serverReceive.handleBeginRound(new Packet());
+        
+        // Todo: more dice tests and update Players tests
+        Assert.IsNotEmpty(MockServerRequest.notifyRollDiceDiceResult);
+        
+        Dictionary<RESOURCETYPE, int> testResources = new Dictionary<RESOURCETYPE, int>
+        {
+            {RESOURCETYPE.SHEEP, 10},
+            {RESOURCETYPE.ORE, 10},
+            {RESOURCETYPE.BRICK, 10},
+            {RESOURCETYPE.WOOD, 10},
+            {RESOURCETYPE.WHEAT, 10}
+        };
+        Assert.AreEqual(testResources,MockServerRequest.updateOwnPlayerUpdateResources );
+    }
+
+    [Test]
+    public void handleTradeBankTest()
+    {
+        Packet packet = new Packet();
+        packet.tradeResourcesOffer = new[] {1, 0, 0, 0, 0};
+    }
+    
+    
     /// <summary>
     /// Closes Server at the end of test session
     /// </summary>

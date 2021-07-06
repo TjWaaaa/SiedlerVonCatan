@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using Enums;
 using Networking.Communication;
 using Networking.Interfaces;
@@ -36,6 +37,10 @@ namespace Networking.ServerSide
         private DEVELOPMENT_TYPE[] unshuffledDevCardArray = { DEVELOPMENT_TYPE.VICTORY_POINT,
             DEVELOPMENT_TYPE.VICTORY_POINT, DEVELOPMENT_TYPE.VICTORY_POINT, DEVELOPMENT_TYPE.VICTORY_POINT,
             DEVELOPMENT_TYPE.VICTORY_POINT, DEVELOPMENT_TYPE.VICTORY_POINT, DEVELOPMENT_TYPE.VICTORY_POINT };
+        
+        
+        // Test
+        private bool thisIsATest;
 
         public ServerReceive(ServerToClientCommunication serverRequest)
         {
@@ -45,6 +50,17 @@ namespace Networking.ServerSide
             possibleColors.Push(PLAYERCOLOR.BLUE);
             possibleColors.Push(PLAYERCOLOR.RED);
         }
+        
+        public ServerReceive(ServerToClientCommunication serverRequest, bool isATest)
+        {
+            thisIsATest = isATest;
+            this.serverRequest = serverRequest;
+            possibleColors.Push(PLAYERCOLOR.YELLOW);
+            possibleColors.Push(PLAYERCOLOR.WHITE);
+            possibleColors.Push(PLAYERCOLOR.BLUE);
+            possibleColors.Push(PLAYERCOLOR.RED);
+        }
+        
 
         //---------------------------------------------- Interface INetworkableServer implementation ----------------------------------------------
 
@@ -109,20 +125,11 @@ namespace Networking.ServerSide
 
         public void handleBeginRound(Packet clientPacket)
         {
-            // if (isCurrentPlayer(clientPacket.myPlayerID))
-            // {
-            //     Debug.LogWarning($"SERVER: Client request rejected from client {clientPacket.myPlayerID}");
-            //     serverRequest.notifyRejection(clientPacket.myPlayerID, "You are not allowed to begin round!");
-            //     return;
-            // }
-
             // Roll dices
-
             int[] diceNumbers = rollDices();
             serverRequest.notifyRollDice(diceNumbers);
 
-            Debug.Log("Würfel gewürfelt");
-            // Distribute ressources
+            // Distribute resources
             for (int playerIndex = 0; playerIndex < allPlayer.Count; playerIndex++)
             {
                 ServerPlayer player = allPlayer.ElementAt(playerIndex).Value;
@@ -340,6 +347,15 @@ namespace Networking.ServerSide
             ServerPlayer newPlayer = new ServerPlayer(playerId);
             allPlayer.Add(playerId, newPlayer);
             playerAmount++;
+
+            if (thisIsATest)
+            {
+                newPlayer.setResourceAmount(RESOURCETYPE.SHEEP, 10);
+                newPlayer.setResourceAmount(RESOURCETYPE.ORE, 10);
+                newPlayer.setResourceAmount(RESOURCETYPE.WHEAT, 10);
+                newPlayer.setResourceAmount(RESOURCETYPE.WOOD, 10);
+                newPlayer.setResourceAmount(RESOURCETYPE.BRICK, 10);
+            }
         }
 
         private Stack<DEVELOPMENT_TYPE> generateRandomDevCardStack(DEVELOPMENT_TYPE[] array)
@@ -352,7 +368,7 @@ namespace Networking.ServerSide
             serverRequest.updateOwnPlayer(
                 allPlayer.ElementAt(playerIndex).Value.convertFromSPToOP(), // int[] with left buildings
                 allPlayer.ElementAt(playerIndex).Value.convertSPToOPResources(), // Resource Dictionary
-                allPlayer.ElementAt(playerIndex).Value.convertSPToOPDevCards(), // DevCard Dictonary
+                allPlayer.ElementAt(playerIndex).Value.convertSPToOPDevCards(), // DevCard Dictionary
                 allPlayer.ElementAt(playerIndex).Key);
         }
 

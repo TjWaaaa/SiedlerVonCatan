@@ -27,6 +27,13 @@ namespace Tests.ServerLogic
         public static int notifyPlayerReadyCurrentClientID;
         public static string notifyPlayerReadyPlayerName;
         public static bool notifyPlayerReadyReadyStatus;
+        public static int[] notifyRollDiceDiceResult;
+
+        public static int[] updateOwnPlayerUpdateLeftBuildings;
+        public static Dictionary<RESOURCETYPE, int> updateOwnPlayerUpdateResources;
+        public static Dictionary<DEVELOPMENT_TYPE, int> updateOwnPlayerUpdateDevCards;
+        public static int updateOwnPlayerPlayerID;
+        public static int[][] updateRepPlayersUpdateNumbers;
 
         public void notifyClientJoined(ArrayList playerInformation, string lobbyIP)
         {
@@ -74,7 +81,7 @@ namespace Tests.ServerLogic
 
         public void notifyRollDice(int[] diceResult)
         {
-            throw new System.NotImplementedException();
+            notifyRollDiceDiceResult = diceResult;
         }
 
         public void acceptBuyDevelopement(int leftDevCards)
@@ -94,12 +101,15 @@ namespace Tests.ServerLogic
 
         public void updateOwnPlayer(int[] updateLeftBuildings, Dictionary<RESOURCETYPE, int> updateResources, Dictionary<DEVELOPMENT_TYPE, int> updateDevCards, int playerID)
         {
-            throw new System.NotImplementedException();
+            updateOwnPlayerUpdateLeftBuildings = updateLeftBuildings;
+            updateOwnPlayerUpdateResources = updateResources;
+            updateOwnPlayerUpdateDevCards = updateDevCards;
+            updateOwnPlayerPlayerID = playerID;
         }
 
         public void updateRepPlayers(int[][] updateNumbers)
         {
-            throw new System.NotImplementedException();
+            updateRepPlayersUpdateNumbers = updateNumbers;
         }
     }
 }
