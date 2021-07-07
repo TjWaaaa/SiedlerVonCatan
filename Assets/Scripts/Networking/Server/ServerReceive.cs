@@ -55,8 +55,8 @@ namespace Networking.ServerSide
         {
             thisIsATest = isATest;
             this.serverRequest = serverRequest;
-            possibleColors.Push(PLAYERCOLOR.YELLOW);
             possibleColors.Push(PLAYERCOLOR.WHITE);
+            possibleColors.Push(PLAYERCOLOR.YELLOW);
             possibleColors.Push(PLAYERCOLOR.BLUE);
             possibleColors.Push(PLAYERCOLOR.RED);
         }
@@ -310,12 +310,12 @@ namespace Networking.ServerSide
         private bool isNotCurrentPlayer(int clientID)
         {
             var currentPlayerObject = allPlayer.ElementAt(currentPlayer).Value;
-            //Debug.LogWarning($"comparing clientID: {clientID} and currentID: {currentPlayerObject.getPlayerID()}");
+            Debug.Log("Comparing currentPlayer ID: " + currentPlayerObject.getPlayerID() + " with clientID: " + clientID);
             if (currentPlayerObject.getPlayerID() == clientID)
             {
                 return false;
             }
-
+            Debug.Log("SERVER: Current Player is: " + currentPlayer + ", instead of: " + clientID);
             return true;
         }
 

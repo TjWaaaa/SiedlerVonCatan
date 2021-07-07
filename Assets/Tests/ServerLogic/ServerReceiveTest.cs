@@ -20,7 +20,7 @@ using UnityEngine.TestTools;
 public class ServerReceiveTest
 {
     private ServerReceive serverReceive;
-    private readonly int playerID = 1;
+    private readonly int playerID = (int) PLAYERCOLOR.RED;
     private readonly string playerName = "Horst";
 
     private bool firstPlayerJoined;
@@ -40,7 +40,7 @@ public class ServerReceiveTest
     /// Lets a player Join the lobby
     /// </summary>
     [Test]
-    public void handleRequestJoinLobbyTest()
+    public void A_handleRequestJoinLobbyTest()
     {
         Packet packet = new Packet();
         packet.playerName = playerName;
@@ -59,9 +59,9 @@ public class ServerReceiveTest
 
         ArrayList playerInformation = MockServerRequest.notifyClientJoinedPlayerInformation;
         Assert.AreEqual(ipAddress, MockServerRequest.notifyClientJoinedLobbyIP);
-        Assert.AreEqual(PLAYERCOLOR.RED, ((object[]) playerInformation[0])[2]);
         Assert.AreEqual("Horst", ((object[]) playerInformation[0])[1]);
-        Assert.AreEqual(1, ((object[]) playerInformation[0])[0]);
+        Assert.AreEqual(PLAYERCOLOR.RED, ((object[]) playerInformation[0])[2]);
+        Assert.AreEqual(0, ((object[]) playerInformation[0])[0]);
 
         firstPlayerJoined = true;
     }
@@ -71,7 +71,7 @@ public class ServerReceiveTest
     /// Sets both players ready status to true.
     /// </summary>
     [Test]
-    public void handleRequestPlayerReadyTest()
+    public void B_handleRequestPlayerReadyTest()
     {
         if (!firstPlayerJoined) // join first player, if it hasn't happened already.
         {
@@ -82,16 +82,16 @@ public class ServerReceiveTest
         }
         
         // join second player
-        serverReceive.generatePlayer(2);
+        serverReceive.generatePlayer((int) PLAYERCOLOR.BLUE);
         Packet _joinPacket = new Packet();
         _joinPacket.playerName = "Guenter";
-        serverReceive.handleRequestJoinLobby(_joinPacket, 2);
+        serverReceive.handleRequestJoinLobby(_joinPacket, 1);
         
         // Test new players information
         ArrayList playerInformation = MockServerRequest.notifyClientJoinedPlayerInformation;
         Assert.AreEqual(PLAYERCOLOR.BLUE, ((object[]) playerInformation[1])[2]);
         Assert.AreEqual("Guenter", ((object[]) playerInformation[1])[1]);
-        Assert.AreEqual(2, ((object[]) playerInformation[1])[0]);
+        Assert.AreEqual(1, ((object[]) playerInformation[1])[0]);
 
         
         // set first player to isReady == false
@@ -112,8 +112,8 @@ public class ServerReceiveTest
         Assert.AreEqual(true, MockServerRequest.notifyPlayerReadyReadyStatus);
         
         // set second player to isReady == true
-        serverReceive.handleRequestPlayerReady(packet, 2);
-        Assert.AreEqual(2, MockServerRequest.notifyPlayerReadyCurrentClientID);
+        serverReceive.handleRequestPlayerReady(packet, 1);
+        Assert.AreEqual(1, MockServerRequest.notifyPlayerReadyCurrentClientID);
         Assert.AreEqual("Guenter", MockServerRequest.notifyPlayerReadyPlayerName);
         Assert.AreEqual(true, MockServerRequest.notifyPlayerReadyReadyStatus);
 
@@ -125,10 +125,9 @@ public class ServerReceiveTest
         Assert.AreEqual(0, MockServerRequest.notifyNextPlayerPreviousPlayerIndex);
         Assert.AreEqual(1, MockServerRequest.notifyNextPlayerPlayerIndex);
     }
-
-
+    
     [Test]
-    public void handleBeginRoundTest()
+    public void C_handleBeginRoundTest()
     {
         serverReceive.handleBeginRound(new Packet());
         
@@ -145,24 +144,23 @@ public class ServerReceiveTest
         };
         Assert.AreEqual(testResources,MockServerRequest.updateOwnPlayerUpdateResources );
     }
-
+    
     [Test]
-    public void handleTradeBankTest()
+    public void D_handleBuildPreGamePhaseTest()
     {
+        MockServerRequest.notifyObjectPlacementPlayerColor = PLAYERCOLOR.NONE;
+        MockServerRequest.notifyObjectPlacementBuildType = BUYABLES.NONE;
+        MockServerRequest.notifyObjectPlacementBuildID = 0;
+        MockServerRequest.notifyRejectionErrorMessage = "";
+        
+        // build first blue village on node with id 0
         Packet packet = new Packet();
-        packet.tradeResourcesOffer = new[] {1, 0, 0, 0, 0};
-    }
-
-    [Test]
-    public void handleBuildPreGamePhaseTest()
-    {
-        // build first village on node with id 0
-        Packet packet = new Packet();
-        packet.myPlayerID = playerID;
+        packet.myPlayerID = (int) PLAYERCOLOR.BLUE;
         packet.buildType = (int) BUYABLES.VILLAGE;
         packet.buildID = 0;
         
         serverReceive.handleBuild(packet);
+        //Assert.AreEqual("You are not allowed to build!", MockServerRequest.notifyRejectionErrorMessage);
         Assert.AreEqual(PLAYERCOLOR.BLUE, MockServerRequest.notifyObjectPlacementPlayerColor);
         Assert.AreEqual(BUYABLES.VILLAGE, MockServerRequest.notifyObjectPlacementBuildType);
         Assert.AreEqual(0, MockServerRequest.notifyObjectPlacementBuildID);
@@ -173,7 +171,7 @@ public class ServerReceiveTest
         
         // reject build city
         packet = new Packet();
-        packet.myPlayerID = playerID;
+        packet.myPlayerID = (int) PLAYERCOLOR.BLUE;
         packet.buildType = (int) BUYABLES.CITY;
         packet.buildID = 0;
         
@@ -182,9 +180,9 @@ public class ServerReceiveTest
         MockServerRequest.notifyRejectionErrorMessage = "";
         
         
-        // build road on edge with id 0
+        // build blue road on edge with id 0
         packet = new Packet();
-        packet.myPlayerID = playerID;
+        packet.myPlayerID = (int) PLAYERCOLOR.BLUE;
         packet.buildType = (int) BUYABLES.ROAD;
         packet.buildID = 0;
         
@@ -196,25 +194,31 @@ public class ServerReceiveTest
         MockServerRequest.notifyObjectPlacementBuildType = BUYABLES.NONE;
         MockServerRequest.notifyObjectPlacementBuildID = 0;
         
-        
+        Assert.AreEqual((int) PLAYERCOLOR.BLUE, MockServerRequest.notifyNextPlayerPreviousPlayerIndex);
+        Assert.AreEqual((int) PLAYERCOLOR.RED, MockServerRequest.notifyNextPlayerPlayerIndex);
+        MockServerRequest.notifyNextPlayerPreviousPlayerIndex = (int) PLAYERCOLOR.NONE;
+        MockServerRequest.notifyNextPlayerPlayerIndex = (int) PLAYERCOLOR.NONE;
+
+
         // reject build village with wrong player
         packet = new Packet();
-        packet.myPlayerID = 0;
+        packet.myPlayerID = (int) PLAYERCOLOR.BLUE;
         packet.buildType = (int) BUYABLES.VILLAGE;
         packet.buildID = 2;
         
         serverReceive.handleBuild(packet);
         Assert.AreEqual("You are not allowed to build!", MockServerRequest.notifyRejectionErrorMessage);
+        MockServerRequest.notifyRejectionErrorMessage = "";
         
         
-        // build second village on node with id 2
+        // build first red village on node with id 2
         packet = new Packet();
-        packet.myPlayerID = playerID;
+        packet.myPlayerID = (int) PLAYERCOLOR.RED;
         packet.buildType = (int) BUYABLES.VILLAGE;
         packet.buildID = 2;
         
         serverReceive.handleBuild(packet);
-        Assert.AreEqual(PLAYERCOLOR.BLUE, MockServerRequest.notifyObjectPlacementPlayerColor);
+        Assert.AreEqual(PLAYERCOLOR.RED, MockServerRequest.notifyObjectPlacementPlayerColor);
         Assert.AreEqual(BUYABLES.VILLAGE, MockServerRequest.notifyObjectPlacementBuildType);
         Assert.AreEqual(2, MockServerRequest.notifyObjectPlacementBuildID);
         MockServerRequest.notifyObjectPlacementPlayerColor = PLAYERCOLOR.NONE;
@@ -222,19 +226,85 @@ public class ServerReceiveTest
         MockServerRequest.notifyObjectPlacementBuildID = 0;
         
         
-        // build road on edge with id 5
+        // build red road on edge with id 5
         packet = new Packet();
-        packet.myPlayerID = playerID;
+        packet.myPlayerID = (int) PLAYERCOLOR.RED;
         packet.buildType = (int) BUYABLES.ROAD;
         packet.buildID = 5;
         
         serverReceive.handleBuild(packet);
-        Assert.AreEqual(PLAYERCOLOR.BLUE, MockServerRequest.notifyObjectPlacementPlayerColor);
+        Assert.AreEqual(PLAYERCOLOR.RED, MockServerRequest.notifyObjectPlacementPlayerColor);
         Assert.AreEqual(BUYABLES.ROAD, MockServerRequest.notifyObjectPlacementBuildType);
         Assert.AreEqual(5, MockServerRequest.notifyObjectPlacementBuildID);
         MockServerRequest.notifyObjectPlacementPlayerColor = PLAYERCOLOR.NONE;
         MockServerRequest.notifyObjectPlacementBuildType = BUYABLES.NONE;
         MockServerRequest.notifyObjectPlacementBuildID = 0;
+        
+        
+        // build second red village on node with id 7 
+        packet = new Packet();
+        packet.myPlayerID = (int) PLAYERCOLOR.RED;
+        packet.buildType = (int) BUYABLES.VILLAGE;
+        packet.buildID = 7;
+        
+        serverReceive.handleBuild(packet);
+        Assert.AreEqual(PLAYERCOLOR.RED, MockServerRequest.notifyObjectPlacementPlayerColor);
+        Assert.AreEqual(BUYABLES.VILLAGE, MockServerRequest.notifyObjectPlacementBuildType);
+        Assert.AreEqual(7, MockServerRequest.notifyObjectPlacementBuildID);
+        MockServerRequest.notifyObjectPlacementPlayerColor = PLAYERCOLOR.NONE;
+        MockServerRequest.notifyObjectPlacementBuildType = BUYABLES.NONE;
+        MockServerRequest.notifyObjectPlacementBuildID = 0;
+
+        // build second red road on edge with id 11 
+        packet.buildType = (int) BUYABLES.ROAD;
+        packet.buildID = 11;
+        
+        serverReceive.handleBuild(packet);
+        Assert.AreEqual(PLAYERCOLOR.RED, MockServerRequest.notifyObjectPlacementPlayerColor);
+        Assert.AreEqual(BUYABLES.ROAD, MockServerRequest.notifyObjectPlacementBuildType);
+        Assert.AreEqual(11, MockServerRequest.notifyObjectPlacementBuildID);
+        MockServerRequest.notifyObjectPlacementPlayerColor = PLAYERCOLOR.NONE;
+        MockServerRequest.notifyObjectPlacementBuildType = BUYABLES.NONE;
+        MockServerRequest.notifyObjectPlacementBuildID = 0;
+        
+        
+        // build second blue village on node with id 9 & road on edge with id 15
+        packet = new Packet();
+        packet.myPlayerID = (int) PLAYERCOLOR.BLUE;
+        packet.buildType = (int) BUYABLES.VILLAGE;
+        packet.buildID = 9;
+        
+        serverReceive.handleBuild(packet);
+        Assert.AreEqual(PLAYERCOLOR.BLUE, MockServerRequest.notifyObjectPlacementPlayerColor);
+        Assert.AreEqual(BUYABLES.VILLAGE, MockServerRequest.notifyObjectPlacementBuildType);
+        Assert.AreEqual(9, MockServerRequest.notifyObjectPlacementBuildID);
+        MockServerRequest.notifyObjectPlacementPlayerColor = PLAYERCOLOR.NONE;
+        MockServerRequest.notifyObjectPlacementBuildType = BUYABLES.NONE;
+        MockServerRequest.notifyObjectPlacementBuildID = 0;
+        
+        packet.buildType = (int) BUYABLES.ROAD;
+        packet.buildID = 15;
+        
+        serverReceive.handleBuild(packet);
+        Assert.AreEqual(PLAYERCOLOR.BLUE, MockServerRequest.notifyObjectPlacementPlayerColor);
+        Assert.AreEqual(BUYABLES.ROAD, MockServerRequest.notifyObjectPlacementBuildType);
+        Assert.AreEqual(15, MockServerRequest.notifyObjectPlacementBuildID);
+        MockServerRequest.notifyObjectPlacementPlayerColor = PLAYERCOLOR.NONE;
+        MockServerRequest.notifyObjectPlacementBuildType = BUYABLES.NONE;
+        MockServerRequest.notifyObjectPlacementBuildID = 0;
+    }
+
+    [Test]
+    public void E_handleTradeBankTest()
+    {
+        Packet packet = new Packet();
+        packet.tradeResourcesOffer = new[] {1, 0, 0, 0, 0};
+    }
+    
+    [Test]
+    public void F_handleEndTurnTest()
+    {
+        
     }
     
     
