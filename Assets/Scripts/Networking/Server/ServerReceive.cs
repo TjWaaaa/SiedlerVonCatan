@@ -319,7 +319,7 @@ namespace Networking.ServerSide
             return true;
         }
 
-        private int[] rollDices()
+        public int[] rollDices()
         {
             Debug.Log("SERVER: Dices are being rolled");
             System.Random r = new System.Random();
@@ -377,7 +377,7 @@ namespace Networking.ServerSide
             serverRequest.updateRepPlayers(convertSPAToRPA());
         }
 
-        private bool didThisPlayerWin(int playerIndex)
+        public bool didThisPlayerWin(int playerIndex)
         {
             if (allPlayer.ElementAt(playerIndex).Value.getVictoryPoints() >= 10)
             {

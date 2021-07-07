@@ -131,8 +131,22 @@ public class ServerReceiveTest
     {
         serverReceive.handleBeginRound(new Packet());
         
-        // Todo: more dice tests and update Players tests
+        // Testing if the function works properly
         Assert.IsNotEmpty(MockServerRequest.notifyRollDiceDiceResult);
+
+        // Testing the results over 1000 attempts
+        bool testSuccessful = true;
+        for(int i = 0; i<=1000;i++)
+        {
+            int[] diceResults = serverReceive.rollDices();
+            if(diceResults[0] >= 1 && diceResults[0] <= 6 && diceResults[1] >= 1 && diceResults[1] <= 6)
+            {
+                continue;
+            }
+            else{testSuccessful = false;break;}
+        }
+        Assert.IsTrue(testSuccessful);
+
         
         Dictionary<RESOURCETYPE, int> testResources = new Dictionary<RESOURCETYPE, int>
         {
@@ -304,9 +318,27 @@ public class ServerReceiveTest
     [Test]
     public void F_handleEndTurnTest()
     {
-        
+        // TODO create 2 players one that wins and one that doesn't
+
+        // Testing if winning player wins
+        //Assert.IsTrue(serverReceive.didThisPlayerWin(2));
+
+        // Testing if not winning player doesn't win
+        //Assert.IsFalse(serverReceive.didThisPlayerWin(2));
     }
     
+    [Test]
+    public void G_handlePlayDevelopement()
+    {
+        // Get Player
+        // Give DevCard
+        // Get VictoryPoints
+        int previousVP = 0;
+        // Play DevCard
+        // Get VictoryPoints
+        int newVP = 1;
+        Assert.IsTrue(newVP > previousVP);
+    }
     
     /// <summary>
     /// Closes Server at the end of test session
