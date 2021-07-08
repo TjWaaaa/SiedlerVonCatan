@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Net;
@@ -311,12 +312,66 @@ public class ServerReceiveTest
     [Test]
     public void E_handleTradeBankTest()
     {
+        // Dictionary to compare
+        serverReceive.updateOwnPlayer(0);
+        Dictionary<RESOURCETYPE, int> testResources = new Dictionary<RESOURCETYPE, int>
+        {
+            {RESOURCETYPE.SHEEP, MockServerRequest.updateOwnPlayerUpdateResources[RESOURCETYPE.SHEEP]},
+            {RESOURCETYPE.ORE, MockServerRequest.updateOwnPlayerUpdateResources[RESOURCETYPE.ORE]+2},
+            {RESOURCETYPE.BRICK, MockServerRequest.updateOwnPlayerUpdateResources[RESOURCETYPE.BRICK]-10},
+            {RESOURCETYPE.WOOD, MockServerRequest.updateOwnPlayerUpdateResources[RESOURCETYPE.WOOD]},
+            {RESOURCETYPE.WHEAT, MockServerRequest.updateOwnPlayerUpdateResources[RESOURCETYPE.WHEAT]}
+        };
+        
+        // Current player wants to trade
         Packet packet = new Packet();
-        packet.tradeResourcesOffer = new[] {1, 0, 0, 0, 0};
+        packet.myPlayerID = 0;
+        packet.tradeResourcesOffer = new[] {0, 0, 10, 0, 0};
+        packet.tradeResourcesExpect = new[] {0, 2, 0, 0, 0};
+        serverReceive.handleTradeBank(packet);
+        Assert.AreEqual(testResources,MockServerRequest.updateOwnPlayerUpdateResources);
+        
+        // not current player can't trade
+        Packet packet2 = new Packet();
+        packet2.myPlayerID = 1;
+        packet2.tradeResourcesOffer = new[] {4, 0, 0, 0, 0};
+        packet2.tradeResourcesExpect = new[] {0, 1, 0, 0, 0};
+        serverReceive.handleTradeBank(packet2);
+        Assert.AreEqual("You are not allowed to trade with bank!",MockServerRequest.notifyRejectionErrorMessage);
     }
-    
+
     [Test]
-    public void F_handleEndTurnTest()
+    public void F_handleTradeOfferTest()
+    {
+        // Current player want's to trade something he can trade
+        Packet packet = new Packet();
+        packet.myPlayerID = 0;
+        packet.resourceType = (int) RESOURCETYPE.WOOD;
+        packet.buttonNumber = 3;
+        serverReceive.handleTradeOffer(packet);
+        Assert.AreEqual(3, MockServerRequest.notifyAcceptTradeOfferButtonNumber);
+        
+        // Current player want's to trade something he can't trade (even if he get's three brick, it's not enough)
+        Packet packet2 = new Packet();
+        packet2.myPlayerID = 0;
+        packet2.resourceType = (int) RESOURCETYPE.BRICK;
+        packet2.buttonNumber = 2;
+        serverReceive.handleTradeOffer(packet2);
+        Assert.AreEqual("Not enough resources to offer", MockServerRequest.notifyRejectionErrorMessage);
+
+
+        // not current player can't offer
+        Packet packet3 = new Packet();
+        packet3.myPlayerID = 1;
+        packet3.resourceType = (int) RESOURCETYPE.SHEEP;
+        packet3.buttonNumber = 1;
+        serverReceive.handleTradeOffer(packet3);
+        Assert.AreEqual(1, MockServerRequest.notifyRejectionPlayerID);
+        Assert.AreEqual("You are not allowed to offer a trade!", MockServerRequest.notifyRejectionErrorMessage);
+    }
+
+    [Test]
+    public void G_handleEndTurnTest()
     {
         serverReceive.didThisPlayerWin(5);
         Assert.AreEqual("This player cannot exist", MockServerRequest.notifyRejectionErrorMessage);

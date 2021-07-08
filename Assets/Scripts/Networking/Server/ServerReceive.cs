@@ -363,7 +363,7 @@ namespace Networking.ServerSide
             return new Stack<DEVELOPMENT_TYPE>(array.OrderBy(n => Guid.NewGuid()).ToArray());
         }
 
-        private void updateOwnPlayer(int playerIndex)
+        public void updateOwnPlayer(int playerIndex)
         {
             serverRequest.updateOwnPlayer(
                 allPlayer.ElementAt(playerIndex).Value.convertFromSPToOP(), // int[] with left buildings
