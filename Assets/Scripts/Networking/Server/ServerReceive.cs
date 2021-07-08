@@ -379,7 +379,8 @@ namespace Networking.ServerSide
 
         public bool didThisPlayerWin(int playerIndex)
         {
-            if (allPlayer.ElementAt(playerIndex).Value.getVictoryPoints() >= 10)
+            if(playerIndex > playerAmount || playerIndex < 1){serverRequest.notifyRejection(currentPlayer, "This player cannot exist"); return false;}
+            if(allPlayer.ElementAt(playerIndex).Value.getVictoryPoints() >= 10)
             {
                 return true;
             }

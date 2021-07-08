@@ -318,6 +318,8 @@ public class ServerReceiveTest
     [Test]
     public void F_handleEndTurnTest()
     {
+        serverReceive.didThisPlayerWin(5);
+        Assert.AreEqual("This player cannot exist", MockServerRequest.notifyRejectionErrorMessage);
         // TODO create 2 players one that wins and one that doesn't
 
         // Testing if winning player wins
