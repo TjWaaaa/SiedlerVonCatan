@@ -7,26 +7,26 @@ using UnityEngine.UI;
 
 public class BuildController : MonoBehaviour
 {
-    
+
     private ClientRequest clientRequest = new ClientRequest();
-    
+
     private Camera mainCamera;
 
     private GameObject buildStreetButton;
     private GameObject buildVillageButton;
     private GameObject buildCityButton;
-    
+
     private bool buildStreetMode;
     private bool buildVillageMode;
     private bool buildCityMode;
-    
-    
+
+
     // Start is called before the first frame update
     private void Start()
     {
         // Camera
         mainCamera = Camera.main;
-        
+
         // Find buttons and add event listener
         buildStreetButton = GameObject.Find("buildStreet");
         buildVillageButton = GameObject.Find("buildVillage");
@@ -34,7 +34,7 @@ public class BuildController : MonoBehaviour
         buildStreetButton.GetComponent<Button>().onClick.AddListener(startBuildStreetMode);
         buildVillageButton.GetComponent<Button>().onClick.AddListener(startBuildVillageMode);
         buildCityButton.GetComponent<Button>().onClick.AddListener(startBuildCityMode);
-        
+
     }
 
     /// <summary>
@@ -83,7 +83,7 @@ public class BuildController : MonoBehaviour
             }
         }
     }
-    
+
 
     private void stopBuildMode()
     {
@@ -116,12 +116,12 @@ public class BuildController : MonoBehaviour
         buildCityMode = true;
         Debug.Log("build city mode is on");
     }
-    
-    
-    
-    
-    
-   
 
-    
+
+
+
+
+
+
+
 }

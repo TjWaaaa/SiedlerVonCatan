@@ -11,7 +11,7 @@ namespace UI
     {
         public GameObject showButton;
         public GameObject hideButton;
-        
+
         private Boolean isVisible;
 
         void Start()

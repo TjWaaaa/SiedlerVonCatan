@@ -17,13 +17,13 @@ namespace Tests.ServerLogic
         // List of all Parameters that can be passed to any method in MockServerRequest
         public static ArrayList notifyClientJoinedPlayerInformation;
         public static string notifyClientJoinedLobbyIP;
-        
+
         public static Hexagon[][] gamestartInitializeGameBoard;
 
 
         public static int notifyNextPlayerPlayerIndex;
         public static int notifyNextPlayerPreviousPlayerIndex;
-        
+
         public static int notifyPlayerReadyCurrentClientID;
         public static string notifyPlayerReadyPlayerName;
         public static bool notifyPlayerReadyReadyStatus;
@@ -34,7 +34,7 @@ namespace Tests.ServerLogic
         public static Dictionary<DEVELOPMENT_TYPE, int> updateOwnPlayerUpdateDevCards;
         public static int updateOwnPlayerPlayerID;
         public static int[][] updateRepPlayersUpdateNumbers;
-        
+
         public static BUYABLES notifyObjectPlacementBuildType;
         public static PLAYERCOLOR notifyObjectPlacementPlayerColor;
         public static int notifyObjectPlacementBuildID;
@@ -44,7 +44,7 @@ namespace Tests.ServerLogic
 
         public static int notifyAcceptTradeOfferButtonNumber;
         public static int acceptBuyDevelopementLeftDevCards;
-        
+
         public static string notifyVictoryPlayerName;
         public static PLAYERCOLOR notifyVictoryPlayerColor;
 

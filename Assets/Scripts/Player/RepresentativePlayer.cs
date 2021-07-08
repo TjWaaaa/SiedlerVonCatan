@@ -7,7 +7,7 @@ namespace Player
         public int playerID;
         private string playerName;
         private Color playerColor;
-        
+
         private int victoryPoints;
         private int totalResourceAmount;
         private int devCardAmount;
@@ -36,12 +36,12 @@ namespace Player
         {
             return victoryPoints;
         }
-        
+
         public int getTotalResourceAmount()
         {
             return totalResourceAmount;
         }
-        
+
         public int getDevCardAmount()
         {
             return devCardAmount;
@@ -51,7 +51,7 @@ namespace Player
         {
             return playerID;
         }
-        
+
         // setter
         public void updateNumbers(int[] updates)
         {

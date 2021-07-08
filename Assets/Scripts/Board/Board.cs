@@ -45,8 +45,8 @@ public class Board
         new[]       {4,1,4,1,0,0,0}
     };
 
-    private int[] neighborOffsetX = new int[] {  1, 0,-1,-1, 0, 1 }; //specifies the position of adjacent hexagons in horizontal direction
-    private int[] neighborOffsetY = new int[] { -1,-1, 0, 1, 1, 0 }; //specifies the position of adjacent hexagons in vertical direction
+    private int[] neighborOffsetX = new int[] { 1, 0, -1, -1, 0, 1 }; //specifies the position of adjacent hexagons in horizontal direction
+    private int[] neighborOffsetY = new int[] { -1, -1, 0, 1, 1, 0 }; //specifies the position of adjacent hexagons in vertical direction
     private int[] availableNumbers = new int[] { 2, 3, 3, 4, 4, 5, 5, 6, 6, 8, 8, 9, 9, 10, 10, 11, 11, 12 };
 
     private readonly HEXAGON_TYPE[] landHexagons = {
@@ -184,7 +184,7 @@ public class Board
             edgesArray[i] = new Edge(i);
         }
     }
-    
+
     /// <summary>
     /// This function has to get called to place a village or city onto a specific node.
     /// If the player is allowed to place a building on the Node with id 'nodeId', a village
@@ -195,7 +195,7 @@ public class Board
     public bool canPlaceBuilding(int nodeId, PLAYERCOLOR player, BUILDING_TYPE buildingType, bool preGamePhase)
     {
         if (player == PLAYERCOLOR.NONE) return false;
-        
+
         Node requestedNode = nodesArray[nodeId];
 
         if (!allowedToBuildOnNode(requestedNode, player, preGamePhase)) return false;
@@ -212,7 +212,7 @@ public class Board
             Debug.Log("SERVER: city can be placed");
             return true;
         }
-        Debug.Log("SERVER: canPlaceBuilding(): building of type " + buildingType + " cant be built");
+        Debug.Log("SERVER: canPlaceBuilding(): building of type " + buildingType + " can't be built");
         return false;
     }
 
@@ -243,7 +243,7 @@ public class Board
             // false if a neighborNode is already occupied
             if (node.getBuildingType() != BUILDING_TYPE.NONE) return false;
         }
-        
+
         // if not in pre game phase, adjacent edges have to get checked
         if (!preGamePhase)
         {
@@ -274,30 +274,30 @@ public class Board
         switch (buildingType)
         {
             case BUILDING_TYPE.VILLAGE:
-            {
-                if (requestedNode.getOccupant() != PLAYERCOLOR.NONE
-                    || requestedNode.getBuildingType() != BUILDING_TYPE.NONE)
                 {
-                    return false;
-                }
+                    if (requestedNode.getOccupant() != PLAYERCOLOR.NONE
+                        || requestedNode.getBuildingType() != BUILDING_TYPE.NONE)
+                    {
+                        return false;
+                    }
 
-                requestedNode.setBuildingType(BUILDING_TYPE.VILLAGE);
-                requestedNode.setOccupant(player);
-                return true;
-            }
-            case BUILDING_TYPE.CITY:
-            {
-                if (requestedNode.getOccupant() != player
-                    || requestedNode.getBuildingType() != BUILDING_TYPE.VILLAGE)
-                {
-                    return false;
+                    requestedNode.setBuildingType(BUILDING_TYPE.VILLAGE);
+                    requestedNode.setOccupant(player);
+                    return true;
                 }
-                requestedNode.setBuildingType(BUILDING_TYPE.CITY);
-                //requestedNode.setOccupant(player);
-                return true;
-            }
+            case BUILDING_TYPE.CITY:
+                {
+                    if (requestedNode.getOccupant() != player
+                        || requestedNode.getBuildingType() != BUILDING_TYPE.VILLAGE)
+                    {
+                        return false;
+                    }
+                    requestedNode.setBuildingType(BUILDING_TYPE.CITY);
+                    //requestedNode.setOccupant(player);
+                    return true;
+                }
             default:
-                Debug.Log("SERVER: buildBuilding() building of type " + buildingType + " cant be built");
+                Debug.Log("SERVER: buildBuilding() building of type " + buildingType + " can't be built");
                 return false;
         }
     }
@@ -312,9 +312,9 @@ public class Board
     public bool canPlaceRoad(int edgeId, PLAYERCOLOR player)
     {
         Edge currentEdge = edgesArray[edgeId];
-        
+
         if (!allowedToBuildOnEdge(currentEdge, player)) return false;
-        
+
         if (currentEdge.getOccupant() == PLAYERCOLOR.NONE)
         {
             Debug.Log("SERVER: road can be placed");
@@ -338,9 +338,9 @@ public class Board
     {
         Edge currentEdge = edgesArray[edgeId];
         if (currentEdge.getOccupant() != PLAYERCOLOR.NONE) return false;
-        
+
         LinkedList<int> neighborNodesPos = currentEdge.getAdjacentNodesPos();
-        
+
         foreach (int nodePos in neighborNodesPos)
         {
             if (nodePos == mandatoryAdjacentNodePos)
@@ -396,11 +396,11 @@ public class Board
     public int[] distributeResources(int hexagonNumber, PLAYERCOLOR playerColor)
     {
         int[] distributedResources = new int[5];
-        
+
         foreach (Hexagon hexagon in hexagonDiceNumbers[hexagonNumber])
         {
-            int resourceType = (int) hexagon.getResourceType();
-            
+            int resourceType = (int)hexagon.getResourceType();
+
             LinkedList<int> adjacentNodesPos = hexagon.getAdjacentNodesPos();
             foreach (int nodePos in adjacentNodesPos)
             {
@@ -425,7 +425,7 @@ public class Board
             }
         }
 
-        Debug.Log("SERVER: Player " + (int) playerColor + " gets: " + distributedResources[0] + distributedResources[1] + distributedResources[2] + distributedResources[3] + distributedResources[4]);
+        Debug.Log("SERVER: Player " + (int)playerColor + " gets: " + distributedResources[0] + distributedResources[1] + distributedResources[2] + distributedResources[3] + distributedResources[4]);
         return distributedResources;
     }
 
@@ -434,16 +434,16 @@ public class Board
         int[] distributedResources = new int[5];
         Node village = nodesArray[nodeId];
         int[][] adjacentHexagonsPos = village.getAdjacentHexagonsPos();
-        
+
         foreach (int[] hexagonPos in adjacentHexagonsPos)
         {
             HEXAGON_TYPE hexagonType = hexagonsArray[hexagonPos[0]][hexagonPos[1]].getType();
             Debug.LogWarning("hexagonType: " + hexagonType);
-            if ((int) hexagonType > 4)
+            if ((int)hexagonType > 4)
             {
                 continue;
             }
-            distributedResources[(int) hexagonType]++;
+            distributedResources[(int)hexagonType]++;
         }
         return distributedResources;
     }
@@ -468,7 +468,7 @@ public class Board
                 }
                 catch (Exception e)
                 {
-                    Debug.Log("SERVER: "+ e);
+                    Debug.Log("SERVER: " + e);
                 }
 
                 Hexagon currentHexagon = hexagonsArray[row][col];
@@ -498,11 +498,11 @@ public class Board
         TextAsset adjacentHexagonsToNodes = (TextAsset)Resources.Load("AdjacentHexagonsToNodes");
         MemoryStream adjacentHexagonsToNodesStream = new MemoryStream(Encoding.UTF8.GetBytes(adjacentHexagonsToNodes.text));
         StreamReader hexagonsFile = new StreamReader(adjacentHexagonsToNodesStream);
-        
+
         TextAsset adjacentNodesToNodes = (TextAsset)Resources.Load("AdjacentNodesToNodes");
         MemoryStream adjacentNodesToNodesStream = new MemoryStream(Encoding.UTF8.GetBytes(adjacentNodesToNodes.text));
         StreamReader nodesFile = new StreamReader(adjacentNodesToNodesStream);
-        
+
         TextAsset adjacentEdgesToNodes = (TextAsset)Resources.Load("AdjacentEdgesToNodes");
         MemoryStream adjacentEdgesToNodesStream = new MemoryStream(Encoding.UTF8.GetBytes(adjacentEdgesToNodes.text));
         StreamReader edgesFile = new StreamReader(adjacentEdgesToNodesStream);
@@ -549,7 +549,7 @@ public class Board
         TextAsset adjacentNodesToEdges = (TextAsset)Resources.Load("AdjacentNodesToEdges");
         MemoryStream adjacentNodesToEdgesStream = new MemoryStream(Encoding.UTF8.GetBytes(adjacentNodesToEdges.text));
         StreamReader nodesFile = new StreamReader(adjacentNodesToEdgesStream);
-        
+
         TextAsset adjacentEdgesToEdges = (TextAsset)Resources.Load("AdjacentEdgesToEdges");
         MemoryStream adjacentEdgesToEdgesStream = new MemoryStream(Encoding.UTF8.GetBytes(adjacentEdgesToEdges.text));
         StreamReader edgesFile = new StreamReader(adjacentEdgesToEdgesStream);
@@ -580,7 +580,7 @@ public class Board
         nodesFile.Close();
         edgesFile.Close();
     }
-    
+
     /// <summary>
     /// Checks if Hexagons with a fieldnumber of 6 or 8 are adjacent
     /// </summary>
@@ -613,7 +613,7 @@ public class Board
                     int xOffset = col + neighborOffsetX[offsetIndex];
 
                     //when index is out of range or at the index is no object there is no adjacent hexagon, therefore the constraint for this neighbor is met
-                    if (hexagonsArray[yOffset][xOffset]==null || yOffset > hexagonsArray.Length-1 || xOffset > hexagonsArray[yOffset].Length-1)
+                    if (hexagonsArray[yOffset][xOffset] == null || yOffset > hexagonsArray.Length - 1 || xOffset > hexagonsArray[yOffset].Length - 1)
                     {
                         continue;
                     }
@@ -665,9 +665,9 @@ public class Board
                     {
                         int yOffset = row + neighborOffsetY[offsetIndex];
                         int xOffset = col + neighborOffsetX[offsetIndex];
-                       
+
                         //if index is out of range there is no adjacent hexagon, therefore the constraint for this neighbor is met
-                        if (hexagonsArray[yOffset][xOffset] == null || yOffset > hexagonsArray.Length - 1 || xOffset > hexagonsArray[yOffset].Length-1)
+                        if (hexagonsArray[yOffset][xOffset] == null || yOffset > hexagonsArray.Length - 1 || xOffset > hexagonsArray[yOffset].Length - 1)
                         {
                             continue;
                         }

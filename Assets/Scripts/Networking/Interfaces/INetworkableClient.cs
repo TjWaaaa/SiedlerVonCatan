@@ -16,35 +16,35 @@ namespace Networking.Interfaces
         /// <param name="serverPacket">Playername, readyStatus</param>
         public void handlePlayerReadyNotification(Packet serverPacket);
 
-        
+
         /// <summary>
         /// The game has started and the board has been sent -> render initial gameboard
         /// </summary>
         /// <param name="serverPacket">Initial gameboard</param>
         public void handleGameStartInitialize(Packet serverPacket);
 
-        
+
         /// <summary>
         /// Another player hat built something -> display new building in UI
         /// </summary>
         /// <param name="serverPacket">New building and owner color</param>
         public void handleObjectPlacement(Packet serverPacket);
 
-        
+
         /// <summary>
         /// Client is informed who the next player is.
         /// </summary>
         /// <param name="serverPacket">Name of next Player</param>
         public void handleNextPlayer(Packet serverPacket);
 
-        
+
         /// <summary>
         /// The winner of the game is announced -> display winner in UI
         /// </summary>
         /// <param name="serverPacket">Packet from server</param>
         public void handleVictory(Packet serverPacket);
 
-        
+
         // /// <summary>
         // /// Handle incoming trade request from other player
         // /// </summary>
@@ -57,17 +57,17 @@ namespace Networking.Interfaces
         /// </summary>
         /// <param name="serverPacket">Packet from server</param>
         public void handleClientDisconnect(Packet serverPacket);
-        
-        
+
+
         // Answers from previous Requests -------------------------------------------
-        
+
         /// <summary>
         /// Universal method for a rejection of any client request.
         /// </summary>
         /// <param name="serverPacket">Incoming Packet from server</param>
         public void handleRejection(Packet serverPacket);
-        
-        
+
+
         /// <summary>
         /// Server accepts begin round request and sends the dice result.
         /// </summary>
@@ -80,22 +80,22 @@ namespace Networking.Interfaces
         /// </summary>
         /// <param name="clientPacket"></param>
         public void handleAcceptTradeOffer(Packet clientPacket);
-        
-        
+
+
         // /// <summary>
         // /// Server returns result of trade
         // /// </summary>
         // /// <param name="serverPacket">Packet from server</param>
         //public void handleAcceptTradePort(Packet serverPacket);
-        
-        
+
+
         /// <summary>
         /// Server returns type of Development card
         /// </summary>
         /// <param name="serverPacket">Packet from server</param>
         public void handleAcceptBuyDevelopement(Packet serverPacket);
-        
-        
+
+
         /// <summary>
         /// Server returns result of Development card
         /// </summary>

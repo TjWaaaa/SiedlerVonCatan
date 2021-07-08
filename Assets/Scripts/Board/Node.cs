@@ -12,7 +12,7 @@ public class Node
 
     public Node(int posInArray)
     {
-        
+
     }
 
     public int getPosInArray()
@@ -22,7 +22,7 @@ public class Node
 
     public void setAdjacentHexagonPos(int hexagonPosX, int hexagonPosY, int index)
     {
-        adjacentHexagonsPos[index] = new[] {hexagonPosX, hexagonPosY};
+        adjacentHexagonsPos[index] = new[] { hexagonPosX, hexagonPosY };
     }
 
     public int[][] getAdjacentHexagonsPos()
@@ -34,7 +34,7 @@ public class Node
     {
         adjacentNodesPos.AddLast(nodePos);
     }
-    
+
     public LinkedList<int> getAdjacentNodesPos()
     {
         return adjacentNodesPos;
@@ -49,12 +49,12 @@ public class Node
     {
         return adjacentEdgesPos;
     }
-    
+
     public void setOccupant(PLAYERCOLOR occupant)
     {
         this.occupant = occupant;
     }
-    
+
     public PLAYERCOLOR getOccupant()
     {
         return occupant;

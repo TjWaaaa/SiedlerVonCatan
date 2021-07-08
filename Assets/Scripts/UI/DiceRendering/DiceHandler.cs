@@ -11,7 +11,7 @@ public class DiceHandler : MonoBehaviour
     private Animator diceAnimator;
     private Image diceImage;
 
-    private String[] diceNumberStrings = {"0001 (UnityEngine.Sprite)","0020 (UnityEngine.Sprite)","0040 (UnityEngine.Sprite)","0060 (UnityEngine.Sprite)","0080 (UnityEngine.Sprite)","0100 (UnityEngine.Sprite)"};
+    private String[] diceNumberStrings = { "0001 (UnityEngine.Sprite)", "0020 (UnityEngine.Sprite)", "0040 (UnityEngine.Sprite)", "0060 (UnityEngine.Sprite)", "0080 (UnityEngine.Sprite)", "0100 (UnityEngine.Sprite)" };
 
     void Start()
     {
@@ -21,12 +21,12 @@ public class DiceHandler : MonoBehaviour
     }
     public void updateDiceNumber(int number)
     {
-        diceNumber = diceNumberStrings[number-1];
+        diceNumber = diceNumberStrings[number - 1];
     }
 
     void FixedUpdate()
     {
-        if(diceAnimator.enabled)
+        if (diceAnimator.enabled)
         {
             if (diceNumber == diceImage.sprite.ToString())
             {

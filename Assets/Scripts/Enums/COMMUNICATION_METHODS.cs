@@ -3,7 +3,7 @@
     public enum COMMUNICATION_METHODS
     {
         // it's going to be GRAAAAAAAAND:D
-        
+
         //Client tell Server what to call:
         HANDLE_REQUEST_JOIN_LOBBY, //0
         HANDLE_PLAYER_READY, //1

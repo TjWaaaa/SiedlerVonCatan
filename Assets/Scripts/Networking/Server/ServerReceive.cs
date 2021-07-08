@@ -15,15 +15,15 @@ namespace Networking.ServerSide
     public class ServerReceive : INetworkableServer
     {
         private readonly ServerToClientCommunication serverRequest;
-        
+
         private int mandatoryNodeID;
-        
+
         // Player
         private Dictionary<int, ServerPlayer> allPlayer = new Dictionary<int, ServerPlayer>();
         private int playerAmount;
         private int currentPlayer;
         private readonly Stack<PLAYERCOLOR> possibleColors = new Stack<PLAYERCOLOR>();
-        
+
         // Gamestage params 
         private bool firstRound = true;
         private bool inGameStartupPhase = true;
@@ -31,13 +31,13 @@ namespace Networking.ServerSide
 
         // Board
         private Board gameBoard = new Board();
-        
+
         // Development Cards
         private Stack<DEVELOPMENT_TYPE> shuffledDevCardStack = new Stack<DEVELOPMENT_TYPE>();
         private DEVELOPMENT_TYPE[] unshuffledDevCardArray = { DEVELOPMENT_TYPE.VICTORY_POINT,
             DEVELOPMENT_TYPE.VICTORY_POINT, DEVELOPMENT_TYPE.VICTORY_POINT, DEVELOPMENT_TYPE.VICTORY_POINT,
             DEVELOPMENT_TYPE.VICTORY_POINT, DEVELOPMENT_TYPE.VICTORY_POINT, DEVELOPMENT_TYPE.VICTORY_POINT, DEVELOPMENT_TYPE.VICTORY_POINT };
-        
+
         // Test
         private bool isTestRunning;
 
@@ -49,7 +49,7 @@ namespace Networking.ServerSide
             possibleColors.Push(PLAYERCOLOR.BLUE);
             possibleColors.Push(PLAYERCOLOR.RED);
         }
-        
+
         public ServerReceive(ServerToClientCommunication serverRequest, bool isTestRunning)
         {
             this.isTestRunning = isTestRunning;
@@ -59,7 +59,7 @@ namespace Networking.ServerSide
             possibleColors.Push(PLAYERCOLOR.BLUE);
             possibleColors.Push(PLAYERCOLOR.RED);
         }
-        
+
 
         //---------------------------------------------- Interface INetworkableServer implementation ----------------------------------------------
 
@@ -113,7 +113,7 @@ namespace Networking.ServerSide
                 currentPlayer = playerAmount - 1;
                 serverRequest.gamestartInitialize(gameBoard.getHexagonsArray());
                 shuffledDevCardStack = generateRandomDevCardStack(unshuffledDevCardArray);
-                serverRequest.notifyNextPlayer(currentPlayer,0);
+                serverRequest.notifyNextPlayer(currentPlayer, 0);
                 Debug.Log($"SERVER: Starting the game with player {currentPlayer}");
             }
 
@@ -149,10 +149,10 @@ namespace Networking.ServerSide
             if (isNotCurrentPlayer(clientPacket.myPlayerID))
             {
                 Debug.LogWarning($"SERVER: Client request rejected from client {clientPacket.myPlayerID}");
-                serverRequest.notifyRejection(clientPacket.myPlayerID, "You are not allowed to trade with bank!");
+                serverRequest.notifyRejection(clientPacket.myPlayerID, "You are not allowed to trade with the bank!");
                 return;
             }
-            
+
             Debug.Log("offer: " + clientPacket.tradeResourcesOffer + "; expect: " + clientPacket.tradeResourcesExpect);
             allPlayer.ElementAt(currentPlayer).Value.trade(clientPacket.tradeResourcesOffer, clientPacket.tradeResourcesExpect);
 
@@ -215,7 +215,7 @@ namespace Networking.ServerSide
                 if (isNotCurrentPlayer(clientPacket.myPlayerID))
                 {
                     Debug.LogWarning($"SERVER: Client request rejected from client {clientPacket.myPlayerID}");
-                    serverRequest.notifyRejection(clientPacket.myPlayerID, "You are not allowed to buy a developmentcard!");
+                    serverRequest.notifyRejection(clientPacket.myPlayerID, "You are not allowed to buy a development card!");
                     return;
                 }
 
@@ -239,7 +239,7 @@ namespace Networking.ServerSide
             }
             else
             {
-                serverRequest.notifyRejection(clientPacket.myPlayerID, "Method HANDLE_BUY_DEVELOPMENT during game startphase prohibited");
+                serverRequest.notifyRejection(clientPacket.myPlayerID, "Method HANDLE_BUY_DEVELOPMENT during game start phase prohibited");
             }
         }
 
@@ -250,7 +250,7 @@ namespace Networking.ServerSide
                 if (isNotCurrentPlayer(clientPacket.myPlayerID))
                 {
                     Debug.LogWarning($"SERVER: Client request rejected from client {clientPacket.myPlayerID}");
-                    serverRequest.notifyRejection(clientPacket.myPlayerID, "You are not allowed to play a developmentcard!");
+                    serverRequest.notifyRejection(clientPacket.myPlayerID, "You are not allowed to play a development card!");
                     return;
                 }
                 Debug.Log(clientPacket.developmentCard);
@@ -266,12 +266,12 @@ namespace Networking.ServerSide
                 }
                 else
                 {
-                    serverRequest.notifyRejection(allPlayer.ElementAt(currentPlayer).Key, "You can't play this developement Card");
+                    serverRequest.notifyRejection(allPlayer.ElementAt(currentPlayer).Key, "You can't play this developement card");
                 }
             }
             else
             {
-                serverRequest.notifyRejection(clientPacket.myPlayerID, "Method HANDLE_PLAY_DEVELOPMENT during game startphase prohibited");
+                serverRequest.notifyRejection(clientPacket.myPlayerID, "Method HANDLE_PLAY_DEVELOPMENT during game start phase prohibited");
             }
         }
 
@@ -294,7 +294,7 @@ namespace Networking.ServerSide
             // Begin next round
             if (!inGameStartupPhase)
             {
-                changeCurrentPlayer(clientPacket,currentPlayer);
+                changeCurrentPlayer(clientPacket, currentPlayer);
                 Debug.Log("SERVER: Current Player index: " + currentPlayer);
                 updateRepPlayers();
                 updateOwnPlayer(currentPlayer);
@@ -382,15 +382,19 @@ namespace Networking.ServerSide
 
         private bool didThisPlayerWin(int playerIndex)
         {
-            if(playerIndex > playerAmount || playerIndex < 1){serverRequest.notifyRejection(currentPlayer, "This player cannot exist"); return false;}
-            if(allPlayer.ElementAt(playerIndex).Value.getVictoryPoints() >= 10)
+            if (playerIndex > playerAmount || playerIndex < 0)
+            {
+                serverRequest.notifyRejection(currentPlayer, "This player cannot exist");
+                return false;
+            }
+            if (allPlayer.ElementAt(playerIndex).Value.getVictoryPoints() >= 10)
             {
                 return true;
             }
             return false;
         }
 
-        private void changeCurrentPlayer(Packet clientPacket,int playersId)
+        private void changeCurrentPlayer(Packet clientPacket, int playersId)
         {
             if (!firstRound)
             {
@@ -409,7 +413,7 @@ namespace Networking.ServerSide
                 {
                     currentPlayer++;
                 }
-                serverRequest.notifyNextPlayer(currentPlayer,playersId);
+                serverRequest.notifyNextPlayer(currentPlayer, playersId);
             }
             else
             {
@@ -421,7 +425,7 @@ namespace Networking.ServerSide
                 {
                     currentPlayer--;
                 }
-                serverRequest.notifyNextPlayer(currentPlayer,playersId);
+                serverRequest.notifyNextPlayer(currentPlayer, playersId);
             }
         }
 
@@ -431,7 +435,7 @@ namespace Networking.ServerSide
             {
                 case BUYABLES.VILLAGE:
                     if (inGameStartupPhase
-                        && !villageBuilt 
+                        && !villageBuilt
                         && gameBoard.canPlaceBuilding(posInArray, playerColor, BUILDING_TYPE.VILLAGE, inGameStartupPhase))
                     {
                         mandatoryNodeID = posInArray;
@@ -444,7 +448,7 @@ namespace Networking.ServerSide
                         int[] distributedResources = gameBoard.distributeFirstResources(posInArray);
                         for (int i = 0; i < distributedResources.Length; i++)
                         {
-                            currentServerPlayer.setResourceAmount((RESOURCETYPE) i, distributedResources[i]);
+                            currentServerPlayer.setResourceAmount((RESOURCETYPE)i, distributedResources[i]);
                         }
 
                         updateOwnPlayer(currentPlayer);
@@ -490,7 +494,7 @@ namespace Networking.ServerSide
                         serverRequest.notifyObjectPlacement(buildingType, posInArray, playerColor);
                         updateOwnPlayer(currentPlayer);
                         updateRepPlayers();
-                        changeCurrentPlayer(clientPacket,currentPlayer);
+                        changeCurrentPlayer(clientPacket, currentPlayer);
                         return;
                     }
                     if (!inGameStartupPhase
@@ -509,7 +513,7 @@ namespace Networking.ServerSide
                 default: Debug.Log("SERVER: handleBuild(): wrong BUYABLES"); break;
             }
 
-            serverRequest.notifyRejection(currentServerPlayer.getPlayerID(), "Building cant be built");
+            serverRequest.notifyRejection(currentServerPlayer.getPlayerID(), "Building can't be built");
         }
     }
 }

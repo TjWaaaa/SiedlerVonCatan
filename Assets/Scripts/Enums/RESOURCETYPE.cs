@@ -2,11 +2,11 @@
 {
     public enum RESOURCETYPE
     {
-        SHEEP, 
-        WOOD, 
-        BRICK, 
-        ORE, 
-        WHEAT, 
+        SHEEP,
+        WOOD,
+        BRICK,
+        ORE,
+        WHEAT,
         NONE
     }
 }

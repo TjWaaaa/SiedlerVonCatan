@@ -11,15 +11,15 @@ public class ServerClientTest
 {
     private bool setUpClient;
     private bool setUpServer;
-    
+
     [OneTimeSetUp]
     public void SetUp()
     {
-        setUpServer= Server.setupServer(new MockServerReceive());
+        setUpServer = Server.setupServer(new MockServerReceive());
         setUpClient = Client.initClient("127.0.0.1", new MockClientReceive());
     }
-    
-    
+
+
     /// <summary>
     /// Test if setting up Server and Client is possible
     /// </summary>

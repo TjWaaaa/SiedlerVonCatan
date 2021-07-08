@@ -20,7 +20,7 @@ namespace Networking.ClientSide
         private static Socket clientSocket;
 
         private static INetworkableClient _clientReceive;
-        
+
         private static long timeOfLastPing;
         private static Timer keepAliveTimer;
         private const int disconnetThreshold = 50000000; // in .net Ticks
@@ -40,13 +40,13 @@ namespace Networking.ClientSide
                 Debug.LogWarning("Client has already been started. Aborting initialisation...");
                 return true;
             }
-            
+
             timeOfLastPing = DateTime.Now.Ticks;
             keepAliveTimer = new Timer(1000); // Check every second for disconnect
             keepAliveTimer.AutoReset = true;
             keepAliveTimer.Elapsed += checkReceivedPing;
             keepAliveTimer.Start();
-            
+
             // instantiate a ClientGameLogic object
             // var gameLogicObject = new GameObject();
             // gameLogicObject.AddComponent<ClientReceive>();
@@ -56,7 +56,7 @@ namespace Networking.ClientSide
 
             buffer = new byte[BUFFER_SIZE];
             clientSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-            
+
             try
             {
                 bool connectionSuccess = connectToServer(ipAddress);
@@ -162,7 +162,7 @@ namespace Networking.ClientSide
             // necessary to log errors that occur in the side thread
             try
             {
-                Socket currentServerSocket = (Socket) AR.AsyncState;
+                Socket currentServerSocket = (Socket)AR.AsyncState;
                 int receivedBufferSize;
 
                 try
@@ -230,10 +230,10 @@ namespace Networking.ClientSide
                 lock (keepAliveTimer)
                 {
                     isRunning = false;
-                    
+
                     keepAliveTimer.Stop();
                     keepAliveTimer.Dispose();
-            
+
                     // Close client Socket
                     try
                     {
@@ -263,52 +263,52 @@ namespace Networking.ClientSide
             {
                 switch (incomingData.type)
                 {
-                    case (int) COMMUNICATION_METHODS.HANDLE_CLIENT_JOINED:
+                    case (int)COMMUNICATION_METHODS.HANDLE_CLIENT_JOINED:
                         // todo: eliminate race condition!!!
                         // while (SceneManager.GetActiveScene().name != "Lobby") ; //Waiting for Unity to load lobby
-                        
+
                         ThreadManager.executeOnMainThread(() =>
                         {
                             _clientReceive.handleClientJoined(incomingData);
                         });
                         break;
 
-                    case (int) COMMUNICATION_METHODS.HANDLE_GAMESTART_INITIALIZE:
+                    case (int)COMMUNICATION_METHODS.HANDLE_GAMESTART_INITIALIZE:
                         ThreadManager.executeOnMainThread(() =>
                         {
                             _clientReceive.handleGameStartInitialize(incomingData);
                         });
                         break;
 
-                    case (int) COMMUNICATION_METHODS.HANDLE_PLAYER_READY_NOTIFICATION:
+                    case (int)COMMUNICATION_METHODS.HANDLE_PLAYER_READY_NOTIFICATION:
                         ThreadManager.executeOnMainThread(() =>
                         {
                             _clientReceive.handlePlayerReadyNotification(incomingData);
                         });
                         break;
 
-                    case (int) COMMUNICATION_METHODS.HANDLE_OBJECT_PLACEMENT:
+                    case (int)COMMUNICATION_METHODS.HANDLE_OBJECT_PLACEMENT:
                         ThreadManager.executeOnMainThread(() =>
                         {
                             _clientReceive.handleObjectPlacement(incomingData);
                         });
                         break;
 
-                    case (int) COMMUNICATION_METHODS.HANDLE_NEXT_PLAYER:
+                    case (int)COMMUNICATION_METHODS.HANDLE_NEXT_PLAYER:
                         ThreadManager.executeOnMainThread(() =>
                         {
                             _clientReceive.handleNextPlayer(incomingData);
                         });
                         break;
 
-                    case (int) COMMUNICATION_METHODS.HANDLE_VICTORY:
+                    case (int)COMMUNICATION_METHODS.HANDLE_VICTORY:
                         ThreadManager.executeOnMainThread(() =>
                         {
                             _clientReceive.handleVictory(incomingData);
                         });
                         break;
 
-                    case (int) COMMUNICATION_METHODS.HANDLE_CLIENT_DISCONNECT:
+                    case (int)COMMUNICATION_METHODS.HANDLE_CLIENT_DISCONNECT:
                         ThreadManager.executeOnMainThread(() =>
                         {
                             _clientReceive.handleClientDisconnect(incomingData);
@@ -316,52 +316,52 @@ namespace Networking.ClientSide
                         break;
 
 
-                    case (int) COMMUNICATION_METHODS.HANDLE_REJECTION:
+                    case (int)COMMUNICATION_METHODS.HANDLE_REJECTION:
                         ThreadManager.executeOnMainThread(() =>
                         {
                             _clientReceive.handleRejection(incomingData);
                         });
                         break;
 
-                    case (int) COMMUNICATION_METHODS.HANDLE_ACCEPT_BEGIN_ROUND:
+                    case (int)COMMUNICATION_METHODS.HANDLE_ACCEPT_BEGIN_ROUND:
                         Debug.Log("CLIENT: calling handleAcceptBeginRound in ClientReceive");
                         ThreadManager.executeOnMainThread(() =>
                         {
                             _clientReceive.handleAccpetBeginRound(incomingData);
                         });
                         break;
-                    
-                    case (int) COMMUNICATION_METHODS.HANDLE_ACCEPT_TRADE_OFFER:
+
+                    case (int)COMMUNICATION_METHODS.HANDLE_ACCEPT_TRADE_OFFER:
                         ThreadManager.executeOnMainThread(() =>
                         {
                             _clientReceive.handleAcceptTradeOffer(incomingData);
                         });
                         break;
 
-                    case (int) COMMUNICATION_METHODS.HANDLE_ACCEPT_BUY_DEVELOPMENT_CARD:
+                    case (int)COMMUNICATION_METHODS.HANDLE_ACCEPT_BUY_DEVELOPMENT_CARD:
                         ThreadManager.executeOnMainThread(() =>
                         {
                             _clientReceive.handleAcceptBuyDevelopement(incomingData);
                         });
                         break;
 
-                    case (int) COMMUNICATION_METHODS.HANDLE_ACCEPT_PLAY_DEVELOPMENT_CARD:
+                    case (int)COMMUNICATION_METHODS.HANDLE_ACCEPT_PLAY_DEVELOPMENT_CARD:
                         ThreadManager.executeOnMainThread(() =>
-                        {  
+                        {
                             _clientReceive.handleAcceptPlayDevelopement(incomingData);
                         });
                         break;
 
-                    case (int) COMMUNICATION_METHODS.HANDLE_UPDATE_RP:
+                    case (int)COMMUNICATION_METHODS.HANDLE_UPDATE_RP:
                         ThreadManager.executeOnMainThread(() =>
-                        {  
+                        {
                             _clientReceive.handleUpdateRP(incomingData);
                         });
                         break;
 
-                    case (int) COMMUNICATION_METHODS.HANDLE_UPDATE_OP:
+                    case (int)COMMUNICATION_METHODS.HANDLE_UPDATE_OP:
                         ThreadManager.executeOnMainThread(() =>
-                        {  
+                        {
                             _clientReceive.handleUpdateOP(incomingData);
                         });
                         break;
@@ -376,7 +376,7 @@ namespace Networking.ClientSide
             {
                 Debug.LogError(e);
             }
-            
+
             string receievedText = PacketSerializer.objectToJsonString(incomingData);
             Debug.Log("CLIENT: Incoming Data: " + receievedText);
         }

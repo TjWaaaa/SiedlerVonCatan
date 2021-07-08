@@ -14,7 +14,7 @@ namespace Tests.Networking
     public class ClientRequestTest
     {
         private ClientRequest clientRequest;
-    
+
         [OneTimeSetUp]
         public void setUp()
         {
@@ -23,23 +23,23 @@ namespace Tests.Networking
 
             clientRequest = new ClientRequest();
         }
-    
+
         [Test]
         public void requestJoinLobbyTest()
         {
             string testPlayerName = "TestPlayer";
-        
+
             // send data
             clientRequest.requestJoinLobby(testPlayerName);
             Thread.Sleep(50);
-        
+
             string receivedPlayerName = MockServerReceive.packetHandleRequestJoinLobby.playerName;
             int packetType = MockServerReceive.packetHandleRequestJoinLobby.type;
-        
+
             Assert.AreEqual(testPlayerName, receivedPlayerName);
-            Assert.AreEqual((int) COMMUNICATION_METHODS.HANDLE_REQUEST_JOIN_LOBBY, packetType);
+            Assert.AreEqual((int)COMMUNICATION_METHODS.HANDLE_REQUEST_JOIN_LOBBY, packetType);
         }
-    
+
         [Test]
         public void requestPlayerReadyTest()
         {
@@ -48,23 +48,23 @@ namespace Tests.Networking
 
             Assert.True(MockServerReceive.packethandleRequestPlayerReady.isReady);
             int packetType = MockServerReceive.packethandleRequestPlayerReady.type;
-            Assert.AreEqual((int) COMMUNICATION_METHODS.HANDLE_PLAYER_READY, packetType);
+            Assert.AreEqual((int)COMMUNICATION_METHODS.HANDLE_PLAYER_READY, packetType);
 
             // ************************************************************************************
-        
+
             clientRequest.requestPlayerReady(false);
             Thread.Sleep(50);
-        
+
             Assert.False(MockServerReceive.packethandleRequestPlayerReady.isReady);
-            Assert.AreEqual((int) COMMUNICATION_METHODS.HANDLE_PLAYER_READY, packetType);
+            Assert.AreEqual((int)COMMUNICATION_METHODS.HANDLE_PLAYER_READY, packetType);
         }
 
 
         [Test]
         public void requestTradeBankTest()
         {
-            var offer = new int[] {0, 0, 0, 0, 0};
-            var expect = new int[] {0, 0, 0, 0, 0};
+            var offer = new int[] { 0, 0, 0, 0, 0 };
+            var expect = new int[] { 0, 0, 0, 0, 0 };
 
             clientRequest.requestTradeBank(offer, expect);
             Thread.Sleep(50);
@@ -72,19 +72,19 @@ namespace Tests.Networking
             Assert.AreEqual(offer, MockServerReceive.packethandleTradeBank.tradeResourcesOffer);
             Assert.AreEqual(expect, MockServerReceive.packethandleTradeBank.tradeResourcesExpect);
             int packetType = MockServerReceive.packethandleTradeBank.type;
-            Assert.AreEqual((int) COMMUNICATION_METHODS.HANDLE_TRADE_BANK, packetType);
-        
+            Assert.AreEqual((int)COMMUNICATION_METHODS.HANDLE_TRADE_BANK, packetType);
+
             // ************************************************************************************
-        
-            offer = new int[] {0, 4, 0, 0, 0};
-            expect = new int[] {0, 0, 1, 0, 0};
+
+            offer = new int[] { 0, 4, 0, 0, 0 };
+            expect = new int[] { 0, 0, 1, 0, 0 };
 
             clientRequest.requestTradeBank(offer, expect);
             Thread.Sleep(50);
-        
+
             Assert.AreEqual(offer, MockServerReceive.packethandleTradeBank.tradeResourcesOffer);
             Assert.AreEqual(expect, MockServerReceive.packethandleTradeBank.tradeResourcesExpect);
-            Assert.AreEqual((int) COMMUNICATION_METHODS.HANDLE_TRADE_BANK, packetType);
+            Assert.AreEqual((int)COMMUNICATION_METHODS.HANDLE_TRADE_BANK, packetType);
         }
 
 
@@ -98,8 +98,8 @@ namespace Tests.Networking
             Thread.Sleep(50);
 
             int packetType = MockServerReceive.packethandleTradeOffer.type;
-            Assert.AreEqual((int) COMMUNICATION_METHODS.HANDLE_TRADE_OFFER, packetType);
-            Assert.AreEqual(ressourceType, (RESOURCETYPE) MockServerReceive.packethandleTradeOffer.resourceType);
+            Assert.AreEqual((int)COMMUNICATION_METHODS.HANDLE_TRADE_OFFER, packetType);
+            Assert.AreEqual(ressourceType, (RESOURCETYPE)MockServerReceive.packethandleTradeOffer.resourceType);
             Assert.AreEqual(buttonNumber, MockServerReceive.packethandleTradeOffer.buttonNumber);
 
             // ************************************************************************************
@@ -109,9 +109,9 @@ namespace Tests.Networking
 
             clientRequest.requestTradeOffer(ressourceType, buttonNumber);
             Thread.Sleep(50);
-        
-            Assert.AreEqual((int) COMMUNICATION_METHODS.HANDLE_TRADE_OFFER, packetType);
-            Assert.AreEqual(ressourceType, (RESOURCETYPE) MockServerReceive.packethandleTradeOffer.resourceType);
+
+            Assert.AreEqual((int)COMMUNICATION_METHODS.HANDLE_TRADE_OFFER, packetType);
+            Assert.AreEqual(ressourceType, (RESOURCETYPE)MockServerReceive.packethandleTradeOffer.resourceType);
             Assert.AreEqual(buttonNumber, MockServerReceive.packethandleTradeOffer.buttonNumber);
         }
 
@@ -126,21 +126,21 @@ namespace Tests.Networking
             Thread.Sleep(50);
 
             Assert.AreEqual(buildID, MockServerReceive.packethandleBuild.buildID);
-            Assert.AreEqual(buildType, (BUYABLES) MockServerReceive.packethandleBuild.buildType);
+            Assert.AreEqual(buildType, (BUYABLES)MockServerReceive.packethandleBuild.buildType);
             int packetType = MockServerReceive.packethandleBuild.type;
-            Assert.AreEqual((int) COMMUNICATION_METHODS.HANDLE_BUILD, packetType);
-        
+            Assert.AreEqual((int)COMMUNICATION_METHODS.HANDLE_BUILD, packetType);
+
             // ************************************************************************************
-        
+
             buildID = 5;
             buildType = BUYABLES.ROAD;
-        
+
             clientRequest.requestBuild(buildType, buildID);
             Thread.Sleep(50);
-        
+
             Assert.AreEqual(buildID, MockServerReceive.packethandleBuild.buildID);
-            Assert.AreEqual(buildType, (BUYABLES) MockServerReceive.packethandleBuild.buildType);
-            Assert.AreEqual((int) COMMUNICATION_METHODS.HANDLE_BUILD, packetType);
+            Assert.AreEqual(buildType, (BUYABLES)MockServerReceive.packethandleBuild.buildType);
+            Assert.AreEqual((int)COMMUNICATION_METHODS.HANDLE_BUILD, packetType);
         }
 
 
@@ -149,9 +149,9 @@ namespace Tests.Networking
         {
             clientRequest.requestBuyDevelopement();
             Thread.Sleep(50);
-        
+
             int packetType = MockServerReceive.packethandleBuyDevelopement.type;
-            Assert.AreEqual((int) COMMUNICATION_METHODS.HANDLE_BUY_DEVELOPMENT, packetType);
+            Assert.AreEqual((int)COMMUNICATION_METHODS.HANDLE_BUY_DEVELOPMENT, packetType);
         }
 
 
@@ -164,7 +164,7 @@ namespace Tests.Networking
             Thread.Sleep(50);
 
             int packetType = MockServerReceive.packethandlePlayDevelopement.type;
-            Assert.AreEqual((int) COMMUNICATION_METHODS.HANDLE_PLAY_DEVELOPMENT, packetType);
+            Assert.AreEqual((int)COMMUNICATION_METHODS.HANDLE_PLAY_DEVELOPMENT, packetType);
             Assert.AreEqual(developmentCard, MockServerReceive.packethandlePlayDevelopement.developmentCard);
         }
 
@@ -174,9 +174,9 @@ namespace Tests.Networking
         {
             clientRequest.requestEndTurn();
             Thread.Sleep(50);
-        
+
             int packetType = MockServerReceive.packethandleEndTurn.type;
-            Assert.AreEqual((int) COMMUNICATION_METHODS.HANDLE_END_TURN, packetType);
+            Assert.AreEqual((int)COMMUNICATION_METHODS.HANDLE_END_TURN, packetType);
         }
 
 

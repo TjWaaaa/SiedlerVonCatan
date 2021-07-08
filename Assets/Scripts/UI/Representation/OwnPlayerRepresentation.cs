@@ -36,7 +36,7 @@ namespace UI
             ownPlayerLeftStreets = GameObject.Find("OwnPlayerLeftStreets").GetComponent<TextMeshProUGUI>();
             ownPlayerLeftVillages = GameObject.Find("OwnPlayerLeftVillages").GetComponent<TextMeshProUGUI>();
             ownPlayerLeftCitys = GameObject.Find("OwnPlayerLeftCitys").GetComponent<TextMeshProUGUI>();
-            
+
             // Connect labels to ownClientPlayer
             updaetOwnPlayerUI(ownClientPlayer);
         }
@@ -47,8 +47,8 @@ namespace UI
             ownPlayerWood.text = ownClientPlayer.getResourceAmount(RESOURCETYPE.WOOD).ToString();
             ownPlayerBrick.text = ownClientPlayer.getResourceAmount(RESOURCETYPE.BRICK).ToString();
             ownPlayerOre.text = ownClientPlayer.getResourceAmount(RESOURCETYPE.ORE).ToString();
-            ownPlayerWheat.text = ownClientPlayer.getResourceAmount(RESOURCETYPE.WHEAT).ToString(); 
-            
+            ownPlayerWheat.text = ownClientPlayer.getResourceAmount(RESOURCETYPE.WHEAT).ToString();
+
             ownPlayerLeftStreets.text = ownClientPlayer.getLeftStreets().ToString();
             ownPlayerLeftVillages.text = ownClientPlayer.getLeftVillages().ToString();
             ownPlayerLeftCitys.text = ownClientPlayer.getLeftCitys().ToString();

@@ -25,7 +25,7 @@ public class ButtonEvents : MonoBehaviour
         Destroy(factory);
         var clientReceive = GameObject.Find("clientReceive(Clone)");
         Destroy(clientReceive);
-        
+
         Client.shutDownClient();
         Server.shutDownServer();
         SceneManager.LoadScene("0_StartScene");

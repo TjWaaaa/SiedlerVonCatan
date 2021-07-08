@@ -40,7 +40,7 @@ namespace Player
         {
             return resources[resourcetype];
         }
-        
+
         public int getDevCardAmount(DEVELOPMENT_TYPE type)
         {
             return devCards[type];
@@ -61,7 +61,7 @@ namespace Player
             return leftCitys;
         }
 
-        
+
 
         public void updateOP(int[] updateNumbers, Dictionary<RESOURCETYPE, int> updateResources, Dictionary<DEVELOPMENT_TYPE, int> updateDevCards)
         {
