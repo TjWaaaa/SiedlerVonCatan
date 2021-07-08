@@ -38,9 +38,8 @@ namespace Networking.ServerSide
             DEVELOPMENT_TYPE.VICTORY_POINT, DEVELOPMENT_TYPE.VICTORY_POINT, DEVELOPMENT_TYPE.VICTORY_POINT,
             DEVELOPMENT_TYPE.VICTORY_POINT, DEVELOPMENT_TYPE.VICTORY_POINT, DEVELOPMENT_TYPE.VICTORY_POINT, DEVELOPMENT_TYPE.VICTORY_POINT };
         
-        
         // Test
-        private bool thisIsATest;
+        private bool isTestRunning;
 
         public ServerReceive(ServerToClientCommunication serverRequest)
         {
@@ -51,9 +50,9 @@ namespace Networking.ServerSide
             possibleColors.Push(PLAYERCOLOR.RED);
         }
         
-        public ServerReceive(ServerToClientCommunication serverRequest, bool isATest)
+        public ServerReceive(ServerToClientCommunication serverRequest, bool isTestRunning)
         {
-            thisIsATest = isATest;
+            this.isTestRunning = isTestRunning;
             this.serverRequest = serverRequest;
             possibleColors.Push(PLAYERCOLOR.WHITE);
             possibleColors.Push(PLAYERCOLOR.YELLOW);
@@ -352,7 +351,7 @@ namespace Networking.ServerSide
             allPlayer.Add(playerId, newPlayer);
             playerAmount++;
 
-            if (thisIsATest)
+            if (isTestRunning)
             {
                 newPlayer.setResourceAmount(RESOURCETYPE.SHEEP, 10);
                 newPlayer.setResourceAmount(RESOURCETYPE.ORE, 10);
