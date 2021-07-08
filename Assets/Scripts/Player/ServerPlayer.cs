@@ -132,7 +132,14 @@ namespace Player
 
         public void setResourceAmount(RESOURCETYPE resourcetype, int amount)
         {
-            resources[resourcetype] += amount;
+            if ((resources[resourcetype] + amount) >= 0 )
+            {
+                resources[resourcetype] += amount;
+            }
+            else
+            {
+                throw new Exception("Invalid amount");
+            }
         }
 
         //Start phase

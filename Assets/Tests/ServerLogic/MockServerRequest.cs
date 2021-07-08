@@ -27,6 +27,27 @@ namespace Tests.ServerLogic
         public static int notifyPlayerReadyCurrentClientID;
         public static string notifyPlayerReadyPlayerName;
         public static bool notifyPlayerReadyReadyStatus;
+        public static int[] notifyRollDiceDiceResult;
+
+        public static int[] updateOwnPlayerUpdateLeftBuildings;
+        public static Dictionary<RESOURCETYPE, int> updateOwnPlayerUpdateResources;
+        public static Dictionary<DEVELOPMENT_TYPE, int> updateOwnPlayerUpdateDevCards;
+        public static int updateOwnPlayerPlayerID;
+        public static int[][] updateRepPlayersUpdateNumbers;
+        
+        public static BUYABLES notifyObjectPlacementBuildType;
+        public static PLAYERCOLOR notifyObjectPlacementPlayerColor;
+        public static int notifyObjectPlacementBuildID;
+
+        public static int notifyRejectionPlayerID;
+        public static string notifyRejectionErrorMessage;
+
+        public static int notifyAcceptTradeOfferButtonNumber;
+        public static int acceptBuyDevelopementLeftDevCards;
+        
+        public static string notifyVictoryPlayerName;
+        public static PLAYERCOLOR notifyVictoryPlayerColor;
+
 
         public void notifyClientJoined(ArrayList playerInformation, string lobbyIP)
         {
@@ -41,7 +62,9 @@ namespace Tests.ServerLogic
 
         public void notifyObjectPlacement(BUYABLES buildType, int buildID, PLAYERCOLOR color)
         {
-            throw new System.NotImplementedException();
+            notifyObjectPlacementBuildType = buildType;
+            notifyObjectPlacementBuildID = buildID;
+            notifyObjectPlacementPlayerColor = color;
         }
 
         public void notifyNextPlayer(int playerIndex, int previousPlayerIndex)
@@ -52,7 +75,8 @@ namespace Tests.ServerLogic
 
         public void notifyVictory(string playerName, PLAYERCOLOR playerColor)
         {
-            throw new System.NotImplementedException();
+            notifyVictoryPlayerName = playerName;
+            notifyVictoryPlayerColor = playerColor;
         }
 
         public void notifyClientDisconnect(string playerName, PLAYERCOLOR playerColor)
@@ -62,7 +86,8 @@ namespace Tests.ServerLogic
 
         public void notifyRejection(int playerID, string errorMessage)
         {
-            throw new System.NotImplementedException();
+            notifyRejectionPlayerID = playerID;
+            notifyRejectionErrorMessage = errorMessage;
         }
 
         public void notifyPlayerReady(int currentClientID, string playerName, bool readyStatus)
@@ -74,32 +99,35 @@ namespace Tests.ServerLogic
 
         public void notifyRollDice(int[] diceResult)
         {
-            throw new System.NotImplementedException();
+            notifyRollDiceDiceResult = diceResult;
         }
 
         public void acceptBuyDevelopement(int leftDevCards)
         {
-            throw new System.NotImplementedException();
+            acceptBuyDevelopementLeftDevCards = leftDevCards;
         }
 
         public void notifyAcceptPlayDevelopement(int playerID, DEVELOPMENT_TYPE developmentCard, string playerName)
         {
-            throw new System.NotImplementedException();
+            return;
         }
 
         public void notifyAcceptTradeOffer(int playerID, int buttonNumber)
         {
-            throw new System.NotImplementedException();
+            notifyAcceptTradeOfferButtonNumber = buttonNumber;
         }
 
         public void updateOwnPlayer(int[] updateLeftBuildings, Dictionary<RESOURCETYPE, int> updateResources, Dictionary<DEVELOPMENT_TYPE, int> updateDevCards, int playerID)
         {
-            throw new System.NotImplementedException();
+            updateOwnPlayerUpdateLeftBuildings = updateLeftBuildings;
+            updateOwnPlayerUpdateResources = updateResources;
+            updateOwnPlayerUpdateDevCards = updateDevCards;
+            updateOwnPlayerPlayerID = playerID;
         }
 
         public void updateRepPlayers(int[][] updateNumbers)
         {
-            throw new System.NotImplementedException();
+            updateRepPlayersUpdateNumbers = updateNumbers;
         }
     }
 }

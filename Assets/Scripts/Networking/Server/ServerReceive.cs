@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using Enums;
 using Networking.Communication;
 using Networking.Interfaces;
@@ -35,7 +36,10 @@ namespace Networking.ServerSide
         private Stack<DEVELOPMENT_TYPE> shuffledDevCardStack = new Stack<DEVELOPMENT_TYPE>();
         private DEVELOPMENT_TYPE[] unshuffledDevCardArray = { DEVELOPMENT_TYPE.VICTORY_POINT,
             DEVELOPMENT_TYPE.VICTORY_POINT, DEVELOPMENT_TYPE.VICTORY_POINT, DEVELOPMENT_TYPE.VICTORY_POINT,
-            DEVELOPMENT_TYPE.VICTORY_POINT, DEVELOPMENT_TYPE.VICTORY_POINT, DEVELOPMENT_TYPE.VICTORY_POINT };
+            DEVELOPMENT_TYPE.VICTORY_POINT, DEVELOPMENT_TYPE.VICTORY_POINT, DEVELOPMENT_TYPE.VICTORY_POINT, DEVELOPMENT_TYPE.VICTORY_POINT };
+        
+        // Test
+        private bool isTestRunning;
 
         public ServerReceive(ServerToClientCommunication serverRequest)
         {
@@ -45,6 +49,17 @@ namespace Networking.ServerSide
             possibleColors.Push(PLAYERCOLOR.BLUE);
             possibleColors.Push(PLAYERCOLOR.RED);
         }
+        
+        public ServerReceive(ServerToClientCommunication serverRequest, bool isTestRunning)
+        {
+            this.isTestRunning = isTestRunning;
+            this.serverRequest = serverRequest;
+            possibleColors.Push(PLAYERCOLOR.WHITE);
+            possibleColors.Push(PLAYERCOLOR.YELLOW);
+            possibleColors.Push(PLAYERCOLOR.BLUE);
+            possibleColors.Push(PLAYERCOLOR.RED);
+        }
+        
 
         //---------------------------------------------- Interface INetworkableServer implementation ----------------------------------------------
 
@@ -109,20 +124,11 @@ namespace Networking.ServerSide
 
         public void handleBeginRound(Packet clientPacket)
         {
-            // if (isCurrentPlayer(clientPacket.myPlayerID))
-            // {
-            //     Debug.LogWarning($"SERVER: Client request rejected from client {clientPacket.myPlayerID}");
-            //     serverRequest.notifyRejection(clientPacket.myPlayerID, "You are not allowed to begin round!");
-            //     return;
-            // }
-
             // Roll dices
-
             int[] diceNumbers = rollDices();
             serverRequest.notifyRollDice(diceNumbers);
 
-            Debug.Log("Würfel gewürfelt");
-            // Distribute ressources
+            // Distribute resources
             for (int playerIndex = 0; playerIndex < allPlayer.Count; playerIndex++)
             {
                 ServerPlayer player = allPlayer.ElementAt(playerIndex).Value;
@@ -226,6 +232,10 @@ namespace Networking.ServerSide
                     updateOwnPlayer(currentPlayer);
                     serverRequest.acceptBuyDevelopement(shuffledDevCardStack.Count);
                 }
+                else
+                {
+                    serverRequest.notifyRejection(currentPlayer, "There are no development cards left to buy");
+                }
             }
             else
             {
@@ -303,16 +313,16 @@ namespace Networking.ServerSide
         private bool isNotCurrentPlayer(int clientID)
         {
             var currentPlayerObject = allPlayer.ElementAt(currentPlayer).Value;
-            //Debug.LogWarning($"comparing clientID: {clientID} and currentID: {currentPlayerObject.getPlayerID()}");
+            Debug.Log("Comparing currentPlayer ID: " + currentPlayerObject.getPlayerID() + " with clientID: " + clientID);
             if (currentPlayerObject.getPlayerID() == clientID)
             {
                 return false;
             }
-
+            Debug.Log("SERVER: Current Player is: " + currentPlayer + ", instead of: " + clientID);
             return true;
         }
 
-        private int[] rollDices()
+        public int[] rollDices()
         {
             Debug.Log("SERVER: Dices are being rolled");
             System.Random r = new System.Random();
@@ -340,6 +350,15 @@ namespace Networking.ServerSide
             ServerPlayer newPlayer = new ServerPlayer(playerId);
             allPlayer.Add(playerId, newPlayer);
             playerAmount++;
+
+            if (isTestRunning)
+            {
+                newPlayer.setResourceAmount(RESOURCETYPE.SHEEP, 10);
+                newPlayer.setResourceAmount(RESOURCETYPE.ORE, 10);
+                newPlayer.setResourceAmount(RESOURCETYPE.WHEAT, 10);
+                newPlayer.setResourceAmount(RESOURCETYPE.WOOD, 10);
+                newPlayer.setResourceAmount(RESOURCETYPE.BRICK, 10);
+            }
         }
 
         private Stack<DEVELOPMENT_TYPE> generateRandomDevCardStack(DEVELOPMENT_TYPE[] array)
@@ -347,12 +366,12 @@ namespace Networking.ServerSide
             return new Stack<DEVELOPMENT_TYPE>(array.OrderBy(n => Guid.NewGuid()).ToArray());
         }
 
-        private void updateOwnPlayer(int playerIndex)
+        public void updateOwnPlayer(int playerIndex)
         {
             serverRequest.updateOwnPlayer(
                 allPlayer.ElementAt(playerIndex).Value.convertFromSPToOP(), // int[] with left buildings
                 allPlayer.ElementAt(playerIndex).Value.convertSPToOPResources(), // Resource Dictionary
-                allPlayer.ElementAt(playerIndex).Value.convertSPToOPDevCards(), // DevCard Dictonary
+                allPlayer.ElementAt(playerIndex).Value.convertSPToOPDevCards(), // DevCard Dictionary
                 allPlayer.ElementAt(playerIndex).Key);
         }
 
@@ -363,7 +382,8 @@ namespace Networking.ServerSide
 
         private bool didThisPlayerWin(int playerIndex)
         {
-            if (allPlayer.ElementAt(playerIndex).Value.getVictoryPoints() >= 10)
+            if(playerIndex > playerAmount || playerIndex < 1){serverRequest.notifyRejection(currentPlayer, "This player cannot exist"); return false;}
+            if(allPlayer.ElementAt(playerIndex).Value.getVictoryPoints() >= 10)
             {
                 return true;
             }

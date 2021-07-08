@@ -2,10 +2,10 @@
 {
     public enum PLAYERCOLOR
     {
-        BLUE = 0, 
-        RED = 1, 
-        YELLOW = 2, 
-        WHITE = 3,
+        RED = 0, 
+        BLUE = 1,
+        WHITE = 2,
+        YELLOW = 3,
         NONE = 4,
     }
 }
