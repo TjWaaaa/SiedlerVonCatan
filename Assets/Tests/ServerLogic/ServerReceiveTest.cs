@@ -302,9 +302,9 @@ public class ServerReceiveTest
         serverReceive.updateOwnPlayer(0);
         Dictionary<RESOURCETYPE, int> testResources = new Dictionary<RESOURCETYPE, int>
         {
-            {RESOURCETYPE.SHEEP, MockServerRequest.updateOwnPlayerUpdateResources[RESOURCETYPE.SHEEP]-10},
+            {RESOURCETYPE.SHEEP, MockServerRequest.updateOwnPlayerUpdateResources[RESOURCETYPE.SHEEP]},
             {RESOURCETYPE.ORE, MockServerRequest.updateOwnPlayerUpdateResources[RESOURCETYPE.ORE]+2},
-            {RESOURCETYPE.BRICK, MockServerRequest.updateOwnPlayerUpdateResources[RESOURCETYPE.BRICK]},
+            {RESOURCETYPE.BRICK, MockServerRequest.updateOwnPlayerUpdateResources[RESOURCETYPE.BRICK]-10},
             {RESOURCETYPE.WOOD, MockServerRequest.updateOwnPlayerUpdateResources[RESOURCETYPE.WOOD]},
             {RESOURCETYPE.WHEAT, MockServerRequest.updateOwnPlayerUpdateResources[RESOURCETYPE.WHEAT]}
         };
@@ -312,7 +312,7 @@ public class ServerReceiveTest
         // Current player wants to trade
         Packet packet = new Packet();
         packet.myPlayerID = 0;
-        packet.tradeResourcesOffer = new[] {10, 0, 0, 0, 0};
+        packet.tradeResourcesOffer = new[] {0, 0, 10, 0, 0};
         packet.tradeResourcesExpect = new[] {0, 2, 0, 0, 0};
         serverReceive.handleTradeBank(packet);
         Assert.AreEqual(testResources,MockServerRequest.updateOwnPlayerUpdateResources);
@@ -337,11 +337,11 @@ public class ServerReceiveTest
         serverReceive.handleTradeOffer(packet);
         Assert.AreEqual(3, MockServerRequest.notifyAcceptTradeOfferButtonNumber);
         
-        // Current player want's to trade something he can't trade (even if he get's three sheep, it's not enough)
+        // Current player want's to trade something he can't trade (even if he get's three brick, it's not enough)
         Packet packet2 = new Packet();
         packet2.myPlayerID = 0;
-        packet2.resourceType = (int) RESOURCETYPE.SHEEP;
-        packet2.buttonNumber = 0;
+        packet2.resourceType = (int) RESOURCETYPE.BRICK;
+        packet2.buttonNumber = 2;
         serverReceive.handleTradeOffer(packet2);
         Assert.AreEqual("Not enough resources to offer", MockServerRequest.notifyRejectionErrorMessage);
 
