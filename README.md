@@ -6,7 +6,7 @@ Some trade and development cards are still under construction but this wont stop
 ![Startscreen](/images/start_screen.jpg )  
 ![Lobby](/images/lobby.jpg)  
 ![Mainscreen](/images/in_game.jpg)  
-![Endscreen](/images/end_game.jpg)  
+![Endscreen](/images/end_screen.jpg)  
 
 ## Installation
 You can clone the repository either via SSH:
