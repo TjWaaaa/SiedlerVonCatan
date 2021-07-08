@@ -212,7 +212,7 @@ public class Board
             Debug.Log("SERVER: city can be placed");
             return true;
         }
-        Debug.Log("SERVER: canPlaceBuilding(): building of type " + buildingType + " cant be built");
+        Debug.Log("SERVER: canPlaceBuilding(): building of type " + buildingType + " can't be built");
         return false;
     }
 
@@ -297,7 +297,7 @@ public class Board
                     return true;
                 }
             default:
-                Debug.Log("SERVER: buildBuilding() building of type " + buildingType + " cant be built");
+                Debug.Log("SERVER: buildBuilding() building of type " + buildingType + " can't be built");
                 return false;
         }
     }

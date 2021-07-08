@@ -116,7 +116,7 @@ public class ServerReceiveTest
         Assert.AreEqual(true, MockServerRequest.notifyPlayerReadyReadyStatus);
 
 
-        // check of Board is not empty, a random content cant be checked
+        // check of Board is not empty, a random content can't be checked
         Assert.IsNotEmpty(MockServerRequest.gamestartInitializeGameBoard);
 
 
@@ -188,7 +188,7 @@ public class ServerReceiveTest
         packet.buildID = 0;
 
         serverReceive.handleBuild(packet);
-        Assert.AreEqual("Building cant be built", MockServerRequest.notifyRejectionErrorMessage);
+        Assert.AreEqual("Building can't be built", MockServerRequest.notifyRejectionErrorMessage);
         MockServerRequest.notifyRejectionErrorMessage = "";
 
 
@@ -334,7 +334,7 @@ public class ServerReceiveTest
         packet2.tradeResourcesOffer = new[] { 4, 0, 0, 0, 0 };
         packet2.tradeResourcesExpect = new[] { 0, 1, 0, 0, 0 };
         serverReceive.handleTradeBank(packet2);
-        Assert.AreEqual("You are not allowed to trade with bank!", MockServerRequest.notifyRejectionErrorMessage);
+        Assert.AreEqual("You are not allowed to trade with the bank!", MockServerRequest.notifyRejectionErrorMessage);
     }
 
     [Test]

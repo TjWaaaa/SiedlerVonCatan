@@ -149,7 +149,7 @@ namespace Networking.ServerSide
             if (isNotCurrentPlayer(clientPacket.myPlayerID))
             {
                 Debug.LogWarning($"SERVER: Client request rejected from client {clientPacket.myPlayerID}");
-                serverRequest.notifyRejection(clientPacket.myPlayerID, "You are not allowed to trade with bank!");
+                serverRequest.notifyRejection(clientPacket.myPlayerID, "You are not allowed to trade with the bank!");
                 return;
             }
 
@@ -215,7 +215,7 @@ namespace Networking.ServerSide
                 if (isNotCurrentPlayer(clientPacket.myPlayerID))
                 {
                     Debug.LogWarning($"SERVER: Client request rejected from client {clientPacket.myPlayerID}");
-                    serverRequest.notifyRejection(clientPacket.myPlayerID, "You are not allowed to buy a developmentcard!");
+                    serverRequest.notifyRejection(clientPacket.myPlayerID, "You are not allowed to buy a development card!");
                     return;
                 }
 
@@ -239,7 +239,7 @@ namespace Networking.ServerSide
             }
             else
             {
-                serverRequest.notifyRejection(clientPacket.myPlayerID, "Method HANDLE_BUY_DEVELOPMENT during game startphase prohibited");
+                serverRequest.notifyRejection(clientPacket.myPlayerID, "Method HANDLE_BUY_DEVELOPMENT during game start phase prohibited");
             }
         }
 
@@ -250,7 +250,7 @@ namespace Networking.ServerSide
                 if (isNotCurrentPlayer(clientPacket.myPlayerID))
                 {
                     Debug.LogWarning($"SERVER: Client request rejected from client {clientPacket.myPlayerID}");
-                    serverRequest.notifyRejection(clientPacket.myPlayerID, "You are not allowed to play a developmentcard!");
+                    serverRequest.notifyRejection(clientPacket.myPlayerID, "You are not allowed to play a development card!");
                     return;
                 }
                 Debug.Log(clientPacket.developmentCard);
@@ -266,12 +266,12 @@ namespace Networking.ServerSide
                 }
                 else
                 {
-                    serverRequest.notifyRejection(allPlayer.ElementAt(currentPlayer).Key, "You can't play this developement Card");
+                    serverRequest.notifyRejection(allPlayer.ElementAt(currentPlayer).Key, "You can't play this developement card");
                 }
             }
             else
             {
-                serverRequest.notifyRejection(clientPacket.myPlayerID, "Method HANDLE_PLAY_DEVELOPMENT during game startphase prohibited");
+                serverRequest.notifyRejection(clientPacket.myPlayerID, "Method HANDLE_PLAY_DEVELOPMENT during game start phase prohibited");
             }
         }
 
@@ -513,7 +513,7 @@ namespace Networking.ServerSide
                 default: Debug.Log("SERVER: handleBuild(): wrong BUYABLES"); break;
             }
 
-            serverRequest.notifyRejection(currentServerPlayer.getPlayerID(), "Building cant be built");
+            serverRequest.notifyRejection(currentServerPlayer.getPlayerID(), "Building can't be built");
         }
     }
 }
