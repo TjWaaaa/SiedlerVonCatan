@@ -3,7 +3,7 @@ using Enums;
 
 public class Edge
 {
-    private int posInArray; 
+    private int posInArray;
     private LinkedList<int> adjacentNodesPos = new LinkedList<int>();
     private LinkedList<int> adjacentEdgesPos = new LinkedList<int>();
     private PLAYERCOLOR occupant = PLAYERCOLOR.NONE;
@@ -37,7 +37,7 @@ public class Edge
     {
         return adjacentEdgesPos;
     }
-    
+
     public void setOccupant(PLAYERCOLOR occupant)
     {
         this.occupant = occupant;

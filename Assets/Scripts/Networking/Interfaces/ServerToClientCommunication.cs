@@ -12,7 +12,7 @@ namespace Networking.Interfaces
         /// <param name="playerInformation">contains {{playerName, playerColor, isReady}, {...}, ...}</param>
         public void notifyClientJoined(ArrayList playerInformation, string lobbyIP);
 
-        
+
         /// <summary>
         /// Game start: when the game starts send the board to all clients.
         /// </summary>
@@ -28,13 +28,13 @@ namespace Networking.Interfaces
         /// <param name="color">color of building owner</param>
         public void notifyObjectPlacement(BUYABLES buildType, int buildID, PLAYERCOLOR color);
 
-        
+
         /// <summary>
         /// Notify all players who the next player is.
         /// </summary>
         public void notifyNextPlayer(int playerIndex, int previousPlayerIndex);
 
-        
+
         /// <summary>
         /// Tell all clients the winner of the game.
         /// </summary>
@@ -42,7 +42,7 @@ namespace Networking.Interfaces
         /// <param name="playerColor">winner color</param>
         public void notifyVictory(string playerName, PLAYERCOLOR playerColor);
 
-        
+
         // /// <summary>
         // /// Pass trade request to all players.
         // /// </summary>
@@ -59,18 +59,18 @@ namespace Networking.Interfaces
         /// <param name="playerName">disconnected player name</param>
         /// <param name="playerColor">disconnected player color</param>
         public void notifyClientDisconnect(string playerName, PLAYERCOLOR playerColor);
-        
+
 
         // return requested information/resources ------------------------
-        
+
         /// <summary>
         /// Return error message to client.
         /// </summary>
         /// <param name="errorMessage">Message(String) describing the problem/error</param>
         public void notifyRejection(int playerID, string errorMessage);
 
-        
-        
+
+
         /// <summary>
         /// Tell the clients the new state of a player.
         /// </summary>
@@ -100,7 +100,7 @@ namespace Networking.Interfaces
         /// <param name="playerID">Player who has to be told that he can play his Card</param>
         /// <param name="developmentCard">played development card type</param>
         /// <param name="playerName">Player who played the developement card</param>
-        
+
         public void notifyAcceptPlayDevelopement(int playerID, DEVELOPMENT_TYPE developmentCard, string playerName);
 
         /// <summary>

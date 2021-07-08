@@ -10,10 +10,10 @@ namespace UI
 {
     public class PlayerRepresentation
     {
-        
+
         private GameObject[] playerBoardLights = new GameObject[4];
         private List<GameObject> playerRepresentations = new List<GameObject>();
-        
+
 
         /// <summary>
         /// Represents all player on boards
@@ -24,8 +24,8 @@ namespace UI
             // Find all Playerboards and set them inactive
             for (int playerRepresentation = 0; playerRepresentation < 4; playerRepresentation++)
             {
-                playerRepresentations.Add(GameObject.Find("Player"+(playerRepresentation+1)));
-                playerBoardLights[playerRepresentation] = GameObject.Find("Player" + (playerRepresentation+1)+ "/PlayerRepresentation/Board_light");
+                playerRepresentations.Add(GameObject.Find("Player" + (playerRepresentation + 1)));
+                playerBoardLights[playerRepresentation] = GameObject.Find("Player" + (playerRepresentation + 1) + "/PlayerRepresentation/Board_light");
                 playerRepresentations[playerRepresentation].SetActive(false);
             }
 
@@ -35,27 +35,27 @@ namespace UI
                 playerRepresentations[player].SetActive(true);
                 playerRepresentations[player].transform.GetChild(0).transform.GetChild(2).GetComponent<TextMeshProUGUI>().text = representativePlayers[player].getPlayerName();
                 playerRepresentations[player].transform.GetChild(0).transform.GetChild(2).GetComponent<TextMeshProUGUI>().color = representativePlayers[player].getPlayerColor();
-                Debug.Log("CLIENT: " + representativePlayers[player] + " wrote on board number "+ (player+1));
+                Debug.Log("CLIENT: " + representativePlayers[player] + " wrote on board number " + (player + 1));
                 updateUiPR(player, representativePlayers[player]);
             }
-            
+
             // Delete PLayerboards which aren't ingame
             for (int playerboards = 4; playerboards > representativePlayers.Length; playerboards--)
             {
                 playerRepresentations.RemoveAt(playerboards - 1);
             }
 
-            Debug.Log("CLIENT/SERVER: There are "+ playerRepresentations.Count + " Players ingame");
+            Debug.Log("CLIENT/SERVER: There are " + playerRepresentations.Count + " Players ingame");
         }
-        
-        
+
+
         /// <summary>
         /// Update Victorypoints, resources amount and devcard amount 
         /// </summary>
         /// <param name="player">index in playerRepresentations (playernumber -1)</param>
         /// <param name="representativePlayer">representativePlayer, which should be updated</param>
         public void updateUiPR(int player, RepresentativePlayer representativePlayer)
-        {   
+        {
             Debug.Log("CLIENT: RPUi has been updated via PlayerRepresentation.cs");
             playerRepresentations[player].transform.GetChild(0).transform.GetChild(3).GetComponent<TextMeshProUGUI>().text = representativePlayer.getVictoryPoints().ToString();
             playerRepresentations[player].transform.GetChild(0).transform.GetChild(4).GetComponent<TextMeshProUGUI>().text = representativePlayer.getTotalResourceAmount().ToString();

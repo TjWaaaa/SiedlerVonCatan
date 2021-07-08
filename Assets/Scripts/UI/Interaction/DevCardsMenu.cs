@@ -9,12 +9,12 @@ namespace UI
 {
     public class DevCardsMenu : MonoBehaviour
     {
-        
+
         private ClientRequest clientRequest = new ClientRequest();
-        
+
         private TextMeshProUGUI leftDevCards;
         private TextMeshProUGUI amountVP;
-        
+
         private GameObject devCardsVP;
         private GameObject playVPButton;
         private GameObject buyDevCardButton;
@@ -30,11 +30,11 @@ namespace UI
             buyDevCardButton = GameObject.Find("BuyDevCard");
             playVPButton.GetComponent<Button>().onClick.AddListener(playVP);
             buyDevCardButton.GetComponent<Button>().onClick.AddListener(buyDevCard);
-            
+
             // Devcards are inactive by default
             devCardsVP.SetActive(false);
         }
-        
+
         /// <summary>
         /// If the player has DevCards of type VICTORY_POINT, they are shown. Also the amount is shown
         /// </summary>
@@ -42,7 +42,7 @@ namespace UI
         public void showDevCards(OwnClientPlayer ownClientPlayer)
         {
             int cacheAmountVP = ownClientPlayer.getDevCardAmount(DEVELOPMENT_TYPE.VICTORY_POINT);
-        
+
             if (cacheAmountVP > 0)
             {
                 devCardsVP.SetActive(true);
@@ -62,13 +62,13 @@ namespace UI
         {
             leftDevCards.text = updateLD.ToString();
         }
-        
-        
+
+
         public void playVP()
         {
             clientRequest.requestPlayDevelopement(DEVELOPMENT_TYPE.VICTORY_POINT);
         }
-        
+
         public void buyDevCard()
         {
             Debug.Log($"CLIENT: Player wants to buy a devCard");

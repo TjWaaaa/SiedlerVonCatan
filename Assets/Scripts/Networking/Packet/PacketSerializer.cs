@@ -11,7 +11,7 @@ namespace Networking.Package
             string json = null;
             try
             {
-                json =  JsonConvert.SerializeObject(packet, 
+                json = JsonConvert.SerializeObject(packet,
                     new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore }); // remove all null values from result string (this is soooo sexy)
             }
             catch (JsonReaderException e)
@@ -32,7 +32,7 @@ namespace Networking.Package
             }
             catch (Exception e)
             {
-                Debug.LogError("Error while deserializing json\n" + e.Message); 
+                Debug.LogError("Error while deserializing json\n" + e.Message);
             }
 
             return packet;

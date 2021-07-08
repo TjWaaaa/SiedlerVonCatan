@@ -17,11 +17,11 @@ public class BoardGenerator : MonoBehaviour
         {
             for (int col = 0; col < gameBoard[row].Length; col++)
             {
-                if (gameBoard[row][col]==null) //zeile von Marco eingefügt, keine ahnung ob sinnvoll aber wirft sonst NullReferenceErrororororo, pls prüfen thx :*
+                if (gameBoard[row][col] == null) //zeile von Marco eingefügt, keine ahnung ob sinnvoll aber wirft sonst NullReferenceErrororororo, pls prüfen thx :*
                 {
                     continue;
                 }
-                
+
                 Hexagon hexagon = gameBoard[row][col];
                 string hexagonPath = "Tiles3D/" + findPrefabByHexagonType(hexagon.getType()) + "Prefab";
                 GameObject prefab = (GameObject)Resources.Load(hexagonPath);
@@ -74,15 +74,15 @@ public class BoardGenerator : MonoBehaviour
         {
             switch (z: row, x: col)
             {
-                case (0,3): return Quaternion.Euler(0,0,0);
-                case (0,5): return Quaternion.Euler(0,60,0);
-                case (1,6): return Quaternion.Euler(0,60,0);
-                case (2,1): return Quaternion.Euler(0,-60,0);
-                case (3,6): return Quaternion.Euler(0,120,0);
-                case (4,0): return Quaternion.Euler(0,-60,0);
-                case (5,4): return Quaternion.Euler(0,180,0);
-                case (6,0): return Quaternion.Euler(0,-120,0);
-                case (6,2): return Quaternion.Euler(0,180,0);
+                case (0, 3): return Quaternion.Euler(0, 0, 0);
+                case (0, 5): return Quaternion.Euler(0, 60, 0);
+                case (1, 6): return Quaternion.Euler(0, 60, 0);
+                case (2, 1): return Quaternion.Euler(0, -60, 0);
+                case (3, 6): return Quaternion.Euler(0, 120, 0);
+                case (4, 0): return Quaternion.Euler(0, -60, 0);
+                case (5, 4): return Quaternion.Euler(0, 180, 0);
+                case (6, 0): return Quaternion.Euler(0, -120, 0);
+                case (6, 2): return Quaternion.Euler(0, 180, 0);
             }
 
         }
@@ -132,7 +132,7 @@ public class BoardGenerator : MonoBehaviour
             Debug.Log("CLIENT: Buyable: City");
             GameObject village = GameObject.Find("C" + buildId.ToString());
             Vector3 villagePos = village.transform.position;
-            
+
             if (buildCity(villagePos, buildColor))
             {
                 Destroy(village);
@@ -151,20 +151,20 @@ public class BoardGenerator : MonoBehaviour
             }
         }
     }
-    
+
     public bool buildVillage(int buildId, Vector3 position, PLAYERCOLOR buildColor)
     {
         GameObject prefab;
         switch (buildColor)
         {
-            case PLAYERCOLOR.RED: prefab = (GameObject) Resources.Load("PlayerObjects3D/redVillagePrefab"); break;
-            case PLAYERCOLOR.BLUE: prefab = (GameObject) Resources.Load("PlayerObjects3D/blueVillagePrefab"); break;
-            case PLAYERCOLOR.WHITE: prefab = (GameObject) Resources.Load("PlayerObjects3D/whiteVillagePrefab"); break;
-            case PLAYERCOLOR.YELLOW: prefab = (GameObject) Resources.Load("PlayerObjects3D/yellowVillagePrefab"); break;
+            case PLAYERCOLOR.RED: prefab = (GameObject)Resources.Load("PlayerObjects3D/redVillagePrefab"); break;
+            case PLAYERCOLOR.BLUE: prefab = (GameObject)Resources.Load("PlayerObjects3D/blueVillagePrefab"); break;
+            case PLAYERCOLOR.WHITE: prefab = (GameObject)Resources.Load("PlayerObjects3D/whiteVillagePrefab"); break;
+            case PLAYERCOLOR.YELLOW: prefab = (GameObject)Resources.Load("PlayerObjects3D/yellowVillagePrefab"); break;
             default: Debug.Log("CLIENT: buildVillage: wrong player color"); return false;
         }
 
-        position = new Vector3 (position.x, 0.06f, position.z);
+        position = new Vector3(position.x, 0.06f, position.z);
         GameObject newVillage = Instantiate(prefab, position, Quaternion.identity);
         newVillage.transform.name = "C" + buildId.ToString();
         return true;
@@ -175,14 +175,14 @@ public class BoardGenerator : MonoBehaviour
         GameObject prefab;
         switch (buildColor)
         {
-            case PLAYERCOLOR.RED: prefab = (GameObject) Resources.Load("PlayerObjects3D/redCityPrefab"); break;
-            case PLAYERCOLOR.BLUE: prefab = (GameObject) Resources.Load("PlayerObjects3D/blueCityPrefab"); break;
-            case PLAYERCOLOR.WHITE: prefab = (GameObject) Resources.Load("PlayerObjects3D/whiteCityPrefab"); break;
-            case PLAYERCOLOR.YELLOW: prefab = (GameObject) Resources.Load("PlayerObjects3D/yellowCityPrefab"); break;
+            case PLAYERCOLOR.RED: prefab = (GameObject)Resources.Load("PlayerObjects3D/redCityPrefab"); break;
+            case PLAYERCOLOR.BLUE: prefab = (GameObject)Resources.Load("PlayerObjects3D/blueCityPrefab"); break;
+            case PLAYERCOLOR.WHITE: prefab = (GameObject)Resources.Load("PlayerObjects3D/whiteCityPrefab"); break;
+            case PLAYERCOLOR.YELLOW: prefab = (GameObject)Resources.Load("PlayerObjects3D/yellowCityPrefab"); break;
             default: Debug.Log("CLIENT: buildCity: wrong player color"); return false;
         }
-        
-        position = new Vector3 (position.x, 0.09f, position.z);
+
+        position = new Vector3(position.x, 0.09f, position.z);
         Instantiate(prefab, position, Quaternion.identity);
         return true;
     }
@@ -192,14 +192,14 @@ public class BoardGenerator : MonoBehaviour
         GameObject prefab;
         switch (buildColor)
         {
-            case PLAYERCOLOR.RED: prefab = (GameObject) Resources.Load("PlayerObjects3D/redStreetPrefab"); break;
-            case PLAYERCOLOR.BLUE: prefab = (GameObject) Resources.Load("PlayerObjects3D/blueStreetPrefab"); break;
-            case PLAYERCOLOR.WHITE: prefab = (GameObject) Resources.Load("PlayerObjects3D/whiteStreetPrefab"); break;
-            case PLAYERCOLOR.YELLOW: prefab = (GameObject) Resources.Load("PlayerObjects3D/yellowStreetPrefab"); break;
+            case PLAYERCOLOR.RED: prefab = (GameObject)Resources.Load("PlayerObjects3D/redStreetPrefab"); break;
+            case PLAYERCOLOR.BLUE: prefab = (GameObject)Resources.Load("PlayerObjects3D/blueStreetPrefab"); break;
+            case PLAYERCOLOR.WHITE: prefab = (GameObject)Resources.Load("PlayerObjects3D/whiteStreetPrefab"); break;
+            case PLAYERCOLOR.YELLOW: prefab = (GameObject)Resources.Load("PlayerObjects3D/yellowStreetPrefab"); break;
             default: Debug.Log("CLIENT: buildCity: wrong player color"); return false;
         }
-        
-        position = new Vector3 (position.x, 0.08f, position.z);
+
+        position = new Vector3(position.x, 0.08f, position.z);
         Instantiate(prefab, position, rotation);
         return true;
     }

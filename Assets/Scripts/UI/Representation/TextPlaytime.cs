@@ -17,7 +17,7 @@ public class TextPlaytime : MonoBehaviour
         Debug.Log("CLIENT: Current DateTime.Now: " + dt);
     }
 
-    
+
 
     // Update is called on every frame
     void Update()

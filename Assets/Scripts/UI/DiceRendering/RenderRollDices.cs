@@ -23,7 +23,7 @@ public class RenderRollDices : MonoBehaviour
         if (Input.GetKeyDown("space"))
         {
             Debug.Log("CLIENT: space pressed");
-            renderRollDices(new int[] {6,6});
+            renderRollDices(new int[] { 6, 6 });
         }
     }
 
@@ -36,7 +36,7 @@ public class RenderRollDices : MonoBehaviour
         StartCoroutine(TimeYield());
         TimeYield();
     }
-    
+
     public IEnumerator TimeYield()
     {
         Debug.Log("CLIENT: TimeYield Function is called");

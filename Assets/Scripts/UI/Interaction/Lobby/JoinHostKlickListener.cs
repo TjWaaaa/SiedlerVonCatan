@@ -29,13 +29,13 @@ public class JoinHostKlickListener : MonoBehaviour
         Debug.Log("SERVER: playerName: " + playerName);
         Debug.Log("SERVER: hostIp: " + hostIp);
 
-        
+
         var clientReceive = new GameObject();
         clientReceive.name = "clientReceive";
         clientReceive = Instantiate(clientReceive);
         clientReceive.AddComponent<ClientReceive>();
         clientReceive.AddComponent<BoardGenerator>();
-            
+
         bool initComplete = Client.initClient(hostIp, clientReceive.GetComponent<ClientReceive>());
         // bool initComplete = Client.initClient(hostIp);
 
@@ -63,10 +63,10 @@ public class JoinHostKlickListener : MonoBehaviour
     {
         bool isRunning = Server.setupServer(new ServerReceive(new ServerRequest())); //host server
         string playerName = GameObject.Find("Canvas/hostPanel/host_PlayerName").GetComponent<InputField>().text;
-        
+
         // Packet gameInformation = new Packet();
         // gameInformation.playerName = "Simon";
-        
+
         Debug.Log("SERVER: hosting game...");
 
         if (isRunning)

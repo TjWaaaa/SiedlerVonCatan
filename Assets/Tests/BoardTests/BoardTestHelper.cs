@@ -19,11 +19,11 @@ public class BoardTestHelper
 
     public bool fieldNumberConstraintsMet(Board boardInstance)
     {
-     
+
         Hexagon[][] hexagonsArray = boardInstance.getHexagonsArray();
-        for (int row = 1; row < hexagonsArray.Length-1; row++)
+        for (int row = 1; row < hexagonsArray.Length - 1; row++)
         {
-            for (int col = 1; col < hexagonsArray[row].Length-1; col++)
+            for (int col = 1; col < hexagonsArray[row].Length - 1; col++)
             {
                 Hexagon currentHex = hexagonsArray[row][col];
 
@@ -50,7 +50,7 @@ public class BoardTestHelper
                     {
                         continue;
                     }
-                    Hexagon neighbor =  hexagonsArray[row + neighborOffsetY[i]][col + neighborOffsetX[i]];
+                    Hexagon neighbor = hexagonsArray[row + neighborOffsetY[i]][col + neighborOffsetX[i]];
 
                     //adjacent neighbor is 6 or 8 <=> constraint not met
                     if (neighbor != null && (neighbor.getFieldNumber() == 6 || neighbor.getFieldNumber() == 8))

@@ -10,7 +10,7 @@ namespace Networking.Interfaces
         /// <param name="playerName">Name of the player</param>
         public void requestJoinLobby(string playerName);
 
-        
+
         /// <summary>
         /// tell the server if th client is ready to play
         /// </summary>
@@ -22,19 +22,19 @@ namespace Networking.Interfaces
         /// Request if a player has enough resources to trade.
         /// </summary>
         public void requestTradeOffer(RESOURCETYPE offerResource, int buttonNumber);
-        
+
         /// <summary>
         /// Requests if a player is allowed to trade a certain resource with the bank.
         /// </summary>
         public void requestTradeBank(int[] offer, int[] expect);
 
-        
+
         // /// <summary>
         // /// Requests if a player is allowed to trade a certain resource with a port.
         // /// </summary>
         // public void requestTradePort();
 
-        
+
         // Phase: 3 (build)
         /// <summary>
         /// Request to build a building on the board
@@ -42,20 +42,20 @@ namespace Networking.Interfaces
         /// <param name="buildType">type of building</param>
         /// <param name="buildID">ID of building</param>
         public void requestBuild(BUYABLES buildType, int buildID);
-        
-        
+
+
         /// <summary>
         /// Request to buy a development card
         /// </summary>
         public void requestBuyDevelopement();
 
-        
+
         /// <summary>
         /// Request to play a development card
         /// </summary>
         public void requestPlayDevelopement(DEVELOPMENT_TYPE developmentType);
-        
-        
+
+
         // End phase
         /// <summary>
         /// Client wants to end his turn

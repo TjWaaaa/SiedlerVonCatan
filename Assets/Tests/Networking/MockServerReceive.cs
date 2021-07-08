@@ -39,7 +39,7 @@ namespace Tests.Networking
         {
             packethandleTradeBank = clientPacket;
         }
-        
+
         public void handleTradeOffer(Packet clientPacket)
         {
             packethandleTradeOffer = clientPacket;
@@ -69,7 +69,7 @@ namespace Tests.Networking
         {
             // packethandleClientDisconnectServerCall = disconnectedClientID;
         }
-        
+
 
         public void generatePlayer(int playerId)
         {

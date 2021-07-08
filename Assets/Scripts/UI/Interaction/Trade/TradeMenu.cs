@@ -10,7 +10,7 @@ namespace Trade
     public class TradeMenu : MonoBehaviour
     {
         private ClientRequest clientRequest = new ClientRequest();
-        
+
         // UI Interaction
         private GameObject tradeMenu;
         private GameObject startTradeButton;
@@ -21,12 +21,12 @@ namespace Trade
         private TextMeshProUGUI resourceOffer;
         private TextMeshProUGUI resourceExpect;
         private TextMeshProUGUI amountOffer;
-        
+
 
         void Start()
         {
             tradeMenu = GameObject.Find("TradeMenu");
-            
+
             // Find all buttons 
             startTradeButton = GameObject.Find("startTrade");
             closeTradeButton = GameObject.Find("closeTrade");
@@ -36,7 +36,7 @@ namespace Trade
             amountOffer = GameObject.Find("amountOffer").GetComponent<TextMeshProUGUI>();
             offerResources = GameObject.FindGameObjectsWithTag("giveResource");
             expectResources = GameObject.FindGameObjectsWithTag("getResource");
-            
+
             // Add EventListener
             startTradeButton.GetComponent<Button>().onClick.AddListener(startTrade);
             closeTradeButton.GetComponent<Button>().onClick.AddListener(closeTrade);
@@ -46,10 +46,10 @@ namespace Trade
 
             // Inactive by default
             tradeMenu.SetActive(false);
-            
+
         }
-        
-        
+
+
         /// <summary>
         /// OfferResource buttons can only be clicked if the player has enough resources.
         /// To check if this is the case, sending a clientRequest
@@ -57,10 +57,10 @@ namespace Trade
         /// <param name="button">resourceOfferButton which is clicked</param>
         void checkOfferResource(GameObject button)
         {
-            clientRequest.requestTradeOffer(button.GetComponent<TradeButton>().getResourcetype(), Array.IndexOf(offerResources, button) );
-            
+            clientRequest.requestTradeOffer(button.GetComponent<TradeButton>().getResourcetype(), Array.IndexOf(offerResources, button));
+
         }
-        
+
         /// <summary>
         /// Try to click the offerResourceButton and write the according resource to the UI.
         /// Called by ClientReceive
@@ -79,7 +79,7 @@ namespace Trade
         {
             resourceExpect.text = button.GetComponent<TradeButton>().clickButton();
         }
-        
+
         /// <summary>
         /// Sends tradeRequest, if the input is valid
         /// </summary>
@@ -87,22 +87,22 @@ namespace Trade
         {
             if (TradeButton.isValidTradeRequest())
             {
-                
+
                 Debug.Log("Client want's to trade " + TradeButton.getOfferResourcetype() + " against " + TradeButton.getExpectResourcetype());
                 int[] offer = convertOfferResourcesToArray();
                 int[] expect = convertExpectResourcesToArray();
-                
-                clientRequest.requestTradeBank(offer,expect);
-                
+
+                clientRequest.requestTradeBank(offer, expect);
+
             }
             else Debug.Log("CLIENT: You have to choose a resource on each side");
             setInactive();
         }
-        
+
         void startTrade() { tradeMenu.SetActive(true); }
 
         void closeTrade() { setInactive(); }
-        
+
         /// <summary>
         /// Before closing the tradeMenu, everything needs to be reseted
         /// </summary>
@@ -116,7 +116,7 @@ namespace Trade
             tradeMenu.SetActive(false);
 
         }
-        
+
         /// <summary>
         /// Convert offerResource to a sendable Array
         /// </summary>
@@ -126,18 +126,18 @@ namespace Trade
             switch (TradeButton.getOfferResourcetype())
             {
                 case RESOURCETYPE.SHEEP:
-                    return new[] {4, 0, 0, 0, 0};
+                    return new[] { 4, 0, 0, 0, 0 };
                 case RESOURCETYPE.ORE:
-                    return new[] {0, 4, 0, 0, 0};
+                    return new[] { 0, 4, 0, 0, 0 };
                 case RESOURCETYPE.BRICK:
-                    return new[] {0, 0, 4, 0, 0};
+                    return new[] { 0, 0, 4, 0, 0 };
                 case RESOURCETYPE.WOOD:
-                    return new[] {0, 0, 0, 4, 0};
+                    return new[] { 0, 0, 0, 4, 0 };
                 case RESOURCETYPE.WHEAT:
-                    return new[] {0, 0, 0, 0, 4};
+                    return new[] { 0, 0, 0, 0, 4 };
                 default:
-                    return new[] {0, 0, 0, 0, 0};
-                    
+                    return new[] { 0, 0, 0, 0, 0 };
+
             }
         }
 
@@ -150,18 +150,18 @@ namespace Trade
             switch (TradeButton.getExpectResourcetype())
             {
                 case RESOURCETYPE.SHEEP:
-                    return new[] {1, 0, 0, 0, 0};
+                    return new[] { 1, 0, 0, 0, 0 };
                 case RESOURCETYPE.ORE:
-                    return new[] {0, 1, 0, 0, 0};
+                    return new[] { 0, 1, 0, 0, 0 };
                 case RESOURCETYPE.BRICK:
-                    return new[] {0, 0, 1, 0, 0};
+                    return new[] { 0, 0, 1, 0, 0 };
                 case RESOURCETYPE.WOOD:
-                    return new[] {0, 0, 0, 1, 0};
+                    return new[] { 0, 0, 0, 1, 0 };
                 case RESOURCETYPE.WHEAT:
-                    return new[] {0, 0, 0, 0, 1};
+                    return new[] { 0, 0, 0, 0, 1 };
                 default:
-                    return new[] {0, 0, 0, 0, 0};
-                    
+                    return new[] { 0, 0, 0, 0, 0 };
+
             }
         }
     }

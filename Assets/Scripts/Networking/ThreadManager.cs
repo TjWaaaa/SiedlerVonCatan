@@ -41,9 +41,9 @@ namespace Networking
             {
                 return;
             }
-            
+
             List<Action> execOnMainThreadListCopied = new List<Action>();
-            
+
             // lock execOnMainThreadList for as short as possible --> copy it
             lock (execOnMainThreadList)
             {

@@ -19,11 +19,11 @@ namespace Networking.ClientSide
     public class ClientReceive : MonoBehaviour, INetworkableClient
     {
         public int myID { get; private set; }
-        
+
         private bool runFixedUpdate = true;
 
         private PrefabFactory prefabFactory;
-        
+
         // UI
         private Scene currentScene;
         private GameObject diceHolder;
@@ -38,12 +38,14 @@ namespace Networking.ClientSide
         private OwnClientPlayer ownClientPlayer;
         private int playerNumber = 1;
         private int currentPlayer = 0;
-        
+
         // Board
         private Hexagon[][] gameBoard;
         private BoardGenerator boardGenerator;
 
-        
+        private Text rejectionText;
+
+
 
         /// <summary>
         /// Create a persistent ClientGameLogicObject that stays over scene changes.
@@ -52,7 +54,7 @@ namespace Networking.ClientSide
         {
             prefabFactory = GameObject.Find("PrefabFactory").GetComponent<PrefabFactory>();
             DontDestroyOnLoad(this);
-        
+
             currentScene = SceneManager.GetActiveScene();
             boardGenerator = GetComponent<BoardGenerator>();
         }
@@ -65,7 +67,7 @@ namespace Networking.ClientSide
             ThreadManager.updateMainThread();
         }
 
-        
+
         /// <summary>
         /// Load everything, when the GameScene is started. This happens only once
         /// </summary>
@@ -81,10 +83,10 @@ namespace Networking.ClientSide
                     boardGenerator.instantiateGameBoard(gameBoard);
                     playerRepresentation.represent(representativePlayers.ToArray());
                     ownPlayerRepresentation.represent(ownClientPlayer);
-                    playerRepresentation.showNextPlayer(0,currentPlayer);
+                    playerRepresentation.showNextPlayer(0, currentPlayer);
                     _devCardsMenu = GameObject.Find("_UI").GetComponent<DevCardsMenu>();
                     _tradeMenu = GameObject.Find("_UI").GetComponent<TradeMenu>();
-                    
+                    rejectionText = GameObject.Find("RejectionMessageText").GetComponent<Text>();
                 }
             }
         }
@@ -92,13 +94,13 @@ namespace Networking.ClientSide
 
         public void OnApplicationQuit()
         {
-            #if UNITY_EDITOR
-                quitGame();
-                UnityEditor.EditorApplication.isPlaying = false;
-            #else
+#if UNITY_EDITOR
+            quitGame();
+            UnityEditor.EditorApplication.isPlaying = false;
+#else
                 quitGame();
                 Application.Quit();
-            #endif
+#endif
         }
 
 
@@ -109,7 +111,7 @@ namespace Networking.ClientSide
         {
             Client.shutDownClient();
             Server.shutDownServer();
-            
+
         }
 
         /// <summary>
@@ -130,7 +132,7 @@ namespace Networking.ClientSide
             }
         }
 
-        
+
         /// <summary>
         /// Add a player list entry to the lobby.
         /// If a player already exists, its values are updated.
@@ -144,7 +146,7 @@ namespace Networking.ClientSide
             try
             {
                 scrollViewContent = GameObject.Find("Canvas/Scroll View/Viewport/Content");
-                
+
                 GameObject listItem = GameObject.Find(currentPlayerID.ToString()); // search for already existing list entries.
 
                 if (listItem == null) // If the list entry for a player doesn't exist --> instantiate new.
@@ -159,19 +161,19 @@ namespace Networking.ClientSide
                     {
                         listItem.transform.Find("IsReady").GetComponent<Toggle>().enabled = false;
                         listItem.transform.Find("IsReady").GetComponent<PlayerReady>().enabled = false;
-                        representativePlayers.Add( new RepresentativePlayer(currentPlayerID, playerName, decodeColor(playerColor)));
+                        representativePlayers.Add(new RepresentativePlayer(currentPlayerID, playerName, decodeColor(playerColor)));
                     }
                     else
                     {
-                        representativePlayers.Add( new RepresentativePlayer(currentPlayerID, playerName + " (you)", decodeColor(playerColor)));
+                        representativePlayers.Add(new RepresentativePlayer(currentPlayerID, playerName + " (you)", decodeColor(playerColor)));
                         ownClientPlayer = new OwnClientPlayer(currentPlayerID);
                         Debug.Log("CLIENT: Created OwnClientPlayer with ID" + currentPlayerID);
                     }
-                    
+
                     listItem.name = currentPlayerID.ToString();
-                    Debug.Log("CLIENT: "+ playerName + " created. Player Number " + representativePlayers.Count);
+                    Debug.Log("CLIENT: " + playerName + " created. Player Number " + representativePlayers.Count);
                 }
-                
+
                 else // List entry does already exist --> update name and color 
                 {
                     listItem.transform.Find("Player").GetComponent<Text>().text = playerName;
@@ -190,27 +192,27 @@ namespace Networking.ClientSide
         /// <returns>null</returns>
         private IEnumerator loadEndScene(string winnerName)
         {
-            
+
             AsyncOperation promise = SceneManager.LoadSceneAsync("3_EndScene");
 
             while (!promise.isDone)
             {
                 yield return null;
             }
-            
+
             string win = $"Congratulations!\nPlayer {winnerName} won the game!";
             GameObject textObj = GameObject.Find("Canvas/victoryPanel/Congrats");
             var comp = textObj.GetComponent<TMP_Text>();
             comp.text = win;
         }
-        
+
         //---------------------------------------------- Interface INetworkableClient implementation ----------------------------------------------
-        
+
         public void handleClientJoined(Packet serverPacket)
         {
             // Set Lobby IP
             GameObject.Find("Canvas/LobbyIP").GetComponent<Text>().text = serverPacket.lobbyIP;
-            
+
             // for each player:
             // initialize prefab with data
             Debug.Log("CLIENT: Client recieved new package: " + PacketSerializer.objectToJsonString(serverPacket));
@@ -252,7 +254,7 @@ namespace Networking.ClientSide
             // }
             //
             // SceneManager.UnloadSceneAsync("1_LobbyScene");
-            
+
             AsyncOperation asyncLoadLevel = SceneManager.LoadSceneAsync("2_GameScene");
             gameBoard = serverPacket.gameBoard;
             Debug.Log("CLIENT: Sie haben ein Spielbrett erhalten :)");
@@ -261,7 +263,7 @@ namespace Networking.ClientSide
         public void handleObjectPlacement(Packet serverPacket)
         {
             Debug.Log("CLIENT: Place building " + serverPacket.buildType + " on " + serverPacket.buildID);
-            BUYABLES buildType = (BUYABLES) serverPacket.buildType;
+            BUYABLES buildType = (BUYABLES)serverPacket.buildType;
             int buildId = serverPacket.buildID.GetValueOrDefault();
             PLAYERCOLOR buildColor = serverPacket.buildColor;
             Debug.Log("CLIENT: client recieved color: " + buildColor);
@@ -276,10 +278,10 @@ namespace Networking.ClientSide
         }
 
         public void handleNextPlayer(Packet serverPacket)
-        {   
+        {
             Debug.Log("CLIENT: Current Player: " + serverPacket.previousPlayerID);
             Debug.LogWarning($"CLIENT: It was {serverPacket.previousPlayerID}'s turn and now it's {serverPacket.currentPlayerID}'s turn!");
-            if(!runFixedUpdate){playerRepresentation.showNextPlayer(serverPacket.previousPlayerID.GetValueOrDefault(), serverPacket.currentPlayerID.GetValueOrDefault());}
+            if (!runFixedUpdate) { playerRepresentation.showNextPlayer(serverPacket.previousPlayerID.GetValueOrDefault(), serverPacket.currentPlayerID.GetValueOrDefault()); }
             currentPlayer = serverPacket.currentPlayerID.GetValueOrDefault();
             Debug.Log($"CLIENT: CurrentPlayer is player {serverPacket.currentPlayerID}");
         }
@@ -303,6 +305,9 @@ namespace Networking.ClientSide
         {
             string errorMessage = serverPacket.errorMessage;
             Debug.Log("CLIENT: " + errorMessage);
+            rejectionText.text = errorMessage;
+            StartCoroutine(TimeYield());
+            TimeYield();
         }
 
         public void handleAccpetBeginRound(Packet serverPacket)
@@ -313,7 +318,7 @@ namespace Networking.ClientSide
             GameObject.FindGameObjectWithTag("diceHolder").GetComponent<RenderRollDices>().renderRollDices(serverPacket.diceResult);
             // Render gained ressources
         }
-        
+
         public void handleAcceptTradeOffer(Packet serverPacket)
         {
             int buttonNumber = serverPacket.buttonNumber.GetValueOrDefault();
@@ -334,21 +339,27 @@ namespace Networking.ClientSide
         public void handleUpdateRP(Packet serverPacket)
         {
             int i = 0;
-            foreach(RepresentativePlayer rp in representativePlayers)
+            foreach (RepresentativePlayer rp in representativePlayers)
             {
                 rp.updateNumbers(serverPacket.updateRP[i]);
-                playerRepresentation.updateUiPR(i,rp);
-                i++;   
+                playerRepresentation.updateUiPR(i, rp);
+                i++;
             }
             Debug.Log("CLIENT: update RP");
         }
-        
+
         public void handleUpdateOP(Packet serverPacket)
         {
-            ownClientPlayer.updateOP(serverPacket.updateOP,serverPacket.updateResourcesOnOP, serverPacket.updateDevCardsOnOP);
+            ownClientPlayer.updateOP(serverPacket.updateOP, serverPacket.updateResourcesOnOP, serverPacket.updateDevCardsOnOP);
             ownPlayerRepresentation.updaetOwnPlayerUI(ownClientPlayer);
             _devCardsMenu.showDevCards(ownClientPlayer);
             Debug.Log("CLIENT: update OP");
+        }
+        private IEnumerator TimeYield()
+        {
+            Debug.Log("Deleting Error Message in 5 Seconds");
+            yield return new WaitForSeconds(5f);
+            rejectionText.text = "";
         }
     }
 }

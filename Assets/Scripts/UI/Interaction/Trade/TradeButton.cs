@@ -18,7 +18,7 @@ namespace Trade
         void Start()
         {
             // Get the resource of each button individually
-            resourcetype = (RESOURCETYPE) Enum.Parse(typeof(RESOURCETYPE), gameObject.name, true);
+            resourcetype = (RESOURCETYPE)Enum.Parse(typeof(RESOURCETYPE), gameObject.name, true);
 
         }
 
@@ -77,18 +77,18 @@ namespace Trade
             offerResourcetype = RESOURCETYPE.NONE;
             expectResourcetype = RESOURCETYPE.NONE;
         }
-        
+
         /// <summary>
         /// Check if selected buttons are valid. There has to be a offerResource and a expectResource
         /// </summary>
         /// <returns>isValidTradeRequest</returns>
         public static Boolean isValidTradeRequest()
-                {
-                    if (expectResourcetype != RESOURCETYPE.NONE && offerResourcetype != RESOURCETYPE.NONE) return true;
-                    else return false;
-                }
-        
-        
+        {
+            if (expectResourcetype != RESOURCETYPE.NONE && offerResourcetype != RESOURCETYPE.NONE) return true;
+            else return false;
+        }
+
+
         // Getter
 
         public RESOURCETYPE getResourcetype()
@@ -105,7 +105,7 @@ namespace Trade
         {
             return offerResourcetype;
         }
-        
+
     }
 }
 

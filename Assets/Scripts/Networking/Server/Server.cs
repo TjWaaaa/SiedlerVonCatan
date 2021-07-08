@@ -25,11 +25,11 @@ namespace Networking.ServerSide
         private const int PORT = 50042; //freely selectable
         private static byte[] buffer;
         public static IPAddress serverIP { get; private set; }
-        
+
         private static System.Timers.Timer keepAliveTimer;
         private const int KEEP_ALIVE_DURATION = 4000;
         private static Dictionary<int, long> timeOfPing;
-        
+
         private static Stack<Color> playerColors = new Stack<Color>();
         private static INetworkableServer _serverReceive;
 
@@ -46,7 +46,7 @@ namespace Networking.ServerSide
             }
 
             _serverReceive = serverReceive;
-            
+
             serverSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
             socketPlayerData = new Dictionary<int, Socket>();
             buffer = new byte[BUFFER_SIZE];
@@ -55,7 +55,7 @@ namespace Networking.ServerSide
             playerColors.Push(Color.green);
             playerColors.Push(Color.blue);
             playerColors.Push(Color.yellow);
-            
+
             //Console.Title = "Game Server";
             Debug.Log("SERVER: Setting up Server...");
             try
@@ -71,7 +71,7 @@ namespace Networking.ServerSide
             {
                 Debug.LogError("SERVER: " + e);
                 Debug.LogWarning("SERVER: Closing all Sockets");
-                
+
                 closeAllSockets();
             }
 
@@ -85,29 +85,30 @@ namespace Networking.ServerSide
             isRunning = true;
             return isRunning;
         }
-        
-        
+
+
         /// <summary>
         /// Callback method is called in case of an incoming connection attenpt.
         /// </summary>
         /// <param name="AR">IAsyncResult</param>
-        private static void AcceptCallback(IAsyncResult AR) {
-            
+        private static void AcceptCallback(IAsyncResult AR)
+        {
+
             // necessary to log errors that occur in the side thread
             try
             {
                 Socket clientSocket;
-            
+
                 try
                 {
                     clientSocket = serverSocket.EndAccept(AR); //accepts clients connection attempt, returns client socket
                 }
-                catch (ObjectDisposedException e) 
+                catch (ObjectDisposedException e)
                 {
                     Debug.Log("SERVER: ObjectDisposedException. Happens always if the server socket is closed.\n" + e.Message);
                     return;
                 }
-                
+
                 // generate a new random client ID
                 int newClientID;
                 Random random = new Random();
@@ -115,16 +116,16 @@ namespace Networking.ServerSide
                 do
                 {
                     newClientID = random.Next(100);
-                    validClientID = !socketPlayerData.ContainsKey(newClientID);  
+                    validClientID = !socketPlayerData.ContainsKey(newClientID);
                 } while (!validClientID);
-                
+
                 timeOfPing.Add(newClientID, DateTime.Now.Ticks);
                 _serverReceive.generatePlayer(newClientID); //tell server logic the clients ID
                 socketPlayerData.Add(newClientID, clientSocket); //save client to socket list
                 Debug.Log($"SERVER: client (id: {newClientID}) stored in dictionary");
-                
-                
-                clientSocket.BeginReceive(buffer, 0, BUFFER_SIZE, SocketFlags.None, ReceiveCallback, new object[] {clientSocket, newClientID}); // open "chanel" to recieve data from the connected socket
+
+
+                clientSocket.BeginReceive(buffer, 0, BUFFER_SIZE, SocketFlags.None, ReceiveCallback, new object[] { clientSocket, newClientID }); // open "chanel" to recieve data from the connected socket
                 Debug.Log($"SERVER: Client {clientSocket.RemoteEndPoint} connected, waiting for request...");
 
                 //RepresentJoinigClients.representNewPlayer();
@@ -137,7 +138,7 @@ namespace Networking.ServerSide
             }
         }
 
-        
+
         /// <summary>
         /// Callback method is called when the server has finished sending data.
         /// </summary>
@@ -148,16 +149,16 @@ namespace Networking.ServerSide
             serverSocket.EndSend(AR);
         }
 
-        
+
         /// <summary>
         /// Callback method is called in case of data being sent to the server.
         /// </summary>
         /// <param name="AR">IAsyncResult</param>
         private static void ReceiveCallback(IAsyncResult AR)
         {
-            object[] socketIDArray = (object[]) AR.AsyncState;
-            Socket currentClientSocket = (Socket) socketIDArray[0];
-            int currentClientID = (int) socketIDArray[1];
+            object[] socketIDArray = (object[])AR.AsyncState;
+            Socket currentClientSocket = (Socket)socketIDArray[0];
+            int currentClientID = (int)socketIDArray[1];
 
             int recievedByteLengh;
 
@@ -169,14 +170,14 @@ namespace Networking.ServerSide
             {
                 Debug.LogWarning("SERVER: Client forcefully disconnected\n" + e.Message);
                 currentClientSocket.Close();
-                
+
                 // ominous solution to get to the key via the value
                 socketPlayerData.Remove(currentClientID);
                 //socketPlayerData.Remove(socketPlayerData.FirstOrDefault(x => x.Value == currentClientSocket).Key);
                 //todo: reestablish connection
                 return;
             }
-            
+
             // Client disconnects
             if (recievedByteLengh <= 0)
             {
@@ -199,8 +200,8 @@ namespace Networking.ServerSide
             byte[] currentBuffer = new byte[recievedByteLengh];
             Array.Copy(buffer, currentBuffer, recievedByteLengh); //to remove the protruding zeros from buffer
             string incomingDataString = Encoding.ASCII.GetString(currentBuffer);
-            
-            
+
+
             if (incomingDataString.Contains("pong") && !incomingDataString.Contains("{")) // Keep alive ping
             {
                 timeOfPing[currentClientID] = DateTime.Now.Ticks;
@@ -211,12 +212,12 @@ namespace Networking.ServerSide
                 Packet incomingPacket = PacketSerializer.jsonToObject(incomingDataString);
                 incomingPacket.myPlayerID = currentClientID;
                 Debug.Log($"SERVER: Received Text (from {currentClientSocket.LocalEndPoint}, clientID: {incomingPacket.myPlayerID}): " + incomingDataString);
-            
+
                 // map socket to id and send id to method call
-            
+
                 delegateIncomingDataToMethods(incomingPacket, currentClientID);
             }
-            
+
             currentClientSocket.BeginReceive(buffer, 0, BUFFER_SIZE, SocketFlags.None, ReceiveCallback,
                 socketIDArray); // Begins waiting for incoming traffic again. Overwrites buffer.
         }
@@ -235,13 +236,13 @@ namespace Networking.ServerSide
             {
                 // Test if an answer was received in the meantime
                 //todo: this Method is probably not needet due to TCPs own timers.
-                if (DateTime.Now.Ticks - timeOfPing[clientID] > (KEEP_ALIVE_DURATION+1000) * 10000)
+                if (DateTime.Now.Ticks - timeOfPing[clientID] > (KEEP_ALIVE_DURATION + 1000) * 10000)
                 {
                     //todo Reconnect
                     Debug.LogError($"SERVER: Client with ID {clientID} has disconnected!");
                     _serverReceive.handleClientDisconnectServerCall(clientID);
                 }
-                
+
                 var socket = socketPlayerData[clientID];
                 timeOfPing[clientID] = DateTime.Now.Ticks;
                 socket.BeginSend(message, 0, message.Length, SocketFlags.None, sendCallback, socket);
@@ -262,8 +263,8 @@ namespace Networking.ServerSide
             socketPlayerData[playerID].BeginSend(dataToSend, 0, dataToSend.Length, SocketFlags.None, sendCallback, serverSocket);
             Thread.Sleep(50);
         }
-        
-        
+
+
         /// <summary>
         /// Send data to all players but the one with the specified ID.
         /// </summary>
@@ -273,7 +274,7 @@ namespace Networking.ServerSide
         {
             foreach (int id in socketPlayerData.Keys)
             {
-                if(id != playerID)
+                if (id != playerID)
                 {
                     data.myPlayerID = playerID;
                     string dataString = PacketSerializer.objectToJsonString(data);
@@ -283,8 +284,8 @@ namespace Networking.ServerSide
             }
             Thread.Sleep(50);
         }
-        
-        
+
+
         /// <summary>
         /// Send data to all players.
         /// </summary>
@@ -318,7 +319,7 @@ namespace Networking.ServerSide
                 Debug.Log("SERVER: " + address);
                 endpoint = new IPEndPoint(address, PORT);
             }
-            
+
             return endpoint;
         }
 
@@ -375,7 +376,7 @@ namespace Networking.ServerSide
             Debug.Log("SERVER: Server was shut down.");
         }
 
-        
+
         /// <summary>
         /// map the incoming data by its type to a handle method
         /// </summary>
@@ -384,39 +385,39 @@ namespace Networking.ServerSide
         {
             switch (incomingData.type)
             {
-                case (int) COMMUNICATION_METHODS.HANDLE_REQUEST_JOIN_LOBBY:
+                case (int)COMMUNICATION_METHODS.HANDLE_REQUEST_JOIN_LOBBY:
                     _serverReceive.handleRequestJoinLobby(incomingData, currentClientID);
                     break;
-                
-                case (int) COMMUNICATION_METHODS.HANDLE_PLAYER_READY:
+
+                case (int)COMMUNICATION_METHODS.HANDLE_PLAYER_READY:
                     _serverReceive.handleRequestPlayerReady(incomingData, currentClientID);
                     break;
-                
-                case (int) COMMUNICATION_METHODS.HANDLE_BEGIN_ROUND:
+
+                case (int)COMMUNICATION_METHODS.HANDLE_BEGIN_ROUND:
                     _serverReceive.handleBeginRound(incomingData);
                     break;
-                
-                case (int) COMMUNICATION_METHODS.HANDLE_TRADE_BANK:
+
+                case (int)COMMUNICATION_METHODS.HANDLE_TRADE_BANK:
                     _serverReceive.handleTradeBank(incomingData);
                     break;
-                
-                case (int) COMMUNICATION_METHODS.HANDLE_TRADE_OFFER:
+
+                case (int)COMMUNICATION_METHODS.HANDLE_TRADE_OFFER:
                     _serverReceive.handleTradeOffer(incomingData);
                     break;
-                
-                case (int) COMMUNICATION_METHODS.HANDLE_BUILD:
+
+                case (int)COMMUNICATION_METHODS.HANDLE_BUILD:
                     _serverReceive.handleBuild(incomingData);
                     break;
-                
-                case (int) COMMUNICATION_METHODS.HANDLE_BUY_DEVELOPMENT:
+
+                case (int)COMMUNICATION_METHODS.HANDLE_BUY_DEVELOPMENT:
                     _serverReceive.handleBuyDevelopement(incomingData);
                     break;
-                
-                case (int) COMMUNICATION_METHODS.HANDLE_PLAY_DEVELOPMENT:
+
+                case (int)COMMUNICATION_METHODS.HANDLE_PLAY_DEVELOPMENT:
                     _serverReceive.handlePlayDevelopement(incomingData);
                     break;
-                
-                case (int) COMMUNICATION_METHODS.HANDLE_END_TURN:
+
+                case (int)COMMUNICATION_METHODS.HANDLE_END_TURN:
                     _serverReceive.handleEndTurn(incomingData);
                     break;
 

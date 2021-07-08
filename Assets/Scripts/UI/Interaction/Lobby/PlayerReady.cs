@@ -14,7 +14,7 @@ public class PlayerReady : MonoBehaviour, IPointerClickHandler
         toggleComponent = GetComponent<Toggle>();
     }
 
-    
+
     public void OnPointerClick(PointerEventData eventData)
     {
         clientRequest.requestPlayerReady(toggleComponent.isOn);

@@ -20,7 +20,7 @@ namespace Player
         private int leftVillages = 5;
         private int leftCities = 4;
         private bool isReady;
-        
+
         private Dictionary<DEVELOPMENT_TYPE, int> devCards = new Dictionary<DEVELOPMENT_TYPE, int>
         {
             {DEVELOPMENT_TYPE.VICTORY_POINT, 0},
@@ -45,7 +45,7 @@ namespace Player
             this.playerID = playerID;
         }
 
-        
+
 
 
         // Getter
@@ -89,7 +89,7 @@ namespace Player
         public int getTotalDevCardAmount()
         {
             int amount = 0;
-            
+
             foreach (var card in devCards)
             {
                 amount += card.Value;
@@ -107,7 +107,7 @@ namespace Player
         {
             return this.leftVillages;
         }
-        
+
         public int getVictoryPoints()
         {
             return victoryPoints;
@@ -132,7 +132,7 @@ namespace Player
 
         public void setResourceAmount(RESOURCETYPE resourcetype, int amount)
         {
-            if ((resources[resourcetype] + amount) >= 0 )
+            if ((resources[resourcetype] + amount) >= 0)
             {
                 resources[resourcetype] += amount;
             }
@@ -266,7 +266,7 @@ namespace Player
         {
             return resources;
         }
-        
+
         public Dictionary<DEVELOPMENT_TYPE, int> convertSPToOPDevCards()
         {
             return devCards;
@@ -286,7 +286,7 @@ namespace Player
         {
             devCards[type]++;
         }
-        
+
         public int getDevCardAmount(DEVELOPMENT_TYPE type)
         {
             return devCards[type];

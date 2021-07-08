@@ -52,7 +52,7 @@ namespace Tests
             testPlayer.setResourceAmount(RESOURCETYPE.SHEEP, 5);
             testPlayer.setResourceAmount(RESOURCETYPE.WHEAT, 3);
 
-            testPlayer.trade(new[] {4, 0, 0, 0, 0}, new[] {0, 0, 0, 0, 1});
+            testPlayer.trade(new[] { 4, 0, 0, 0, 0 }, new[] { 0, 0, 0, 0, 1 });
             Assert.IsFalse(testPlayer.getResourceAmount(RESOURCETYPE.SHEEP) == 5);
             Assert.IsTrue(testPlayer.getResourceAmount(RESOURCETYPE.SHEEP) == 1);
             Assert.IsFalse(testPlayer.getResourceAmount(RESOURCETYPE.WHEAT) == 3);
