@@ -371,21 +371,7 @@ public class ServerReceiveTest
     }
 
     [Test]
-    public void G_handleEndTurnTest()
-    {
-        serverReceive.didThisPlayerWin(5);
-        Assert.AreEqual("This player cannot exist", MockServerRequest.notifyRejectionErrorMessage);
-        // TODO create 2 players one that wins and one that doesn't
-
-        // Testing if winning player wins
-        //Assert.IsTrue(serverReceive.didThisPlayerWin(2));
-
-        // Testing if not winning player doesn't win
-        //Assert.IsFalse(serverReceive.didThisPlayerWin(2));
-    }
-    
-    [Test]
-    public void H_handlePlayDevelopement()
+    public void G_handlePlayDevelopement()
     {
         Packet packet = new Packet();
         packet.myPlayerID = 0;
@@ -400,6 +386,45 @@ public class ServerReceiveTest
         int newVP = MockServerRequest.updateRepPlayersUpdateNumbers[0][0];
         // Testing if victory points have increased
         Assert.IsTrue(newVP > previousVP);
+    }
+    
+    [Test]
+    public void H_handleEndTurnTest()
+    {
+        // end turn with current player
+        Packet packet = new Packet();
+        packet.myPlayerID = (int) PLAYERCOLOR.RED;
+        serverReceive.handleEndTurn(packet);
+
+        Assert.AreEqual((int) PLAYERCOLOR.RED, MockServerRequest.notifyNextPlayerPreviousPlayerIndex);
+        Assert.AreEqual((int) PLAYERCOLOR.BLUE, MockServerRequest.notifyNextPlayerPlayerIndex);
+
+        // end turn with wrong player
+        packet.myPlayerID = (int) PLAYERCOLOR.RED;
+        serverReceive.handleEndTurn(packet);
+        
+        Assert.AreEqual("You are not allowed to end someone elses turn", MockServerRequest.notifyRejectionErrorMessage);
+        
+        // end turn with current player
+        packet.myPlayerID = (int) PLAYERCOLOR.BLUE;
+        serverReceive.handleEndTurn(packet);
+        
+        Assert.AreEqual((int) PLAYERCOLOR.BLUE, MockServerRequest.notifyNextPlayerPreviousPlayerIndex);
+        Assert.AreEqual((int) PLAYERCOLOR.RED, MockServerRequest.notifyNextPlayerPlayerIndex);
+        
+        // buy things to reach 10 victory points
+        packet.myPlayerID = (int) PLAYERCOLOR.RED;
+        for (int i = 0; i < 7; i++)
+        {
+            serverReceive.handleBuyDevelopement(packet);
+            serverReceive.handlePlayDevelopement(packet);   
+        }
+
+        serverReceive.handleBuyDevelopement(packet);
+        Assert.AreEqual("There are no development cards left to buy", MockServerRequest.notifyRejectionErrorMessage);
+
+        Debug.Log(MockServerRequest.updateRepPlayersUpdateNumbers[0][0]);
+        Assert.AreEqual(PLAYERCOLOR.RED, MockServerRequest.notifyVictoryPlayerColor);
     }
     
     /// <summary>

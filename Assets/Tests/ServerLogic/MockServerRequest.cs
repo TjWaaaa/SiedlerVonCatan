@@ -44,6 +44,9 @@ namespace Tests.ServerLogic
 
         public static int notifyAcceptTradeOfferButtonNumber;
         public static int acceptBuyDevelopementLeftDevCards;
+        
+        public static string notifyVictoryPlayerName;
+        public static PLAYERCOLOR notifyVictoryPlayerColor;
 
 
         public void notifyClientJoined(ArrayList playerInformation, string lobbyIP)
@@ -72,7 +75,8 @@ namespace Tests.ServerLogic
 
         public void notifyVictory(string playerName, PLAYERCOLOR playerColor)
         {
-            throw new System.NotImplementedException();
+            notifyVictoryPlayerName = playerName;
+            notifyVictoryPlayerColor = playerColor;
         }
 
         public void notifyClientDisconnect(string playerName, PLAYERCOLOR playerColor)

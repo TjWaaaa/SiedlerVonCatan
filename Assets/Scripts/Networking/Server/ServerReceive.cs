@@ -36,7 +36,7 @@ namespace Networking.ServerSide
         private Stack<DEVELOPMENT_TYPE> shuffledDevCardStack = new Stack<DEVELOPMENT_TYPE>();
         private DEVELOPMENT_TYPE[] unshuffledDevCardArray = { DEVELOPMENT_TYPE.VICTORY_POINT,
             DEVELOPMENT_TYPE.VICTORY_POINT, DEVELOPMENT_TYPE.VICTORY_POINT, DEVELOPMENT_TYPE.VICTORY_POINT,
-            DEVELOPMENT_TYPE.VICTORY_POINT, DEVELOPMENT_TYPE.VICTORY_POINT, DEVELOPMENT_TYPE.VICTORY_POINT };
+            DEVELOPMENT_TYPE.VICTORY_POINT, DEVELOPMENT_TYPE.VICTORY_POINT, DEVELOPMENT_TYPE.VICTORY_POINT, DEVELOPMENT_TYPE.VICTORY_POINT };
         
         
         // Test
@@ -233,6 +233,10 @@ namespace Networking.ServerSide
                     updateOwnPlayer(currentPlayer);
                     serverRequest.acceptBuyDevelopement(shuffledDevCardStack.Count);
                 }
+                else
+                {
+                    serverRequest.notifyRejection(currentPlayer, "There are no development cards left to buy");
+                }
             }
             else
             {
@@ -377,7 +381,7 @@ namespace Networking.ServerSide
             serverRequest.updateRepPlayers(convertSPAToRPA());
         }
 
-        public bool didThisPlayerWin(int playerIndex)
+        private bool didThisPlayerWin(int playerIndex)
         {
             if(playerIndex > playerAmount || playerIndex < 1){serverRequest.notifyRejection(currentPlayer, "This player cannot exist"); return false;}
             if(allPlayer.ElementAt(playerIndex).Value.getVictoryPoints() >= 10)
