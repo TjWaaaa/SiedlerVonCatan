@@ -385,15 +385,20 @@ public class ServerReceiveTest
     }
     
     [Test]
-    public void G_handlePlayDevelopement()
+    public void H_handlePlayDevelopement()
     {
-        // Get Player
+        Packet packet = new Packet();
+        packet.myPlayerID = 0;
+
         // Give DevCard
+        serverReceive.handleBuyDevelopement(packet);
         // Get VictoryPoints
-        int previousVP = 0;
+        int previousVP = MockServerRequest.updateRepPlayersUpdateNumbers[0][0];
         // Play DevCard
+        serverReceive.handlePlayDevelopement(packet);
         // Get VictoryPoints
-        int newVP = 1;
+        int newVP = MockServerRequest.updateRepPlayersUpdateNumbers[0][0];
+        // Testing if victory points have increased
         Assert.IsTrue(newVP > previousVP);
     }
     

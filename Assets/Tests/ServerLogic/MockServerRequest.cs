@@ -43,6 +43,7 @@ namespace Tests.ServerLogic
         public static string notifyRejectionErrorMessage;
 
         public static int notifyAcceptTradeOfferButtonNumber;
+        public static int acceptBuyDevelopementLeftDevCards;
 
 
         public void notifyClientJoined(ArrayList playerInformation, string lobbyIP)
@@ -99,12 +100,12 @@ namespace Tests.ServerLogic
 
         public void acceptBuyDevelopement(int leftDevCards)
         {
-            throw new System.NotImplementedException();
+            acceptBuyDevelopementLeftDevCards = leftDevCards;
         }
 
         public void notifyAcceptPlayDevelopement(int playerID, DEVELOPMENT_TYPE developmentCard, string playerName)
         {
-            throw new System.NotImplementedException();
+            return;
         }
 
         public void notifyAcceptTradeOffer(int playerID, int buttonNumber)
