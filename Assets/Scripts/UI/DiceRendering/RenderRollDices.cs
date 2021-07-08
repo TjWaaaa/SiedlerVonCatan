@@ -17,16 +17,6 @@ public class RenderRollDices : MonoBehaviour
         Dice2 = diceDiceHandlers[1];
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        if (Input.GetKeyDown("space"))
-        {
-            Debug.Log("CLIENT: space pressed");
-            renderRollDices(new int[] { 6, 6 });
-        }
-    }
-
     public void renderRollDices(int[] numbers)
     {
         Dice1.GetComponent<Animator>().enabled = true;
