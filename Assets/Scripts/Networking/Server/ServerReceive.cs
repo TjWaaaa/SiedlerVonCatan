@@ -310,6 +310,10 @@ namespace Networking.ServerSide
 
         //---------------------------------------------- All logical methods ----------------------------------------------
 
+        /// <summary>
+        /// Only the actions of the currentPlayer are allowed to be handled.
+        /// Returns false if the server can continue.
+        /// </summary>
         private bool isNotCurrentPlayer(int clientID)
         {
             var currentPlayerObject = allPlayer.ElementAt(currentPlayer).Value;
@@ -322,6 +326,9 @@ namespace Networking.ServerSide
             return true;
         }
 
+        /// <summary>
+        /// Returns an array of random numbers in range 1-6(included) as a rolled dice simulation.
+        /// </summary>
         public int[] rollDices()
         {
             Debug.Log("SERVER: Dices are being rolled");
@@ -333,6 +340,9 @@ namespace Networking.ServerSide
             return diceNumbers;
         }
 
+        /// <summary>
+        /// Calls the convertFromSPToRP function for each player to convert the server player in representative player.
+        /// </summary>
         private int[][] convertSPAToRPA() // ServerPlayerArray / RepPlayerArray
         {
             int i = 0;
@@ -345,6 +355,9 @@ namespace Networking.ServerSide
             return cache;
         }
 
+        /// <summary>
+        /// Generates a player. Adds resources if the test is running.
+        /// </summary>
         public void generatePlayer(int playerId)
         {
             ServerPlayer newPlayer = new ServerPlayer(playerId);
@@ -361,11 +374,17 @@ namespace Networking.ServerSide
             }
         }
 
+        /// <summary>
+        /// Shuffles the start card deck into a random deck of cards.
+        /// </summary>
         private Stack<DEVELOPMENT_TYPE> generateRandomDevCardStack(DEVELOPMENT_TYPE[] array)
         {
             return new Stack<DEVELOPMENT_TYPE>(array.OrderBy(n => Guid.NewGuid()).ToArray());
         }
 
+        /// <summary>
+        /// Converts the Serverplayer of the currentplayer into an own player to send an updateOwnPlayer().
+        /// </summary>
         public void updateOwnPlayer(int playerIndex)
         {
             serverRequest.updateOwnPlayer(
@@ -375,11 +394,17 @@ namespace Networking.ServerSide
                 allPlayer.ElementAt(playerIndex).Key);
         }
 
+        /// <summary>
+        /// Just makes the code look cleaner inside the previous methods when updateRepPlayers is called.
+        /// </summary>
         private void updateRepPlayers()
         {
             serverRequest.updateRepPlayers(convertSPAToRPA());
         }
 
+        /// <summary>
+        /// Checks if a player has 10 or more victory points.
+        /// </summary>
         private bool didThisPlayerWin(int playerIndex)
         {
             if (playerIndex > playerAmount || playerIndex < 0)
@@ -394,6 +419,9 @@ namespace Networking.ServerSide
             return false;
         }
 
+        /// <summary>
+        /// Changes the currentPlayer index depending on which state of game we are currently in.
+        /// </summary>
         private void changeCurrentPlayer(Packet clientPacket, int playersId)
         {
             if (!firstRound)

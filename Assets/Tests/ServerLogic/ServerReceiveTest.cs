@@ -124,6 +124,10 @@ public class ServerReceiveTest
         Assert.AreEqual(1, MockServerRequest.notifyNextPlayerPlayerIndex);
     }
 
+    /// <summary>
+    /// Starts the round and checks if the call works.
+    /// Tests if the dice values are between 1 and 6(included).
+    /// </summary>
     [Test]
     public void C_handleBeginRoundTest()
     {
@@ -165,7 +169,7 @@ public class ServerReceiveTest
         MockServerRequest.notifyObjectPlacementBuildID = 0;
         MockServerRequest.notifyRejectionErrorMessage = "";
 
-        // build first blue village on node with id 0
+        // Build first blue village on node with id 0
         Packet packet = new Packet();
         packet.myPlayerID = (int)PLAYERCOLOR.BLUE;
         packet.buildType = (int)BUYABLES.VILLAGE;
@@ -181,7 +185,7 @@ public class ServerReceiveTest
         MockServerRequest.notifyObjectPlacementBuildID = 0;
 
 
-        // reject build city
+        // Reject build city
         packet = new Packet();
         packet.myPlayerID = (int)PLAYERCOLOR.BLUE;
         packet.buildType = (int)BUYABLES.CITY;
@@ -192,7 +196,7 @@ public class ServerReceiveTest
         MockServerRequest.notifyRejectionErrorMessage = "";
 
 
-        // build blue road on edge with id 0
+        // Build blue road on edge with id 0
         packet = new Packet();
         packet.myPlayerID = (int)PLAYERCOLOR.BLUE;
         packet.buildType = (int)BUYABLES.ROAD;
@@ -212,7 +216,7 @@ public class ServerReceiveTest
         MockServerRequest.notifyNextPlayerPlayerIndex = (int)PLAYERCOLOR.NONE;
 
 
-        // reject build village with wrong player
+        // Reject build village with wrong player
         packet = new Packet();
         packet.myPlayerID = (int)PLAYERCOLOR.BLUE;
         packet.buildType = (int)BUYABLES.VILLAGE;
@@ -223,7 +227,7 @@ public class ServerReceiveTest
         MockServerRequest.notifyRejectionErrorMessage = "";
 
 
-        // build first red village on node with id 2
+        // Build first red village on node with id 2
         packet = new Packet();
         packet.myPlayerID = (int)PLAYERCOLOR.RED;
         packet.buildType = (int)BUYABLES.VILLAGE;
@@ -238,7 +242,7 @@ public class ServerReceiveTest
         MockServerRequest.notifyObjectPlacementBuildID = 0;
 
 
-        // build red road on edge with id 5
+        // Build red road on edge with id 5
         packet = new Packet();
         packet.myPlayerID = (int)PLAYERCOLOR.RED;
         packet.buildType = (int)BUYABLES.ROAD;
@@ -253,7 +257,7 @@ public class ServerReceiveTest
         MockServerRequest.notifyObjectPlacementBuildID = 0;
 
 
-        // build second red village on node with id 7 
+        // Build second red village on node with id 7 
         packet = new Packet();
         packet.myPlayerID = (int)PLAYERCOLOR.RED;
         packet.buildType = (int)BUYABLES.VILLAGE;
@@ -267,7 +271,7 @@ public class ServerReceiveTest
         MockServerRequest.notifyObjectPlacementBuildType = BUYABLES.NONE;
         MockServerRequest.notifyObjectPlacementBuildID = 0;
 
-        // build second red road on edge with id 11 
+        // Build second red road on edge with id 11 
         packet.buildType = (int)BUYABLES.ROAD;
         packet.buildID = 11;
 
@@ -280,7 +284,7 @@ public class ServerReceiveTest
         MockServerRequest.notifyObjectPlacementBuildID = 0;
 
 
-        // build second blue village on node with id 9 & road on edge with id 15
+        // Build second blue village on node with id 9 & road on edge with id 15
         packet = new Packet();
         packet.myPlayerID = (int)PLAYERCOLOR.BLUE;
         packet.buildType = (int)BUYABLES.VILLAGE;
@@ -328,7 +332,7 @@ public class ServerReceiveTest
         serverReceive.handleTradeBank(packet);
         Assert.AreEqual(testResources, MockServerRequest.updateOwnPlayerUpdateResources);
 
-        // not current player can't trade
+        // Not current player can't trade
         Packet packet2 = new Packet();
         packet2.myPlayerID = 1;
         packet2.tradeResourcesOffer = new[] { 4, 0, 0, 0, 0 };
@@ -357,7 +361,7 @@ public class ServerReceiveTest
         Assert.AreEqual("Not enough resources to offer", MockServerRequest.notifyRejectionErrorMessage);
 
 
-        // not current player can't offer
+        // Not current player can't offer
         Packet packet3 = new Packet();
         packet3.myPlayerID = 1;
         packet3.resourceType = (int)RESOURCETYPE.SHEEP;
@@ -385,10 +389,15 @@ public class ServerReceiveTest
         Assert.IsTrue(newVP > previousVP);
     }
 
+    /// <summary>
+    /// Ends the turn with correct and incorrect player.
+    /// Checks if a player with 10 or more victory points is recognized as the winner.
+    /// Makes sure there are not more development cards buyable than exist.
+    /// </summary>
     [Test]
     public void H_handleEndTurnTest()
     {
-        // end turn with current player
+        // End turn with current player
         Packet packet = new Packet();
         packet.myPlayerID = (int)PLAYERCOLOR.RED;
         serverReceive.handleEndTurn(packet);
@@ -396,20 +405,20 @@ public class ServerReceiveTest
         Assert.AreEqual((int)PLAYERCOLOR.RED, MockServerRequest.notifyNextPlayerPreviousPlayerIndex);
         Assert.AreEqual((int)PLAYERCOLOR.BLUE, MockServerRequest.notifyNextPlayerPlayerIndex);
 
-        // end turn with wrong player
+        // End turn with wrong player
         packet.myPlayerID = (int)PLAYERCOLOR.RED;
         serverReceive.handleEndTurn(packet);
 
         Assert.AreEqual("You are not allowed to end someone elses turn", MockServerRequest.notifyRejectionErrorMessage);
 
-        // end turn with current player
+        // End turn with current player
         packet.myPlayerID = (int)PLAYERCOLOR.BLUE;
         serverReceive.handleEndTurn(packet);
 
         Assert.AreEqual((int)PLAYERCOLOR.BLUE, MockServerRequest.notifyNextPlayerPreviousPlayerIndex);
         Assert.AreEqual((int)PLAYERCOLOR.RED, MockServerRequest.notifyNextPlayerPlayerIndex);
 
-        // buy things to reach 10 victory points
+        // Buy things to reach 10 victory points
         packet.myPlayerID = (int)PLAYERCOLOR.RED;
         for (int i = 0; i < 7; i++)
         {
@@ -417,6 +426,7 @@ public class ServerReceiveTest
             serverReceive.handlePlayDevelopement(packet);
         }
 
+        // When there are no more dev cards left, it should send the error message.
         serverReceive.handleBuyDevelopement(packet);
         Assert.AreEqual("There are no development cards left to buy", MockServerRequest.notifyRejectionErrorMessage);
 
