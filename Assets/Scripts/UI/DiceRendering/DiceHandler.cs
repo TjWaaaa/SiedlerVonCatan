@@ -19,11 +19,18 @@ public class DiceHandler : MonoBehaviour
         diceAnimator.enabled = false;
         diceImage = gameObject.GetComponent<Image>();
     }
+
+    /// <summary>
+    /// Grabs the sprite name from diceNumberString according to the number that is supposed to be rolled.       
+    /// </summary>    
     public void updateDiceNumber(int number)
     {
         diceNumber = diceNumberStrings[number - 1];
     }
 
+    /// <summary>
+    /// Checks if the current displayed dice matches the wanted position, if yes it stops the animation.       
+    /// </summary>
     void FixedUpdate()
     {
         if (diceAnimator.enabled)

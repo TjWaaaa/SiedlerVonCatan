@@ -9,6 +9,9 @@ public class RenderRollDices : MonoBehaviour
     private int[] diceNumbers;
 
     // Start is called before the first frame update
+    /// <summary>
+    /// Grabs the DiceHandler object and sorts it into the array
+    /// </summary>
     void Start()
     {
         DiceHandler[] diceDiceHandlers = GetComponentsInChildren<DiceHandler>();
@@ -17,6 +20,10 @@ public class RenderRollDices : MonoBehaviour
         Dice2 = diceDiceHandlers[1];
     }
 
+    /// <summary>
+    /// Enables the animation.
+    /// Calls a coroutine to let the animation go on for atleast a short amount of time.
+    /// </summary>
     public void renderRollDices(int[] numbers)
     {
         Dice1.GetComponent<Animator>().enabled = true;
@@ -27,6 +34,9 @@ public class RenderRollDices : MonoBehaviour
         TimeYield();
     }
 
+    /// <summary>
+    /// Waits half a second to set the numbers into the dice.
+    /// </summary>
     public IEnumerator TimeYield()
     {
         Debug.Log("CLIENT: TimeYield Function is called");
