@@ -268,11 +268,11 @@ public class Board
     }
 
     /// <summary>
-    /// 
+    /// Checks which building should be placed, places it on the board and notifies all players
     /// </summary>
-    /// <param name="nodeId"></param>
-    /// <param name="player"></param>
-    /// <param name="buildingType"></param>
+    /// <param name="nodeId">Id of the node where a building should be places</param>
+    /// <param name="player">Player who wants to place the building</param>
+    /// <param name="buildingType">Type of building that should be placed</param>
     /// <returns></returns>
     public bool placeBuilding(int nodeId, PLAYERCOLOR player, BUILDING_TYPE buildingType)
     {
@@ -387,6 +387,12 @@ public class Board
         return false;
     }
 
+    /// <summary>
+    /// Places a road in color of the player who wants to build on the board and notifies all players
+    /// </summary>
+    /// <param name="edgeId">Id of the edge where the building should be placed</param>
+    /// <param name="player">Color of the player who wants to build</param>
+    /// <returns></returns>
     public bool placeRoad(int edgeId, PLAYERCOLOR player)
     {
         Edge currentEdge = edgesArray[edgeId];
@@ -399,6 +405,12 @@ public class Board
         return false;
     }
 
+    /// <summary>
+    /// Distributes cards depending on the dice result to one player
+    /// </summary>
+    /// <param name="hexagonNumber">Dice result</param>
+    /// <param name="playerColor">Player who gets cards</param>
+    /// <returns></returns>
     public int[] distributeResources(int hexagonNumber, PLAYERCOLOR playerColor)
     {
         int[] distributedResources = new int[5];
@@ -435,6 +447,11 @@ public class Board
         return distributedResources;
     }
 
+    /// <summary>
+    /// Distributes cards in preGamePhase depending on where the village got placed to one player
+    /// </summary>
+    /// <param name="nodeId">Id of the node where the village got placed</param>
+    /// <returns></returns>
     public int[] distributeFirstResources(int nodeId)
     {
         int[] distributedResources = new int[5];
@@ -459,10 +476,12 @@ public class Board
     /// </summary>
     private void assignNeighborsToHexagons()
     {
+        // imports file AdjacentNodesToHexagons
         TextAsset adjacentNodesToHexagons = (TextAsset)Resources.Load("AdjacentNodesToHexagons");
         MemoryStream adjacentNodesToHexagonsStream = new MemoryStream(Encoding.UTF8.GetBytes(adjacentNodesToHexagons.text));
         StreamReader file = new StreamReader(adjacentNodesToHexagonsStream);
 
+        // adds adjacents to every Hexagon
         for (int row = 0; row < boardConfig.Length; row++)
         {
             for (int col = 0; col < boardConfig[row].Length; col++)
@@ -501,24 +520,29 @@ public class Board
     /// </summary>
     private void assignNeighborsToNodes()
     {
+        // imports file AdjacentHexagonsToNodes
         TextAsset adjacentHexagonsToNodes = (TextAsset)Resources.Load("AdjacentHexagonsToNodes");
         MemoryStream adjacentHexagonsToNodesStream = new MemoryStream(Encoding.UTF8.GetBytes(adjacentHexagonsToNodes.text));
         StreamReader hexagonsFile = new StreamReader(adjacentHexagonsToNodesStream);
 
+        // imports file AdjacentNodesToNodes
         TextAsset adjacentNodesToNodes = (TextAsset)Resources.Load("AdjacentNodesToNodes");
         MemoryStream adjacentNodesToNodesStream = new MemoryStream(Encoding.UTF8.GetBytes(adjacentNodesToNodes.text));
         StreamReader nodesFile = new StreamReader(adjacentNodesToNodesStream);
 
+        // imports file AdjacentEdgesToNodes
         TextAsset adjacentEdgesToNodes = (TextAsset)Resources.Load("AdjacentEdgesToNodes");
         MemoryStream adjacentEdgesToNodesStream = new MemoryStream(Encoding.UTF8.GetBytes(adjacentEdgesToNodes.text));
         StreamReader edgesFile = new StreamReader(adjacentEdgesToNodesStream);
 
+        // adds adjacents to every node
         foreach (Node currentNode in nodesArray)
         {
+            // reads one line from all three files
             string[] nHexagons = hexagonsFile.ReadLine().Split(',');
             string[] nNodes = nodesFile.ReadLine().Split(',');
             string[] nEdges = edgesFile.ReadLine().Split(',');
-
+            
             for (int i = 0; i < 3; i++)
             {
                 // sets adjacent hexagon
@@ -552,19 +576,24 @@ public class Board
     /// </summary>
     private void assignNeighborsToEdges()
     {
+        // imports file AdjacentNodesToEdges
         TextAsset adjacentNodesToEdges = (TextAsset)Resources.Load("AdjacentNodesToEdges");
         MemoryStream adjacentNodesToEdgesStream = new MemoryStream(Encoding.UTF8.GetBytes(adjacentNodesToEdges.text));
         StreamReader nodesFile = new StreamReader(adjacentNodesToEdgesStream);
 
+        // imports file AdjacentEdgesToEdges
         TextAsset adjacentEdgesToEdges = (TextAsset)Resources.Load("AdjacentEdgesToEdges");
         MemoryStream adjacentEdgesToEdgesStream = new MemoryStream(Encoding.UTF8.GetBytes(adjacentEdgesToEdges.text));
         StreamReader edgesFile = new StreamReader(adjacentEdgesToEdgesStream);
 
+        // adds adjacents to every edge
         foreach (Edge currentEdge in edgesArray)
         {
+            // reads one line from both files 
             string[] nNodes = nodesFile.ReadLine().Split(',');
             string[] nEdges = edgesFile.ReadLine().Split(',');
 
+            // adds all 3 adjacent nodes to edge
             for (int i = 0; i < 2; i++)
             {
                 if (nNodes[i] != "-")
@@ -574,6 +603,7 @@ public class Board
                 }
             }
 
+            // adds all 3 adjacent edges to edge
             for (int i = 0; i < 4; i++)
             {
                 if (nEdges[i] != "-")
