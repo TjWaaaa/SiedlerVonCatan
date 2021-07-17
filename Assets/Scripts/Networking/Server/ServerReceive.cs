@@ -422,28 +422,30 @@ namespace Networking.ServerSide
         /// <summary>
         /// Changes the currentPlayer index depending on which state of game we are currently in.
         /// </summary>
+        /// <param name="clientPacket">a paket, the client sent, containing all relevant information about the client</param>
+        /// <param name="playersId">integer representing the current player</param>
         private void changeCurrentPlayer(Packet clientPacket, int playersId)
         {
             if (!firstRound)
             {
-                if (inGameStartupPhase && currentPlayer == playerAmount - 1)
+                if (inGameStartupPhase && currentPlayer == playerAmount - 1) //2nd round in start phase
                 {
-                    inGameStartupPhase = false;
-                    currentPlayer = 0;
+                    inGameStartupPhase = false; //after last players turn in 2nd round the startphase is over
+                    currentPlayer = 0; //start with first player again
                     handleBeginRound(clientPacket);
                     Debug.Log("SERVER: StartupPhase is over now");
                 }
-                else if (currentPlayer == playerAmount - 1)
+                else if (currentPlayer == playerAmount - 1) //start phase over
                 {
                     currentPlayer = 0;
                 }
                 else
                 {
-                    currentPlayer++;
+                    currentPlayer++; //set currentPlayer to next player
                 }
                 serverRequest.notifyNextPlayer(currentPlayer, playersId);
             }
-            else
+            else //first round in the game
             {
                 if (currentPlayer == 0)
                 {
@@ -451,11 +453,12 @@ namespace Networking.ServerSide
                 }
                 else
                 {
-                    currentPlayer--;
+                    currentPlayer--; //in first round turn order is reversed
                 }
                 serverRequest.notifyNextPlayer(currentPlayer, playersId);
             }
         }
+
         /// <summary>
         /// Checks, if current player is allowed to build either a village, city or road. Reacts different for the startup phase and the rest of the game.
         /// </summary>
@@ -463,7 +466,7 @@ namespace Networking.ServerSide
         /// <param name="buildingType">specifies what building is wished to be build by the curent player</param>
         /// <param name="posInArray">integer representation of the node or edge where the building shall be placed</param>
         /// <param name="playerColor">same color as the current player. the builded structure will be colored in the same way.</param>
-        /// <param name="clientPacket">the paket, the client sent, containing all relevant information about the client</param>
+        /// <param name="clientPacket">a paket, the client sent, containing all relevant information about the client</param>
         private void buildStructure(ServerPlayer currentServerPlayer, BUYABLES buildingType, int posInArray, PLAYERCOLOR playerColor, Packet clientPacket)
         {
             switch (buildingType)
@@ -477,7 +480,6 @@ namespace Networking.ServerSide
                         mandatoryNodeID = posInArray; //represents the mandatory node where a road has to be build adjacent to
                         villageBuilt = true; //next building placeable for the current player has to be a road
 
-                        //build village and notify clients
                         currentServerPlayer.reduceLeftVillages();
                         gameBoard.placeBuilding(posInArray, playerColor, BUILDING_TYPE.VILLAGE);
                         serverRequest.notifyObjectPlacement(buildingType, posInArray, playerColor);
