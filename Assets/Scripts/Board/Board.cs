@@ -117,31 +117,34 @@ public class Board
 
                 switch (currentConfig)
                 {
-                    case 0:
+                    case 0: // skips zeros in board config
                         break;
-                    case 1:
+                    case 1: // water hexagon
                         hexagonsArray[row][col] = new Hexagon(HEXAGON_TYPE.WATER);
                         break;
-                    case 2:
+                    case 2: // land hexagon
                         int fieldNumber = numberStack.Pop();
+                        
+                        // generates Hexagon and saves it in the hexagonsArray at specific position
                         Hexagon newHexagon = new Hexagon(landStack.Pop(), fieldNumber);
                         hexagonsArray[row][col] = newHexagon;
 
-                        // adds Hexagon to empty slot in array
-
+                        // adds Hexagon to empty slot in hexagonDiceNumbers array
+                        // if first slot empty
                         if (hexagonDiceNumbers[fieldNumber][0] == null)
                         {
                             hexagonDiceNumbers[fieldNumber][0] = newHexagon;
                         }
+                        // if first slot full & second empty
                         else if (hexagonDiceNumbers[fieldNumber][1] == null)
                         {
                             hexagonDiceNumbers[fieldNumber][1] = newHexagon;
                         }
                         break;
-                    case 3:
+                    case 3: // desert hexagon
                         hexagonsArray[row][col] = new Hexagon(HEXAGON_TYPE.DESERT);
                         break;
-                    case 4:
+                    case 4: // port hexagon
                         hexagonsArray[row][col] = new Hexagon(portStack.Pop());
                         break;
                 }
@@ -198,16 +201,17 @@ public class Board
 
         Node requestedNode = nodesArray[nodeId];
 
+        // checks whether or not a player is allowed to place a building on a node by the game rules
         if (!allowedToBuildOnNode(requestedNode, player, preGamePhase)) return false;
-
+        
         if (buildingType == BUILDING_TYPE.VILLAGE
-            && requestedNode.getBuildingType() == BUILDING_TYPE.NONE)
+            && requestedNode.getBuildingType() == BUILDING_TYPE.NONE) // to place a village, the node has to be empty
         {
             Debug.Log("SERVER: village can be placed");
             return true;
         }
         if (buildingType == BUILDING_TYPE.CITY
-            && requestedNode.getBuildingType() == BUILDING_TYPE.VILLAGE)
+            && requestedNode.getBuildingType() == BUILDING_TYPE.VILLAGE) // to place a city, the node has to hold a village
         {
             Debug.Log("SERVER: city can be placed");
             return true;
@@ -219,7 +223,7 @@ public class Board
     /// <summary>
     /// Checks rules whether a player is allowed to build on a given node or not 
     /// </summary>
-    /// <param name="currentNode"></param>
+    /// <param name="currentNode">the node a player tries to place a building on</param>
     /// <param name="player">color of the player who tries to build</param>
     /// <returns>true if player is allowed to build on given node</returns>
     private bool allowedToBuildOnNode(Node currentNode, PLAYERCOLOR player, bool preGamePhase)
@@ -233,41 +237,43 @@ public class Board
             return false;
         }
 
+        // gets the adjacent nodes positions of a current node
         LinkedList<int> neighborNodesPos = currentNode.getAdjacentNodesPos();
-        LinkedList<int> neighborEdgesPos = currentNode.getAdjacentEdgesPos();
 
+        // returns false if one! neighborNode is already occupied
         foreach (int nodePos in neighborNodesPos)
         {
-            Node node = nodesArray[nodePos];
-
-            // false if a neighborNode is already occupied
-            if (node.getBuildingType() != BUILDING_TYPE.NONE) return false;
+            if (nodesArray[nodePos].getBuildingType() != BUILDING_TYPE.NONE) return false;
         }
 
         // if not in pre game phase, adjacent edges have to get checked
         if (!preGamePhase)
         {
+            // gets the adjacent edges positions of a current node
+            LinkedList<int> neighborEdgesPos = currentNode.getAdjacentEdgesPos();
+            
+            // returns true if at least 1 edge is occupied by player
             foreach (int edgePos in neighborEdgesPos)
             {
-                Edge edge = edgesArray[edgePos];
-                // true if at least 1 edge is occupied by player
-                if (edge.getOccupant() == player)
-                {
-                    Debug.Log("near road on " + edgePos);
-                    return true;
-                }
+                if (edgesArray[edgePos].getOccupant() == player) return true;
             }
+            
             // false if none is occupied by player
             return false;
         }
+        
         // true if in pre game phase
-        // in pre game phase villages can be build without being adjacent to a node
-        else
-        {
-            return true;
-        }
+        // in pre game phase villages can be build without being adjacent to a road
+        return true;
     }
 
+    /// <summary>
+    /// Checks which building should be placed, places it on the board and notifies all players
+    /// </summary>
+    /// <param name="nodeId">Id of the node where a building should be places</param>
+    /// <param name="player">Player who wants to place the building</param>
+    /// <param name="buildingType">Type of building that should be placed</param>
+    /// <returns></returns>
     public bool placeBuilding(int nodeId, PLAYERCOLOR player, BUILDING_TYPE buildingType)
     {
         Node requestedNode = nodesArray[nodeId];
@@ -381,6 +387,12 @@ public class Board
         return false;
     }
 
+    /// <summary>
+    /// Places a road in color of the player who wants to build on the board and notifies all players
+    /// </summary>
+    /// <param name="edgeId">Id of the edge where the building should be placed</param>
+    /// <param name="player">Color of the player who wants to build</param>
+    /// <returns></returns>
     public bool placeRoad(int edgeId, PLAYERCOLOR player)
     {
         Edge currentEdge = edgesArray[edgeId];
@@ -393,6 +405,12 @@ public class Board
         return false;
     }
 
+    /// <summary>
+    /// Distributes cards depending on the dice result to one player
+    /// </summary>
+    /// <param name="hexagonNumber">Dice result</param>
+    /// <param name="playerColor">Player who gets cards</param>
+    /// <returns></returns>
     public int[] distributeResources(int hexagonNumber, PLAYERCOLOR playerColor)
     {
         int[] distributedResources = new int[5];
@@ -429,14 +447,21 @@ public class Board
         return distributedResources;
     }
 
+    /// <summary>
+    /// Distributes cards in preGamePhase depending on where the village got placed to one player
+    /// </summary>
+    /// <param name="nodeId">Id of the node where the village got placed</param>
+    /// <returns></returns>
     public int[] distributeFirstResources(int nodeId)
     {
-        int[] distributedResources = new int[5];
+        int[] distributedResources = new int[5]; // array for the 5 types of resource
         Node village = nodesArray[nodeId];
         int[][] adjacentHexagonsPos = village.getAdjacentHexagonsPos();
 
+        // goes through all 3 adjacent Hexagons to given Node and adds up resources
         foreach (int[] hexagonPos in adjacentHexagonsPos)
         {
+            
             HEXAGON_TYPE hexagonType = hexagonsArray[hexagonPos[0]][hexagonPos[1]].getType();
             Debug.LogWarning("hexagonType: " + hexagonType);
             if ((int)hexagonType > 4)
@@ -453,10 +478,12 @@ public class Board
     /// </summary>
     private void assignNeighborsToHexagons()
     {
+        // imports file AdjacentNodesToHexagons
         TextAsset adjacentNodesToHexagons = (TextAsset)Resources.Load("AdjacentNodesToHexagons");
         MemoryStream adjacentNodesToHexagonsStream = new MemoryStream(Encoding.UTF8.GetBytes(adjacentNodesToHexagons.text));
         StreamReader file = new StreamReader(adjacentNodesToHexagonsStream);
 
+        // adds adjacents to every Hexagon
         for (int row = 0; row < boardConfig.Length; row++)
         {
             for (int col = 0; col < boardConfig[row].Length; col++)
@@ -495,24 +522,29 @@ public class Board
     /// </summary>
     private void assignNeighborsToNodes()
     {
+        // imports file AdjacentHexagonsToNodes
         TextAsset adjacentHexagonsToNodes = (TextAsset)Resources.Load("AdjacentHexagonsToNodes");
         MemoryStream adjacentHexagonsToNodesStream = new MemoryStream(Encoding.UTF8.GetBytes(adjacentHexagonsToNodes.text));
         StreamReader hexagonsFile = new StreamReader(adjacentHexagonsToNodesStream);
 
+        // imports file AdjacentNodesToNodes
         TextAsset adjacentNodesToNodes = (TextAsset)Resources.Load("AdjacentNodesToNodes");
         MemoryStream adjacentNodesToNodesStream = new MemoryStream(Encoding.UTF8.GetBytes(adjacentNodesToNodes.text));
         StreamReader nodesFile = new StreamReader(adjacentNodesToNodesStream);
 
+        // imports file AdjacentEdgesToNodes
         TextAsset adjacentEdgesToNodes = (TextAsset)Resources.Load("AdjacentEdgesToNodes");
         MemoryStream adjacentEdgesToNodesStream = new MemoryStream(Encoding.UTF8.GetBytes(adjacentEdgesToNodes.text));
         StreamReader edgesFile = new StreamReader(adjacentEdgesToNodesStream);
 
+        // adds adjacents to every node
         foreach (Node currentNode in nodesArray)
         {
+            // reads one line from all three files
             string[] nHexagons = hexagonsFile.ReadLine().Split(',');
             string[] nNodes = nodesFile.ReadLine().Split(',');
             string[] nEdges = edgesFile.ReadLine().Split(',');
-
+            
             for (int i = 0; i < 3; i++)
             {
                 // sets adjacent hexagon
@@ -546,19 +578,24 @@ public class Board
     /// </summary>
     private void assignNeighborsToEdges()
     {
+        // imports file AdjacentNodesToEdges
         TextAsset adjacentNodesToEdges = (TextAsset)Resources.Load("AdjacentNodesToEdges");
         MemoryStream adjacentNodesToEdgesStream = new MemoryStream(Encoding.UTF8.GetBytes(adjacentNodesToEdges.text));
         StreamReader nodesFile = new StreamReader(adjacentNodesToEdgesStream);
 
+        // imports file AdjacentEdgesToEdges
         TextAsset adjacentEdgesToEdges = (TextAsset)Resources.Load("AdjacentEdgesToEdges");
         MemoryStream adjacentEdgesToEdgesStream = new MemoryStream(Encoding.UTF8.GetBytes(adjacentEdgesToEdges.text));
         StreamReader edgesFile = new StreamReader(adjacentEdgesToEdgesStream);
 
+        // adds adjacents to every edge
         foreach (Edge currentEdge in edgesArray)
         {
+            // reads one line from both files 
             string[] nNodes = nodesFile.ReadLine().Split(',');
             string[] nEdges = edgesFile.ReadLine().Split(',');
 
+            // adds all 3 adjacent nodes to edge
             for (int i = 0; i < 2; i++)
             {
                 if (nNodes[i] != "-")
@@ -568,6 +605,7 @@ public class Board
                 }
             }
 
+            // adds all 3 adjacent edges to edge
             for (int i = 0; i < 4; i++)
             {
                 if (nEdges[i] != "-")

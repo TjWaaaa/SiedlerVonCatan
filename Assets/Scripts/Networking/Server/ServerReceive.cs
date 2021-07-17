@@ -87,6 +87,11 @@ namespace Networking.ServerSide
             serverRequest.notifyClientJoined(allPlayerInformation, Server.serverIP.ToString());
         }
 
+        /// <summary>
+        /// TODO
+        /// </summary>
+        /// <param name="clientPacket"></param>
+        /// <param name="currentClientID"></param>
         public void handleRequestPlayerReady(Packet clientPacket, int currentClientID)
         {
             bool runGame = true;
@@ -287,6 +292,7 @@ namespace Networking.ServerSide
             }
             if (didThisPlayerWin(currentPlayer))
             {
+                Debug.LogWarning("SERVER: Game is over");
                 serverRequest.notifyVictory(allPlayer.ElementAt(currentPlayer).Value.getPlayerName(), allPlayer.ElementAt(currentPlayer).Value.getPlayerColor());
                 return;
             }
@@ -412,38 +418,36 @@ namespace Networking.ServerSide
                 serverRequest.notifyRejection(currentPlayer, "This player cannot exist");
                 return false;
             }
-            if (allPlayer.ElementAt(playerIndex).Value.getVictoryPoints() >= 10)
-            {
-                return true;
-            }
-            return false;
+            return allPlayer.ElementAt(playerIndex).Value.getVictoryPoints() >= 10;
         }
-
+        
         /// <summary>
         /// Changes the currentPlayer index depending on which state of game we are currently in.
         /// </summary>
+        /// <param name="clientPacket">a paket, the client sent, containing all relevant information about the client</param>
+        /// <param name="playersId">integer representing the current player</param>
         private void changeCurrentPlayer(Packet clientPacket, int playersId)
         {
             if (!firstRound)
             {
-                if (inGameStartupPhase && currentPlayer == playerAmount - 1)
+                if (inGameStartupPhase && currentPlayer == playerAmount - 1) //2nd round in start phase
                 {
-                    inGameStartupPhase = false;
-                    currentPlayer = 0;
+                    inGameStartupPhase = false; //after last players turn in 2nd round the startphase is over
+                    currentPlayer = 0; //start with first player again
                     handleBeginRound(clientPacket);
-                    Debug.Log("SERVER: StartupPhase is over now");
+                    Debug.LogWarning("SERVER: StartupPhase is over now");
                 }
-                else if (currentPlayer == playerAmount - 1)
+                else if (currentPlayer == playerAmount - 1) //start phase over
                 {
                     currentPlayer = 0;
                 }
                 else
                 {
-                    currentPlayer++;
+                    currentPlayer++; //set currentPlayer to next player
                 }
                 serverRequest.notifyNextPlayer(currentPlayer, playersId);
             }
-            else
+            else //first round in the game
             {
                 if (currentPlayer == 0)
                 {
@@ -451,23 +455,33 @@ namespace Networking.ServerSide
                 }
                 else
                 {
-                    currentPlayer--;
+                    currentPlayer--; //in first round turn order is reversed
                 }
                 serverRequest.notifyNextPlayer(currentPlayer, playersId);
             }
         }
 
+        /// <summary>
+        /// Checks, if current player is allowed to build either a village, city or road. Reacts different for the startup phase and the rest of the game.
+        /// </summary>
+        /// <param name="currentServerPlayer">represents the current player</param>
+        /// <param name="buildingType">specifies what building is wished to be build by the curent player</param>
+        /// <param name="posInArray">integer representation of the node or edge where the building shall be placed</param>
+        /// <param name="playerColor">same color as the current player. the builded structure will be colored in the same way.</param>
+        /// <param name="clientPacket">a paket, the client sent, containing all relevant information about the client</param>
         private void buildStructure(ServerPlayer currentServerPlayer, BUYABLES buildingType, int posInArray, PLAYERCOLOR playerColor, Packet clientPacket)
         {
             switch (buildingType)
             {
                 case BUYABLES.VILLAGE:
+                    //in the first 2 rounds only villages and roads are allowed to be build in alternating order
                     if (inGameStartupPhase
-                        && !villageBuilt
+                        && !villageBuilt //player allowed to build if no village was build last
                         && gameBoard.canPlaceBuilding(posInArray, playerColor, BUILDING_TYPE.VILLAGE, inGameStartupPhase))
                     {
-                        mandatoryNodeID = posInArray;
-                        villageBuilt = true;
+                        mandatoryNodeID = posInArray; //represents the mandatory node where a road has to be build adjacent to
+                        villageBuilt = true; //next building placeable for the current player has to be a road
+
                         currentServerPlayer.reduceLeftVillages();
                         gameBoard.placeBuilding(posInArray, playerColor, BUILDING_TYPE.VILLAGE);
                         serverRequest.notifyObjectPlacement(buildingType, posInArray, playerColor);
@@ -478,61 +492,71 @@ namespace Networking.ServerSide
                         {
                             currentServerPlayer.setResourceAmount((RESOURCETYPE)i, distributedResources[i]);
                         }
-
+                        //notify clients about changes
                         updateOwnPlayer(currentPlayer);
                         updateRepPlayers();
                         return;
                     }
-                    if (!inGameStartupPhase
-                        && currentServerPlayer.canBuyBuyable(buildingType)
+
+
+                    if (!inGameStartupPhase //game start is over
+                        && currentServerPlayer.canBuyBuyable(buildingType) //check if resource amount of current player is sufficient
                         && gameBoard.canPlaceBuilding(posInArray, playerColor, BUILDING_TYPE.VILLAGE, inGameStartupPhase))
                     {
                         currentServerPlayer.buyBuyable(buildingType);
                         currentServerPlayer.reduceLeftVillages();
                         gameBoard.placeBuilding(posInArray, playerColor, BUILDING_TYPE.VILLAGE);
                         serverRequest.notifyObjectPlacement(buildingType, posInArray, playerColor);
+
+                        //notify clients about changes
                         updateOwnPlayer(currentPlayer);
                         updateRepPlayers();
                         return;
                     }
                     break;
                 case BUYABLES.CITY:
-                    if (!inGameStartupPhase
-                        && currentServerPlayer.canBuyBuyable(buildingType)
+                    if (!inGameStartupPhase //cities prohibited to be build in start phase 
+                        && currentServerPlayer.canBuyBuyable(buildingType) //check if resource amount of current player is sufficient
                         && gameBoard.canPlaceBuilding(posInArray, playerColor, BUILDING_TYPE.CITY, inGameStartupPhase))
                     {
                         currentServerPlayer.buyBuyable(buildingType);
                         currentServerPlayer.reduceLeftCities();
                         gameBoard.placeBuilding(posInArray, playerColor, BUILDING_TYPE.CITY);
                         serverRequest.notifyObjectPlacement(buildingType, posInArray, playerColor);
+
+                        //notify clients about changes
                         updateOwnPlayer(currentPlayer);
                         updateRepPlayers();
                         return;
                     }
                     break;
                 case BUYABLES.ROAD:
-                    if (inGameStartupPhase
-                        && villageBuilt
+                    if (inGameStartupPhase //in the first 2 rounds only villages and roads are allowed to be build in alternating order
+                        && villageBuilt //player allowed to build if a village was build last
                         && gameBoard.canPlaceRoad(posInArray, mandatoryNodeID, playerColor))
                     {
-                        villageBuilt = false;
+                        villageBuilt = false; //next building placeable for the current player has to be a road
                         currentServerPlayer.reduceLeftRoads();
                         gameBoard.placeRoad(posInArray, playerColor);
-                        mandatoryNodeID = -1;
+                        mandatoryNodeID = -1; //reset mandatoryNode
                         serverRequest.notifyObjectPlacement(buildingType, posInArray, playerColor);
+                        //notify clients about changes
                         updateOwnPlayer(currentPlayer);
                         updateRepPlayers();
+                        //end round, only in start phase
                         changeCurrentPlayer(clientPacket, currentPlayer);
                         return;
                     }
-                    if (!inGameStartupPhase
-                        && currentServerPlayer.canBuyBuyable(buildingType)
+                    if (!inGameStartupPhase //start phase over
+                        && currentServerPlayer.canBuyBuyable(buildingType) //check if resource amount of current player is sufficient
                         && gameBoard.canPlaceRoad(posInArray, playerColor))
                     {
                         currentServerPlayer.buyBuyable(buildingType);
                         currentServerPlayer.reduceLeftRoads();
                         gameBoard.placeRoad(posInArray, playerColor);
                         serverRequest.notifyObjectPlacement(buildingType, posInArray, playerColor);
+
+                        //notify clients about changes
                         updateOwnPlayer(currentPlayer);
                         updateRepPlayers();
                         return;
@@ -540,7 +564,7 @@ namespace Networking.ServerSide
                     break;
                 default: Debug.Log("SERVER: handleBuild(): wrong BUYABLES"); break;
             }
-
+            //reject request if no condition is met
             serverRequest.notifyRejection(currentServerPlayer.getPlayerID(), "Building can't be built");
         }
     }
