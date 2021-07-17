@@ -117,31 +117,34 @@ public class Board
 
                 switch (currentConfig)
                 {
-                    case 0:
+                    case 0: // skips zeros in board config
                         break;
-                    case 1:
+                    case 1: // water hexagon
                         hexagonsArray[row][col] = new Hexagon(HEXAGON_TYPE.WATER);
                         break;
-                    case 2:
+                    case 2: // land hexagon
                         int fieldNumber = numberStack.Pop();
+                        
+                        // generates Hexagon and saves it in the hexagonsArray at specific position
                         Hexagon newHexagon = new Hexagon(landStack.Pop(), fieldNumber);
                         hexagonsArray[row][col] = newHexagon;
 
-                        // adds Hexagon to empty slot in array
-
+                        // adds Hexagon to empty slot in hexagonDiceNumbers array
+                        // if first slot empty
                         if (hexagonDiceNumbers[fieldNumber][0] == null)
                         {
                             hexagonDiceNumbers[fieldNumber][0] = newHexagon;
                         }
+                        // if first slot full & second empty
                         else if (hexagonDiceNumbers[fieldNumber][1] == null)
                         {
                             hexagonDiceNumbers[fieldNumber][1] = newHexagon;
                         }
                         break;
-                    case 3:
+                    case 3: // desert hexagon
                         hexagonsArray[row][col] = new Hexagon(HEXAGON_TYPE.DESERT);
                         break;
-                    case 4:
+                    case 4: // port hexagon
                         hexagonsArray[row][col] = new Hexagon(portStack.Pop());
                         break;
                 }
@@ -198,16 +201,17 @@ public class Board
 
         Node requestedNode = nodesArray[nodeId];
 
+        // checks whether or not a player is allowed to place a building on a node by the game rules
         if (!allowedToBuildOnNode(requestedNode, player, preGamePhase)) return false;
-
+        
         if (buildingType == BUILDING_TYPE.VILLAGE
-            && requestedNode.getBuildingType() == BUILDING_TYPE.NONE)
+            && requestedNode.getBuildingType() == BUILDING_TYPE.NONE) // to place a village, the node has to be empty
         {
             Debug.Log("SERVER: village can be placed");
             return true;
         }
         if (buildingType == BUILDING_TYPE.CITY
-            && requestedNode.getBuildingType() == BUILDING_TYPE.VILLAGE)
+            && requestedNode.getBuildingType() == BUILDING_TYPE.VILLAGE) // to place a city, the node has to hold a village
         {
             Debug.Log("SERVER: city can be placed");
             return true;
@@ -219,7 +223,7 @@ public class Board
     /// <summary>
     /// Checks rules whether a player is allowed to build on a given node or not 
     /// </summary>
-    /// <param name="currentNode"></param>
+    /// <param name="currentNode">the node a player tries to place a building on</param>
     /// <param name="player">color of the player who tries to build</param>
     /// <returns>true if player is allowed to build on given node</returns>
     private bool allowedToBuildOnNode(Node currentNode, PLAYERCOLOR player, bool preGamePhase)
@@ -233,41 +237,43 @@ public class Board
             return false;
         }
 
+        // gets the adjacent nodes positions of a current node
         LinkedList<int> neighborNodesPos = currentNode.getAdjacentNodesPos();
-        LinkedList<int> neighborEdgesPos = currentNode.getAdjacentEdgesPos();
 
+        // returns false if one! neighborNode is already occupied
         foreach (int nodePos in neighborNodesPos)
         {
-            Node node = nodesArray[nodePos];
-
-            // false if a neighborNode is already occupied
-            if (node.getBuildingType() != BUILDING_TYPE.NONE) return false;
+            if (nodesArray[nodePos].getBuildingType() != BUILDING_TYPE.NONE) return false;
         }
 
         // if not in pre game phase, adjacent edges have to get checked
         if (!preGamePhase)
         {
+            // gets the adjacent edges positions of a current node
+            LinkedList<int> neighborEdgesPos = currentNode.getAdjacentEdgesPos();
+            
+            // returns true if at least 1 edge is occupied by player
             foreach (int edgePos in neighborEdgesPos)
             {
-                Edge edge = edgesArray[edgePos];
-                // true if at least 1 edge is occupied by player
-                if (edge.getOccupant() == player)
-                {
-                    Debug.Log("near road on " + edgePos);
-                    return true;
-                }
+                if (edgesArray[edgePos].getOccupant() == player) return true;
             }
+            
             // false if none is occupied by player
             return false;
         }
+        
         // true if in pre game phase
-        // in pre game phase villages can be build without being adjacent to a node
-        else
-        {
-            return true;
-        }
+        // in pre game phase villages can be build without being adjacent to a road
+        return true;
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="nodeId"></param>
+    /// <param name="player"></param>
+    /// <param name="buildingType"></param>
+    /// <returns></returns>
     public bool placeBuilding(int nodeId, PLAYERCOLOR player, BUILDING_TYPE buildingType)
     {
         Node requestedNode = nodesArray[nodeId];

@@ -87,6 +87,11 @@ namespace Networking.ServerSide
             serverRequest.notifyClientJoined(allPlayerInformation, Server.serverIP.ToString());
         }
 
+        /// <summary>
+        /// TODO
+        /// </summary>
+        /// <param name="clientPacket"></param>
+        /// <param name="currentClientID"></param>
         public void handleRequestPlayerReady(Packet clientPacket, int currentClientID)
         {
             bool runGame = true;
@@ -287,6 +292,7 @@ namespace Networking.ServerSide
             }
             if (didThisPlayerWin(currentPlayer))
             {
+                Debug.LogWarning("SERVER: Game is over");
                 serverRequest.notifyVictory(allPlayer.ElementAt(currentPlayer).Value.getPlayerName(), allPlayer.ElementAt(currentPlayer).Value.getPlayerColor());
                 return;
             }
@@ -412,13 +418,9 @@ namespace Networking.ServerSide
                 serverRequest.notifyRejection(currentPlayer, "This player cannot exist");
                 return false;
             }
-            if (allPlayer.ElementAt(playerIndex).Value.getVictoryPoints() >= 10)
-            {
-                return true;
-            }
-            return false;
+            return allPlayer.ElementAt(playerIndex).Value.getVictoryPoints() >= 10;
         }
-
+        
         /// <summary>
         /// Changes the currentPlayer index depending on which state of game we are currently in.
         /// </summary>
@@ -431,7 +433,7 @@ namespace Networking.ServerSide
                     inGameStartupPhase = false;
                     currentPlayer = 0;
                     handleBeginRound(clientPacket);
-                    Debug.Log("SERVER: StartupPhase is over now");
+                    Debug.LogWarning("SERVER: StartupPhase is over now");
                 }
                 else if (currentPlayer == playerAmount - 1)
                 {
