@@ -454,12 +454,14 @@ public class Board
     /// <returns></returns>
     public int[] distributeFirstResources(int nodeId)
     {
-        int[] distributedResources = new int[5];
+        int[] distributedResources = new int[5]; // array for the 5 types of resource
         Node village = nodesArray[nodeId];
         int[][] adjacentHexagonsPos = village.getAdjacentHexagonsPos();
 
+        // goes through all 3 adjacent Hexagons to given Node and adds up resources
         foreach (int[] hexagonPos in adjacentHexagonsPos)
         {
+            
             HEXAGON_TYPE hexagonType = hexagonsArray[hexagonPos[0]][hexagonPos[1]].getType();
             Debug.LogWarning("hexagonType: " + hexagonType);
             if ((int)hexagonType > 4)
