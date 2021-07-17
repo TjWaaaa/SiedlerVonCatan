@@ -70,7 +70,6 @@ namespace Networking.ClientSide
             catch (Exception e)
             {
                 Debug.Log("SERVER: Client could not start");
-                throw e;
             }
 
             isRunning = true;
