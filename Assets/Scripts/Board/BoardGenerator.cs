@@ -11,13 +11,17 @@ public class BoardGenerator : MonoBehaviour
     private const float s = 1.73205f;
     private const float offset = 3f / 2f * a;
 
+    /// <summary>
+    /// Gets a multidimensional array and builds the game board on client side in unity
+    /// </summary>
+    /// <param name="gameBoard">game board generated and sent by server</param>
     public void instantiateGameBoard(Hexagon[][] gameBoard)
     {
         for (int row = 0; row < gameBoard.Length; row++)
         {
             for (int col = 0; col < gameBoard[row].Length; col++)
             {
-                if (gameBoard[row][col] == null) //zeile von Marco eingefügt, keine ahnung ob sinnvoll aber wirft sonst NullReferenceErrororororo, pls prüfen thx :*
+                if (gameBoard[row][col] == null)
                 {
                     continue;
                 }
@@ -67,10 +71,17 @@ public class BoardGenerator : MonoBehaviour
 
     }
 
+    /// <summary>
+    /// Determines rotation for port tiles
+    /// </summary>
+    /// <param name="hexagon">hexagon object which should get rotated</param>
+    /// <param name="row"></param>
+    /// <param name="col"></param>
+    /// <returns></returns>
     private Quaternion Rotation(Hexagon hexagon, int row, int col)
     {
         //Ports need to be rotated
-        if (hexagon.isPort())
+        if (hexagon.isPort()) // checks for position of the port
         {
             switch (z: row, x: col)
             {
@@ -89,6 +100,11 @@ public class BoardGenerator : MonoBehaviour
         return Quaternion.identity;
     }
 
+    /// <summary>
+    /// Returns Unity Prefob for a certain hexagon type
+    /// </summary>
+    /// <param name="hexagonType">type of the current hexagon</param>
+    /// <returns></returns>
     private string findPrefabByHexagonType(HEXAGON_TYPE hexagonType)
     {
         switch (hexagonType)
@@ -114,6 +130,12 @@ public class BoardGenerator : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Places a building on client side in unity
+    /// </summary>
+    /// <param name="buildType">type of the building to build</param>
+    /// <param name="buildId">id of the build slot</param>
+    /// <param name="buildColor">color of the building which should get built</param>
     public void placeBuilding(BUYABLES buildType, int buildId, PLAYERCOLOR buildColor)
     {
         if (buildType == BUYABLES.VILLAGE)
@@ -152,6 +174,13 @@ public class BoardGenerator : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Builds a village of a given color onto a building slot with given id at given unity coordinates
+    /// </summary>
+    /// <param name="buildId">id of the building slot</param>
+    /// <param name="position">unity coordinates</param>
+    /// <param name="buildColor">color of the building</param>
+    /// <returns></returns>
     public bool buildVillage(int buildId, Vector3 position, PLAYERCOLOR buildColor)
     {
         GameObject prefab;
@@ -170,6 +199,12 @@ public class BoardGenerator : MonoBehaviour
         return true;
     }
 
+    /// <summary>
+    /// Builds a city of a given color onto a building slot with given id at given unity coordinates
+    /// </summary>
+    /// <param name="position">unity coordinates</param>
+    /// <param name="buildColor">color of the building</param>
+    /// <returns></returns>
     public bool buildCity(Vector3 position, PLAYERCOLOR buildColor)
     {
         GameObject prefab;
@@ -187,6 +222,13 @@ public class BoardGenerator : MonoBehaviour
         return true;
     }
 
+    /// <summary>
+    /// Builds a road of a given color onto a building slot with given id at given unity coordinates
+    /// </summary>
+    /// <param name="position">unity coordinates</param>
+    /// <param name="rotation">unity cotation for the road</param>
+    /// <param name="buildColor">color of the building</param>
+    /// <returns></returns>
     public bool BuildRoad(Vector3 position, Quaternion rotation, PLAYERCOLOR buildColor)
     {
         GameObject prefab;
